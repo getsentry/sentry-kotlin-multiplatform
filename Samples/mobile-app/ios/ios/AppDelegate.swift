@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  mobile-app-ios
+//  ios
 //
-//  Created by Philipp Hofmann on 05.08.20.
+//  Created by Philipp Hofmann on 06.08.20.
 //  Copyright © 2020 GetSentry LLC. All rights reserved.
 //
 

@@ -11,15 +11,15 @@ expect object Platform {
 }
 
 fun hello(): String {
-    Sentry.start("https://8ee5199a90354faf995292b15c196d48@o19635.ingest.sentry.io/4394")
-    Sentry.captureMessage("Hello from ${Platform.name}")
-    return "Hello from ${Platform.name}"
+    val message = "Hello from ${Platform.name}"
+    Sentry.captureMessage(message)
+    return message
 }
 
 class Proxy {
-    fun proxyHello() = hello()
-}
+    init {
+        Sentry.start("https://8ee5199a90354faf995292b15c196d48@o19635.ingest.sentry.io/4394")
+    }
 
-fun main() {
-    println(hello())
+    fun proxyHello() = hello()
 }

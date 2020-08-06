@@ -3,7 +3,7 @@ import app
 
 struct ContentView: View {
     var body: some View {
-        Text(Proxy().proxyHello())
+        Text("\(Proxy.init().proxyHello())")
     }
 }
 
