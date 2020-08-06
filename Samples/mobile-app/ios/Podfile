@@ -6,7 +6,6 @@ target 'ios' do
   use_frameworks!
 
   # Pods for ios
-  # Pods for mobile-app-ios
   pod 'app', :path => '../app'
   pod 'Sentry', '~> 5.2.0'
 
