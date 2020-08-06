@@ -1,6 +1,6 @@
 package io.sentry
 
-internal actual object SentryDelegate {
+internal actual object SentryBridge {
     actual fun start(dsn: String) {
     }
 

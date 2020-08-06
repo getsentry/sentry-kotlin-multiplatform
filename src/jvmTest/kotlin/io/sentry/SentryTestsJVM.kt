@@ -9,7 +9,7 @@ class SentryTestsJVM {
 
     @BeforeTest
     fun `before test - sdk init`() {
-        Sentry.start("https://f7f320d5c3a54709be7b28e0f2ca7081@sentry.io/1808954")
+        Sentry.init("https://f7f320d5c3a54709be7b28e0f2ca7081@sentry.io/1808954")
     }
 
     @AfterTest

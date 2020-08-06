@@ -3,7 +3,7 @@ package io.sentry
 import platform.Foundation.*
 import cocoapods.Sentry.*
 
-internal actual object SentryDelegate {
+internal actual object SentryBridge {
     actual fun start(dsn: String) {
         val options = SentryOptions()
         options.dsn = dsn

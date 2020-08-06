@@ -34,7 +34,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-stdlib")
-                implementation("io.sentry.kmp:sentry-kmp:0.0.1")
+                implementation("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
             }
         }
         commonTest {

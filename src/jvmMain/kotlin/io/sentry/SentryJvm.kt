@@ -2,7 +2,7 @@ package io.sentry
 
 import io.sentry.core.Sentry as SentryJvm
 
-internal actual object SentryDelegate {
+internal actual object SentryBridge {
 
     actual fun captureMessage(msg: String) {
         SentryJvm.captureMessage(msg)

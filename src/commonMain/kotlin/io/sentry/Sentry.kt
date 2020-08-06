@@ -1,16 +1,16 @@
 package io.sentry
 
 object Sentry {
-    fun start(dsn: String) {
-        SentryDelegate.start(dsn)
+    fun init(dsn: String) {
+        SentryBridge.start(dsn)
     }
 
     fun captureMessage(msg: String) {
-        SentryDelegate.captureMessage(msg)
+        SentryBridge.captureMessage(msg)
     }
 
     fun captureException(throwable: Throwable) {
-        SentryDelegate.captureException(throwable)
+        SentryBridge.captureException(throwable)
     }
 
     /**
@@ -21,11 +21,14 @@ object Sentry {
     }
 
     fun close() {
-        SentryDelegate.close()
+        SentryBridge.close()
     }
 }
 
-internal expect object SentryDelegate {
+internal expect object SentryBridge {
+    /**
+     * We can't use init because of `init` is reserved in Objective-C and Swift.
+     */
     fun start(dsn: String)
 
     fun captureMessage(msg: String)
