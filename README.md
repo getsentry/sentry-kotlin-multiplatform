@@ -11,7 +11,7 @@ This SDK is a wrapper around different platforms as JVM, Android, Cocoa, and Jav
 
 ## Installation and Usage
 
-Clone or fork this repo. This SDK is not ready to be published on Maven therefore we only publish it to maven local for now:
+Clone or fork this repo. This SDK is under construction and therefore we only publish it to maven local:
 
 ```sh
 ./gradlew publishToMavenLocal
@@ -53,3 +53,19 @@ end
 ```
 
 Please make sure to specify the same version as used in this SDK. Otherwise weird bugs could happen.
+
+### Android
+
+The initialization of the Android SDK needs a context. ContextProvider takes care of passing resolving the context.
+Add the following to your Application class.
+
+```Kotlin
+class YourApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        ContextProvider.init { this }
+    }
+}
+```
