@@ -17,7 +17,6 @@ repositories {
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
 }
 
-
 group = "io.sentry.kotlin.multiplatform"
 version = "0.0.1"
 

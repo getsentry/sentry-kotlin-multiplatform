@@ -69,3 +69,8 @@ class YourApplication : Application() {
     }
 }
 ```
+
+### JavaScript
+
+Not implemented yet. Help appreciated.
+
