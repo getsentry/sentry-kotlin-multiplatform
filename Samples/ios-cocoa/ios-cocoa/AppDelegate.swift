@@ -8,7 +8,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         let sentry = Sentry()
-        sentry.start(dsn: "https://8ee5199a90354faf995292b15c196d48@o19635.ingest.sentry.io/4394")
+        sentry.doInit(dsn: "https://c3e288e338f346a99f0ac65956c2e24e@o19635.ingest.sentry.io/5381417")
         
         return true
     }

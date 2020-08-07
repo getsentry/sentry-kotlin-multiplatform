@@ -12,17 +12,21 @@ android {
     compileSdkVersion(28)
     defaultConfig {
         applicationId = "io.sentry.kotlin.mpp_app_android"
-        minSdkVersion(15)
+        minSdkVersion(16)
         targetSdkVersion(28)
         versionCode = 1
         versionName = "1.0"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("com.android.support:appcompat-v7:28.0.0")
-    implementation("com.android.support.constraint:constraint-layout:1.1.3")
+    implementation("androidx.appcompat:appcompat:1.2.0-rc02")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.0-rc1")
 }
 
 kotlin {

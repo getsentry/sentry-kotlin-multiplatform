@@ -18,7 +18,7 @@ fun hello(): String {
 
 class Proxy {
     init {
-        Sentry.init("https://8ee5199a90354faf995292b15c196d48@o19635.ingest.sentry.io/4394")
+        Sentry.init("https://c3e288e338f346a99f0ac65956c2e24e@o19635.ingest.sentry.io/5381417")
     }
 
     fun proxyHello() = hello()

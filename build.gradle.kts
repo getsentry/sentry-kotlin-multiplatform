@@ -1,21 +1,31 @@
 val kotlin_version: String by extra
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version "1.4.0-rc"
-    `maven-publish`
+    kotlin("multiplatform") version "1.4.0-rc"
+    id("com.android.library")
+    id("kotlin-android-extensions")
     id("org.jetbrains.kotlin.native.cocoapods") version "1.4.0-rc"
+    `maven-publish`
 }
+
 repositories {
-    mavenCentral()
+    gradlePluginPortal()
+    google()
     jcenter()
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
-    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
+    mavenCentral()
+    maven("https://dl.bintray.com/kotlin/kotlin-dev")
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
 }
+
 
 group = "io.sentry.kotlin.multiplatform"
 version = "0.0.1"
 
 kotlin {
+    android {
+        publishAllLibraryVariants()
+    }
+
     jvm()
     js {
         browser {
@@ -43,13 +53,20 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
             }
         }
+
+        val androidMain by getting {
+            dependencies {
+                implementation("io.sentry:sentry-android:2.3.0")
+                implementation("androidx.core:core-ktx:1.3.1")
+            }
+        }
+
         val jvmMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
                 implementation("io.sentry:sentry-core:2.3.0")
             }
         }
-
         val jvmTest by getting {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
@@ -79,6 +96,22 @@ kotlin {
             osx.deploymentTarget = "10.10"
             tvos.deploymentTarget = "9.0"
             watchos.deploymentTarget = "2.0"
+        }
+    }
+}
+
+android {
+    compileSdkVersion(28)
+    defaultConfig {
+        minSdkVersion(15)
+        targetSdkVersion(28)
+        versionCode = 1
+        versionName = "0.0.1"
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
         }
     }
 }
