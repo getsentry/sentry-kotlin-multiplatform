@@ -1,10 +1,10 @@
 val kotlin_version: String by extra
 
 plugins {
-    kotlin("multiplatform") version "1.4.0-rc"
+    kotlin("multiplatform") version "1.5.30-RC"
     id("com.android.library")
     id("kotlin-android-extensions")
-    id("org.jetbrains.kotlin.native.cocoapods") version "1.4.0-rc"
+    id("org.jetbrains.kotlin.native.cocoapods") version "1.5.30-RC"
     `maven-publish`
 }
 
