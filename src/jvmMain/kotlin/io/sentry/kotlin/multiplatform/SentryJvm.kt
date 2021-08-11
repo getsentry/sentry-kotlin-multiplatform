@@ -1,6 +1,6 @@
-package io.sentry
+package io.sentry.kotlin.multiplatform
 
-import io.sentry.core.Sentry as SentryJvm
+import io.sentry.Sentry as SentryJvm
 
 internal actual object SentryBridge {
 
@@ -10,7 +10,7 @@ internal actual object SentryBridge {
 
     actual fun start(dsn: String) {
         SentryJvm.init {
-            it.isDebug = true
+            it.setDebug(true)
             it.dsn = dsn
         }
     }

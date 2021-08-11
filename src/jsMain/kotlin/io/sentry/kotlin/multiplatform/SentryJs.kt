@@ -1,4 +1,4 @@
-package io.sentry
+package io.sentry.kotlin.multiplatform
 
 internal actual object SentryBridge {
     actual fun start(dsn: String) {

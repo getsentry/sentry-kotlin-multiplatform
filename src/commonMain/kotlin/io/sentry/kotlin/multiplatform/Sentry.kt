@@ -1,4 +1,4 @@
-package io.sentry
+package io.sentry.kotlin.multiplatform
 
 object Sentry {
     fun init(dsn: String) {

@@ -1,4 +1,4 @@
-package io.sentry
+package io.sentry.kotlin.multiplatform
 
 import platform.Foundation.*
 import cocoapods.Sentry.*
