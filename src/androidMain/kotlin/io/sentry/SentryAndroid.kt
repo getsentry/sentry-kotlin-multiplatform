@@ -2,7 +2,6 @@ package io.sentry
 
 import android.content.Context
 import io.sentry.android.core.SentryAndroid
-import io.sentry.core.Sentry
 
 internal actual object SentryBridge {
 
