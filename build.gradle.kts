@@ -10,6 +10,7 @@ plugins {
 repositories {
     gradlePluginPortal()
     mavenCentral()
+    google()
 }
 
 group = "io.sentry.kotlin.multiplatform"
@@ -29,6 +30,8 @@ android {
             isMinifyEnabled = false
         }
     }
+    // linking the manifest file manually due to having it in the "androidMain" source set
+    sourceSets.getByName("main").manifest.srcFile("src/androidMain/AndroidManifest.xml")
 }
 
 kotlin {
