@@ -2,8 +2,8 @@ val kotlin_version: String by extra
 
 plugins {
     kotlin("multiplatform") version "1.5.30-RC"
+    kotlin("native.cocoapods") version "1.5.30-RC"
     id("com.android.library")
-    id("org.jetbrains.kotlin.native.cocoapods") version "1.5.30-RC"
     `maven-publish`
 }
 
@@ -14,6 +14,22 @@ repositories {
 
 group = "io.sentry.kotlin.multiplatform"
 version = "0.0.1"
+
+android {
+    compileSdkVersion(30)
+    defaultConfig {
+        minSdkVersion(14)
+        targetSdkVersion(30)
+        versionCode = 1
+        versionName = "0.0.1"
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+    }
+}
 
 kotlin {
     android {
@@ -50,7 +66,7 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                implementation("io.sentry:sentry-core:5.0.1")
+                implementation("io.sentry:sentry:5.0.1")
             }
         }
         val jvmTest by getting {
@@ -83,20 +99,10 @@ kotlin {
             watchos.deploymentTarget = "2.0"
         }
     }
-}
 
-android {
-    compileSdkVersion(30)
-    defaultConfig {
-        minSdkVersion(14)
-        targetSdkVersion(30)
-        versionCode = 1
-        versionName = "0.0.1"
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
+    // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
+    // if we need to use this class, we'd need to find a better way to work it out
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().all {
+        compilations["main"].cinterops["Sentry"].extraOpts("-compiler-option", "-DSentryMechanismMeta=SentryMechanismMetaUnavailable")
     }
 }
