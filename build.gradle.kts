@@ -40,10 +40,14 @@ kotlin {
     }
 
     jvm()
-    js {
-        browser {
-        }
-        nodejs {
+    js(IR) {
+        browser()
+        nodejs()
+        compilations.all {
+            kotlinOptions {
+                moduleKind = "umd"
+                sourceMap = true
+            }
         }
     }
     ios()
@@ -93,7 +97,7 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-js")
+                implementation(npm("@sentry/browser", "6.11.0"))
             }
         }
         val jsTest by getting {
