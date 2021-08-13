@@ -10,6 +10,7 @@ plugins {
 repositories {
     gradlePluginPortal()
     mavenCentral()
+    google()
 }
 
 group = "io.sentry.kotlin.multiplatform"
@@ -29,6 +30,8 @@ android {
             isMinifyEnabled = false
         }
     }
+    // linking the manifest file manually due to having it in the "androidMain" source set
+    sourceSets.getByName("main").manifest.srcFile("src/androidMain/AndroidManifest.xml")
 }
 
 kotlin {
@@ -44,6 +47,9 @@ kotlin {
         }
     }
     ios()
+    watchos()
+    tvos()
+    macosX64()
 
     sourceSets {
         val commonMain by getting {
@@ -86,6 +92,12 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-test-js")
             }
         }
+
+        val appleMain by creating { dependsOn(commonMain) }
+        val iosMain by getting { dependsOn(appleMain) }
+        val tvosMain by getting { dependsOn(appleMain) }
+        val watchosMain by getting { dependsOn(appleMain) }
+        val macosX64Main by getting { dependsOn(appleMain) }
 
         cocoapods {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"

@@ -1,8 +1,8 @@
-package io.sentry
+package io.sentry.kotlin.multiplatform
 
 import android.content.Context
+import io.sentry.Sentry
 import io.sentry.android.core.SentryAndroid
-import io.sentry.core.Sentry
 
 internal actual object SentryBridge {
 
@@ -31,7 +31,7 @@ object ContextProvider {
     private lateinit var resolveContext: ()-> Context
 
     fun init(resolveContext: () -> Context) {
-        this.resolveContext = resolveContext
+        ContextProvider.resolveContext = resolveContext
     }
 
     fun getContext() : Context {

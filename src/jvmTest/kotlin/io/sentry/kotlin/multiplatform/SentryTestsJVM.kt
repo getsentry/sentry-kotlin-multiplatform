@@ -1,5 +1,6 @@
-package io.sentry
+package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.Sentry
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
