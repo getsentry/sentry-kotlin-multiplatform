@@ -114,8 +114,15 @@ kotlin {
         val macosX64Test by getting { dependsOn(appleTest) }
 
         cocoapods {
-            noPodspec()
+            summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
+            homepage = "https://github.com/getsentry/sentry-cocoa"
+
             pod("Sentry", "~> 7.1.4")
+
+            ios.deploymentTarget = "9.0"
+            osx.deploymentTarget = "10.10"
+            tvos.deploymentTarget = "9.0"
+            watchos.deploymentTarget = "2.0"
         }
     }
 

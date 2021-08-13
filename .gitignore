@@ -55,6 +55,7 @@ xcuserdata
 *.hmap
 *.ipa
 *.dSYM.zip
+*.podspec
 
 ## Playgrounds
 timeline.xctimeline
