@@ -5,10 +5,10 @@ import cocoapods.Sentry.*
 
 internal actual object SentryBridge {
     actual fun start(dsn: String) {
-        val options = SentryOptions()
-        options.dsn = dsn
-
-        SentrySDK.startWithOptionsObject(options)
+        SentrySDK.startWithConfigureOptions {
+            it!!.dsn = dsn
+            it.debug = true
+        }
     }
 
     actual fun captureMessage(msg: String) {

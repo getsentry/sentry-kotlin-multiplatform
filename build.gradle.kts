@@ -67,6 +67,16 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("io.sentry:sentry-android:5.0.1")
+                implementation("androidx.startup:startup-runtime:1.1.0")
+            }
+        }
+        val androidTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+                implementation("junit:junit:4.13.1")
+                implementation("androidx.test:core:1.4.0")
+                implementation("androidx.test.ext:junit:1.1.3")
+                implementation("org.robolectric:robolectric:4.5.1")
             }
         }
 
@@ -77,7 +87,6 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test")
                 implementation("org.jetbrains.kotlin:kotlin-test-junit")
             }
         }
@@ -94,21 +103,19 @@ kotlin {
         }
 
         val appleMain by creating { dependsOn(commonMain) }
+        val appleTest by creating { dependsOn(commonTest) }
         val iosMain by getting { dependsOn(appleMain) }
         val tvosMain by getting { dependsOn(appleMain) }
         val watchosMain by getting { dependsOn(appleMain) }
         val macosX64Main by getting { dependsOn(appleMain) }
+        val iosTest by getting { dependsOn(appleTest) }
+        val tvosTest by getting { dependsOn(appleTest) }
+        val watchosTest by getting { dependsOn(appleTest) }
+        val macosX64Test by getting { dependsOn(appleTest) }
 
         cocoapods {
-            summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
-            homepage = "https://github.com/getsentry/sentry-cocoa"
-
+            noPodspec()
             pod("Sentry", "~> 7.1.4")
-
-            ios.deploymentTarget = "9.0"
-            osx.deploymentTarget = "10.10"
-            tvos.deploymentTarget = "9.0"
-            watchos.deploymentTarget = "2.0"
         }
     }
 

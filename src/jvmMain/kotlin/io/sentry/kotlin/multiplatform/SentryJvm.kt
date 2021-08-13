@@ -9,8 +9,7 @@ internal actual object SentryBridge {
     }
 
     actual fun start(dsn: String) {
-        SentryJvm.init {
-            it.setDebug(true)
+        SentryJvm.init() {
             it.dsn = dsn
         }
     }
@@ -22,5 +21,4 @@ internal actual object SentryBridge {
     actual fun close() {
         SentryJvm.close()
     }
-
 }
