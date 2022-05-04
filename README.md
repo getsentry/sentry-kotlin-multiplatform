@@ -1,10 +1,14 @@
 <p align="center">
-    <a href="https://sentry.io" target="_blank" align="center">
-        <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" width="280">
-    </a>
-<br/>
-    <h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
+  <a href="https://sentry.io/?utm_source=github&utm_medium=logo" target="_blank">
+    <picture>
+      <source srcset="https://sentry-brand.storage.googleapis.com/sentry-logo-white.png" media="(prefers-color-scheme: dark)" />
+      <source srcset="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)" />
+      <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" alt="Sentry" width="280">
+    </picture>
+  </a>
 </p>
+
+<h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
 
 This project is an experimental SDK for Kotlin Multiplatform. It was built during Hackweek and is not finished.
 This SDK is a wrapper around different platforms as JVM, Android, Cocoa, and JavaScript, that can be used on Kotlin Multiplatform.
