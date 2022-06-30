@@ -30,24 +30,3 @@ dependencies {
 }
 
 ```
-
-### Android
-
-The initialization of the Android SDK needs a context. ContextProvider takes care of passing resolving the context.
-Add the following to your Application class.
-
-```Kotlin
-class YourApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        ContextProvider.init { this }
-    }
-}
-```
-
-### JavaScript
-
-Not implemented yet. Help appreciated.
-
