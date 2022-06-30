@@ -39,10 +39,14 @@ kotlin {
     }
 
     jvm()
+
+    /*
     ios()
     watchos()
     tvos()
     macosX64()
+
+     */
 
     sourceSets {
         val commonMain by getting {
@@ -69,12 +73,13 @@ kotlin {
             }
         }
 
+        /*
         val appleMain by creating { dependsOn(commonMain) }
         val iosMain by getting { dependsOn(appleMain) }
         val tvosMain by getting { dependsOn(appleMain) }
         val watchosMain by getting { dependsOn(appleMain) }
         val macosX64Main by getting { dependsOn(appleMain) }
-
+*/
     }
 
 }
