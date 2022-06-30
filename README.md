@@ -6,7 +6,7 @@
     <h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
 </p>
 
-This project is an experimental SDK for Kotlin Multiplatform. It was built during Hackweek and is not finished.
+This project is an experimental SDK for Kotlin Multiplatform.
 This SDK is a wrapper around different platforms as JVM, Android, Cocoa, and JavaScript, that can be used on Kotlin Multiplatform.
 
 ## Installation and Usage
