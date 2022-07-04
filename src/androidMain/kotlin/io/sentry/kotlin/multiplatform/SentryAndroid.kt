@@ -6,12 +6,12 @@ import io.sentry.android.core.SentryAndroid
 
 internal actual object SentryBridge {
 
-    actual fun captureMessage(msg: String) {
-        Sentry.captureMessage(msg)
+    actual fun captureMessage(message: String) {
+        Sentry.captureMessage(message)
     }
 
-    actual fun start(dsn: String) {
-        SentryAndroid.init(ContextProvider.getContext()) { options ->
+    actual fun start(dsn: String, context: Any?) {
+        SentryAndroid.init(context as Context) { options ->
             options.dsn = dsn
             options.isAttachStacktrace = true
             options.isAttachThreads = true
@@ -24,18 +24,6 @@ internal actual object SentryBridge {
 
     actual fun close() {
         Sentry.close()
-    }
-}
-
-object ContextProvider {
-    private lateinit var resolveContext: ()-> Context
-
-    fun init(resolveContext: () -> Context) {
-        ContextProvider.resolveContext = resolveContext
-    }
-
-    fun getContext() : Context {
-        return resolveContext()
     }
 }
 

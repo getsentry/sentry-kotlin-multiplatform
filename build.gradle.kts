@@ -18,7 +18,7 @@ version = "0.0.1"
 android {
     compileSdkVersion(30)
     defaultConfig {
-        minSdkVersion(14)
+        minSdkVersion(16)
         targetSdkVersion(30)
         versionCode = 1
         versionName = "0.0.1"

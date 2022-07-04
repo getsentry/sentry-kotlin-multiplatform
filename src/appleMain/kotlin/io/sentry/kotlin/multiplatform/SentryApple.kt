@@ -11,8 +11,8 @@ internal actual object SentryBridge {
         SentrySDK.startWithOptionsObject(options)
     }
 
-    actual fun captureMessage(msg: String) {
-        SentrySDK.captureMessage(msg)
+    actual fun captureMessage(message: String) {
+        SentrySDK.captureMessage(message)
     }
 
     actual fun captureException(throwable: Throwable) {
