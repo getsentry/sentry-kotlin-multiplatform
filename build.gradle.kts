@@ -2,6 +2,7 @@ val kotlin_version: String by extra
 
 plugins {
     kotlin("multiplatform") version "1.7.0"
+    kotlin("native.cocoapods") version "1.7.0"
     id("com.android.library")
     `maven-publish`
 }
@@ -39,13 +40,13 @@ kotlin {
     }
 
     jvm()
+    ios()
+    iosSimulatorArm64()
 
     /*
-    ios()
     watchos()
     tvos()
     macosX64()
-
      */
 
     sourceSets {
@@ -72,6 +73,21 @@ kotlin {
                 implementation("io.sentry:sentry:6.1.4")
             }
         }
+        val appleMain by creating { dependsOn(commonMain) }
+        val iosMain by getting { dependsOn(appleMain) }
+        val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
+
+        cocoapods {
+            summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
+            homepage = "https://github.com/getsentry/sentry-cocoa"
+
+            pod("Sentry", "~> 7.19.0")
+
+            ios.deploymentTarget = "9.0"
+            // osx.deploymentTarget = "10.10"
+            // tvos.deploymentTarget = "9.0"
+            // watchos.deploymentTarget = "2.0"
+        }
 
         /*
         val appleMain by creating { dependsOn(commonMain) }
@@ -82,4 +98,10 @@ kotlin {
 */
     }
 
+    // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
+    // if we need to use this class, we'd need to find a better way to work it out
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().all {
+        compilations["main"].cinterops["Sentry"].extraOpts("-compiler-option", "-DSentryMechanismMeta=SentryMechanismMetaUnavailable")
+    }
 }
+

@@ -3,18 +3,18 @@ package io.sentry.kotlin.multiplatform
 import android.content.Context
 import io.sentry.Sentry
 import io.sentry.android.core.SentryAndroid
+import io.sentry.android.core.SentryAndroidOptions
 
 internal actual object SentryBridge {
-
     actual fun captureMessage(message: String) {
         Sentry.captureMessage(message)
     }
 
-    actual fun start(dsn: String, context: Any?) {
-        SentryAndroid.init(context as Context) { options ->
-            options.dsn = dsn
-            options.isAttachStacktrace = true
-            options.isAttachThreads = true
+    actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
+        val options = SentryKMPOptions()
+        configuration.configure(options)
+        if (context is Context) {
+            SentryAndroid.init(context, convertToSentryAndroidOptions(options))
         }
     }
 
@@ -24,6 +24,14 @@ internal actual object SentryBridge {
 
     actual fun close() {
         Sentry.close()
+    }
+
+    private fun convertToSentryAndroidOptions(options: SentryKMPOptions): (SentryAndroidOptions) -> Unit {
+        return { sentryAndroidOptions ->
+            sentryAndroidOptions.dsn = options.dsn
+            sentryAndroidOptions.isAttachThreads = options.attachThreads
+            sentryAndroidOptions.isAttachStacktrace = options.attachStackTrace
+        }
     }
 }
 
