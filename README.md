@@ -7,26 +7,4 @@
 </p>
 
 This project is an experimental SDK for Kotlin Multiplatform.
-This SDK is a wrapper around different platforms as JVM, Android, Cocoa, and JavaScript, that can be used on Kotlin Multiplatform.
-
-## Installation and Usage
-
-Clone or fork this repo. This SDK is under construction and therefore we only publish it to maven local:
-
-```sh
-./gradlew publishToMavenLocal
-```
-
-Add this to your Gradle
-
-```gradle
-repositories {
-  // Because we only publish to maven local
-  mavenLocal()
-}
-
-dependencies {
-  implementation("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
-}
-
-```
+This SDK is a wrapper around different platforms such as JVM, Android, Cocoa that can be used on Kotlin Multiplatform.

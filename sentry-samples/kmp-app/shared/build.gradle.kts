@@ -22,14 +22,14 @@ kotlin {
 
         framework {
             baseName = "shared"
-            export("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
+            export(project(":sentry-kotlin-multiplatform"))
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
+                api(project(":sentry-kotlin-multiplatform"))
             }
         }
         val commonTest by getting {
