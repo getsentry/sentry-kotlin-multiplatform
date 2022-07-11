@@ -43,6 +43,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UILaunchScreen</key>
-	<dict/>
+    <dict/>
 </dict>
 </plist>
