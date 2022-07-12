@@ -1,36 +1,38 @@
 <p align="center">
-  <a href="https://sentry.io/?utm_source=github&utm_medium=logo" target="_blank">
-    <picture>
-      <source srcset="https://sentry-brand.storage.googleapis.com/sentry-logo-white.png" media="(prefers-color-scheme: dark)" />
-      <source srcset="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)" />
-      <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" alt="Sentry" width="280">
-    </picture>
-  </a>
+    <a href="https://sentry.io" target="_blank" align="center">
+        <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" width="280">
+    </a>
+<br/>
+    <h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
 </p>
 
-<h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
+This project is an experimental SDK for Kotlin Multiplatform.
+This SDK is a wrapper around different platforms such as JVM, Android, Cocoa that can be used on Kotlin Multiplatform.
 
-This project is an experimental SDK for Kotlin Multiplatform. It was built during Hackweek and is not finished.
-This SDK is a wrapper around different platforms as JVM, Android, Cocoa, and JavaScript, that can be used on Kotlin Multiplatform.
+## Installation
 
-## Installation and Usage
-
-Clone or fork this repo. This SDK is under construction and therefore we only publish it to maven local:
+Clone or fork this repo. This SDK is under construction and therefore we only currently publish it to maven local:
 
 ```sh
 ./gradlew publishToMavenLocal
 ```
 
-Add this to your Gradle
+### Shared Module
+In your `build.gradle` of your shared module
 
 ```gradle
 repositories {
   // Because we only publish to maven local
   mavenLocal()
 }
+```
 
+Add this to your `commonMain` sourceSet.
+
+```gradle
+// Add this dependency to your commonMain sourceSet
 dependencies {
-  implementation("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
+  api("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
 }
 
 ```
@@ -38,43 +40,50 @@ dependencies {
 ### Cocoa
 
 For iOS, iPadOS, MacOS, tvOS or watchOS we use CocoaPods to include [sentry-cocoa](https://github.com/getsentry/sentry-cocoa) into this SDK.
-The infrastracture of Kotlin [can't resolve CocoaPods](https://kotlinlang.org/docs/reference/native/cocoapods.html#current-limitations) yet.
-Hence, when publishing and including this SDK via Maven we a different solution to package Sentry into our apps.
+One way to achieve this is to include the Sentry Cocoa SDK via the Kotlin CocoaPods extension.
 
-One way to achieve this is to include the Kotlin Multiplatform library via CocoaPods into your Xcode project and also add Sentry to the Podfile. This way CocoaPods and Xcode take care of packaging Sentry into your app.
-First, you need to install [CocoaPods and the Gradle Plugin](https://github.com/JetBrains/kotlin-native/blob/master/COCOAPODS.md#install-the-cocoapods-dependency-manager-and-plugin).
-Next [integrate the Kotlin Gradle project as a CocoaPods dependency](https://github.com/JetBrains/kotlin-native/blob/master/COCOAPODS.md#use-a-kotlin-gradle-project-as-a-cocoapods-dependency).
-Finally, also add Sentry as a CocoaPods dependency. Your Podfile should look something like this:
+```gradle
+cocoapods {
+  // ...
+  
+  // Make sure this is the same version as the one used in the SDK
+  pod("Sentry", "~> 7.19.0")
 
-```ruby
-target 'iosApp' do
-  use_frameworks!
-  platform :ios, '13.5'
-  # Pods for iosApp
-  pod 'kotlin_library', :path => '../kotlin-library'
-  pod 'Sentry', '~> 5.2.0' # Same version as in this SDK
-end
-```
+  framework {
+    baseName = "shared"
 
-Please make sure to specify the same version as used in this SDK. Otherwise weird bugs could happen.
-
-### Android
-
-The initialization of the Android SDK needs a context. ContextProvider takes care of passing resolving the context.
-Add the following to your Application class.
-
-```Kotlin
-class YourApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        ContextProvider.init { this }
-    }
+    // Export the SDK in order to be able to access it directly in the iOS project
+    export("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
+  }
 }
 ```
 
-### JavaScript
+## Initialization
 
-Not implemented yet. Help appreciated.
+Remember to execute the initialization as early in your application life cycle as possible.
 
+### Android
+
+```Kotlin
+class YourApplication : Application() {
+  override fun onCreate() {
+    super.onCreate()
+      SentryKMP.start(this) {
+        it.dsn = "___DSN___"
+      }
+   }
+}
+```
+
+### iOS
+Ideally you will call this in `applicationDidFinishLaunching` in AppDelegate or in `init` in your SwiftUI App
+
+```Swift
+import shared
+
+// ...
+
+SentryKMP().start { options in 
+  options.dsn = "___DSN___"
+}
+```
