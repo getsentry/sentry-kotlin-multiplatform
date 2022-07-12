@@ -11,7 +11,7 @@ repositories {
     google()
 }
 
-group = "io.sentry.kotlin.multiplatform"
+group = "io.sentry"
 version = "0.0.1"
 
 android {
