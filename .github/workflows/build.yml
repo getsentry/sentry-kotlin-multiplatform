@@ -1,0 +1,46 @@
+name: "Build"
+on:
+    push:
+      branches:
+        - main
+    pull_request:
+
+jobs:
+  build:
+    name: Build Job ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        java: ["11"]
+    
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+      
+      - name: "Set up Java: ${{ matrix.java }}"
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: "adopt"
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Clean, build
+      - name: Make all
+        run: make all
+
+      # We stop gradle at the end to make sure the cache folders
+      # don't contain any lock files and are free to be cached.
+      - name: Make stop
+        run: make stop
