@@ -17,7 +17,7 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable) {
-        val exception = NSException("", throwable.message, null)
+        val exception = NSException(throwable::class.simpleName, throwable.message, null)
         SentrySDK.captureException(exception)
     }
 
