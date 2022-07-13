@@ -13,5 +13,9 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
+        mavenLocal()
+        google()
     }
+    group = "io.sentry.kotlin.multiplatform"
+    version = properties["versionName"].toString()
 }

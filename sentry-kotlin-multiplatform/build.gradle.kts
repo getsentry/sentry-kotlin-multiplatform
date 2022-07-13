@@ -5,21 +5,11 @@ plugins {
     `maven-publish`
 }
 
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    google()
-}
-
-group = "io.sentry"
-version = "0.0.1"
-
 android {
     compileSdk = 30
     defaultConfig {
         minSdk = 16
         targetSdk = 30
-        version = "0.0.1"
     }
 
     buildTypes {
