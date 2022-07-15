@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -59,20 +61,47 @@ kotlin {
             }
         }
 
+        val jvmMain by getting {
+            dependencies {
+                implementation("io.sentry:sentry:6.1.4")
+            }
+        }
+        val jvmTest by getting {
+            dependsOn(commonTest)
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+            }
+        }
+
         val androidMain by getting {
             dependencies {
                 implementation("io.sentry:sentry-android:6.1.4")
             }
         }
 
-        val jvmMain by getting {
+        val androidTest by getting {
+            dependsOn(commonTest)
             dependencies {
-                implementation("io.sentry:sentry:6.1.4")
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+                implementation("junit:junit:4.13.1")
+                implementation("androidx.test:core:1.4.0")
+                implementation("androidx.test.ext:junit:1.1.3")
+                implementation("org.robolectric:robolectric:4.5.1")
             }
         }
+
         val appleMain by creating { dependsOn(commonMain) }
+        val appleTest by creating {
+            dependsOn(commonTest)
+        }
+
         val iosMain by getting { dependsOn(appleMain) }
+        val iosTest by getting {
+            dependsOn(appleTest)
+        }
+
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
+        val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
 
         cocoapods {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
@@ -97,8 +126,10 @@ kotlin {
 
     // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
     // if we need to use this class, we'd need to find a better way to work it out
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().all {
-        compilations["main"].cinterops["Sentry"].extraOpts("-compiler-option", "-DSentryMechanismMeta=SentryMechanismMetaUnavailable")
+    targets.withType<KotlinNativeTarget>().all {
+        compilations["main"].cinterops["Sentry"].extraOpts(
+            "-compiler-option",
+            "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
+        )
     }
 }
-
