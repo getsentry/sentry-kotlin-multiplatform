@@ -11,7 +11,6 @@ class SentryTests: BaseSentryTest() {
     fun init() {
         SentryKMP.start(context) {
             it.dsn = dsn
-            it.debug = true
         }
     }
 
