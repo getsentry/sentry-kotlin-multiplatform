@@ -11,13 +11,15 @@ internal actual object SentryBridge {
         SentrySDK.startWithOptionsObject(convertToSentryAppleOptions(options))
     }
 
-    actual fun captureMessage(message: String) {
-        SentrySDK.captureMessage(message)
+    actual fun captureMessage(message: String): SentryId {
+        val eventId = SentrySDK.captureMessage(message)
+        return SentryId(eventId.sentryIdString)
     }
 
-    actual fun captureException(throwable: Throwable) {
+    actual fun captureException(throwable: Throwable): SentryId {
         val exception = NSException("", throwable.message, null)
-        SentrySDK.captureException(exception)
+        val eventId = SentrySDK.captureException(exception)
+        return SentryId(eventId.sentryIdString)
     }
 
     actual fun close() {
