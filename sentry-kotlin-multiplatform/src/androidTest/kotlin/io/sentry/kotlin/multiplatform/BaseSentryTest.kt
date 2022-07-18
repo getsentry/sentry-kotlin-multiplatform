@@ -8,8 +8,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(manifest = Config.NONE, sdk = [28])
 actual abstract class BaseSentryTest {
-    val context: Any? = InstrumentationRegistry.getInstrumentation().targetContext
+    actual val context: Any? = InstrumentationRegistry.getInstrumentation().targetContext
 
-    val platform: String = "Android"
-
+    actual val platform: String = "Android"
 }

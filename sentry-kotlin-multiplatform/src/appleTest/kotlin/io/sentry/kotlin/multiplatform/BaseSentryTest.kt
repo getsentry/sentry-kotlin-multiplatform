@@ -1,8 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 actual abstract class BaseSentryTest {
-    val context: Any? = null
+    actual val context: Any? = null
 
-    val platform: String = "Apple"
-
+    actual val platform: String = "Apple"
 }

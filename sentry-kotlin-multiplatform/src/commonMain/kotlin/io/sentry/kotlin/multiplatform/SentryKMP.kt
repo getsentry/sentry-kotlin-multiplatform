@@ -26,8 +26,8 @@ object SentryKMP {
      *
      * @param message The message to send.
      */
-    fun captureMessage(message: String) {
-        SentryBridge.captureMessage(message)
+    fun captureMessage(message: String): SentryId {
+        return SentryBridge.captureMessage(message)
     }
 
     /**
@@ -35,8 +35,8 @@ object SentryKMP {
      *
      * @param throwable The exception.
      */
-    fun captureException(throwable: Throwable) {
-        SentryBridge.captureException(throwable)
+    fun captureException(throwable: Throwable): SentryId {
+        return SentryBridge.captureException(throwable)
     }
 
     /**
@@ -53,6 +53,7 @@ object SentryKMP {
         SentryBridge.close()
     }
 }
+
 
 fun interface OptionsConfiguration<T: SentryKMPOptions> {
     fun configure(options: T)
