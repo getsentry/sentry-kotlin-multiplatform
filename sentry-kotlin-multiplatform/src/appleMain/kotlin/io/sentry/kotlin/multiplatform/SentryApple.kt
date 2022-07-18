@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
+import platform.Foundation.NSError
 import platform.Foundation.NSException
 
 internal actual object SentryBridge {
@@ -16,7 +17,7 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable) {
-        val exception = NSException("", throwable.message, null)
+        val exception = NSException(throwable::class.simpleName, throwable.message, null)
         SentrySDK.captureException(exception)
     }
 
@@ -30,4 +31,12 @@ internal actual object SentryBridge {
         sentryAppleOptions.attachStacktrace = options.attachStackTrace
         return sentryAppleOptions
     }
+}
+
+fun SentryKMP.captureError(error: NSError) {
+    SentrySDK.captureError(error)
+}
+
+fun SentryKMP.captureException(exception: NSException) {
+    SentrySDK.captureException(exception)
 }
