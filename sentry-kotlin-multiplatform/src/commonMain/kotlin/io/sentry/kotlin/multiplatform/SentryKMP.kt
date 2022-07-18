@@ -25,6 +25,7 @@ object SentryKMP {
      * Captures the message.
      *
      * @param message The message to send.
+     * @return The Id (SentryId object) of the event.
      */
     fun captureMessage(message: String): SentryId {
         return SentryBridge.captureMessage(message)
@@ -34,6 +35,7 @@ object SentryKMP {
      * Captures the exception.
      *
      * @param throwable The exception.
+     * @return The Id (SentryId object) of the event.
      */
     fun captureException(throwable: Throwable): SentryId {
         return SentryBridge.captureException(throwable)
