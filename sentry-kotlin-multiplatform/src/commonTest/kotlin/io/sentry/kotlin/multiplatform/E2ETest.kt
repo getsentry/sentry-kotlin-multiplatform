@@ -80,9 +80,3 @@ class SentryTests : BaseSentryTest() {
         SentryKMP.close()
     }
 }
-
-expect abstract class BaseSentryTest() {
-    val context: Any?
-    val platform: String
-    fun authToken(): String
-}
