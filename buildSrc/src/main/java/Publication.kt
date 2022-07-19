@@ -49,13 +49,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
             include("sentry-kotlin-multiplatform-iosx64*")
         }
     }
-    this.maybeCreate("iosSimulatorArm64").contents {
-        from("build${sep}publications${sep}iosSimulatorArm64")
-        from("build${sep}libs${sep}iosSimulatorArm64")
-        from("build${sep}libs${sep}") {
-            include("sentry-kotlin-multiplatform-iossimulatorarm64*")
-        }
-    }
 
     // make other distZip tasks run together with the main distZip
     val platformDists = project.tasks.filter { task ->
