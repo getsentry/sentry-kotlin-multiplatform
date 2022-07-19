@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
+    kotlin("plugin.serialization") version "1.7.10"
     id("com.android.library")
     `maven-publish`
 }
@@ -56,8 +57,12 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 implementation("org.jetbrains.kotlin:kotlin-test-common")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
+                implementation("io.ktor:ktor-client-serialization:2.0.3")
+                implementation("io.ktor:ktor-client-core:2.0.3")
             }
         }
 
@@ -78,7 +83,6 @@ kotlin {
                 implementation("io.sentry:sentry-android:6.1.4")
             }
         }
-
         val androidTest by getting {
             dependsOn(commonTest)
             dependencies {
@@ -87,12 +91,16 @@ kotlin {
                 implementation("androidx.test:core:1.4.0")
                 implementation("androidx.test.ext:junit:1.1.3")
                 implementation("org.robolectric:robolectric:4.5.1")
+                implementation("io.ktor:ktor-client-okhttp:2.0.3")
             }
         }
 
         val appleMain by creating { dependsOn(commonMain) }
         val appleTest by creating {
             dependsOn(commonTest)
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:2.0.3")
+            }
         }
 
         val iosMain by getting { dependsOn(appleMain) }

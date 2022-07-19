@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
-import platform.Foundation.NSException
+import platform.Foundation.*
 
 internal actual object SentryBridge {
     actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
