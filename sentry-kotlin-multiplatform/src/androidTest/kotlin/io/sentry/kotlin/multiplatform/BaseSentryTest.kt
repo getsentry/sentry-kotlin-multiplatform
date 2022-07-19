@@ -11,4 +11,8 @@ actual abstract class BaseSentryTest {
     actual val context: Any? = InstrumentationRegistry.getInstrumentation().targetContext
 
     actual val platform: String = "Android"
+
+    actual fun authToken(): String {
+        return System.getenv("SENTRY_AUTH_TOKEN")
+    }
 }
