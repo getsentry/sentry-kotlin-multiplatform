@@ -22,5 +22,6 @@ class PlatformTest : BaseSentryTest() {
             // this can be further extended
             assertEquals(it.debug, false)
         }
+        SentryKMP.close()
     }
 }
