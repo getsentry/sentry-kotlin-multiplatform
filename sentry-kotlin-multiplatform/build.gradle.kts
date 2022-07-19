@@ -63,7 +63,11 @@ kotlin {
         val appleMain by creating { dependsOn(commonMain) }
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
-
+        /*
+        val tvosMain by getting { dependsOn(appleMain) }
+        val watchosMain by getting { dependsOn(appleMain) }
+        val macosX64Main by getting { dependsOn(appleMain) }
+        */
         cocoapods {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
             homepage = "https://github.com/getsentry/sentry-cocoa"
@@ -75,14 +79,6 @@ kotlin {
             // tvos.deploymentTarget = "9.0"
             // watchos.deploymentTarget = "2.0"
         }
-
-        /*
-        val appleMain by creating { dependsOn(commonMain) }
-        val iosMain by getting { dependsOn(appleMain) }
-        val tvosMain by getting { dependsOn(appleMain) }
-        val watchosMain by getting { dependsOn(appleMain) }
-        val macosX64Main by getting { dependsOn(appleMain) }
-*/
     }
 
     // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
