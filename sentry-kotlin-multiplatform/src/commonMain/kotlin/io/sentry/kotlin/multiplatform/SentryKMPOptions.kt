@@ -4,4 +4,5 @@ open class SentryKMPOptions {
     var dsn: String? = null
     var attachStackTrace = true
     var attachThreads = true
+    var debug = false
 }
