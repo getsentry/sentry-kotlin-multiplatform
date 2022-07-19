@@ -33,6 +33,7 @@ internal actual object SentryBridge {
             sentryAndroidOptions.dsn = options.dsn
             sentryAndroidOptions.isAttachThreads = options.attachThreads
             sentryAndroidOptions.isAttachStacktrace = options.attachStackTrace
+            sentryAndroidOptions.isDebug = options.debug
         }
     }
 }
