@@ -19,7 +19,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         from("build${sep}libs") {
             include("*android*")
-            exclude("*debug*")
         }
     }
     this.getByName("main").contents {
