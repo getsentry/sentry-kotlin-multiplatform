@@ -16,6 +16,6 @@ allprojects {
         mavenLocal()
         google()
     }
-    group = "io.sentry.kotlin.multiplatform"
+    group = "io.sentry"
     version = properties["versionName"].toString()
 }

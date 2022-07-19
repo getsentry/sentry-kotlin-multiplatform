@@ -14,4 +14,8 @@ targets:
   - name: github
   - name: registry
     sdks:
-      maven:io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:
+      maven:io.sentry:sentry-kotlin-multiplatform:
+      maven:sentry-kotlin-multiplatform-android:
+      maven:sentry-kotlin-multiplatform-iosarm64:
+      maven:sentry-kotlin-multiplatform-iosx64:
+      maven:sentry-kotlin-multiplatform-jvm:
