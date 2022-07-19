@@ -16,13 +16,13 @@ import kotlin.test.assertEquals
 @Serializable
 data class Event(val id: String)
 
-class SentryTests : BaseSentryTest() {
+class E2ETest : BaseSentryTest() {
     private val dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
     private val retryCount = 10
     private val retryInterval: Long = 15000
     private val client = HttpClient()
 
-    suspend fun fetchEvent(eventId: String): String {
+    private suspend fun fetchEvent(eventId: String): String {
         val url = "https://sentry.io/api/0/projects/sentry-sdks/sentry-kotlin-multiplatform/events/${eventId}/"
         val response = client.get(url) {
             headers {
@@ -35,7 +35,7 @@ class SentryTests : BaseSentryTest() {
         return response.bodyAsText()
     }
 
-    suspend fun waitForEventRetrieval(eventId: String): Event {
+    private suspend fun waitForEventRetrieval(eventId: String): Event {
         var json = ""
         var count = retryCount
         while (json.isEmpty() && count > 0) {
