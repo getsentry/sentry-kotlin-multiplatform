@@ -75,6 +75,7 @@ kotlin {
             dependsOn(commonTest)
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-junit")
+                implementation("io.ktor:ktor-client-okhttp:2.0.3")
             }
         }
 
