@@ -31,6 +31,7 @@ internal actual object SentryBridge {
         val sentryAppleOptions = SentryOptions()
         sentryAppleOptions.dsn = options.dsn
         sentryAppleOptions.attachStacktrace = options.attachStackTrace
+        sentryAppleOptions.debug = options.debug
         return sentryAppleOptions
     }
 }
