@@ -43,7 +43,7 @@ class SentryTests : BaseSentryTest() {
     }
 
     @Test
-    fun captureMessage() {
+    fun `capture message and persist it in the sentry project`() {
         runBlocking {
             if (platform != "Apple" && platform != "JVM") {
                 val eventId = SentryKMP.captureMessage("Test running on $platform")
@@ -59,7 +59,7 @@ class SentryTests : BaseSentryTest() {
     }
 
     @Test
-    fun captureException() {
+    fun `capture exception and persist it in the sentry project`() {
         runBlocking {
             if (platform != "Apple" && platform != "JVM") {
                 val eventId = SentryKMP.captureException(IllegalArgumentException("Test exception on platform $platform"))

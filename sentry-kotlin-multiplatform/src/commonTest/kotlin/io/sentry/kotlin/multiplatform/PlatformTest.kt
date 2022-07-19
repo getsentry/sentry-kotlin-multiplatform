@@ -7,7 +7,7 @@ class PlatformTest : BaseSentryTest() {
     private val fakeDsn = "https://abc@def.ingest.sentry.io/1234567"
 
     @Test
-    fun `platforms should initialize`() {
+    fun `initialize platforms`() {
         SentryKMP.start(context) {
             it.dsn = fakeDsn
         }
@@ -15,7 +15,7 @@ class PlatformTest : BaseSentryTest() {
     }
 
     @Test
-    fun `test that initial values are set correctly`() {
+    fun `initial values are set correctly`() {
         SentryKMP.start(context) {
             it.dsn = fakeDsn
 
