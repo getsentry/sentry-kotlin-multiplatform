@@ -13,13 +13,13 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private const val dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
-
 @Serializable
 data class Event(val id: String)
 
 class SentryTests : BaseSentryTest() {
-
+    private val dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
+    private val retryCount = 10
+    private val retryInterval: Long = 15000
     private val client = HttpClient()
 
     suspend fun fetchEvent(eventId: String): String {
@@ -35,6 +35,17 @@ class SentryTests : BaseSentryTest() {
         return response.bodyAsText()
     }
 
+    suspend fun waitForEventRetrieval(eventId: String): Event {
+        var json = ""
+        var count = retryCount
+        while (json.isEmpty() && count > 0) {
+            delay(retryInterval)
+            json = fetchEvent(eventId)
+            count -= 1
+        }
+        return Json { ignoreUnknownKeys = true }.decodeFromString(json)
+    }
+
     @BeforeTest
     fun init() {
         SentryKMP.start(context) {
@@ -47,12 +58,7 @@ class SentryTests : BaseSentryTest() {
         runBlocking {
             if (platform != "Apple" && platform != "JVM") {
                 val eventId = SentryKMP.captureMessage("Test running on $platform")
-
-                // Delay makes sure that the event has already persisted on sentry.io
-                delay(15000)
-
-                val json = fetchEvent(eventId.toString())
-                val result = Json { ignoreUnknownKeys = true }.decodeFromString<Event>(json)
+                val result = waitForEventRetrieval(eventId.toString())
                 assertEquals(result.id, eventId.toString())
             }
         }
@@ -63,13 +69,7 @@ class SentryTests : BaseSentryTest() {
         runBlocking {
             if (platform != "Apple" && platform != "JVM") {
                 val eventId = SentryKMP.captureException(IllegalArgumentException("Test exception on platform $platform"))
-
-                // Delay makes sure that the event has already persisted on sentry.io
-                delay(15000)
-
-                val json = fetchEvent(eventId.toString())
-                val result = Json { ignoreUnknownKeys = true }.decodeFromString<Event>(json)
-
+                val result = waitForEventRetrieval(eventId.toString())
                 assertEquals(result.id, eventId.toString())
             }
         }
