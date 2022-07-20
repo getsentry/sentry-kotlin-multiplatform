@@ -1,0 +1,21 @@
+minVersion: 0.33.2
+changelogPolicy: auto
+targets:
+  - name: maven
+    gradleCliPath: ./gradlew
+    mavenCliPath: scripts/mvnw
+    mavenSettingsPath: scripts/settings.xml
+    mavenRepoId: ossrh
+    mavenRepoUrl: https://oss.sonatype.org/service/local/staging/deploy/maven2/
+    android:
+      distDirRegex: /^(sentry-android-|.*-android).*$/
+      fileReplaceeRegex: /\d\.\d\.\d(-\w+(\.\d)?)?(-SNAPSHOT)?/
+      fileReplacerStr: release.aar
+  - name: github
+  - name: registry
+    sdks:
+      maven:io.sentry:sentry-kotlin-multiplatform:
+      maven:io.sentry:sentry-kotlin-multiplatform-android:
+      maven:io.sentry:sentry-kotlin-multiplatform-iosarm64:
+      maven:io.sentry:sentry-kotlin-multiplatform-iosx64:
+      maven:io.sentry:sentry-kotlin-multiplatform-jvm:

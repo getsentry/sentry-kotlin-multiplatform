@@ -8,21 +8,11 @@ plugins {
     `maven-publish`
 }
 
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    google()
-}
-
-group = "io.sentry.kotlin.multiplatform"
-version = "0.0.1"
-
 android {
     compileSdk = 30
     defaultConfig {
         minSdk = 16
         targetSdk = 30
-        version = "0.0.1"
     }
 
     buildTypes {
@@ -111,7 +101,11 @@ kotlin {
 
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
-
+        /*
+        val tvosMain by getting { dependsOn(appleMain) }
+        val watchosMain by getting { dependsOn(appleMain) }
+        val macosX64Main by getting { dependsOn(appleMain) }
+        */
         cocoapods {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
             homepage = "https://github.com/getsentry/sentry-cocoa"
@@ -123,14 +117,6 @@ kotlin {
             // tvos.deploymentTarget = "9.0"
             // watchos.deploymentTarget = "2.0"
         }
-
-        /*
-        val appleMain by creating { dependsOn(commonMain) }
-        val iosMain by getting { dependsOn(appleMain) }
-        val tvosMain by getting { dependsOn(appleMain) }
-        val watchosMain by getting { dependsOn(appleMain) }
-        val macosX64Main by getting { dependsOn(appleMain) }
-*/
     }
 
     // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
