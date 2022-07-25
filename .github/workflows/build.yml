@@ -45,3 +45,11 @@ jobs:
       # don't contain any lock files and are free to be cached.
       - name: Make stop
         run: make stop
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            ./*/build/distributions/*.zip
