@@ -14,12 +14,6 @@ struct iOSApp: App {
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
-            VStack(alignment: .leading) {
-                Button("Show details") {
-                    sentry.captureMessage(message: "KMP Sample App " + Platform().platform)
-                    SharedBusinessLogic().doException()
-                }
-            }
 		}
 	}
 }

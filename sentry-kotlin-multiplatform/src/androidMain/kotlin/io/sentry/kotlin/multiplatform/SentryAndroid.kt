@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import android.content.Context
 import io.sentry.Sentry
+import io.sentry.SentryOptions
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
 

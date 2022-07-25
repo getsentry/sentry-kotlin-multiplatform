@@ -60,7 +60,12 @@ kotlin {
                 implementation("io.sentry:sentry:6.1.4")
             }
         }
-        val appleMain by creating { dependsOn(commonMain) }
+        val appleMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(project(":sentry-kotlin-multiplatform-nsexceptions"))
+            }
+        }
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
         /*
