@@ -72,7 +72,7 @@ kotlin {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
             homepage = "https://github.com/getsentry/sentry-cocoa"
 
-            pod("Sentry", "~> 7.19.0")
+            pod("Sentry", "~> 7.21.0")
 
             ios.deploymentTarget = "9.0"
             // osx.deploymentTarget = "10.10"
