@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import Sentry.SentryEvent
+import Sentry.NSExceptions.SentryEvent
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.core.dropKotlinCrashEvent
