@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.core
+package io.sentry.kotlin.multiplatform.nsexceptions
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

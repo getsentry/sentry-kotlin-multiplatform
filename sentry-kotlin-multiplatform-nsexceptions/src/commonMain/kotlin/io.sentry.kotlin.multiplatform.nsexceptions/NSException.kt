@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.core
+package io.sentry.kotlin.multiplatform.nsexceptions
 
 import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.convert

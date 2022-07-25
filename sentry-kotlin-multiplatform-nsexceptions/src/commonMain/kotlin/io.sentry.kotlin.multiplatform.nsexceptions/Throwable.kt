@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.core
+package io.sentry.kotlin.multiplatform.nsexceptions
 
 /**
  * Returns a list with all the [causes][Throwable.cause].

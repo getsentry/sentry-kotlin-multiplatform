@@ -4,8 +4,8 @@ import cocoapods.Sentry.SentryEvent
 import Sentry.NSExceptions.SentryEvent as SentryNSExceptionEvent
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
-import io.sentry.kotlin.multiplatform.core.dropKotlinCrashEvent
-import io.sentry.kotlin.multiplatform.core.setSentryUnhandledExceptionHook
+import io.sentry.kotlin.multiplatform.nsexceptions.dropKotlinCrashEvent
+import io.sentry.kotlin.multiplatform.nsexceptions.setSentryUnhandledExceptionHook
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
