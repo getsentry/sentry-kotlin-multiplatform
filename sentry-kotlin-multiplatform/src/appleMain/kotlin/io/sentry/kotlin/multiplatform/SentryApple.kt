@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
-import Sentry.NSExceptions.SentryEvent
+import cocoapods.Sentry.SentryEvent
+import Sentry.NSExceptions.SentryEvent as SentryNSExceptionEvent
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.core.dropKotlinCrashEvent
@@ -34,7 +35,7 @@ internal actual object SentryBridge {
         sentryAppleOptions.dsn = options.dsn
         sentryAppleOptions.attachStacktrace = options.attachStackTrace
         sentryAppleOptions.beforeSend = { event ->
-            dropKotlinCrashEvent(event as SentryEvent?) as cocoapods.Sentry.SentryEvent?
+            dropKotlinCrashEvent(event as SentryNSExceptionEvent?) as SentryEvent?
         }
         return sentryAppleOptions
     }
