@@ -4,6 +4,7 @@ import cocoapods.Sentry.SentryEvent
 import Sentry.NSExceptions.SentryEvent as SentryNSExceptionEvent
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.nsexceptions.asNSException
 import io.sentry.kotlin.multiplatform.nsexceptions.dropKotlinCrashEvent
 import io.sentry.kotlin.multiplatform.nsexceptions.setSentryUnhandledExceptionHook
 import platform.Foundation.NSError
@@ -22,8 +23,7 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable) {
-        val exception = NSException(throwable::class.simpleName, throwable.message, null)
-        SentrySDK.captureException(exception)
+        SentrySDK.captureException(throwable.asNSException(true))
     }
 
     actual fun close() {
