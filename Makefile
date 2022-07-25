@@ -1,4 +1,4 @@
-.PHONY: all clean compile stop
+.PHONY: all clean compile dryRelease stop
 
 all: stop clean compile
 
@@ -6,6 +6,10 @@ all: stop clean compile
 clean:
 	./gradlew clean
 	rm -rf distributions
+
+# local deploy
+dryRelease:
+	./gradlew publishToMavenLocal --no-daemon --no-parallel
 
 # build and run tests
 compile:
