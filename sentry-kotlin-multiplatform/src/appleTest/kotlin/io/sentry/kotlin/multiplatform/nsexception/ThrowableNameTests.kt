@@ -24,7 +24,7 @@ class ThrowableNameTests {
     @Test
     fun testMyThrowableName() {
         val exception = MyThrowable()
-        assertEquals("io.sentry.kotlin.multiplatform.nsexceptions.ThrowableNameTests.MyThrowable", exception.name)
+        assertEquals("io.sentry.kotlin.multiplatform.nsexception.ThrowableNameTests.MyThrowable", exception.name)
     }
 
     @Test
