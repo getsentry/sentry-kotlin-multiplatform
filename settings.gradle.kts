@@ -9,6 +9,5 @@ pluginManagement {
 rootProject.name = "sentry-kotlin-multiplatform"
 
 include(":sentry-kotlin-multiplatform")
-include(":sentry-kotlin-multiplatform-nsexceptions")
 include("sentry-samples:kmp-app:shared")
 include("sentry-samples:kmp-app:androidApp")

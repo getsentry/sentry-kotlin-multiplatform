@@ -46,6 +46,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-common")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
 
@@ -62,12 +63,15 @@ kotlin {
         }
         val appleMain by creating {
             dependsOn(commonMain)
-            dependencies {
-                implementation(project(":sentry-kotlin-multiplatform-nsexceptions"))
-            }
         }
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
+
+        val appleTest by creating {
+            dependsOn(commonTest)
+        }
+        val iosTest by getting { dependsOn(appleTest) }
+        val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
         /*
         val tvosMain by getting { dependsOn(appleMain) }
         val watchosMain by getting { dependsOn(appleMain) }
@@ -83,6 +87,16 @@ kotlin {
             // osx.deploymentTarget = "10.10"
             // tvos.deploymentTarget = "9.0"
             // watchos.deploymentTarget = "2.0"
+        }
+    }
+
+    listOf(
+        iosArm64(), iosX64(), iosSimulatorArm64(),
+    ).forEach {
+        it.compilations.getByName("main") {
+            cinterops.create("Sentry.NSException") {
+                includeDirs("$projectDir/src/nativeInterop/cinterop/Sentry")
+            }
         }
     }
 

@@ -12,7 +12,7 @@
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
 
-package io.sentry.kotlin.multiplatform.nsexceptions
+package io.sentry.kotlin.multiplatform.nsexception
 
 /**
  * Returns a list with all the [causes][Throwable.cause].

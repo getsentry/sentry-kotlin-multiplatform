@@ -12,9 +12,9 @@
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
 
-package io.sentry.kotlin.multiplatform.nsexceptions
+package io.sentry.kotlin.multiplatform.nsexception
 
-import Sentry.NSExceptions.*
+import NSException.Sentry.*
 import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
