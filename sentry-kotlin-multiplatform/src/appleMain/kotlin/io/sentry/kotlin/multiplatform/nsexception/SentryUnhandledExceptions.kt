@@ -22,7 +22,7 @@ import platform.Foundation.NSNumber
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception.
  */
-public fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
+fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
     return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(kotlinCrashedTag) ?: false) }
 }
 
@@ -32,7 +32,7 @@ public fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
  * Note: once the exception is logged the program will be terminated.
  * @see wrapUnhandledExceptionHook
  */
-public fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
+fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
     val envelope = throwable.asSentryEnvelope()
     // The envelope will be persisted, so we can safely terminate afterwards.
     // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409

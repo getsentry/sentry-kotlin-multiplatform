@@ -25,7 +25,7 @@ import kotlin.native.concurrent.freeze
  * @see terminateWithUnhandledException
  */
 @OptIn(ExperimentalStdlibApi::class)
-public fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
+fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
     val prevHook = AtomicReference<ReportUnhandledExceptionHook?>(null)
     val wrappedHook: ReportUnhandledExceptionHook = {
         hook(it)

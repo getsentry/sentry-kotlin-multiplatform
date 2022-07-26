@@ -19,7 +19,7 @@ package io.sentry.kotlin.multiplatform.nsexception
  * The first element will be the cause, the second the cause of the cause, etc.
  * This function stops once a reference cycles is detected.
  */
-public val Throwable.causes: List<Throwable> get() = buildList {
+val Throwable.causes: List<Throwable> get() = buildList {
     val causes = mutableSetOf<Throwable>()
     var cause = cause
     while (cause != null && cause !in causes) {
@@ -36,7 +36,7 @@ public val Throwable.causes: List<Throwable> get() = buildList {
  * @param commonAddresses a list of addresses used to drop the last common addresses.
  * @see getStackTraceAddresses
  */
-public fun Throwable.getFilteredStackTraceAddresses(
+fun Throwable.getFilteredStackTraceAddresses(
     keepLastInit: Boolean = false,
     commonAddresses: List<Long> = emptyList()
 ): List<Long> = getStackTraceAddresses().dropInitAddresses(
