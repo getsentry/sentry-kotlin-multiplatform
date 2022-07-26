@@ -32,7 +32,7 @@ Add this to your `commonMain` sourceSet.
 ```gradle
 // Add this dependency to your commonMain sourceSet
 dependencies {
-  api("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
+  api("io.sentry:sentry-kotlin-multiplatform:0.0.1")
 }
 
 ```
@@ -47,13 +47,13 @@ cocoapods {
   // ...
   
   // Make sure this is the same version as the one used in the SDK
-  pod("Sentry", "~> 7.19.0")
+  pod("Sentry", "~> 7.21.0")
 
   framework {
     baseName = "shared"
 
     // Export the SDK in order to be able to access it directly in the iOS project
-    export("io.sentry.kotlin.multiplatform:sentry-kotlin-multiplatform:0.0.1")
+    export("io.sentry:sentry-kotlin-multiplatform:0.0.1")
   }
 }
 ```
