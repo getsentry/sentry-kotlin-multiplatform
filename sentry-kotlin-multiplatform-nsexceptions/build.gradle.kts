@@ -17,12 +17,16 @@ kotlin {
         val appleMain by creating
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
+
         val appleTest by creating {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
+        val iosTest by getting { dependsOn(appleTest) }
+        val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
     }
+
     listOf(
         iosArm64, iosX64, iosSimulatorArm64,
     ).forEach {
