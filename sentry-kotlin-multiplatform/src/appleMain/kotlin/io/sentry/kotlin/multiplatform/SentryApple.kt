@@ -33,7 +33,6 @@ internal actual object SentryBridge {
     private fun convertToSentryAppleOptions(options: SentryKMPOptions): SentryOptions {
         val sentryAppleOptions = SentryOptions()
         sentryAppleOptions.dsn = options.dsn
-        sentryAppleOptions.debug = true
         sentryAppleOptions.attachStacktrace = options.attachStackTrace
         sentryAppleOptions.beforeSend = { event ->
             dropKotlinCrashEvent(event as SentryNSExceptionEvent?) as SentryEvent?
