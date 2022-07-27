@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object SentryKMP {
+
     /**
      * Sentry initialization with a context and option configuration handler.
      *
@@ -40,6 +41,15 @@ object SentryKMP {
     }
 
     /**
+     * Configures the scope through the callback.
+     *
+     * @param callback The configure scope callback.
+     */
+    fun configureScope(callback: (SentryScope) -> Unit) {
+        SentryBridge.configureScope(callback)
+    }
+
+    /**
      * Throws a RuntimeException, useful for testing.
      */
     fun crash() {
@@ -52,8 +62,4 @@ object SentryKMP {
     fun close() {
         SentryBridge.close()
     }
-}
-
-fun interface OptionsConfiguration<T: SentryKMPOptions> {
-    fun configure(options: T)
 }

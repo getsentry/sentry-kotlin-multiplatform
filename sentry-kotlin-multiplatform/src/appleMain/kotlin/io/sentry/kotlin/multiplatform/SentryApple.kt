@@ -6,6 +6,9 @@ import platform.Foundation.NSError
 import platform.Foundation.NSException
 
 internal actual object SentryBridge {
+
+    private val scope = SentryScope()
+
     actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
         val options = SentryKMPOptions()
         configuration.configure(options)
@@ -19,6 +22,13 @@ internal actual object SentryBridge {
     actual fun captureException(throwable: Throwable) {
         val exception = NSException(throwable::class.simpleName, throwable.message, null)
         SentrySDK.captureException(exception)
+    }
+
+    actual fun configureScope(callback: SentryScopeCallback) {
+        callback.run(scope)
+        SentrySDK.configureScope {
+            it?.setTags(scope.tags as Map<Any?, *>)
+        }
     }
 
     actual fun close() {

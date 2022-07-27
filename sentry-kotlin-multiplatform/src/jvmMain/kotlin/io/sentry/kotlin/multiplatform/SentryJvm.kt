@@ -16,6 +16,10 @@ internal actual object SentryBridge {
         SentryJvm.captureException(throwable)
     }
 
+    actual fun configureScope(callback: SentryScopeCallback) {
+
+    }
+
     actual fun close() {
         SentryJvm.close()
     }

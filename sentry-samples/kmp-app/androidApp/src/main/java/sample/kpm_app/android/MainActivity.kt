@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import io.sentry.kotlin.multiplatform.SentryKMP
+import io.sentry.kotlin.multiplatform.SentryLevel
 import sample.kpm_app.SharedBusinessLogic
 import sample.kpm_app.Platform
 import java.lang.Exception
@@ -30,6 +31,14 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 SharedBusinessLogic.captureException(e)
             }
+        }
+
+        SentryKMP.configureScope {
+            it.sentryLevel = SentryLevel.ERROR
+        }
+
+        SentryKMP.configureScope {
+            println(it.sentryLevel)
         }
 
         captureHardCrashBtn.setOnClickListener {

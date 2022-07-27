@@ -6,6 +6,8 @@ import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
 
 internal actual object SentryBridge {
+    private val scope = SentryScope()
+
     actual fun captureMessage(message: String) {
         Sentry.captureMessage(message)
     }
@@ -16,13 +18,18 @@ internal actual object SentryBridge {
         if (context is Context) {
             SentryAndroid.init(context, convertToSentryAndroidOptions(options))
         }
-        Sentry.configureScope {
-            it.transaction = null
-        }
     }
 
     actual fun captureException(throwable: Throwable) {
         Sentry.captureException(throwable)
+    }
+
+    actual fun configureScope(callback: SentryScopeCallback) {
+        callback.run(scope)
+        Sentry.configureScope { androidScope ->
+            scope.tags.forEach { androidScope.setTag(it.key, it.value) }
+            androidScope.level = scope.sentryLevel
+        }
     }
 
     actual fun close() {
