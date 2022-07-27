@@ -54,6 +54,12 @@ kotlin {
                 implementation("io.sentry:sentry-android:6.1.4")
             }
         }
+        val androidTest by getting {
+            dependsOn(commonTest)
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+            }
+        }
 
         val jvmMain by getting {
             dependencies {
@@ -63,6 +69,7 @@ kotlin {
         val appleMain by creating { dependsOn(commonMain) }
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
+
         /*
         val tvosMain by getting { dependsOn(appleMain) }
         val watchosMain by getting { dependsOn(appleMain) }

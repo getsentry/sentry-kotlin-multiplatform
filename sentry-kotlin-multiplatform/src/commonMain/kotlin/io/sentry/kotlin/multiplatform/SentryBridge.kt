@@ -6,9 +6,9 @@ internal expect object SentryBridge {
      */
     fun start(context: Any? = null, configuration: OptionsConfiguration<SentryKMPOptions>)
 
-    fun captureMessage(message: String)
+    fun captureMessage(message: String): SentryId
 
-    fun captureException(throwable: Throwable)
+    fun captureException(throwable: Throwable): SentryId
 
     fun close()
 }

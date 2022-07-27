@@ -6,10 +6,6 @@ import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
 
 internal actual object SentryBridge {
-    actual fun captureMessage(message: String) {
-        Sentry.captureMessage(message)
-    }
-
     actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
         val options = SentryKMPOptions()
         configuration.configure(options)
@@ -18,8 +14,14 @@ internal actual object SentryBridge {
         }
     }
 
-    actual fun captureException(throwable: Throwable) {
-        Sentry.captureException(throwable)
+    actual fun captureMessage(message: String): SentryId {
+        val androidSentryId = Sentry.captureMessage(message)
+        return SentryId(androidSentryId.toString())
+    }
+
+    actual fun captureException(throwable: Throwable): SentryId {
+        val androidSentryId = Sentry.captureException(throwable)
+        return SentryId(androidSentryId.toString())
     }
 
     actual fun close() {
