@@ -7,7 +7,6 @@ import android.widget.Button
 import io.sentry.kotlin.multiplatform.SentryKMP
 import sample.kpm_app.LoginImpl
 import sample.kpm_app.Platform
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
