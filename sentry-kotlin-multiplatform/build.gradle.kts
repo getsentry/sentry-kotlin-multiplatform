@@ -54,6 +54,7 @@ kotlin {
                 implementation("io.sentry:sentry-android:6.1.4")
             }
         }
+
         val jvmMain by getting {
             dependencies {
                 implementation("io.sentry:sentry:6.1.4")
@@ -62,7 +63,6 @@ kotlin {
         val appleMain by creating { dependsOn(commonMain) }
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
-
         /*
         val tvosMain by getting { dependsOn(appleMain) }
         val watchosMain by getting { dependsOn(appleMain) }
