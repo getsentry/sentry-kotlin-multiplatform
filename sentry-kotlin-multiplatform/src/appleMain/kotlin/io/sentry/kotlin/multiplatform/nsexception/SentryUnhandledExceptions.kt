@@ -38,7 +38,7 @@ fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throw
     // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409
     SentrySDK.storeEnvelope(envelope)
     SentrySDK.configureScope { scope ->
-        scope!!.setTagValue(kotlinCrashedTag, kotlinCrashedTag)
+        scope?.setTagValue(kotlinCrashedTag, kotlinCrashedTag)
     }
 }
 

@@ -3,16 +3,16 @@ import shared
 
 struct ContentView: View {
 	var body: some View {
-		Text("KPM Sample App " + Platform().platform)
+		Text("KMP Sample App " + Platform().platform)
         VStack() {
             Button("Capture Message") {
                 SentryKMP().captureMessage(message: "KMP Sample App " + Platform().platform)
             }
             Button("Capture Exception") {
-                SharedBusinessLogic().doException()
+                LoginImpl().login()
             }
             Button("Hard Crash") {
-                SharedBusinessLogic().hardCrash()
+                LoginImpl().loginWithIllegalArguments()
             }
         }
 	}
