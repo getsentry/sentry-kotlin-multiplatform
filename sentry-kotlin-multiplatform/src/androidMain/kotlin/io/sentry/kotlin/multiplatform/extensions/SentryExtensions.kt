@@ -1,7 +1,10 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.extensions
 
 import android.content.Context
 import io.sentry.android.core.SentryAndroid
+import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryBridge
+import io.sentry.kotlin.multiplatform.SentryKMPOptions
 
 /**
  * Sentry initialization with a context and option configuration handler.
