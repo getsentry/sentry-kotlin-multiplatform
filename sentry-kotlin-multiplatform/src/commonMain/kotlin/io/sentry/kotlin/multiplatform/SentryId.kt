@@ -4,13 +4,22 @@ class SentryId(private val sentryIdString: String) {
     var uuidString: String = ""
         private set
 
+    companion object {
+        val EMPTY_ID: SentryId = SentryId("")
+    }
+
     init {
-        fromStringSentryId(sentryIdString)
+        if (sentryIdString.isEmpty()) {
+            uuidString = "00000000-0000-0000-0000-000000000000"
+        } else {
+            fromStringSentryId(sentryIdString)
+        }
     }
 
     private fun fromStringSentryId(sentryIdString: String) {
         var result = sentryIdString
-        if (sentryIdString.length == 32) {
+
+        if (result.length == 32) {
             // expected format, SentryId is a UUID without dashes
             result = StringBuilder(sentryIdString)
                 .insert(8, "-")

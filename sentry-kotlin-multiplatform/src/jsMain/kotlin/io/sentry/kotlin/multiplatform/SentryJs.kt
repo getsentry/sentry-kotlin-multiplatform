@@ -7,11 +7,11 @@ internal actual object SentryBridge {
     }
 
     actual fun captureMessage(message: String): SentryId {
-        return SentryId("")
+        return SentryId.EMPTY_ID
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
-        return SentryId("")
+        return SentryId.EMPTY_ID
     }
 
     actual fun close() {
