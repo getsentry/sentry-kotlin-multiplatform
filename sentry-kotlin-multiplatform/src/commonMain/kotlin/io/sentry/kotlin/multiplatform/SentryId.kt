@@ -5,7 +5,7 @@ class SentryId(private val sentryIdString: String) {
         private set
 
     companion object {
-        val EMPTY_ID: SentryId = SentryId("")
+        val EMPTY_ID: SentryId = SentryId("00000000-0000-0000-0000-000000000000")
     }
 
     init {
