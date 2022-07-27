@@ -16,6 +16,9 @@ internal actual object SentryBridge {
         if (context is Context) {
             SentryAndroid.init(context, convertToSentryAndroidOptions(options))
         }
+        Sentry.configureScope {
+            it.transaction = null
+        }
     }
 
     actual fun captureException(throwable: Throwable) {
