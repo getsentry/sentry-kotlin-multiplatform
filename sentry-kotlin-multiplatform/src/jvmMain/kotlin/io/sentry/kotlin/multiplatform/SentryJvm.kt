@@ -21,5 +21,4 @@ internal actual object SentryBridge {
     actual fun close() {
         SentryJvm.close()
     }
-
 }
