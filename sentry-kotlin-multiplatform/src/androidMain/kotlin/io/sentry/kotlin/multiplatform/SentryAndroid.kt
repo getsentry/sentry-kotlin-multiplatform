@@ -36,5 +36,3 @@ internal actual object SentryBridge {
         }
     }
 }
-
-
