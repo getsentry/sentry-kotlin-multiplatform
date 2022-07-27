@@ -54,13 +54,6 @@ kotlin {
                 implementation("io.sentry:sentry-android:6.1.4")
             }
         }
-        val androidTest by getting {
-            dependsOn(commonTest)
-            dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-junit")
-            }
-        }
-
         val jvmMain by getting {
             dependencies {
                 implementation("io.sentry:sentry:6.1.4")
