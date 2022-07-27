@@ -23,11 +23,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         captureExceptionBtn.setOnClickListener {
-            LoginImpl.login()
+            LoginImpl.login("MyUsername")
         }
 
         captureHardCrashBtn.setOnClickListener {
-            LoginImpl.loginWithIllegalArguments()
+            LoginImpl.login()
         }
     }
 }

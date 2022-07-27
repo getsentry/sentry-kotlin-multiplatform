@@ -6,26 +6,18 @@ class InvalidUsernameException(message: String) : Exception(message)
 
 object LoginImpl {
     /**
-     * login() throws a checked InvalidUsernameException.
-     * The Sentry SDK should capture a handled exception.
+     * login() throws a either checked InvalidUsernameException
+     * or an unchecked IllegalArgumentException that crashes the app.
      *
      */
-    fun login() {
-        val username = "MyUser"
+    fun login(username: String? = null) {
         try {
             validateUsername(username)
-        } catch (exception: Exception) {
+        } catch (exception: InvalidUsernameException) {
             SentryKMP.captureException(exception)
+        } catch (exception: IllegalArgumentException) {
+            throw exception
         }
-    }
-
-    /**
-     * loginWithIllegalArguments() throws an IllegalArgumentException and crashes the app.
-     * The Sentry SDK should capture an unhandled exception.
-     *
-     */
-    fun loginWithIllegalArguments() {
-        validateUsername(null)
     }
 
     private fun validateUsername(username: String?) {

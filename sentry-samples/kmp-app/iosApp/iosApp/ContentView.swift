@@ -9,10 +9,10 @@ struct ContentView: View {
                 SentryKMP().captureMessage(message: "KMP Sample App " + Platform().platform)
             }
             Button("Capture Exception") {
-                LoginImpl().login()
+                LoginImpl().login("MyUsername")
             }
             Button("Hard Crash") {
-                LoginImpl().loginWithIllegalArguments()
+                LoginImpl().login()
             }
         }
 	}
