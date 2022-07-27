@@ -14,7 +14,6 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.convert
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
