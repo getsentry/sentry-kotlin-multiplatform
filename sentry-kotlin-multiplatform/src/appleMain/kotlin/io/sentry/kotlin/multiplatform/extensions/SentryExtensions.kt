@@ -1,6 +1,9 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.extensions
 
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryBridge
+import io.sentry.kotlin.multiplatform.SentryKMPOptions
 
 /**
  * Sentry initialization with an option configuration handler.
