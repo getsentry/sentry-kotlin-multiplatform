@@ -56,6 +56,7 @@ private fun Throwable.asSentryEnvelope(): SentryEnvelope {
         hub.getClient()?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isCrashEvent = true)
     } ?: event
     val item = SentryEnvelopeItem(preparedEvent)
+    // TODO: pass traceState when enabling performance monitoring for KMP SDK
     val header = SentryEnvelopeHeader(preparedEvent.eventId, SentrySDK.options?.sdkInfo, null)
     return SentryEnvelope(header, listOf(item))
 }
