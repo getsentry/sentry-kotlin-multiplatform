@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.init
+import io.sentry.kotlin.multiplatform.extensions.init
 import sample.kpm_app.SharedBusinessLogic
 import sample.kpm_app.Platform
 import java.lang.Exception
