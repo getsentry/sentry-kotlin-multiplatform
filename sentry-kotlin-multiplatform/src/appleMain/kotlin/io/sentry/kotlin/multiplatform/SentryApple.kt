@@ -2,6 +2,8 @@ package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptions
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
@@ -12,7 +14,7 @@ internal actual object SentryBridge {
     actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
         val options = SentryKMPOptions()
         configuration.configure(options)
-        SentrySDK.startWithOptionsObject(convertToSentryAppleOptions(options))
+        SentrySDK.startWithOptionsObject(options.toCocoaSentryOptions())
     }
 
     actual fun captureMessage(message: String) {
@@ -27,19 +29,13 @@ internal actual object SentryBridge {
     actual fun configureScope(callback: SentryScopeCallback) {
         callback.run(scope)
         SentrySDK.configureScope {
+            scope.sentryLevel?.toCocoaSentryLevel()
             it?.setTags(scope.tags as Map<Any?, *>)
         }
     }
 
     actual fun close() {
         SentrySDK.close()
-    }
-
-    private fun convertToSentryAppleOptions(options: SentryKMPOptions): SentryOptions {
-        val sentryAppleOptions = SentryOptions()
-        sentryAppleOptions.dsn = options.dsn
-        sentryAppleOptions.attachStacktrace = options.attachStackTrace
-        return sentryAppleOptions
     }
 }
 

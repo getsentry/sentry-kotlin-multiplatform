@@ -4,6 +4,8 @@ import android.content.Context
 import io.sentry.Sentry
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
+import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptions
 
 internal actual object SentryBridge {
     private val scope = SentryScope()
@@ -16,7 +18,7 @@ internal actual object SentryBridge {
         val options = SentryKMPOptions()
         configuration.configure(options)
         if (context is Context) {
-            SentryAndroid.init(context, convertToSentryAndroidOptions(options))
+            SentryAndroid.init(context, options.toAndroidSentryOptions())
         }
     }
 
@@ -28,20 +30,12 @@ internal actual object SentryBridge {
         callback.run(scope)
         Sentry.configureScope { androidScope ->
             scope.tags.forEach { androidScope.setTag(it.key, it.value) }
-            androidScope.level = scope.sentryLevel
+            androidScope.level = scope.sentryLevel?.toAndroidSentryLevel()
         }
     }
 
     actual fun close() {
         Sentry.close()
-    }
-
-    private fun convertToSentryAndroidOptions(options: SentryKMPOptions): (SentryAndroidOptions) -> Unit {
-        return { sentryAndroidOptions ->
-            sentryAndroidOptions.dsn = options.dsn
-            sentryAndroidOptions.isAttachThreads = options.attachThreads
-            sentryAndroidOptions.isAttachStacktrace = options.attachStackTrace
-        }
     }
 }
 
