@@ -20,7 +20,7 @@ import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
 /**
- * Drops the Kotlin crash that follows an unhandled Kotlin exception.
+ * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
  */
 internal fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
     return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(kotlinCrashedTag) ?: false) }
