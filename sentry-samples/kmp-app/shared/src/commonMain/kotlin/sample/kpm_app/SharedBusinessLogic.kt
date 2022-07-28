@@ -1,18 +1,18 @@
 package sample.kpm_app
 
-import io.sentry.kotlin.multiplatform.SentryKMP
+import io.sentry.kotlin.multiplatform.Sentry
 
 object SharedBusinessLogic {
     fun hardCrash() {
-        SentryKMP.crash()
+        Sentry.crash()
     }
 
     fun captureMessage(message: String) {
-        SentryKMP.captureMessage(message)
+        Sentry.captureMessage(message)
     }
 
     fun captureException(exception: Throwable) {
-        SentryKMP.captureException(exception)
+        Sentry.captureException(exception)
     }
 
     fun doException() {

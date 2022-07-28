@@ -4,10 +4,6 @@ import io.sentry.Sentry as SentryJvm
 
 internal actual object SentryBridge {
 
-    actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
-
-    }
-
     actual fun captureMessage(message: String): SentryId {
         val javaSentryId = SentryJvm.captureMessage(message)
         return SentryId(javaSentryId.toString())

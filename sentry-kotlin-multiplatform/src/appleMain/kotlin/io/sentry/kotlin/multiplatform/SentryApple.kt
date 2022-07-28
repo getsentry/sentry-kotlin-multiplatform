@@ -6,11 +6,6 @@ import platform.Foundation.NSError
 import platform.Foundation.NSException
 
 internal actual object SentryBridge {
-    actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
-        val options = SentryKMPOptions()
-        configuration.configure(options)
-        SentrySDK.startWithOptionsObject(convertToSentryAppleOptions(options))
-    }
 
     actual fun captureMessage(message: String): SentryId {
         val cocoaSentryId = SentrySDK.captureMessage(message)
@@ -27,7 +22,7 @@ internal actual object SentryBridge {
         SentrySDK.close()
     }
 
-    private fun convertToSentryAppleOptions(options: SentryKMPOptions): SentryOptions {
+    internal fun convertToSentryAppleOptions(options: SentryKMPOptions): SentryOptions {
         val sentryAppleOptions = SentryOptions()
         sentryAppleOptions.dsn = options.dsn
         sentryAppleOptions.attachStacktrace = options.attachStackTrace
@@ -35,10 +30,10 @@ internal actual object SentryBridge {
     }
 }
 
-fun SentryKMP.captureError(error: NSError) {
+fun Sentry.captureError(error: NSError) {
     SentrySDK.captureError(error)
 }
 
-fun SentryKMP.captureException(exception: NSException) {
+fun Sentry.captureException(exception: NSException) {
     SentrySDK.captureException(exception)
 }
