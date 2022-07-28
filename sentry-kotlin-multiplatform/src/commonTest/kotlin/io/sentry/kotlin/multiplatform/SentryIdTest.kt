@@ -2,7 +2,6 @@ package io.sentry.kotlin.multiplatform
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class SentryIdTest {
 
@@ -28,13 +27,5 @@ class SentryIdTest {
         emptySentryId = SentryId("")
         actual = emptySentryId.toString()
         assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `SentryId with invalid uuid string throws IllegalArgumentException`() {
-        val uuidString = "ec720-b6f6-4efc-9d74-662715c1"
-        assertFailsWith(IllegalArgumentException::class) {
-            SentryId(uuidString)
-        }
     }
 }

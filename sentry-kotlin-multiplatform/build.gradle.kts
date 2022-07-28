@@ -67,15 +67,16 @@ kotlin {
             }
         }
         val androidTest by getting {
+            dependsOn(commonTest)
             dependsOn(jvmTest)
         }
 
         val appleMain by creating { dependsOn(commonMain) }
         val iosMain by getting { dependsOn(appleMain) }
         val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
-        val appleTest by creating {
-            dependsOn(commonTest)
-        }
+        val appleTest by creating { dependsOn(commonTest) }
+        val iosTest by getting { dependsOn(appleTest) }
+        val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
 
         /*
         val tvosMain by getting { dependsOn(appleMain) }

@@ -3,7 +3,11 @@ package io.sentry.kotlin.multiplatform
 import cocoapods.Sentry.SentryId as CocoaSentryId
 
 actual class SentryId actual constructor(sentryIdString: String): ISentryId {
-    actual override val EMPTY_ID = SentryId("")
+
+    actual companion object {
+        actual val EMPTY_ID: SentryId = SentryId("")
+    }
+
     private var cocoaSentryId: CocoaSentryId? = null
 
     init {

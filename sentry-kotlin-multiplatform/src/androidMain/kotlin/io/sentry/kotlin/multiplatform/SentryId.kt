@@ -3,7 +3,11 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.protocol.SentryId as AndroidSentryId
 
 actual class SentryId actual constructor(sentryIdString: String): ISentryId {
-    actual override val EMPTY_ID = SentryId("")
+
+    actual companion object {
+        actual val EMPTY_ID: SentryId = SentryId("")
+    }
+
     private var androidSentryId: AndroidSentryId? = null
 
     init {

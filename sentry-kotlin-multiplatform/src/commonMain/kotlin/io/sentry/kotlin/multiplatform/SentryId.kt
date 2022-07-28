@@ -1,11 +1,15 @@
 package io.sentry.kotlin.multiplatform
 
 expect class SentryId(sentryIdString: String): ISentryId {
-    override val EMPTY_ID: SentryId
+    companion object {
+        val EMPTY_ID: SentryId
+    }
     override fun toString(): String
 }
 
 interface ISentryId {
-    val EMPTY_ID: SentryId
+    companion object {
+        val EMPTY_ID: SentryId = SentryId("")
+    }
     override fun toString(): String
 }
