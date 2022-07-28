@@ -4,7 +4,8 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import io.sentry.kotlin.multiplatform.SentryKMP
+import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.extensions.init
 import sample.kpm_app.SharedBusinessLogic
 import sample.kpm_app.Platform
 import java.lang.Exception
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        SentryKMP.start(this) {
+        Sentry.init(this) {
             it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
             it.attachStackTrace = true
             it.attachThreads = true
