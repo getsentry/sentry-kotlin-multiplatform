@@ -4,8 +4,9 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import io.sentry.kotlin.multiplatform.SentryKMP
 import sample.kpm_app.LoginImpl
+import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.extensions.init
 import sample.kpm_app.Platform
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         val captureHardCrashBtn: Button = findViewById(R.id.captureHardCrash)
 
         captureMessageBtn.setOnClickListener {
-            SentryKMP.captureMessage("From KMP Sample App: " + Platform().platform)
+            Sentry.captureMessage("From KMP Sample App: " + Platform().platform)
         }
 
         captureExceptionBtn.setOnClickListener {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        SentryKMP.start(this) {
+        Sentry.init(this) {
             it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
             it.attachStackTrace = true
             it.attachThreads = true

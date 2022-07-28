@@ -1,6 +1,6 @@
 package sample.kpm_app
 
-import io.sentry.kotlin.multiplatform.SentryKMP
+import io.sentry.kotlin.multiplatform.Sentry
 
 class InvalidUsernameException(message: String) : Exception(message)
 
@@ -14,7 +14,7 @@ object LoginImpl {
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
-            SentryKMP.captureException(exception)
+            Sentry.captureException(exception)
         } catch (exception: IllegalArgumentException) {
             throw exception
         }
