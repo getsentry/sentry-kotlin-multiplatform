@@ -7,7 +7,7 @@ class InvalidUsernameException(message: String) : Exception(message)
 object LoginImpl {
     /**
      * login() throws a either checked InvalidUsernameException
-     * or an unchecked IllegalArgumentException that crashes the app.
+     * or an IllegalArgumentException that crashes the app.
      *
      */
     fun login(username: String? = null) {
