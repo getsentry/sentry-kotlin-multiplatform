@@ -6,21 +6,11 @@ import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
-import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
 internal actual object SentryBridge {
-<<<<<<< HEAD
-    actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
-        val options = SentryKMPOptions()
-        configuration.configure(options)
-        SentrySDK.startWithOptionsObject(convertToSentryAppleOptions(options))
-        setSentryUnhandledExceptionHook()
-    }
 
-=======
->>>>>>> main
     actual fun captureMessage(message: String) {
         SentrySDK.captureMessage(message)
     }
