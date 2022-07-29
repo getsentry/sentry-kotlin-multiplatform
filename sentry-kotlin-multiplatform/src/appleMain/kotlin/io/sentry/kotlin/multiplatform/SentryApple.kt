@@ -9,13 +9,15 @@ private val scope = SentryScope()
 
 internal actual object SentryBridge {
 
-    actual fun captureMessage(message: String) {
-        SentrySDK.captureMessage(message)
+    actual fun captureMessage(message: String): SentryId {
+        val cocoaSentryId = SentrySDK.captureMessage(message)
+        return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable) {
+    actual fun captureException(throwable: Throwable): SentryId {
         val exception = NSException(throwable::class.simpleName, throwable.message, null)
-        SentrySDK.captureException(exception)
+        val cocoaSentryId = SentrySDK.captureException(exception)
+        return SentryId(cocoaSentryId.toString())
     }
 
     actual fun configureScope(callback: SentryScopeCallback) {
