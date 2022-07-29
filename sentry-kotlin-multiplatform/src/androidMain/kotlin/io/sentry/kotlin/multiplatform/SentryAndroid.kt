@@ -7,8 +7,9 @@ import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptions
 
+private val scope = SentryScope()
+
 internal actual object SentryBridge {
-    private val scope = SentryScope()
 
     actual fun captureMessage(message: String) {
         Sentry.captureMessage(message)
@@ -31,6 +32,7 @@ internal actual object SentryBridge {
         Sentry.configureScope { androidScope ->
             scope.tags.forEach { androidScope.setTag(it.key, it.value) }
             androidScope.level = scope.sentryLevel?.toAndroidSentryLevel()
+            // androidScope.setContexts()
         }
     }
 

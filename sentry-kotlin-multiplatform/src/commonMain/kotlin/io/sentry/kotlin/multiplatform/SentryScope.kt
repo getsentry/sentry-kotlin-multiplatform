@@ -14,6 +14,8 @@ class SentryScope {
     /** Scope's extras  */
     val extra: Map<String, Any> = HashMap()
 
+    val context: SentryContext = SentryContext()
+
     /** Scope's fingerprint  */
     val fingerprint: List<String> = ArrayList()
 }

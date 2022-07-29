@@ -1,16 +1,15 @@
 package io.sentry.kotlin.multiplatform
 
-import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptions
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
+private val scope = SentryScope()
+
 internal actual object SentryBridge {
-
-    private val scope = SentryScope()
-
+    
     actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
         val options = SentryKMPOptions()
         configuration.configure(options)
