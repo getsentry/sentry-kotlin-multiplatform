@@ -3,7 +3,7 @@ import shared
 
 @main
 struct iOSApp: App {
-    let sentry = SentryKMP()
+    let sentry = Sentry()
 
     init() {
         sentry.start { options in

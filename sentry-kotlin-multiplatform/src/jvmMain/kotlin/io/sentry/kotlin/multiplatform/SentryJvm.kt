@@ -8,10 +8,6 @@ internal actual object SentryBridge {
         SentryJvm.captureMessage(message)
     }
 
-    actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
-
-    }
-
     actual fun captureException(throwable: Throwable) {
         SentryJvm.captureException(throwable)
     }

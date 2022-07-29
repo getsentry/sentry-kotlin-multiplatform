@@ -1,27 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
-object SentryKMP {
-
-    /**
-     * Sentry initialization with a context and option configuration handler.
-     *
-     * @param context Application context.
-     * @param configuration Options configuration handler.
-     */
-    fun start(context: Any? = null, configuration: (SentryKMPOptions) -> Unit) {
-        SentryBridge.start(context, configuration)
-    }
-
-    /**
-     * Sentry initialization with an option configuration handler.
-     *
-     * @param configuration Options configuration handler.
-     */
-    fun start(configuration: (SentryKMPOptions) -> Unit) {
-        SentryBridge.start(null, configuration)
-    }
-
+object Sentry {
     /**
      * Captures the message.
      *
