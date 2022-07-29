@@ -1,21 +1,30 @@
 package io.sentry.kotlin.multiplatform
 
-class SentryScope {
+expect class SentryScope: ISentryScope {
+    override fun getUser(): SentryUser
+    override fun setUser(user: SentryUser)
+    override fun getContexts(): SentryContext
+    override fun setContext(key: String, value: Any)
+    override fun setTag(key: String, value: String)
+    override fun removeTag(key: String)
+    override fun setExtra(key: String, value: String)
+    override fun removeExtra(key: String)
+    override fun getLevel(): SentryLevel
+    override fun setLevel(level: SentryLevel)
+    override fun clear()
+}
 
-    /** Scope's SentryLevel */
-    var sentryLevel: SentryLevel? = null
-
-    /** Scope's SentryKMPOptions */
-    var options: SentryKMPOptions? = null
-
-    /** Scope's tags  */
-    val tags: Map<String, String> = HashMap()
-
-    /** Scope's extras  */
-    val extra: Map<String, Any> = HashMap()
-
-    val context: SentryContext = SentryContext()
-
-    /** Scope's fingerprint  */
-    val fingerprint: List<String> = ArrayList()
+interface ISentryScope {
+    fun getUser(): SentryUser
+    fun setUser(user: SentryUser)
+    fun getContexts(): SentryContext
+    fun setContext(key: String, value: Any) // TODO: add more setContext overload later
+    fun setTag(key: String, value: String)
+    fun removeTag(key: String)
+    fun setExtra(key: String, value: String)
+    fun removeExtra(key: String)
+    fun getLevel(): SentryLevel
+    fun setLevel(level: SentryLevel)
+    // TODO: breadcrumbs
+    fun clear()
 }

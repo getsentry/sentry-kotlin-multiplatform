@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-class SentryUser(user: ISentryUser) : ISentryUser {
+class SentryUser() : ISentryUser {
     override var email: String = ""
     override var id: String = ""
     override var username: String = ""
@@ -8,7 +8,7 @@ class SentryUser(user: ISentryUser) : ISentryUser {
     override var other: Map<String, String> = HashMap()
     override var unknown: Map<String, Any> = HashMap()
 
-    init {
+    constructor(user: ISentryUser): this() {
         this.email = user.email
         this.id = user.id
         this.username = user.username

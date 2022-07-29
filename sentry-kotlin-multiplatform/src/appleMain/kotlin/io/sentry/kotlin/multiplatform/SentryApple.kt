@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
+import cocoapods.Sentry.SentryUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptions
 import platform.Foundation.NSError
@@ -9,7 +10,7 @@ import platform.Foundation.NSException
 private val scope = SentryScope()
 
 internal actual object SentryBridge {
-    
+
     actual fun start(context: Any?, configuration: OptionsConfiguration<SentryKMPOptions>) {
         val options = SentryKMPOptions()
         configuration.configure(options)
@@ -28,8 +29,7 @@ internal actual object SentryBridge {
     actual fun configureScope(callback: SentryScopeCallback) {
         callback.run(scope)
         SentrySDK.configureScope {
-            scope.sentryLevel?.toCocoaSentryLevel()
-            it?.setTags(scope.tags as Map<Any?, *>)
+
         }
     }
 
