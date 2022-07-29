@@ -5,11 +5,11 @@ import io.sentry.SentryLevel as AndroidSentryLevel
 
 fun SentryLevel.toAndroidSentryLevel(): AndroidSentryLevel {
     when (this) {
-        SentryLevel.DEBUG -> AndroidSentryLevel.DEBUG
-        SentryLevel.INFO -> AndroidSentryLevel.INFO
-        SentryLevel.WARNING -> AndroidSentryLevel.WARNING
-        SentryLevel.ERROR -> AndroidSentryLevel.ERROR
-        SentryLevel.FATAL -> AndroidSentryLevel.FATAL
+        SentryLevel.DEBUG -> return AndroidSentryLevel.DEBUG
+        SentryLevel.INFO -> return AndroidSentryLevel.INFO
+        SentryLevel.WARNING -> return AndroidSentryLevel.WARNING
+        SentryLevel.ERROR -> return AndroidSentryLevel.ERROR
+        SentryLevel.FATAL -> return AndroidSentryLevel.FATAL
     }
     // TODO: is there a default?
     throw IllegalArgumentException("Sentry Level does not exist")

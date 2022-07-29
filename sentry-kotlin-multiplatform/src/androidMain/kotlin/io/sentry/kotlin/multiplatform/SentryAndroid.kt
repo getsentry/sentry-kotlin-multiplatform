@@ -3,8 +3,6 @@ package io.sentry.kotlin.multiplatform
 import android.content.Context
 import io.sentry.Sentry
 import io.sentry.android.core.SentryAndroid
-import io.sentry.android.core.SentryAndroidOptions
-import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptions
 
 private val scope = SentryScope()
@@ -28,11 +26,9 @@ internal actual object SentryBridge {
     }
 
     actual fun configureScope(callback: SentryScopeCallback) {
-        callback.run(scope)
-        Sentry.configureScope { androidScope ->
-            scope.tags.forEach { androidScope.setTag(it.key, it.value) }
-            androidScope.level = scope.sentryLevel?.toAndroidSentryLevel()
-            // androidScope.setContexts()
+        Sentry.configureScope {
+            scope.initWithScope(it)
+            callback.run(scope)
         }
     }
 

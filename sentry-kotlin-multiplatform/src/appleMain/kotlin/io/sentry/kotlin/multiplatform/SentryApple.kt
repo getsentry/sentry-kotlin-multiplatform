@@ -27,9 +27,9 @@ internal actual object SentryBridge {
     }
 
     actual fun configureScope(callback: SentryScopeCallback) {
-        callback.run(scope)
         SentrySDK.configureScope {
-
+            scope.initWithScope(it!!)
+            callback.run(scope)
         }
     }
 

@@ -33,12 +33,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val map = HashMap<Any?, Any>()
+        map.put("hello", 12)
+        map.put("fighter", "Faaa")
         SentryKMP.configureScope {
-            it.sentryLevel = SentryLevel.ERROR
-        }
-
-        SentryKMP.configureScope {
-            println(it.sentryLevel)
+            it.setLevel(SentryLevel.FATAL)
+            it.setContext("mycontext", map)
         }
 
         captureHardCrashBtn.setOnClickListener {

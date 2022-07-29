@@ -5,14 +5,15 @@ import io.sentry.protocol.User
 import io.sentry.util.CollectionUtils
 import io.sentry.Scope as AndroidScope
 
-actual class SentryScope : ISentryScope {
+actual class SentryScope {
+
     private var scope: AndroidScope? = null
 
-    actual override fun getUser(): SentryUser {
-        return SentryUser()
+    fun initWithScope(scope: AndroidScope) {
+        this.scope = scope
     }
 
-    actual override fun setUser(user: SentryUser) {
+    actual fun setUser(user: SentryUser) {
         val androidUser = User()
         androidUser.id = user.id
         androidUser.username = user.username
@@ -23,46 +24,61 @@ actual class SentryScope : ISentryScope {
         scope?.user = androidUser
     }
 
-    actual override fun getContexts(): SentryContext {
-        return SentryContext()
-    }
-
-    actual override fun setContext(key: String, value: Any) {
-        scope?.setContexts(key, value)
-    }
-
-    actual override fun setTag(key: String, value: String) {
-        scope?.setTag(key, value)
-    }
-
-    actual override fun removeTag(key: String) {
-        scope?.removeTag(key)
-    }
-
-    actual override fun setExtra(key: String, value: String) {
-        scope?.setExtra(key, value)
-    }
-
-    actual override fun removeExtra(key: String) {
-        scope?.removeExtra(key)
-    }
-
-    actual override fun getLevel(): SentryLevel {
-        return SentryLevel.FATAL
-    }
-
-    actual override fun setLevel(level: SentryLevel) {
+    actual fun setLevel(level: SentryLevel) {
         scope?.level = level.toAndroidSentryLevel()
     }
 
-    actual override fun clear() {
+    actual fun setContext(key: String, value: Any) {
+        if (value is String) {
+            scope?.setContexts(key, value)
+        }
+        if (value is Boolean) {
+            scope?.setContexts(key, value)
+        }
+        if (value is Number) {
+            scope?.setContexts(key, value)
+        }
+        if (value is Char) {
+            scope?.setContexts(key, value)
+        }
+        if (value is Collection<*>) {
+            scope?.setContexts(key, value)
+        }
+        if (value is Array<*>) {
+            scope?.setContexts(key, value as Array<Any>)
+        }
+    }
+
+    actual fun removeContext(key: String) {
+        scope?.removeContexts(key)
+    }
+
+    actual fun setTag(key: String, value: String) {
+        scope?.setTag(key, value)
+    }
+
+    actual fun removeTag(key: String) {
+        scope?.removeTag(key)
+    }
+
+    actual fun setExtra(key: String, value: String) {
+        scope?.setExtra(key, value)
+    }
+
+    actual fun removeExtra(key: String) {
+        scope?.removeExtra(key)
+    }
+
+    actual fun clear() {
         scope?.clear()
     }
 
-
-    // Platform specific functions
-
+    // Platform specific
     fun getTags(): Map<String, String> {
         return scope?.tags!!
     }
+}
+
+fun SentryScope.setContext(key: String, value: Map<Any?, Any>) {
+
 }
