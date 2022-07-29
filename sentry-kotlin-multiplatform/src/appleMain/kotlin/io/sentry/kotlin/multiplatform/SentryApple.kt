@@ -11,12 +11,14 @@ import platform.Foundation.NSException
 
 internal actual object SentryBridge {
 
-    actual fun captureMessage(message: String) {
-        SentrySDK.captureMessage(message)
+    actual fun captureMessage(message: String): SentryId {
+        val cocoaSentryId = SentrySDK.captureMessage(message)
+        return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable) {
-        SentrySDK.captureException(throwable.asNSException(true))
+    actual fun captureException(throwable: Throwable): SentryId {
+        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true))
+        return SentryId(cocoaSentryId.toString())
     }
 
     actual fun close() {
