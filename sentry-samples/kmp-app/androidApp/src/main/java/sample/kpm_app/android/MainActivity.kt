@@ -5,11 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import io.sentry.kotlin.multiplatform.SentryLevel
+import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.extensions.init
-import sample.kpm_app.SharedBusinessLogic
 import sample.kpm_app.Platform
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,17 +20,11 @@ class MainActivity : AppCompatActivity() {
         val captureHardCrashBtn: Button = findViewById(R.id.captureHardCrash)
 
         captureMessageBtn.setOnClickListener {
-            SharedBusinessLogic.captureMessage("From KMP Sample App: " + Platform().platform)
+            Sentry.captureMessage("From KMP Sample App: " + Platform().platform)
         }
 
         captureExceptionBtn.setOnClickListener {
-            try {
-                // will throw an outOfBounds exception
-                val arr = arrayOf(1)
-                arr[2]
-            } catch (e: Exception) {
-                SharedBusinessLogic.captureException(e)
-            }
+            LoginImpl.login("MyUsername")
         }
 
         val map = HashMap<Any?, Any>()
@@ -43,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         captureHardCrashBtn.setOnClickListener {
-            SharedBusinessLogic.hardCrash()
+            LoginImpl.login()
         }
     }
 }

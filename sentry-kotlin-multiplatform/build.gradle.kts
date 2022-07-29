@@ -95,6 +95,16 @@ kotlin {
         }
     }
 
+    listOf(
+        iosArm64(), iosX64(), iosSimulatorArm64(),
+    ).forEach {
+        it.compilations.getByName("main") {
+            cinterops.create("Sentry.NSException") {
+                includeDirs("$projectDir/src/nativeInterop/cinterop/Sentry")
+            }
+        }
+    }
+
     // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
     // if we need to use this class, we'd need to find a better way to work it out
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().all {

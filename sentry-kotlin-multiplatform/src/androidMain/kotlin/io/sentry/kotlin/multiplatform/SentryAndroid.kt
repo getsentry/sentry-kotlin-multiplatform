@@ -27,12 +27,4 @@ internal actual object SentryBridge {
     actual fun close() {
         Sentry.close()
     }
-
-    internal fun convertToSentryAndroidOptions(options: SentryKMPOptions): (SentryAndroidOptions) -> Unit {
-        return { sentryAndroidOptions ->
-            sentryAndroidOptions.dsn = options.dsn
-            sentryAndroidOptions.isAttachThreads = options.attachThreads
-            sentryAndroidOptions.isAttachStacktrace = options.attachStackTrace
-        }
-    }
 }

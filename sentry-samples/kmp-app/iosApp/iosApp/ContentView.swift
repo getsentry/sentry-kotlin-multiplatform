@@ -3,7 +3,18 @@ import shared
 
 struct ContentView: View {
 	var body: some View {
-		Text("KPM Sample App " + Platform().platform)
+		Text("KMP Sample App " + Platform().platform)
+        VStack() {
+            Button("Capture Message") {
+                Sentry().captureMessage(message: "KMP Sample App " + Platform().platform)
+            }
+            Button("Capture Exception") {
+                LoginImpl().login(username: "MyUsername")
+            }
+            Button("Hard Crash") {
+                LoginImpl().login(username: nil)
+            }
+        }
 	}
 }
 
