@@ -72,13 +72,4 @@ actual class SentryScope {
     actual fun clear() {
         scope?.clear()
     }
-
-    // Platform specific
-    fun getTags(): Map<String, String> {
-        return scope?.tags!!
-    }
-}
-
-fun SentryScope.setContext(key: String, value: Map<Any?, Any>) {
-
 }
