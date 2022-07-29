@@ -26,4 +26,8 @@ internal actual object SentryBridge {
             sentryAndroidOptions.isAttachStacktrace = options.attachStackTrace
         }
     }
+
+    fun SentryBridge.test() {
+
+    }
 }

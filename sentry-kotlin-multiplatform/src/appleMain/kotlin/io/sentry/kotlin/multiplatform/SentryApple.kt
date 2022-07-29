@@ -1,7 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
+import cocoapods.Sentry.SentryEvent
+import NSException.Sentry.SentryEvent as SentryNSExceptionEvent
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.nsexception.asNSException
+import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
@@ -13,8 +17,7 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
-        val exception = NSException(throwable::class.simpleName, throwable.message, null)
-        val cocoaSentryId = SentrySDK.captureException(exception)
+        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true))
         return SentryId(cocoaSentryId.toString())
     }
 
@@ -26,6 +29,9 @@ internal actual object SentryBridge {
         val sentryAppleOptions = SentryOptions()
         sentryAppleOptions.dsn = options.dsn
         sentryAppleOptions.attachStacktrace = options.attachStackTrace
+        sentryAppleOptions.beforeSend = { event ->
+            dropKotlinCrashEvent(event as SentryNSExceptionEvent?) as SentryEvent?
+        }
         return sentryAppleOptions
     }
 }

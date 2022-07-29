@@ -34,7 +34,3 @@ object Sentry {
         SentryBridge.close()
     }
 }
-
-fun interface OptionsConfiguration<T: SentryKMPOptions> {
-    fun configure(options: T)
-}
