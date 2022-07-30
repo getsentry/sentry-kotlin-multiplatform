@@ -68,7 +68,7 @@ Remember to execute the initialization as early in your application life cycle a
 class YourApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-      SentryKMP.start(this) {
+      Sentry.init(this) {
         it.dsn = "___DSN___"
       }
    }
@@ -83,7 +83,7 @@ import shared
 
 // ...
 
-SentryKMP().start { options in 
+Sentry().start { options in 
   options.dsn = "___DSN___"
 }
 ```
