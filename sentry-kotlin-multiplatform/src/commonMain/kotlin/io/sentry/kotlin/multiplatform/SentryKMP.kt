@@ -27,10 +27,10 @@ object Sentry {
         /**
      * Configures the scope through the callback.
      *
-     * @param callback The configure scope callback.
+     * @param scopeCallback The configure scope callback.
      */
-    fun configureScope(callback: (SentryScope) -> Unit) {
-        SentryBridge.configureScope(callback)
+    fun configureScope(scopeCallback: (SentryScope) -> Unit) {
+        SentryBridge.configureScope(scopeCallback)
     }
 
     /**

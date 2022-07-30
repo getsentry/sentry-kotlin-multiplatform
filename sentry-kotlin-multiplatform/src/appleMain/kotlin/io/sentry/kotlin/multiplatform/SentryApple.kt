@@ -5,7 +5,7 @@ import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
-private val scope = SentryScope()
+private val globalScope = SentryScope()
 
 internal actual object SentryBridge {
 
@@ -20,20 +20,15 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId {
-        val kmpScope = SentryScope()
-        val callback: (cocoapods.Sentry.SentryScope?) -> Unit = { cocoaScope ->
-            kmpScope.initWithScope(cocoaScope!!)
-            scopeCallback.run(kmpScope)
-        }
-        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), callback)
+        val localScope = SentryScope()
+        val scopeConfiguration = localScope.scopeConfiguration(scopeCallback)
+        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), scopeConfiguration)
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun configureScope(callback: SentryScopeCallback) {
-        SentrySDK.configureScope {
-            scope.initWithScope(it!!)
-            callback.run(scope)
-        }
+    actual fun configureScope(scopeCallback: SentryScopeCallback) {
+        val scopeConfiguration = globalScope.scopeConfiguration(scopeCallback)
+        SentrySDK.configureScope(scopeConfiguration)
     }
 
     actual fun close() {

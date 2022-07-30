@@ -1,6 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
 expect class SentryScope {
+    fun addBreadcrumb(crumb: SentryBreadcrumb)
+    fun clearBreadcrumbs()
     fun setUser(user: SentryUser)
     fun setContext(key: String, value: Any)
     fun removeContext(key: String)

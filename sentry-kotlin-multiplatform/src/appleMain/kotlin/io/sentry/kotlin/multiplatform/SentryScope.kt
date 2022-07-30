@@ -2,17 +2,27 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import cocoapods.Sentry.SentryScope as CocoaScope
-import cocoapods.Sentry.SentryUser as User
+import cocoapods.Sentry.SentryUser as CocoaUser
 
 actual class SentryScope {
+
+    // We are directly modifying the Cocoa SDK scope
     private var scope: CocoaScope? = null
 
-    fun initWithScope(scope: CocoaScope) {
-        this.scope = scope
+    /**
+     * This initalizes the SentryScope wrapper with the Cocoa scope and invokes the callback
+     * on this KMP scope which in turn modifies the Cocoa scope
+     *
+     */
+    fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): (CocoaScope?) -> Unit {
+        return {
+            this.scope = it
+            kmpScopeCallback.run(this)
+        }
     }
 
     actual fun setUser(user: SentryUser) {
-        val cocoaUser = User()
+        val cocoaUser = CocoaUser()
         cocoaUser.userId = user.id
         cocoaUser.username = user.username
         cocoaUser.email = user.email
@@ -30,14 +40,8 @@ actual class SentryScope {
         } catch (e: Throwable) {
             val map = HashMap<Any?, Any>()
             map.put("value", value)
-            scope?.setContextValue(mapAnyContext(value), key)
+            scope?.setContextValue(map, key)
         }
-    }
-
-    private fun mapAnyContext(value: Any): Map<Any?, Any> {
-        val map = HashMap<Any?, Any>()
-        map.put("value", value)
-        return map
     }
 
     actual fun removeContext(key: String) {
@@ -53,7 +57,7 @@ actual class SentryScope {
     }
 
     actual fun setExtra(key: String, value: String) {
-        // setExtra needs map
+        scope?.setExtraValue(value, key)
     }
 
     actual fun removeExtra(key: String) {

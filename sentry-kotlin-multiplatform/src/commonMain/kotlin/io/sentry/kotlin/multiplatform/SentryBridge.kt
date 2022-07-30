@@ -8,7 +8,7 @@ internal expect object SentryBridge {
 
     fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId
 
-    fun configureScope(callback: SentryScopeCallback)
+    fun configureScope(scopeCallback: SentryScopeCallback)
 
     fun close()
 }

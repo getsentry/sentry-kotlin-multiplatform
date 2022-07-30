@@ -1,20 +1,38 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.ScopeCallback
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
-import io.sentry.protocol.User
+import io.sentry.protocol.User as AndroidUser
 import io.sentry.util.CollectionUtils
 import io.sentry.Scope as AndroidScope
 
 actual class SentryScope {
 
+    // We are directly modifying the Android SDK scope
     private var scope: AndroidScope? = null
 
-    fun initWithScope(scope: AndroidScope) {
-        this.scope = scope
+    /**
+     * This initalizes the SentryScope wrapper with the Android scope and invokes the callback
+     * on this KMP scope which in turn modifies the Android scope
+     *
+     */
+    fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): ScopeCallback {
+        return ScopeCallback {
+            this.scope = it
+            kmpScopeCallback.run(this)
+        }
+    }
+
+    actual fun addBreadcrumb(crumb: SentryBreadcrumb) {
+
+    }
+
+    actual fun clearBreadcrumbs() {
+
     }
 
     actual fun setUser(user: SentryUser) {
-        val androidUser = User()
+        val androidUser = AndroidUser()
         androidUser.id = user.id
         androidUser.username = user.username
         androidUser.email = user.email
