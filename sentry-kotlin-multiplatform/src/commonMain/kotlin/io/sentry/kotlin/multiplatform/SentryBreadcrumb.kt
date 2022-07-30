@@ -21,5 +21,12 @@ expect class SentryBreadcrumb() {
     fun setMessage(message: String)
     fun setData(key: String, value: Any)
     fun setLevel(level: SentryLevel)
-    fun getData(): MutableMap<String?, Any?>
+    fun setUnknown(unknown: MutableMap<String?, Any?>?)
+
+    fun getType(): String?
+    fun getCategory(): String?
+    fun getMessage(): String?
+    fun getData(): MutableMap<String?, Any?>?
+    fun getLevel(): SentryLevel?
+    fun getUnknown(): MutableMap<String?, Any?>?
 }

@@ -1,18 +1,17 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.ScopeCallback
+import io.sentry.kotlin.multiplatform.extensions.toAndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
-import io.sentry.protocol.User as AndroidUser
 import io.sentry.util.CollectionUtils
-import io.sentry.Scope as AndroidScope
 
-actual class SentryScope {
+actual class SentryScope : ISentryScope {
 
     // We are directly modifying the Android SDK scope
-    private var scope: AndroidScope? = null
+    private var scope: AndroidSentryScope? = null
 
     /**
-     * This initalizes the SentryScope wrapper with the Android scope and invokes the callback
+     * This initializes the SentryScope wrapper with the Android scope and invokes the callback
      * on this KMP scope which in turn modifies the Android scope
      *
      */
@@ -23,16 +22,17 @@ actual class SentryScope {
         }
     }
 
-    actual fun addBreadcrumb(crumb: SentryBreadcrumb) {
-
+    actual override fun addBreadcrumb(breadcrumb: SentryBreadcrumb) {
+        val androidBreadcrumb = breadcrumb.toAndroidBreadcrumb()
+        scope?.addBreadcrumb(androidBreadcrumb)
     }
 
-    actual fun clearBreadcrumbs() {
-
+    actual override fun clearBreadcrumbs() {
+        scope?.clearBreadcrumbs()
     }
 
-    actual fun setUser(user: SentryUser) {
-        val androidUser = AndroidUser()
+    actual override fun setUser(user: SentryUser) {
+        val androidUser = AndroidSentryUser()
         androidUser.id = user.id
         androidUser.username = user.username
         androidUser.email = user.email
@@ -42,11 +42,11 @@ actual class SentryScope {
         scope?.user = androidUser
     }
 
-    actual fun setLevel(level: SentryLevel) {
+    actual override fun setLevel(level: SentryLevel) {
         scope?.level = level.toAndroidSentryLevel()
     }
 
-    actual fun setContext(key: String, value: Any) {
+    actual override fun setContext(key: String, value: Any) {
         if (value is String) {
             scope?.setContexts(key, value)
         }
@@ -67,27 +67,27 @@ actual class SentryScope {
         }
     }
 
-    actual fun removeContext(key: String) {
+    actual override override fun removeContext(key: String) {
         scope?.removeContexts(key)
     }
 
-    actual fun setTag(key: String, value: String) {
+    actual override fun setTag(key: String, value: String) {
         scope?.setTag(key, value)
     }
 
-    actual fun removeTag(key: String) {
+    actual override fun removeTag(key: String) {
         scope?.removeTag(key)
     }
 
-    actual fun setExtra(key: String, value: String) {
+    actual override fun setExtra(key: String, value: String) {
         scope?.setExtra(key, value)
     }
 
-    actual fun removeExtra(key: String) {
+    actual override fun removeExtra(key: String) {
         scope?.removeExtra(key)
     }
 
-    actual fun clear() {
+    actual override fun clear() {
         scope?.clear()
     }
 }

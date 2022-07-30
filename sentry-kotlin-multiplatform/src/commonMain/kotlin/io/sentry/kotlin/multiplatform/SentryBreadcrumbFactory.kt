@@ -1,5 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
+/**
+ * The factory is responsible for creating Breadcrumb objects in SentryBreadcrumb
+ * in order to avoid code duplication.
+ *
+ * This is only for internal usage and is not exposed to the user.
+ */
 internal object SentryBreadcrumbFactory {
     fun user(category: String, message: String): SentryBreadcrumb {
         val breadcrumb = SentryBreadcrumb()
@@ -96,7 +102,7 @@ internal object SentryBreadcrumbFactory {
             breadcrumb.setData("view.class", viewClass)
         }
         for ((key, value) in additionalData) {
-            breadcrumb.getData().put(key, value)
+            breadcrumb.getData()?.put(key, value)
         }
         breadcrumb.setLevel(SentryLevel.INFO)
         return breadcrumb

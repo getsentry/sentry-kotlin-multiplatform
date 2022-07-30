@@ -7,6 +7,7 @@ import android.widget.Button
 import io.sentry.kotlin.multiplatform.SentryLevel
 import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.init
 import sample.kpm_app.Platform
 

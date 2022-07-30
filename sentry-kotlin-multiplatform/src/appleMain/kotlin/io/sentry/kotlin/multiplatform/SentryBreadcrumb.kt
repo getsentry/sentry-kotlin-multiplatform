@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import cocoapods.Sentry.SentryBreadcrumb as CocoaBreadcrumb
 
-actual open class SentryBreadcrumb {
+actual class SentryBreadcrumb {
 
     private var breadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
 
@@ -77,7 +77,30 @@ actual open class SentryBreadcrumb {
         breadcrumb.level = level.toCocoaSentryLevel()
     }
 
-    actual fun getData(): MutableMap<String?, Any?> {
+    actual fun getData(): MutableMap<String?, Any?>? {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getType(): String? {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getCategory(): String? {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getMessage(): String? {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getLevel(): SentryLevel? {
+        TODO("Not yet implemented")
+    }
+
+    actual fun setUnknown(unknown: MutableMap<String?, Any?>?) {
+    }
+
+    actual fun getUnknown(): MutableMap<String?, Any?>? {
         TODO("Not yet implemented")
     }
 }
