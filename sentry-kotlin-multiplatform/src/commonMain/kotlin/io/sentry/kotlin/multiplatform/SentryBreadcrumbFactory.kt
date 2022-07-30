@@ -9,6 +9,7 @@ package io.sentry.kotlin.multiplatform
 internal object SentryBreadcrumbFactory {
     fun user(category: String, message: String): SentryBreadcrumb {
         val breadcrumb = SentryBreadcrumb()
+        breadcrumb.setType("user")
         breadcrumb.setCategory(category)
         breadcrumb.setMessage(message)
         return breadcrumb
@@ -75,7 +76,7 @@ internal object SentryBreadcrumbFactory {
     fun query(message: String): SentryBreadcrumb {
         val breadcrumb = SentryBreadcrumb()
         breadcrumb.setType("query")
-        breadcrumb.setType(message)
+        breadcrumb.setMessage(message)
         return breadcrumb
     }
 
@@ -85,10 +86,6 @@ internal object SentryBreadcrumbFactory {
         breadcrumb.setCategory("ui.$category")
         breadcrumb.setMessage(message)
         return breadcrumb
-    }
-
-    fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): SentryBreadcrumb {
-        return userInteraction(subCategory, viewId, viewClass, emptyMap<String?, Any>())
     }
 
     fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): SentryBreadcrumb {
@@ -106,5 +103,9 @@ internal object SentryBreadcrumbFactory {
         }
         breadcrumb.setLevel(SentryLevel.INFO)
         return breadcrumb
+    }
+
+    fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): SentryBreadcrumb {
+        return userInteraction(subCategory, viewId, viewClass, emptyMap<String?, Any>())
     }
 }

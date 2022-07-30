@@ -67,7 +67,7 @@ actual class SentryScope : ISentryScope {
         }
     }
 
-    actual override override fun removeContext(key: String) {
+    actual override fun removeContext(key: String) {
         scope?.removeContexts(key)
     }
 

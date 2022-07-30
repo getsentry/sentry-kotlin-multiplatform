@@ -30,3 +30,7 @@ expect class SentryBreadcrumb() {
     fun getLevel(): SentryLevel?
     fun getUnknown(): MutableMap<String?, Any?>?
 }
+
+interface ISentryBreadcrumb {
+    // TODO: chore
+}
