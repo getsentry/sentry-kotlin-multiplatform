@@ -47,18 +47,22 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
             }
         }
-
+/*
         val jvmMain by getting {
             dependencies {
                 implementation("io.sentry:sentry:6.1.4")
             }
         }
+
+
         val jvmTest by getting {
             dependsOn(commonTest)
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-junit")
             }
         }
+
+ */
 
         val androidMain by getting {
             dependencies {
@@ -67,7 +71,9 @@ kotlin {
         }
         val androidTest by getting {
             dependsOn(commonTest)
-            dependsOn(jvmTest)
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+            }
         }
 
         val appleMain by creating { dependsOn(commonMain) }

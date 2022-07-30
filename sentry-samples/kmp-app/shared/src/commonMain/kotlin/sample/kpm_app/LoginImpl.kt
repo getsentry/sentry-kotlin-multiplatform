@@ -14,7 +14,9 @@ object LoginImpl {
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
-            Sentry.captureException(exception)
+            Sentry.captureException(exception) {
+                it.setContext("Login", "Failed with Invalid Username")
+            }
         } catch (exception: IllegalArgumentException) {
             throw exception
         }

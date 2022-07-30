@@ -20,7 +20,11 @@ object Sentry {
         return SentryBridge.captureException(throwable)
     }
 
-    /**
+    fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId {
+        return SentryBridge.captureException(throwable, scopeCallback)
+    }
+
+        /**
      * Configures the scope through the callback.
      *
      * @param callback The configure scope callback.

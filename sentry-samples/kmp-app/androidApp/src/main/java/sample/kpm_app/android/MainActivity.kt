@@ -27,12 +27,9 @@ class MainActivity : AppCompatActivity() {
             LoginImpl.login("MyUsername")
         }
 
-        val map = HashMap<Any?, Any>()
-        map.put("hello", 12)
-        map.put("fighter", "Faaa")
         Sentry.configureScope {
-            it.setLevel(SentryLevel.FATAL)
-            it.setContext("mycontext", map)
+            it.setContext("MyContext", "Test Context")
+            it.setTag("test-tag", "custom tag")
         }
 
         captureHardCrashBtn.setOnClickListener {

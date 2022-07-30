@@ -19,6 +19,16 @@ internal actual object SentryBridge {
         return SentryId(cocoaSentryId.toString())
     }
 
+    actual fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId {
+        val kmpScope = SentryScope()
+        val callback: (cocoapods.Sentry.SentryScope?) -> Unit = { cocoaScope ->
+            kmpScope.initWithScope(cocoaScope!!)
+            scopeCallback.run(kmpScope)
+        }
+        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), callback)
+        return SentryId(cocoaSentryId.toString())
+    }
+
     actual fun configureScope(callback: SentryScopeCallback) {
         SentrySDK.configureScope {
             scope.initWithScope(it!!)
