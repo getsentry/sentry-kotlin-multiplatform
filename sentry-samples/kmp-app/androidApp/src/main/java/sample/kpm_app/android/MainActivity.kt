@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         Sentry.configureScope {
-            it.setContext("MyContext", "Test Context")
+            it.setContext("MyContext", "Android Context")
             it.setTag("test-tag", "custom tag")
         }
 
