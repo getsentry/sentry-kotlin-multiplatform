@@ -11,23 +11,9 @@ expect class SentryBreadcrumb {
         fun error(message: String): SentryBreadcrumb
         fun info(message: String): SentryBreadcrumb
         fun query(message: String): SentryBreadcrumb
-        fun ui(
-            category: String,
-            message: String
-        ): SentryBreadcrumb
-
-        fun userInteraction(
-            subCategory: String,
-            viewId: String?,
-            viewClass: String?
-        ): SentryBreadcrumb
-
-        fun userInteraction(
-            subCategory: String,
-            viewId: String?,
-            viewClass: String?,
-            additionalData: Map<String?, Any?>
-        ): SentryBreadcrumb
+        fun ui(category: String, message: String): SentryBreadcrumb
+        fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): SentryBreadcrumb
+        fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): SentryBreadcrumb
     }
 
     fun setType(type: String)
