@@ -1,10 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.Breadcrumb
-import io.sentry.Scope
-import io.sentry.ScopeCallback
 import io.sentry.Sentry
-import io.sentry.android.core.SentryAndroidOptions
 
 private val globalScope = SentryScope()
 
@@ -30,7 +26,6 @@ internal actual object SentryBridge {
     actual fun configureScope(scopeCallback: SentryScopeCallback) {
         val scopeConfiguration = globalScope.scopeConfiguration(scopeCallback)
         Sentry.configureScope(scopeConfiguration)
-        val breadcrumb = Breadcrumb()
     }
 
     actual fun close() {

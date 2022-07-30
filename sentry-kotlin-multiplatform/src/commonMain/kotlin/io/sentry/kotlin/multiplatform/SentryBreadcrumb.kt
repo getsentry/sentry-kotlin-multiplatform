@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-expect class SentryBreadcrumb {
+expect class SentryBreadcrumb() {
     companion object {
         fun user(category: String, message: String): SentryBreadcrumb
         fun http(url: String, method: String): SentryBreadcrumb

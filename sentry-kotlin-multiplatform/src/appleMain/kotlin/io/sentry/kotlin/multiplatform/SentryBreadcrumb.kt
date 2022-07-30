@@ -1,66 +1,59 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import cocoapods.Sentry.SentryBreadcrumb as CocoaBreadcrumb
 
-actual class SentryBreadcrumb {
+actual open class SentryBreadcrumb {
 
     private var breadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
 
     actual companion object {
         actual fun user(category: String, message: String): SentryBreadcrumb {
-            val breadcrumb = SentryBreadcrumb()
-            breadcrumb.setCategory(category)
-            breadcrumb.setMessage(message)
-            return breadcrumb
+            return SentryBreadcrumbFactory.user(category, message)
         }
 
         actual fun http(url: String, method: String): SentryBreadcrumb {
-            val breadcrumb = SentryBreadcrumb()
-            breadcrumb.setType("http")
-            breadcrumb.setCategory("http")
-            breadcrumb.setData("url", url)
-            breadcrumb.setData("method", method.uppercase())
-            return breadcrumb
+            return SentryBreadcrumbFactory.http(url, method)
         }
 
         actual fun http(url: String, method: String, code: Int?): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.http(url, method, code)
         }
 
         actual fun navigation(from: String, to: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.navigation(from, to)
         }
 
         actual fun transaction(message: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.transaction(message)
         }
 
         actual fun debug(message: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.debug(message)
         }
 
         actual fun error(message: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.error(message)
         }
 
         actual fun info(message: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.info(message)
         }
 
         actual fun query(message: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.query(message)
         }
 
         actual fun ui(category: String, message: String): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.ui(category, message)
         }
 
         actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.userInteraction(subCategory, viewId, viewClass)
         }
 
         actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): SentryBreadcrumb {
-            TODO("Not yet implemented")
+            return SentryBreadcrumbFactory.userInteraction(subCategory, viewId, viewClass, additionalData)
         }
     }
 
@@ -81,6 +74,7 @@ actual class SentryBreadcrumb {
     }
 
     actual fun setLevel(level: SentryLevel) {
+        breadcrumb.level = level.toCocoaSentryLevel()
     }
 
     actual fun getData(): MutableMap<String?, Any?> {
