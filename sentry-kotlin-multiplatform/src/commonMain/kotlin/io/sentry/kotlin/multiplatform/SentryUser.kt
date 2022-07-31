@@ -8,13 +8,25 @@ class SentryUser() : ISentryUser {
     override var other: Map<String, String> = HashMap()
     override var unknown: Map<String, Any> = HashMap()
 
-    constructor(user: ISentryUser): this() {
+    constructor(user: ISentryUser) : this() {
         this.email = user.email
         this.id = user.id
         this.username = user.username
         this.ipAddress = user.ipAddress
         this.other = user.other
         this.unknown = user.unknown
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is SentryUser) {
+            return this.email == other.email
+                    && this.id == other.id
+                    && this.username == other.username
+                    && this.ipAddress == other.ipAddress
+                    && this.unknown == other.unknown
+                    && this.other == other.other
+        }
+        return false
     }
 }
 

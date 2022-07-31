@@ -1,9 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.ScopeCallback
-import io.sentry.kotlin.multiplatform.extensions.toAndroidBreadcrumb
-import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
-import io.sentry.util.CollectionUtils
+import io.sentry.kotlin.multiplatform.extensions.*
 
 actual class SentryScope : ISentryScope {
 
@@ -11,13 +9,18 @@ actual class SentryScope : ISentryScope {
     private var scope: AndroidSentryScope? = null
 
     /**
-     * This initializes the SentryScope wrapper with the Android scope and invokes the callback
-     * on this KMP scope which in turn modifies the Android scope
-     *
+     * Initializies this KMP Scope with the Android Scope
+     */
+    fun initWithAndroidScope(androidScope: AndroidSentryScope) {
+        this.scope = androidScope
+    }
+
+    /**
+     * Invokes the callback on this KMP scope which in turn modifies the Android scope
      */
     fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): ScopeCallback {
         return ScopeCallback {
-            this.scope = it
+            initWithAndroidScope(it)
             kmpScopeCallback.run(this)
         }
     }
@@ -32,18 +35,19 @@ actual class SentryScope : ISentryScope {
     }
 
     actual override fun setUser(user: SentryUser) {
-        val androidUser = AndroidSentryUser()
-        androidUser.id = user.id
-        androidUser.username = user.username
-        androidUser.email = user.email
-        androidUser.ipAddress = user.ipAddress
-        androidUser.others = CollectionUtils.newConcurrentHashMap(user.other)
-        androidUser.unknown = CollectionUtils.newConcurrentHashMap(user.unknown)
-        scope?.user = androidUser
+        scope?.user = user.toAndroidSentryUser()
+    }
+
+    actual override fun getUser(): SentryUser? {
+        return scope?.user?.toKMPSentryUser()
     }
 
     actual override fun setLevel(level: SentryLevel) {
         scope?.level = level.toAndroidSentryLevel()
+    }
+
+    actual override fun getLevel(): SentryLevel? {
+        return scope?.level?.toKMPSentryLevel()
     }
 
     actual override fun setContext(key: String, value: Any) {
@@ -69,6 +73,10 @@ actual class SentryScope : ISentryScope {
 
     actual override fun removeContext(key: String) {
         scope?.removeContexts(key)
+    }
+
+    actual override fun getContext(): Map<String, Any>? {
+        return scope?.contexts as Map<String, Any>
     }
 
     actual override fun setTag(key: String, value: String) {

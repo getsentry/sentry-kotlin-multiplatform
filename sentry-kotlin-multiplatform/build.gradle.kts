@@ -45,6 +45,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-common")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
             }
         }
 /*
@@ -61,7 +62,6 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-test-junit")
             }
         }
-
  */
 
         val androidMain by getting {
