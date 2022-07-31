@@ -64,10 +64,12 @@ actual class SentryScope : ISentryScope {
         cocoaUser.email = user.email
         cocoaUser.ipAddress = user.ipAddress
         scope?.setUser(cocoaUser)
+        this.user = user
     }
 
     actual override fun setLevel(level: SentryLevel) {
         scope?.setLevel(level.toCocoaSentryLevel())
+        this.level = level
     }
 
     actual override fun setContext(key: String, value: Any) {
