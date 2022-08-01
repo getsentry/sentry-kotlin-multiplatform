@@ -11,10 +11,8 @@ class SentryScopeTest : BaseSentryScopeTest() {
         val sentryScope = SentryScope()
         initializeScope(sentryScope)
         val user = SentryUser()
-        user.username = "TestUsername"
         sentryScope.level = SentryLevel.WARNING
         sentryScope.user = user
-        sentryScope.user?.username = "Another"
 
         val expectedContext = HashMap<String, Any>()
         val contextValue = HashMap<String, Any>()
@@ -30,7 +28,10 @@ class SentryScopeTest : BaseSentryScopeTest() {
 
         syncFields(sentryScope)
 
-        assertEquals(user, sentryScope.user)
+        assertEquals(user.id, sentryScope.user?.id)
+        assertEquals(user.username, sentryScope.user?.username)
+        assertEquals(user.ipAddress.toString(), sentryScope.user?.ipAddress.toString())
+        assertEquals(user.email, sentryScope.user?.email)
         assertEquals(SentryLevel.WARNING, sentryScope.level)
         assertEquals(expectedContext, sentryScope.getContexts())
         assertEquals(tags, sentryScope.getTags())
