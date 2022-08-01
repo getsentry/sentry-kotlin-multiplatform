@@ -15,9 +15,6 @@ fun SentryBreadcrumb.toAndroidBreadcrumb(): AndroidSentryBreadcrumb {
             androidBreadcrumb.setData(key!!, value)
         }
     }
-    if (this.getUnknown() != null) {
-        androidBreadcrumb.unknown = CollectionUtils.newConcurrentHashMap(this.getUnknown() as MutableMap<String, Any>)
-    }
     androidBreadcrumb.level = this.getLevel()?.toAndroidSentryLevel()
     return androidBreadcrumb
 }

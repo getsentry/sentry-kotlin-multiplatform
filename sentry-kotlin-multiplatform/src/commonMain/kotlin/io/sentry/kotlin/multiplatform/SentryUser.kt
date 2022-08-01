@@ -5,7 +5,7 @@ class SentryUser() : ISentryUser {
     override var email: String = ""
     override var id: String = ""
     override var username: String = ""
-    override var ipAddress: String = ""
+    override var ipAddress: String? = null
     override var other: Map<String, String> = HashMap()
     override var unknown: Map<String, Any> = HashMap()
 
@@ -35,7 +35,7 @@ interface ISentryUser {
     var email: String
     var id: String
     var username: String
-    var ipAddress: String
+    var ipAddress: String?
     var other: Map<String, String>
     var unknown: Map<String, Any>
 }

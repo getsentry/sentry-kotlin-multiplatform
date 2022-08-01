@@ -20,16 +20,14 @@ object LoginImpl {
             Sentry.captureException(exception) {
                 val breadcrumb = SentryBreadcrumb.debug("this is a test breadcrumb")
                 breadcrumb.setData("touch event", "on login")
-                it.addBreadcrumb(SentryBreadcrumb.debug("this is a test breadcrumb"))
+                it.addBreadcrumb(breadcrumb)
                 it.setContext("Login", "Failed with Invalid Username")
-                it.setTag("Login", "Failed Authentication")
+                it.setTag("login", "failed auth")
                 it.level = SentryLevel.WARNING
                 it.user = SentryUser()
                 it.user?.username = "John Doe"
                 it.user?.email = "john@doe.com"
             }
-
-            Sentry.captureException(exception)
         } catch (exception: IllegalArgumentException) {
             throw exception
         }
