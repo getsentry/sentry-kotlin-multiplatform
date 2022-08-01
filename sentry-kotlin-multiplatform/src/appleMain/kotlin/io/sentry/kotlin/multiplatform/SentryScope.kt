@@ -64,18 +64,6 @@ actual class SentryScope : ISentryScope {
         }
     }
 
-    /**
-     * Synchronizes the member fields who have no explicit setters in this scope with the Android scope
-     */
-    internal fun syncFields() {
-        if (_user != null) {
-            scope?.setUser(_user?.toCocoaSentryUser())
-        }
-        if (_level != null) {
-            scope?.setLevel(_level!!.toCocoaSentryLevel())
-        }
-    }
-
     actual override fun getContexts(): MutableMap<String, Any>? {
         if (scope?.serialize()?.get("context") != null) {
             val dict = scope?.serialize()?.get("context") as NSDictionary
