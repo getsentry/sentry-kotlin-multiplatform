@@ -5,13 +5,17 @@ import io.sentry.kotlin.multiplatform.SentryBreadcrumb
 
 fun SentryBreadcrumb.toCocoaBreadcrumb(): CocoaSentryBreadcrumb {
     val cocoaBreadcrumb = CocoaSentryBreadcrumb()
-    cocoaBreadcrumb.message = this.getMessage()
-    cocoaBreadcrumb.type = this.getType()
-    cocoaBreadcrumb.category = this.getCategory().toString()
+    this.getMessage().let { cocoaBreadcrumb.setMessage(it) }
+    this.getCategory().toString().let { cocoaBreadcrumb.setCategory(it) }
 
-    val dataClone = HashMap(this.getData() as MutableMap<Any?, Any>)
-    cocoaBreadcrumb.setData(dataClone)
+    this.getData().let {
+        if (it != null) {
+            val dataClone = HashMap(it as MutableMap<Any?, Any>)
+            cocoaBreadcrumb.setData(dataClone)
+        }
+    }
 
+    this.getType()?.let { cocoaBreadcrumb.setType(it) }
     this.getLevel()?.let { cocoaBreadcrumb.setLevel(it.toCocoaSentryLevel()) }
     return cocoaBreadcrumb
 }

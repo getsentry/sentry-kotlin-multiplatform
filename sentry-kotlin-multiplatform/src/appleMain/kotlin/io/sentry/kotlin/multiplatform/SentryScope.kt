@@ -71,8 +71,12 @@ actual class SentryScope : ISentryScope {
      * Synchronizes the member fields who have no explicit setters in this scope with the Android scope
      */
     internal fun syncFields() {
-        scope?.setUser(_user?.toCocoaSentryUser())
-        scope?.setLevel(_level!!.toCocoaSentryLevel())
+        if (_user != null) {
+            scope?.setUser(_user?.toCocoaSentryUser())
+        }
+        if (_level != null) {
+            scope?.setLevel(_level!!.toCocoaSentryLevel())
+        }
     }
 
     actual override fun getContexts(): MutableMap<String, Any>? {

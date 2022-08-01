@@ -20,7 +20,11 @@ object LoginImpl {
             Sentry.captureException(exception) {
                 it.addBreadcrumb(SentryBreadcrumb.debug("this is a test breadcrumb"))
                 it.setContext("Login", "Failed with Invalid Username")
+                it.setTag("Login", "Failed Authentication")
                 it.level = SentryLevel.WARNING
+                it.user = SentryUser()
+                it.user?.username = "John Doe"
+                it.user?.email = "john@doe.com"
             }
         } catch (exception: IllegalArgumentException) {
             throw exception
