@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-open class SentryKMPOptions {
+open class SentryOptions {
     var dsn: String? = null
     var attachStackTrace = true
     var attachThreads = true
