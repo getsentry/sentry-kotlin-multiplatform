@@ -7,9 +7,4 @@ actual abstract class BaseSentryScopeTest {
         val cocoaScope = CocoaScope()
         scope.initWithCocoaScope(cocoaScope)
     }
-
-    actual fun syncFields(scope: SentryScope) {
-        scope.syncFields()
-    }
-
 }

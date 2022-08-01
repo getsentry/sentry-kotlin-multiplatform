@@ -28,8 +28,6 @@ class SentryScopeTest : BaseSentryScopeTest() {
         tags.put("MyTag", "Value")
         sentryScope.setTag("MyTag", "Value")
 
-        syncFields(sentryScope)
-
         assertEquals(user.id, sentryScope.user?.id)
         assertEquals(user.username, sentryScope.user?.username)
         assertEquals(user.ipAddress.toString(), sentryScope.user?.ipAddress.toString())
@@ -47,7 +45,6 @@ class SentryScopeTest : BaseSentryScopeTest() {
         sentryScope.user = SentryUser()
         sentryScope.user?.username = "Test Username"
 
-        syncFields(sentryScope)
         sentryScope.clear()
 
         assertNull(sentryScope.user)

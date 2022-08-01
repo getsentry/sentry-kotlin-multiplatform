@@ -8,21 +8,19 @@ actual class SentryScope : ISentryScope {
     // We are directly modifying the Android SDK scope
     private var scope: AndroidSentryScope? = null
 
-    private var _level: SentryLevel? = null
-    actual override var level: SentryLevel? = null
+    actual override var level: SentryLevel?
         set(value) {
-            field = value
-            _level = value
+            scope?.level = value?.toAndroidSentryLevel()
         }
         get() {
             return scope?.level?.toKMPSentryLevel()
         }
 
-    private var _user: SentryUser? = null
-    actual override var user: SentryUser? = null
+    actual override var user: SentryUser?
         set(value) {
-            field = value
-            _user = value
+            value?.onFieldChanged = {
+                scope?.user = value?.toAndroidSentryUser()
+            }
         }
         get() {
             return scope?.user?.toKMPSentryUser()
@@ -42,16 +40,7 @@ actual class SentryScope : ISentryScope {
         return ScopeCallback {
             initWithAndroidScope(it)
             kmpScopeCallback.run(this)
-            syncFields()
         }
-    }
-
-    /**
-     * Synchronizes the member fields who have no explicit setters in this scope with the Android scope
-     */
-    internal fun syncFields() {
-        scope?.user = _user?.toAndroidSentryUser()
-        scope?.level = _level?.toAndroidSentryLevel()
     }
 
     actual override fun getContexts(): MutableMap<String, Any>? {

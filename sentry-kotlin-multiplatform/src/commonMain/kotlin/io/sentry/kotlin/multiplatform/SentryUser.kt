@@ -1,13 +1,21 @@
 package io.sentry.kotlin.multiplatform
 
+import kotlin.properties.Delegates
+
 class SentryUser() : ISentryUser {
 
-    override var email: String = ""
-    override var id: String = ""
-    override var username: String = ""
-    override var ipAddress: String? = null
-    override var other: Map<String, String> = HashMap()
-    override var unknown: Map<String, Any> = HashMap()
+    private fun <T> onFieldChangeDelegate(init: T) = Delegates.observable(init) { _, _, _ ->
+        onFieldChanged?.let { it() }
+    }
+
+    override var email: String by onFieldChangeDelegate("")
+    override var id: String by onFieldChangeDelegate("")
+    override var username: String by onFieldChangeDelegate("")
+    override var ipAddress: String? by onFieldChangeDelegate("")
+    override var other: Map<String, String> by onFieldChangeDelegate(HashMap())
+    override var unknown: Map<String, Any> by onFieldChangeDelegate(HashMap())
+
+    var onFieldChanged: (() -> Unit)? = null
 
     constructor(user: ISentryUser) : this() {
         this.email = user.email
@@ -32,10 +40,25 @@ class SentryUser() : ISentryUser {
 }
 
 interface ISentryUser {
+
+    /** The user's email */
     var email: String
+
+    /** The user's id */
     var id: String
+
+    /** The user's username */
     var username: String
+
+    /** The user's ip address*/
     var ipAddress: String?
+
+    /**
+     * Additional arbitrary fields, as stored in the database (and sometimes as sent by clients). All
+     * data from `self.other` should end up here after store normalization.
+     */
     var other: Map<String, String>
+
+    /** Unknown fields, only internal usage. */
     var unknown: Map<String, Any>
 }

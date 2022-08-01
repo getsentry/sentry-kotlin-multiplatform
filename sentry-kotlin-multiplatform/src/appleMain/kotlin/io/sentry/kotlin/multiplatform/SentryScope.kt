@@ -12,11 +12,9 @@ actual class SentryScope : ISentryScope {
     // We are directly modifying the Cocoa SDK scope
     private var scope: CocoaScope? = null
 
-    private var _level: SentryLevel? = null
-    actual override var level: SentryLevel? = null
+    actual override var level: SentryLevel?
         set(value) {
-            field = value
-            _level = value
+            scope?.setLevel(value?.toCocoaSentryLevel())
         }
         get() {
             val levelMap = scope?.serialize()?.get("level")
@@ -24,14 +22,14 @@ actual class SentryScope : ISentryScope {
                 val levelString = (levelMap as String).uppercase()
                 return SentryLevel.valueOf(levelString)
             }
-            return _level
+            return null
         }
 
-    private var _user: SentryUser? = null
-    actual override var user: SentryUser? = null
+    actual override var user: SentryUser?
         set(value) {
-            field = value
-            _user = value
+            value?.onFieldChanged = {
+                scope?.setUser(value?.toCocoaSentryUser())
+            }
         }
         get() {
             val userMap = scope?.serialize()?.get("user") as Map<String, String>?
@@ -43,7 +41,7 @@ actual class SentryScope : ISentryScope {
                 sentryUser.ipAddress = userMap["ip_address"] as String
                 return sentryUser
             }
-            return _user
+            return null
         }
 
     /**
@@ -63,7 +61,6 @@ actual class SentryScope : ISentryScope {
         return {
             initWithCocoaScope(it!!)
             kmpScopeCallback.run(this)
-            syncFields()
         }
     }
 
