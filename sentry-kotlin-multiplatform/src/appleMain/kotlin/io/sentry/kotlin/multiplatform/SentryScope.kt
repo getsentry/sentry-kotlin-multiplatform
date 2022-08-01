@@ -46,36 +46,8 @@ actual class SentryScope : ISentryScope {
             return _user
         }
 
-    actual override var contexts: MutableMap<String, Any>? = HashMap()
-        get() {
-            if (scope?.serialize()?.get("context") != null) {
-                val dict = scope?.serialize()?.get("context") as NSDictionary
-                val keys = dict.allKeys
-                val map: MutableMap<String, Any> = HashMap()
-                for (key in keys) {
-                    dict.objectForKey(key)?.let { map.put(key as String, it) }
-                }
-                return map
-            }
-            return HashMap()
-        }
-
-    actual override var tags: MutableMap<String, String>? = HashMap()
-        get() {
-            if (scope?.serialize()?.get("tags") != null) {
-                val dict = scope?.serialize()?.get("tags") as NSDictionary
-                val keys = dict.allKeys
-                val map: MutableMap<String, String> = HashMap()
-                for (key in keys) {
-                    map.put(key as String, dict.objectForKey(key) as String)
-                }
-                return map
-            }
-            return HashMap()
-        }
-
     /**
-     * Initializies this KMP Scope with the Cocoa Scope
+     * Initializes this KMP Scope with the Cocoa Scope
      *
      * @param cocoaScope: The Cocoa SDK scope
      */
@@ -96,11 +68,37 @@ actual class SentryScope : ISentryScope {
     }
 
     /**
-     * Synchronizes the fields in this scope with the Cocoa scope
+     * Synchronizes the member fields who have no explicit setters in this scope with the Android scope
      */
     internal fun syncFields() {
         scope?.setUser(_user?.toCocoaSentryUser())
         scope?.setLevel(_level!!.toCocoaSentryLevel())
+    }
+
+    actual override fun getContexts(): MutableMap<String, Any>? {
+        if (scope?.serialize()?.get("context") != null) {
+            val dict = scope?.serialize()?.get("context") as NSDictionary
+            val keys = dict.allKeys
+            val map: MutableMap<String, Any> = HashMap()
+            for (key in keys) {
+                dict.objectForKey(key)?.let { map.put(key as String, it) }
+            }
+            return map
+        }
+        return HashMap()
+    }
+
+    actual override fun getTags(): MutableMap<String, String>? {
+        if (scope?.serialize()?.get("tags") != null) {
+            val dict = scope?.serialize()?.get("tags") as NSDictionary
+            val keys = dict.allKeys
+            val map: MutableMap<String, String> = HashMap()
+            for (key in keys) {
+                map.put(key as String, dict.objectForKey(key) as String)
+            }
+            return map
+        }
+        return HashMap()
     }
 
     actual override fun addBreadcrumb(breadcrumb: SentryBreadcrumb) {
@@ -114,13 +112,11 @@ actual class SentryScope : ISentryScope {
     private fun setContextForAnyValue(key: String, value: Any) {
         val map = HashMap<Any?, Any>()
         map.put("value", value)
-        contexts?.put(key, map)
         scope?.setContextValue(map, key)
     }
 
     actual override fun setContext(key: String, value: Any) {
         try {
-            contexts?.put(key, value as Map<Any?, Any>)
             scope?.setContextValue(value as Map<Any?, Any>, key)
         } catch (e: Throwable) {
             setContextForAnyValue(key, value)
@@ -152,7 +148,6 @@ actual class SentryScope : ISentryScope {
     }
 
     actual override fun removeContext(key: String) {
-        contexts?.remove(key)
         scope?.removeContextForKey(key)
     }
 
@@ -175,8 +170,6 @@ actual class SentryScope : ISentryScope {
     actual override fun clear() {
         user = null
         level = null
-        contexts?.clear()
-        tags?.clear()
         scope?.clear()
     }
 }

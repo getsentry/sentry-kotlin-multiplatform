@@ -4,8 +4,8 @@ expect class SentryScope() : ISentryScope {
 
     override var level: SentryLevel?
     override var user: SentryUser?
-    override var contexts: MutableMap<String, Any>?
-    override var tags: MutableMap<String, String>?
+    override fun getContexts(): MutableMap<String, Any>?
+    override fun getTags(): MutableMap<String, String>?
     override fun addBreadcrumb(breadcrumb: SentryBreadcrumb)
     override fun clearBreadcrumbs()
     override fun setContext(key: String, value: Any)
@@ -26,14 +26,14 @@ expect class SentryScope() : ISentryScope {
 interface ISentryScope {
 
     /**
-     * The Scope's tags
+     * Returns the scope's tags
      */
-    var tags: MutableMap<String, String>?
+    fun getTags(): MutableMap<String, String>?
 
     /**
-     * The Scope's contexts
+     * Returns the Scope's contexts
      */
-    var contexts: MutableMap<String, Any>?
+    fun getContexts(): MutableMap<String, Any>?
 
     /**
      * The Scope's user

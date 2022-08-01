@@ -28,15 +28,8 @@ actual class SentryScope : ISentryScope {
             return scope?.user?.toKMPSentryUser()
         }
 
-    actual override var contexts: MutableMap<String, Any>? = null
-        get() = scope?.contexts
-
-    actual override var tags: MutableMap<String, String>? = null
-        get() = scope?.tags
-
-
     /**
-     * Initializies this KMP Scope with the Android Scope
+     * Initializes this KMP Scope with the Android Scope
      */
     internal fun initWithAndroidScope(androidScope: AndroidSentryScope) {
         this.scope = androidScope
@@ -59,6 +52,14 @@ actual class SentryScope : ISentryScope {
     internal fun syncFields() {
         scope?.user = _user?.toAndroidSentryUser()
         scope?.level = _level?.toAndroidSentryLevel()
+    }
+
+    actual override fun getContexts(): MutableMap<String, Any>? {
+        return scope?.contexts
+    }
+
+    actual override fun getTags(): MutableMap<String, String>? {
+        return scope?.tags
     }
 
     actual override fun addBreadcrumb(breadcrumb: SentryBreadcrumb) {
