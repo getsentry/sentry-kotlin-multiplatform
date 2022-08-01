@@ -15,13 +15,29 @@ object Sentry {
     /**
      * Captures the exception.
      *
+     * @param message The message to send.
+     * @param scopeCallback The local scope callback.
+     */
+    fun captureMessage(message: String, scopeCallback: (SentryScope) -> Unit): SentryId {
+        return SentryBridge.captureMessage(message, scopeCallback)
+    }
+
+    /**
+     * Captures the exception.
+     *
      * @param throwable The exception.
      */
     fun captureException(throwable: Throwable): SentryId {
         return SentryBridge.captureException(throwable)
     }
 
-    fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId {
+    /**
+     * Captures the exception.
+     *
+     * @param throwable The exception.
+     * @param scopeCallback The local scope callback.
+     */
+    fun captureException(throwable: Throwable, scopeCallback: (SentryScope) -> Unit): SentryId {
         return SentryBridge.captureException(throwable, scopeCallback)
     }
 
