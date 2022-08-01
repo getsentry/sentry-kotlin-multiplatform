@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
+
     /**
      * Captures the message.
      *
