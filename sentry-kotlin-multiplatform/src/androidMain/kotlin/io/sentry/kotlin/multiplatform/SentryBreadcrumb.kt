@@ -72,7 +72,7 @@ actual class SentryBreadcrumb {
 
     actual fun setData(key: String, value: Any) {
         breadcrumb.setData(key, value)
-     }
+    }
 
     actual fun setData(map: Map<String, Any>) {
         for (key in map.keys) {
