@@ -2,6 +2,8 @@ package sample.kpm_app
 
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.SentryLevel
+import io.sentry.kotlin.multiplatform.SentryUser
 
 class InvalidUsernameException(message: String) : Exception(message)
 
@@ -18,6 +20,7 @@ object LoginImpl {
             Sentry.captureException(exception) {
                 it.addBreadcrumb(SentryBreadcrumb.debug("this is a test breadcrumb"))
                 it.setContext("Login", "Failed with Invalid Username")
+                it.level = SentryLevel.WARNING
             }
         } catch (exception: IllegalArgumentException) {
             throw exception

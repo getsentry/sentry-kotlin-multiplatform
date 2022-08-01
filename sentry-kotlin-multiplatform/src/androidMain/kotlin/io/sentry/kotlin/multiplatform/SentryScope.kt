@@ -34,49 +34,55 @@ actual class SentryScope : ISentryScope {
         scope?.clearBreadcrumbs()
     }
 
-    actual override fun setUser(user: SentryUser) {
-        scope?.user = user.toAndroidSentryUser()
-    }
+    actual override var level: SentryLevel? = null
+        get() {
+            return scope?.level?.toKMPSentryLevel()
+        }
 
-    actual override fun getUser(): SentryUser? {
-        return scope?.user?.toKMPSentryUser()
-    }
+    actual override var user: SentryUser? = null
+        get() {
+            return scope?.user?.toKMPSentryUser()
+        }
 
-    actual override fun setLevel(level: SentryLevel) {
-        scope?.level = level.toAndroidSentryLevel()
-    }
-
-    actual override fun getLevel(): SentryLevel? {
-        return scope?.level?.toKMPSentryLevel()
-    }
 
     actual override fun setContext(key: String, value: Any) {
-        if (value is String) {
-            scope?.setContexts(key, value)
-        }
-        if (value is Boolean) {
-            scope?.setContexts(key, value)
-        }
-        if (value is Number) {
-            scope?.setContexts(key, value)
-        }
-        if (value is Char) {
-            scope?.setContexts(key, value)
-        }
-        if (value is Collection<*>) {
-            scope?.setContexts(key, value)
-        }
-        if (value is Array<*>) {
-            scope?.setContexts(key, value as Array<Any>)
-        }
+        scope?.setContexts(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Boolean) {
+        scope?.setContexts(key, value)
+    }
+
+    actual override fun setContext(key: String, value: String) {
+        scope?.setContexts(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Number) {
+        scope?.setContexts(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Collection<*>) {
+        scope?.setContexts(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Array<Any>) {
+        scope?.setContexts(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Char) {
+        scope?.setContexts(key, value)
     }
 
     actual override fun removeContext(key: String) {
         scope?.removeContexts(key)
     }
 
-    actual override fun getContext(): Map<String, Any>? {
+    actual override fun getContexts(): Map<String, Any>? {
         return scope?.contexts as Map<String, Any>
+    }
+
+    actual override fun getTags(): Map<String, String>? {
+        return scope?.tags
     }
 
     actual override fun setTag(key: String, value: String) {

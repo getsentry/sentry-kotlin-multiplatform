@@ -98,11 +98,11 @@ actual class SentryBreadcrumb {
         return breadcrumb.level?.toKMPSentryLevel()
     }
 
-    actual fun getUnknown(): MutableMap<String?, Any?>? {
-        return breadcrumb.unknown
-    }
-
     actual fun setUnknown(unknown: MutableMap<String?, Any?>?) {
         breadcrumb.unknown = unknown
+    }
+
+    actual fun getUnknown(): MutableMap<String?, Any?>? {
+        return breadcrumb.unknown
     }
 }

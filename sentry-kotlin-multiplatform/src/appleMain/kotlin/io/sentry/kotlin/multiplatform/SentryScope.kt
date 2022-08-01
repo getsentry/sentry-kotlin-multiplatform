@@ -1,27 +1,48 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryUser
 import cocoapods.Sentry.SentryScope as CocoaScope
-import cocoapods.Sentry.SentryUser as CocoaUser
 
 actual class SentryScope : ISentryScope {
 
     // We are directly modifying the Cocoa SDK scope
     private var scope: CocoaScope? = null
 
-    /*
-    We keep track of multiple properties as well on the Cocoa platform because the SDK
-    doesn't have `get` access to properties
-    */
-    private var context: MutableMap<Any?, Any>? = HashMap()
-    private var level: SentryLevel? = null
-    private var user: SentryUser? = null
+    private var serializedMap: Map<String, Any>? = HashMap()
+
+    actual override var level: SentryLevel? = null
+        get() {
+            if (serializedMap?.get("level") != null) {
+                val levelString = (serializedMap as String).uppercase()
+                return SentryLevel.valueOf(levelString)
+
+            }
+            return null
+        }
+
+    actual override var user: SentryUser? = null
+        get() {
+            val userMap = serializedMap?.get("user") as Map<String, String>?
+            if (userMap != null) {
+                val sentryUser = SentryUser()
+                sentryUser.email = userMap["email"] as String
+                sentryUser.username = userMap["username"] as String
+                sentryUser.id = userMap["id"] as String
+                sentryUser.ipAddress = userMap["ip_address"] as String
+                return sentryUser
+            }
+            return null
+        }
 
     /**
      * Initializies this KMP Scope with the Cocoa Scope
+     *
+     * @param cocoaScope: The Cocoa SDK scope
      */
     fun initWithCocoaScope(cocoaScope: CocoaScope) {
         this.scope = cocoaScope
+        this.serializedMap = cocoaScope.serialize() as Map<String, Any>?
     }
 
     /**
@@ -33,6 +54,19 @@ actual class SentryScope : ISentryScope {
         return {
             initWithCocoaScope(it!!)
             kmpScopeCallback.run(this)
+            syncFields()
+        }
+    }
+
+    /**
+     * Synchronizes the fields in this scope with the Cocoa scope
+     */
+    private fun syncFields() {
+        if (user != null) {
+            scope?.setUser(user?.toCocoaSentryUser())
+        }
+        if (level != null) {
+            scope?.setLevel(level!!.toCocoaSentryLevel())
         }
     }
 
@@ -40,53 +74,58 @@ actual class SentryScope : ISentryScope {
 
     }
 
-
     actual override fun clearBreadcrumbs() {
         scope?.clearBreadcrumbs()
     }
 
-    actual override fun getUser(): SentryUser? {
-        return user
+    actual override fun getContexts(): Map<String, Any>? {
+        return serializedMap?.get("context") as Map<String, Any>?
     }
 
-    actual override fun getContext(): Map<String, Any>? {
-        return context as Map<String, Any>?
-    }
-
-    actual override fun getLevel(): SentryLevel? {
-        return level
-    }
-
-    actual override fun setUser(user: SentryUser) {
-        val cocoaUser = CocoaUser()
-        cocoaUser.userId = user.id
-        cocoaUser.username = user.username
-        cocoaUser.email = user.email
-        cocoaUser.ipAddress = user.ipAddress
-        scope?.setUser(cocoaUser)
-        this.user = user
-    }
-
-    actual override fun setLevel(level: SentryLevel) {
-        scope?.setLevel(level.toCocoaSentryLevel())
-        this.level = level
+    private fun setContextForAnyValue(key: String, value: Any) {
+        val map = HashMap<Any?, Any>()
+        map.put("value", value)
+        scope?.setContextValue(map, key)
     }
 
     actual override fun setContext(key: String, value: Any) {
         try {
-            context?.put(key, value)
             scope?.setContextValue(value as Map<Any?, Any>, key)
         } catch (e: Throwable) {
-            val map = HashMap<Any?, Any>()
-            map.put("value", value)
-            context?.put(key, map)
-            scope?.setContextValue(map, key)
+            setContextForAnyValue(key, value)
         }
     }
 
+    actual override fun setContext(key: String, value: String) {
+        setContextForAnyValue(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Boolean) {
+        setContextForAnyValue(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Number) {
+        setContextForAnyValue(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Char) {
+        setContextForAnyValue(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Array<Any>) {
+        setContextForAnyValue(key, value)
+    }
+
+    actual override fun setContext(key: String, value: Collection<*>) {
+        setContextForAnyValue(key, value)
+    }
+
     actual override fun removeContext(key: String) {
-        context?.remove(key)
         scope?.removeContextForKey(key)
+    }
+
+    actual override fun getTags(): Map<String, String>? {
+        return serializedMap?.get("tags") as Map<String, String>?
     }
 
     actual override fun setTag(key: String, value: String) {
@@ -108,7 +147,6 @@ actual class SentryScope : ISentryScope {
     actual override fun clear() {
         user = null
         level = null
-        context?.clear()
         scope?.clear()
     }
 }

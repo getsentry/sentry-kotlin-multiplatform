@@ -78,6 +78,7 @@ actual class SentryBreadcrumb {
     }
 
     actual fun getData(): MutableMap<String?, Any?>? {
+        return breadcrumb.data as MutableMap<String?, Any?>?
         TODO("Not yet implemented")
     }
 

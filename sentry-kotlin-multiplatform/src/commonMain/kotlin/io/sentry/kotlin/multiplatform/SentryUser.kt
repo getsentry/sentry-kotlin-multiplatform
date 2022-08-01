@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 class SentryUser() : ISentryUser {
+
     override var email: String = ""
     override var id: String = ""
     override var username: String = ""
@@ -16,6 +17,7 @@ class SentryUser() : ISentryUser {
         this.other = user.other
         this.unknown = user.unknown
     }
+
 
     override fun equals(other: Any?): Boolean {
         if (other is SentryUser) {
