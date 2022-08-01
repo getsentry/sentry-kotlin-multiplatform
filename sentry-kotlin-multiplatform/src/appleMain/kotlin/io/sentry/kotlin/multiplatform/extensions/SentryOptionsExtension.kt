@@ -1,13 +1,12 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import cocoapods.Sentry.SentryEvent
-import cocoapods.Sentry.SentryOptions
-import io.sentry.kotlin.multiplatform.SentryOptions
+import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
-fun io.sentry.kotlin.multiplatform.SentryOptions.toCocoaSentryOptions(): SentryOptions {
-    val sentryAppleOptions = SentryOptions()
+fun io.sentry.kotlin.multiplatform.SentryOptions.toCocoaSentryOptions(): CocoaSentryOptions {
+    val sentryAppleOptions = CocoaSentryOptions()
     sentryAppleOptions.dsn = this.dsn
     sentryAppleOptions.attachStacktrace = this.attachStackTrace
     sentryAppleOptions.beforeSend = { event ->
