@@ -12,31 +12,43 @@ class SentryScopeTest : BaseSentryScopeTest() {
         initializeScope(sentryScope)
         val user = SentryUser()
         user.username = "TestUsername"
-        sentryScope.setLevel(SentryLevel.WARNING)
-        sentryScope.setUser(user)
-        sentryScope.setContext("Context", "Fighter")
+        sentryScope.level = SentryLevel.WARNING
+        sentryScope.user = user
+        sentryScope.user?.username = "Another"
 
-        val context = HashMap<String, Any>()
-        val contextValue = HashMap<Any, Any>()
+        val expectedContext = HashMap<String, Any>()
+        val contextValue = HashMap<String, Any>()
         contextValue.put("value", "Fighter")
-        context.put("Context", contextValue)
+        contextValue.put("Number", 13)
+        contextValue.put("Boolean", false)
+        expectedContext.put("Context", contextValue)
+        sentryScope.setContext("Context", contextValue)
 
-        assertEquals(user, sentryScope.getUser())
-        assertEquals(SentryLevel.WARNING, sentryScope.getLevel())
-        assertEquals(context, sentryScope.getContext())
+        val tags = HashMap<String, String>()
+        tags.put("MyTag", "Value")
+        sentryScope.setTag("MyTag", "Value")
+
+        syncFields(sentryScope)
+
+        assertEquals(user, sentryScope.user)
+        assertEquals(SentryLevel.WARNING, sentryScope.level)
+        assertEquals(expectedContext, sentryScope.contexts)
+        assertEquals(tags, sentryScope.tags)
     }
 
     @Test
     fun `clear scope resets scope to default state`() {
         val sentryScope = SentryScope()
         initializeScope(sentryScope)
-        sentryScope.setLevel(SentryLevel.WARNING)
-        sentryScope.setUser(SentryUser())
+        sentryScope.level = SentryLevel.WARNING
+        sentryScope.user = SentryUser()
+        sentryScope.user?.username = "Test Username"
 
+        syncFields(sentryScope)
         sentryScope.clear()
 
-        assertNull(sentryScope.getUser())
-        assertNull(sentryScope.getLevel())
-        assertEquals(0, sentryScope.getContext()?.size)
+        assertNull(sentryScope.user)
+        assertNull(sentryScope.level)
+        //assertEquals(0, sentryScope.contexts?.size)
     }
 }

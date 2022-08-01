@@ -4,6 +4,8 @@ expect class SentryScope() : ISentryScope {
 
     override var level: SentryLevel?
     override var user: SentryUser?
+    override var contexts: MutableMap<String, Any>?
+    override var tags: MutableMap<String, String>?
     override fun addBreadcrumb(breadcrumb: SentryBreadcrumb)
     override fun clearBreadcrumbs()
     override fun setContext(key: String, value: Any)
@@ -14,8 +16,6 @@ expect class SentryScope() : ISentryScope {
     override fun setContext(key: String, value: Array<Any>)
     override fun setContext(key: String, value: Collection<*>)
     override fun removeContext(key: String)
-    override fun getContexts(): Map<String, Any>?
-    override fun getTags(): Map<String, String>?
     override fun setTag(key: String, value: String)
     override fun removeTag(key: String)
     override fun setExtra(key: String, value: String)
@@ -24,6 +24,16 @@ expect class SentryScope() : ISentryScope {
 }
 
 interface ISentryScope {
+
+    /**
+     * The Scope's tags
+     */
+    var tags: MutableMap<String, String>?
+
+    /**
+     * The Scope's contexts
+     */
+    var contexts: MutableMap<String, Any>?
 
     /**
      * The Scope's user
@@ -102,11 +112,6 @@ interface ISentryScope {
     fun setContext(key: String, value: Char)
 
     /**
-     * Returns the Scope's context
-     */
-    fun getContexts(): Map<String, Any>?
-
-    /**
      * Removes a value from the Scope's contexts
      *
      * @param key the Key
@@ -120,8 +125,6 @@ interface ISentryScope {
      * @param value the value
      */
     fun setTag(key: String, value: String)
-
-    fun getTags(): Map<String, String>?
 
     /**
      * Removes a tag from the Scope's tags

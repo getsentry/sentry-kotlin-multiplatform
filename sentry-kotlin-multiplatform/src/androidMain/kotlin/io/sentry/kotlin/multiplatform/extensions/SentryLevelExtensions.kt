@@ -11,7 +11,6 @@ fun SentryLevel.toAndroidSentryLevel(): AndroidSentryLevel {
         SentryLevel.ERROR -> return AndroidSentryLevel.ERROR
         SentryLevel.FATAL -> return AndroidSentryLevel.FATAL
     }
-    // TODO: is there a default?
     throw IllegalArgumentException("Sentry Level does not exist")
 }
 
@@ -23,7 +22,5 @@ fun AndroidSentryLevel.toKMPSentryLevel(): SentryLevel {
         AndroidSentryLevel.ERROR -> return SentryLevel.ERROR
         AndroidSentryLevel.FATAL -> return SentryLevel.FATAL
     }
-    // TODO: is there a default?
     throw IllegalArgumentException("Sentry Level does not exist")
-
 }

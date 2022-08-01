@@ -7,4 +7,8 @@ actual abstract class BaseSentryScopeTest {
         val androidScope = AndroidSentryScope(SentryOptions())
         scope.initWithAndroidScope(androidScope)
     }
+
+    actual fun syncFields(scope: SentryScope) {
+        scope.syncFields()
+    }
 }

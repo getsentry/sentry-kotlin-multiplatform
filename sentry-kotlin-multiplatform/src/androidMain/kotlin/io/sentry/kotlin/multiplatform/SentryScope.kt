@@ -8,21 +8,57 @@ actual class SentryScope : ISentryScope {
     // We are directly modifying the Android SDK scope
     private var scope: AndroidSentryScope? = null
 
+    private var _level: SentryLevel? = null
+    actual override var level: SentryLevel? = null
+        set(value) {
+            field = value
+            _level = value
+        }
+        get() {
+            return scope?.level?.toKMPSentryLevel()
+        }
+
+    private var _user: SentryUser? = null
+    actual override var user: SentryUser? = null
+        set(value) {
+            field = value
+            _user = value
+        }
+        get() {
+            return scope?.user?.toKMPSentryUser()
+        }
+
+    actual override var contexts: MutableMap<String, Any>? = null
+        get() = scope?.contexts
+
+    actual override var tags: MutableMap<String, String>? = null
+        get() = scope?.tags
+
+
     /**
      * Initializies this KMP Scope with the Android Scope
      */
-    fun initWithAndroidScope(androidScope: AndroidSentryScope) {
+    internal fun initWithAndroidScope(androidScope: AndroidSentryScope) {
         this.scope = androidScope
     }
 
     /**
      * Invokes the callback on this KMP scope which in turn modifies the Android scope
      */
-    fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): ScopeCallback {
+    internal fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): ScopeCallback {
         return ScopeCallback {
             initWithAndroidScope(it)
             kmpScopeCallback.run(this)
+            syncFields()
         }
+    }
+
+    /**
+     * Synchronizes the member fields who have no explicit setters in this scope with the Android scope
+     */
+    internal fun syncFields() {
+        scope?.user = _user?.toAndroidSentryUser()
+        scope?.level = _level?.toAndroidSentryLevel()
     }
 
     actual override fun addBreadcrumb(breadcrumb: SentryBreadcrumb) {
@@ -33,17 +69,6 @@ actual class SentryScope : ISentryScope {
     actual override fun clearBreadcrumbs() {
         scope?.clearBreadcrumbs()
     }
-
-    actual override var level: SentryLevel? = null
-        get() {
-            return scope?.level?.toKMPSentryLevel()
-        }
-
-    actual override var user: SentryUser? = null
-        get() {
-            return scope?.user?.toKMPSentryUser()
-        }
-
 
     actual override fun setContext(key: String, value: Any) {
         scope?.setContexts(key, value)
@@ -75,14 +100,6 @@ actual class SentryScope : ISentryScope {
 
     actual override fun removeContext(key: String) {
         scope?.removeContexts(key)
-    }
-
-    actual override fun getContexts(): Map<String, Any>? {
-        return scope?.contexts as Map<String, Any>
-    }
-
-    actual override fun getTags(): Map<String, String>? {
-        return scope?.tags
     }
 
     actual override fun setTag(key: String, value: String) {

@@ -134,4 +134,17 @@ class SentryBreadcrumbTest {
         assertEquals(breadcrumb.getData()?.get("message"), testMessage)
         assertEquals(breadcrumb.getData()?.get("category"), testCategory)
     }
+
+    @Test
+    fun `setData methods set values properly`() {
+        val breadcrumb = SentryBreadcrumb.debug(testMessage)
+        breadcrumb.setData("url", testUrl)
+        val map = HashMap<String, Any>()
+        map.put("TestEntry", "TestValue")
+        map.put("TestEntry2", "TestValue2")
+        breadcrumb.setData(map)
+        map.put("url", testUrl)
+
+        assertEquals(map as Map<String, Any>, breadcrumb.getData() as Map<String, Any>)
+    }
 }

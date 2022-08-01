@@ -18,7 +18,6 @@ class SentryUser() : ISentryUser {
         this.unknown = user.unknown
     }
 
-
     override fun equals(other: Any?): Boolean {
         if (other is SentryUser) {
             return this.email == other.email

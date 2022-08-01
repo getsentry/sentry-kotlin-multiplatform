@@ -41,3 +41,26 @@ fun SentryLevel.toCocoaSentryLevel(): CocoaSentryLevel {
         }
     }
 }
+
+fun CocoaSentryLevel.toKMPSentryLevel(): SentryLevel? {
+    val level = this
+    if (level.convert<Int>().compareTo(1) == 0) {
+        return SentryLevel.DEBUG
+    }
+    if (level.convert<Int>().compareTo(2) == 0) {
+        return SentryLevel.INFO
+    }
+    if (level.convert<Int>().compareTo(3) == 0) {
+        return SentryLevel.WARNING
+    }
+    if (level.convert<Int>().compareTo(4) == 0) {
+        return SentryLevel.ERROR
+    }
+    if (level.convert<Int>().compareTo(5) == 0) {
+        return SentryLevel.FATAL
+    }
+    if (level.convert<Int>().compareTo(0) == 0) {
+        return null
+    }
+    throw IllegalArgumentException("Sentry Level does not exist")
+}
