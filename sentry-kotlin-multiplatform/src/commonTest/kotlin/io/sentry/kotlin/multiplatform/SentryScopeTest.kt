@@ -13,6 +13,8 @@ class SentryScopeTest : BaseSentryScopeTest() {
         val user = SentryUser()
         sentryScope.level = SentryLevel.WARNING
         sentryScope.user = user
+        sentryScope.user?.email = "test@email.com"
+        user.email = "test@email.com"
 
         val expectedContext = HashMap<String, Any>()
         val contextValue = HashMap<String, Any>()
