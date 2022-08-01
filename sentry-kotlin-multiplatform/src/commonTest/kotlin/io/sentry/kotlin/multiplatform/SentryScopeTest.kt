@@ -32,8 +32,8 @@ class SentryScopeTest : BaseSentryScopeTest() {
 
         assertEquals(user, sentryScope.user)
         assertEquals(SentryLevel.WARNING, sentryScope.level)
-        assertEquals(expectedContext, sentryScope.contexts)
-        assertEquals(tags, sentryScope.tags)
+        assertEquals(expectedContext, sentryScope.getContexts())
+        assertEquals(tags, sentryScope.getTags())
     }
 
     @Test
@@ -49,6 +49,7 @@ class SentryScopeTest : BaseSentryScopeTest() {
 
         assertNull(sentryScope.user)
         assertNull(sentryScope.level)
-        //assertEquals(0, sentryScope.contexts?.size)
+        assertEquals(0, sentryScope.getContexts()?.size)
+        assertEquals(0, sentryScope.getTags()?.size)
     }
 }
