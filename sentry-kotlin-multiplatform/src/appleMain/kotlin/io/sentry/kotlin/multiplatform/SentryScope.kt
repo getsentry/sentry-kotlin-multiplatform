@@ -14,7 +14,7 @@ actual class SentryScope : ISentryScope {
 
     actual override var level: SentryLevel?
         set(value) {
-            scope?.setLevel(value?.toCocoaSentryLevel())
+            scope?.setLevel(value!!.toCocoaSentryLevel())
         }
         get() {
             val levelMap = scope?.serialize()?.get("level")
