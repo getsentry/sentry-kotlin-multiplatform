@@ -29,5 +29,4 @@ class AndroidSentryLevelTest {
         assertEquals(AndroidSentryLevel.ERROR, androidSentryLevelError)
         assertEquals(AndroidSentryLevel.FATAL, androidSentryLevelFatal)
     }
-
 }
