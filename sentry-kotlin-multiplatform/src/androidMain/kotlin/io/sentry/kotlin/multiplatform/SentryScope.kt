@@ -2,6 +2,8 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.ScopeCallback
 import io.sentry.kotlin.multiplatform.extensions.*
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
 actual class SentryScope : ISentryScope {
 

@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

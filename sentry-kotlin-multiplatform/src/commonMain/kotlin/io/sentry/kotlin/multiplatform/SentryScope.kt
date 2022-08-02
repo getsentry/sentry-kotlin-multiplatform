@@ -1,5 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.SentryUser
+
 expect class SentryScope() : ISentryScope {
 
     override var level: SentryLevel?

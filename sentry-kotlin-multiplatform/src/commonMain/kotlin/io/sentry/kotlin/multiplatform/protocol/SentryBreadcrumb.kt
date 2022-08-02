@@ -1,4 +1,6 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.protocol
+
+import io.sentry.kotlin.multiplatform.SentryLevel
 
 expect class SentryBreadcrumb() {
     companion object {

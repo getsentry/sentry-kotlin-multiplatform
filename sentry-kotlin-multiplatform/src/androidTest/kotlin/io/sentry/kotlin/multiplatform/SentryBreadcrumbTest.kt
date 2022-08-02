@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toAndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
 import org.junit.Test
 import kotlin.test.assertEquals
 

@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.AndroidSentryBreadcrumb
-import io.sentry.kotlin.multiplatform.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
 import io.sentry.util.CollectionUtils
 
 fun SentryBreadcrumb.toAndroidBreadcrumb(): AndroidSentryBreadcrumb {

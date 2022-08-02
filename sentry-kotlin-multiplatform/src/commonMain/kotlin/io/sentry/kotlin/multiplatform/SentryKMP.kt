@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.SentryId
+
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
 

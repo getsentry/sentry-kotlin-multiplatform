@@ -1,6 +1,4 @@
-package io.sentry.kotlin.multiplatform
-
-import cocoapods.Sentry.SentryId as CocoaSentryId
+package io.sentry.kotlin.multiplatform.protocol
 
 actual class SentryId actual constructor(sentryIdString: String): ISentryId {
 

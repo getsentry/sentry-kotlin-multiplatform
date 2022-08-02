@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.Sentry
+import io.sentry.kotlin.multiplatform.protocol.SentryId
 
 internal actual object SentryBridge {
 

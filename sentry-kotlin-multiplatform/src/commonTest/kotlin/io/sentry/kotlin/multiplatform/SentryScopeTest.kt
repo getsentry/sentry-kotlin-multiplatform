@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
+import io.sentry.kotlin.multiplatform.protocol.SentryUser
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

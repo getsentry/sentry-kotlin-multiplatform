@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.protocol
 
 import kotlin.properties.Delegates
 

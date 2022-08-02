@@ -1,9 +1,9 @@
 package sample.kpm_app
 
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
-import io.sentry.kotlin.multiplatform.SentryUser
+import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
 class InvalidUsernameException(message: String) : Exception(message)
 

@@ -3,6 +3,8 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryUser
+import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.SentryUser
 import platform.Foundation.NSDictionary
 import platform.Foundation.allKeys
 import cocoapods.Sentry.SentryScope as CocoaScope

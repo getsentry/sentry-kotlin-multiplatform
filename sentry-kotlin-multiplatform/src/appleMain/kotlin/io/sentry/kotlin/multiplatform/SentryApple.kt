@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
+import io.sentry.kotlin.multiplatform.protocol.SentryId
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 

@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.AndroidSentryUser
-import io.sentry.kotlin.multiplatform.SentryUser
+import io.sentry.kotlin.multiplatform.protocol.SentryUser
 import io.sentry.util.CollectionUtils
 
 fun SentryUser.toAndroidSentryUser(): AndroidSentryUser {
