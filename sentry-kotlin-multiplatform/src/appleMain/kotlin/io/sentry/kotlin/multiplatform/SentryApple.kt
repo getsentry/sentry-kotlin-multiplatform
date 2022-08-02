@@ -5,8 +5,6 @@ import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
-private val globalScope = SentryScope()
-
 internal actual object SentryBridge {
 
     actual fun captureMessage(message: String): SentryId {
@@ -14,9 +12,9 @@ internal actual object SentryBridge {
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureMessage(message: String, scopeCallback: SentryScopeCallback): SentryId {
-        val localScope = SentryScope()
-        val scopeConfiguration = localScope.scopeConfiguration(scopeCallback)
+    actual fun captureMessage(message: String, scopeCallback: (SentryScope) -> Unit): SentryId {
+        val scope = SentryScope()
+        val scopeConfiguration = scope.scopeConfiguration(scopeCallback)
         val cocoaSentryId = SentrySDK.captureMessage(message, scopeConfiguration)
         return SentryId(cocoaSentryId.toString())
     }
@@ -26,15 +24,16 @@ internal actual object SentryBridge {
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId {
-        val localScope = SentryScope()
-        val scopeConfiguration = localScope.scopeConfiguration(scopeCallback)
+    actual fun captureException(throwable: Throwable, scopeCallback: (SentryScope) -> Unit): SentryId {
+        val scope = SentryScope()
+        val scopeConfiguration = scope.scopeConfiguration(scopeCallback)
         val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), scopeConfiguration)
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun configureScope(scopeCallback: SentryScopeCallback) {
-        val scopeConfiguration = globalScope.scopeConfiguration(scopeCallback)
+    actual fun configureScope(scopeCallback: (SentryScope) -> Unit) {
+        val scope = SentryScope()
+        val scopeConfiguration = scope.scopeConfiguration(scopeCallback)
         SentrySDK.configureScope(scopeConfiguration)
     }
 

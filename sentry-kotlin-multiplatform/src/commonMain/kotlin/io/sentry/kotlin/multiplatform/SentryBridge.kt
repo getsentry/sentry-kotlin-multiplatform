@@ -4,13 +4,13 @@ internal expect object SentryBridge {
 
     fun captureMessage(message: String): SentryId
 
-    fun captureMessage(message: String, scopeCallback: SentryScopeCallback): SentryId
+    fun captureMessage(message: String, scopeCallback: (SentryScope) -> Unit): SentryId
 
     fun captureException(throwable: Throwable): SentryId
 
-    fun captureException(throwable: Throwable, scopeCallback: SentryScopeCallback): SentryId
+    fun captureException(throwable: Throwable, scopeCallback: (SentryScope) -> Unit): SentryId
 
-    fun configureScope(scopeCallback: SentryScopeCallback)
+    fun configureScope(scopeCallback: (SentryScope) -> Unit)
 
     fun close()
 }

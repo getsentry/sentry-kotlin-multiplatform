@@ -57,10 +57,10 @@ actual class SentryScope : ISentryScope {
      * This initializes the SentryScope wrapper with the Cocoa scope and invokes the callback
      * on this KMP scope which in turn modifies the Cocoa scope
      */
-    internal fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): (CocoaScope?) -> Unit {
+    internal fun scopeConfiguration(kmpScopeCallback: (SentryScope) -> Unit): (CocoaScope?) -> Unit {
         return {
             initWithCocoaScope(it!!)
-            kmpScopeCallback.run(this)
+            kmpScopeCallback.invoke(this)
         }
     }
 

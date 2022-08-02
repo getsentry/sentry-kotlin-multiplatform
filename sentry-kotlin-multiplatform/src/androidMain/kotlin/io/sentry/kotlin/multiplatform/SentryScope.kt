@@ -36,10 +36,10 @@ actual class SentryScope : ISentryScope {
     /**
      * Invokes the callback on this KMP scope which in turn modifies the Android scope
      */
-    internal fun scopeConfiguration(kmpScopeCallback: SentryScopeCallback): ScopeCallback {
+    internal fun scopeConfiguration(kmpScopeCallback: (SentryScope) -> Unit): ScopeCallback {
         return ScopeCallback {
             initWithAndroidScope(it)
-            kmpScopeCallback.run(this)
+            kmpScopeCallback.invoke(this)
         }
     }
 
