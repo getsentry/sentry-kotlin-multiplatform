@@ -157,8 +157,6 @@ actual class SentryScope : ISentryScope {
     }
 
     actual override fun clear() {
-        user = null
-        level = null
         scope?.clear()
     }
 }
