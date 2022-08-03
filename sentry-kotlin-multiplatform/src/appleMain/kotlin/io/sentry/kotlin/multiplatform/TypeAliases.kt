@@ -5,7 +5,7 @@ import cocoapods.Sentry.SentryId
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentryUser
 
-typealias CocoaSentryUser = SentryUser
-typealias CocoaSentryBreadcrumb = SentryBreadcrumb
+typealias CocoaUser = SentryUser
+typealias CocoaBreadcrumb = SentryBreadcrumb
 typealias CocoaSentryOptions = SentryOptions
 typealias CocoaSentryId = SentryId

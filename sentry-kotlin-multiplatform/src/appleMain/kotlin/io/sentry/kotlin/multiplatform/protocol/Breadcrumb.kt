@@ -1,13 +1,17 @@
 package io.sentry.kotlin.multiplatform.protocol
 
+import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
-import cocoapods.Sentry.SentryBreadcrumb as CocoaBreadcrumb
 
-actual class Breadcrumb {
+actual class Breadcrumb actual constructor() {
 
     private var breadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
+
+    constructor(breadcrumb: CocoaBreadcrumb) : this() {
+        this.breadcrumb = breadcrumb
+    }
 
     actual companion object {
         actual fun user(category: String, message: String): Breadcrumb {
@@ -64,15 +68,15 @@ actual class Breadcrumb {
         }
     }
 
-    actual fun setType(type: String) {
+    actual fun setType(type: String?) {
         breadcrumb.type = type
     }
 
-    actual fun setCategory(category: String) {
-        breadcrumb.category = category
+    actual fun setCategory(category: String?) {
+        category?.let { breadcrumb.category = it }
     }
 
-    actual fun setMessage(message: String) {
+    actual fun setMessage(message: String?) {
         breadcrumb.message = message
     }
 
@@ -82,16 +86,16 @@ actual class Breadcrumb {
         breadcrumb.setData(map)
     }
 
-    actual fun setData(map: Map<String, Any>) {
+    actual fun setData(map: MutableMap<String, Any>) {
         breadcrumb.setData(map as Map<Any?, Any>)
     }
 
-    actual fun setLevel(level: SentryLevel) {
-        breadcrumb.level = level.toCocoaSentryLevel()
+    actual fun setLevel(level: SentryLevel?) {
+        level?.let { breadcrumb.level = it.toCocoaSentryLevel() }
     }
 
-    actual fun getData(): MutableMap<String?, Any?>? {
-        return breadcrumb.data as MutableMap<String?, Any?>?
+    actual fun getData(): MutableMap<String, Any> {
+        return breadcrumb.data as MutableMap<String, Any>
     }
 
     actual fun getType(): String? {
