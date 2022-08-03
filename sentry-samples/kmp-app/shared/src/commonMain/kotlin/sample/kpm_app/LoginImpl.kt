@@ -24,9 +24,10 @@ object LoginImpl {
                 it.setContext("Login", "Failed with Invalid Username")
                 it.setTag("login", "failed auth")
                 it.level = SentryLevel.WARNING
-                it.user = SentryUser()
-                it.user?.username = "John Doe"
-                it.user?.email = "john@doe.com"
+                val user = SentryUser()
+                user.username = "John Doe"
+                user.email = "john@doe.com"
+                it.user = user
             }
         } catch (exception: IllegalArgumentException) {
             throw exception
