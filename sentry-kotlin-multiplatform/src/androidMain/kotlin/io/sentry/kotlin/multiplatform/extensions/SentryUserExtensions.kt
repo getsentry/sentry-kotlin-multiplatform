@@ -21,7 +21,11 @@ fun AndroidUser.toKMPSentryUser(): SentryUser {
     kmpSentryUser.username = this.username.toString()
     kmpSentryUser.email = this.email.toString()
     kmpSentryUser.ipAddress = this.ipAddress.toString()
-    kmpSentryUser.other = CollectionUtils.newConcurrentHashMap(this.others) as Map<String, String>
-    kmpSentryUser.unknown = CollectionUtils.newConcurrentHashMap(this.unknown) as Map<String, Any>
+    CollectionUtils.newConcurrentHashMap(this.others)?.let {
+        kmpSentryUser.other = it
+    }
+    CollectionUtils.newConcurrentHashMap(this.unknown)?.let {
+        kmpSentryUser.unknown = it
+    }
     return kmpSentryUser
 }
