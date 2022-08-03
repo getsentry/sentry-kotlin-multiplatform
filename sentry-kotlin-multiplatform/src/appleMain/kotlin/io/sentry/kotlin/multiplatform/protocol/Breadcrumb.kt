@@ -2,15 +2,20 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 
-actual class Breadcrumb actual constructor() {
+actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrumb?) : ISentryBreadcrumb {
 
-    private var breadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
+    private var cocoaBreadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
 
-    constructor(breadcrumb: CocoaBreadcrumb) : this() {
-        this.breadcrumb = breadcrumb
+    init {
+        this.cocoaBreadcrumb = breadcrumb?.toCocoaBreadcrumb() ?: CocoaBreadcrumb()
+    }
+
+    constructor(cocoaBreadcrumb: CocoaBreadcrumb) : this() {
+        this.cocoaBreadcrumb = cocoaBreadcrumb
     }
 
     actual companion object {
@@ -68,59 +73,59 @@ actual class Breadcrumb actual constructor() {
         }
     }
 
-    actual fun setType(type: String?) {
-        breadcrumb.type = type
+    actual override fun setType(type: String?) {
+        cocoaBreadcrumb.type = type
     }
 
-    actual fun setCategory(category: String?) {
-        category?.let { breadcrumb.category = it }
+    actual override fun setCategory(category: String?) {
+        category?.let { cocoaBreadcrumb.category = it }
     }
 
-    actual fun setMessage(message: String?) {
-        breadcrumb.message = message
+    actual override fun setMessage(message: String?) {
+        cocoaBreadcrumb.message = message
     }
 
     // Trying to check if breadcrumb.data is null leads to a null pointer exception no matter what
     // Using this boolean flag we can work around it
     private var dataIsNotNull = false
 
-    actual fun setData(key: String, value: Any) {
+    actual override fun setData(key: String, value: Any) {
         if (dataIsNotNull) {
-            val previousData = (breadcrumb.data as MutableMap<Any?, Any>).apply {
+            val previousData = (cocoaBreadcrumb.data as MutableMap<Any?, Any>).apply {
                 put(key, value)
             }
-            breadcrumb.setData(previousData)
+            cocoaBreadcrumb.setData(previousData)
         } else {
             setData(mutableMapOf(key to value))
         }
     }
 
-    actual fun setData(map: MutableMap<String, Any>) {
-        breadcrumb.setData(map as Map<Any?, Any>)
+    actual override fun setData(map: MutableMap<String, Any>) {
+        cocoaBreadcrumb.setData(map as Map<Any?, Any>)
         dataIsNotNull = true
     }
 
-    actual fun setLevel(level: SentryLevel?) {
-        level?.let { breadcrumb.level = it.toCocoaSentryLevel() }
+    actual override fun setLevel(level: SentryLevel?) {
+        level?.let { cocoaBreadcrumb.level = it.toCocoaSentryLevel() }
     }
 
-    actual fun getData(): MutableMap<String, Any> {
-        return breadcrumb.data as MutableMap<String, Any>
+    actual override fun getData(): MutableMap<String, Any> {
+        return cocoaBreadcrumb.data as MutableMap<String, Any>
     }
 
-    actual fun getType(): String? {
-        return breadcrumb.type
+    actual override fun getType(): String? {
+        return cocoaBreadcrumb.type
     }
 
-    actual fun getCategory(): String? {
-        return breadcrumb.category
+    actual override fun getCategory(): String? {
+        return cocoaBreadcrumb.category
     }
 
-    actual fun getMessage(): String? {
-        return breadcrumb.message
+    actual override fun getMessage(): String? {
+        return cocoaBreadcrumb.message
     }
 
-    actual fun getLevel(): SentryLevel? {
-        return breadcrumb.level.toKmpSentryLevel()
+    actual override fun getLevel(): SentryLevel? {
+        return cocoaBreadcrumb.level.toKmpSentryLevel()
     }
 }

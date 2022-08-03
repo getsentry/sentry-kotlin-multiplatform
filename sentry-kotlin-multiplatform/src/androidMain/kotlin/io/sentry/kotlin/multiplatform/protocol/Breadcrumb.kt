@@ -2,16 +2,21 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.AndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toAndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 
-actual class Breadcrumb actual constructor() {
+actual data class Breadcrumb actual constructor(private val breadcrumb: ISentryBreadcrumb?) : ISentryBreadcrumb {
 
-    private var breadcrumb = AndroidBreadcrumb()
+    private var androidBreadcrumb = AndroidBreadcrumb()
+    
+    init {
+        this.androidBreadcrumb = breadcrumb?.toAndroidBreadcrumb() ?: AndroidBreadcrumb()
+    }
 
-    constructor(breadcrumb: AndroidBreadcrumb) : this() {
-        this.breadcrumb = breadcrumb
+    constructor(androidBreadcrumb: AndroidBreadcrumb) : this() {
+        this.androidBreadcrumb = androidBreadcrumb
     }
 
     actual companion object {
@@ -74,57 +79,57 @@ actual class Breadcrumb actual constructor() {
         }
     }
 
-    actual fun setType(type: String?) {
-        breadcrumb.type = type
+    actual override fun setType(type: String?) {
+        androidBreadcrumb.type = type
     }
 
-    actual fun setCategory(category: String?) {
-        breadcrumb.category = category
+    actual override fun setCategory(category: String?) {
+        androidBreadcrumb.category = category
     }
 
-    actual fun setMessage(message: String?) {
-        breadcrumb.message = message
+    actual override fun setMessage(message: String?) {
+        androidBreadcrumb.message = message
     }
 
-    actual fun setData(key: String, value: Any) {
-        breadcrumb.setData(key, value)
+    actual override fun setData(key: String, value: Any) {
+        androidBreadcrumb.setData(key, value)
     }
 
-    actual fun setData(map: MutableMap<String, Any>) {
+    actual override fun setData(map: MutableMap<String, Any>) {
         for (key in map.keys) {
-            map[key]?.let { breadcrumb.setData(key, it) }
+            map[key]?.let { androidBreadcrumb.setData(key, it) }
         }
     }
 
-    actual fun getData(): MutableMap<String, Any> {
-        return breadcrumb.data
+    actual override fun getData(): MutableMap<String, Any> {
+        return androidBreadcrumb.data
     }
 
-    actual fun setLevel(level: SentryLevel?) {
-        breadcrumb.level = level?.toAndroidSentryLevel()
+    actual override fun setLevel(level: SentryLevel?) {
+        androidBreadcrumb.level = level?.toAndroidSentryLevel()
     }
 
-    actual fun getType(): String? {
-        return breadcrumb.type
+    actual override fun getType(): String? {
+        return androidBreadcrumb.type
     }
 
-    actual fun getCategory(): String? {
-        return breadcrumb.category
+    actual override fun getCategory(): String? {
+        return androidBreadcrumb.category
     }
 
-    actual fun getMessage(): String? {
-        return breadcrumb.message
+    actual override fun getMessage(): String? {
+        return androidBreadcrumb.message
     }
 
-    actual fun getLevel(): SentryLevel? {
-        return breadcrumb.level?.toKmpSentryLevel()
+    actual override fun getLevel(): SentryLevel? {
+        return androidBreadcrumb.level?.toKmpSentryLevel()
     }
 
     fun setUnknown(unknown: MutableMap<String, Any>?) {
-        breadcrumb.unknown = unknown
+        androidBreadcrumb.unknown = unknown
     }
 
     fun getUnknown(): MutableMap<String, Any>? {
-        return breadcrumb.unknown
+        return androidBreadcrumb.unknown
     }
 }

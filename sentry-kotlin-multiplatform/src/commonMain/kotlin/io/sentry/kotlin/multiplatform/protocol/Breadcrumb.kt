@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.SentryLevel
 
-expect class Breadcrumb() {
+expect class Breadcrumb(breadcrumb: ISentryBreadcrumb? = null) : ISentryBreadcrumb {
     companion object {
         fun user(category: String, message: String): Breadcrumb
         fun http(url: String, method: String): Breadcrumb
@@ -18,6 +18,21 @@ expect class Breadcrumb() {
         fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): Breadcrumb
     }
 
+    override fun setType(type: String?)
+    override fun setCategory(category: String?)
+    override fun setMessage(message: String?)
+    override fun setData(key: String, value: Any)
+    override fun setData(map: MutableMap<String, Any>)
+    override fun setLevel(level: SentryLevel?)
+
+    override fun getType(): String?
+    override fun getCategory(): String?
+    override fun getMessage(): String?
+    override fun getData(): MutableMap<String, Any>
+    override fun getLevel(): SentryLevel?
+}
+
+interface ISentryBreadcrumb {
     fun setType(type: String?)
     fun setCategory(category: String?)
     fun setMessage(message: String?)
@@ -30,8 +45,4 @@ expect class Breadcrumb() {
     fun getMessage(): String?
     fun getData(): MutableMap<String, Any>
     fun getLevel(): SentryLevel?
-}
-
-interface ISentryBreadcrumb {
-    // TODO: chore
 }
