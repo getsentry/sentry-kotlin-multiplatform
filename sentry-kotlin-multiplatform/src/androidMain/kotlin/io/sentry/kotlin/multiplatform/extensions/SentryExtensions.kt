@@ -1,8 +1,8 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import android.content.Context
-import io.sentry.Sentry
 import io.sentry.android.core.SentryAndroid
+import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.SentryOptions
 
 /**
