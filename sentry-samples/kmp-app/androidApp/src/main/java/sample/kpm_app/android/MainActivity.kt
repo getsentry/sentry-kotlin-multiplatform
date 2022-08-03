@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.extensions.init
+import io.sentry.kotlin.multiplatform.init
 import sample.kpm_app.Platform
 
 class MainActivity : AppCompatActivity() {
