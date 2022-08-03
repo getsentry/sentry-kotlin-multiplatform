@@ -9,8 +9,7 @@ fun Breadcrumb.toAndroidBreadcrumb(): AndroidBreadcrumb {
     androidBreadcrumb.message = this.getMessage()
     androidBreadcrumb.type = this.getType()
     androidBreadcrumb.category = this.getCategory()
-    val dataClone = CollectionUtils.newConcurrentHashMap(this.getData())
-    dataClone?.let { map ->
+    this.getData().let { map ->
         map.forEach {
             androidBreadcrumb.setData(it.key, it.value)
         }
@@ -28,8 +27,7 @@ fun AndroidBreadcrumb.clone(): AndroidBreadcrumb {
     androidBreadcrumb.message = this.message
     androidBreadcrumb.type = this.type
     androidBreadcrumb.category = this.category
-    val dataClone = CollectionUtils.newConcurrentHashMap(this.data)
-    dataClone?.let { map ->
+    data.let { map ->
         map.forEach {
             androidBreadcrumb.setData(it.key, it.value)
         }
