@@ -1,25 +1,10 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
-import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
-import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import platform.Foundation.NSError
 import platform.Foundation.NSException
-
-
-/**
- * Sentry initialization with an option configuration handler.
- *
- * @param configuration Options configuration handler.
- */
-fun Sentry.start(configuration: (SentryOptions) -> Unit) {
-    val options = SentryOptions()
-    configuration.invoke(options)
-    SentrySDK.startWithOptionsObject(options.toCocoaSentryOptions())
-    setSentryUnhandledExceptionHook()
-}
 
 internal actual object SentryBridge {
 
@@ -29,9 +14,7 @@ internal actual object SentryBridge {
     }
 
     actual fun captureMessage(message: String, scopeCallback: (SentryScope) -> Unit): SentryId {
-        val scope = SentryScope()
-        val scopeConfiguration = scope.scopeConfiguration(scopeCallback)
-        val cocoaSentryId = SentrySDK.captureMessage(message, scopeConfiguration)
+        val cocoaSentryId = SentrySDK.captureMessage(message, configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
 
@@ -41,20 +24,24 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: (SentryScope) -> Unit): SentryId {
-        val scope = SentryScope()
-        val scopeConfiguration = scope.scopeConfiguration(scopeCallback)
-        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), scopeConfiguration)
+        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
 
     actual fun configureScope(scopeCallback: (SentryScope) -> Unit) {
-        val scope = SentryScope()
-        val scopeConfiguration = scope.scopeConfiguration(scopeCallback)
-        SentrySDK.configureScope(scopeConfiguration)
+        SentrySDK.configureScope(configureScopeCallback(scopeCallback))
     }
 
     actual fun close() {
         SentrySDK.close()
+    }
+
+    private fun configureScopeCallback(scopeCallback: (SentryScope) -> Unit): (CocoaScope?) -> Unit {
+        return {
+            val cocoaScopeImpl = SentryScopeCocoaImpl(it)
+            val scope = SentryScope(cocoaScopeImpl)
+            scopeCallback.invoke(scope)
+        }
     }
 }
 

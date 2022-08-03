@@ -3,27 +3,91 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
-expect class SentryScope() : ISentryScope {
+class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
 
     override var level: SentryLevel?
+        set(value) {
+            scope.level = value
+        }
+        get() {
+            return scope.level
+        }
+
     override var user: SentryUser?
-    override fun getContexts(): MutableMap<String, Any>?
-    override fun getTags(): MutableMap<String, String>?
-    override fun addBreadcrumb(breadcrumb: Breadcrumb)
-    override fun clearBreadcrumbs()
-    override fun setContext(key: String, value: Any)
-    override fun setContext(key: String, value: Boolean)
-    override fun setContext(key: String, value: String)
-    override fun setContext(key: String, value: Number)
-    override fun setContext(key: String, value: Char)
-    override fun setContext(key: String, value: Array<Any>)
-    override fun setContext(key: String, value: Collection<*>)
-    override fun removeContext(key: String)
-    override fun setTag(key: String, value: String)
-    override fun removeTag(key: String)
-    override fun setExtra(key: String, value: String)
-    override fun removeExtra(key: String)
-    override fun clear()
+        set(value) {
+            scope.user = value
+        }
+        get() {
+            return scope.user
+        }
+
+    override fun getContexts(): MutableMap<String, Any>? {
+        return scope.getContexts()
+    }
+
+    override fun getTags(): MutableMap<String, String>? {
+        return scope.getTags()
+    }
+
+    override fun addBreadcrumb(breadcrumb: Breadcrumb) {
+        scope.addBreadcrumb(breadcrumb)
+    }
+
+    override fun clearBreadcrumbs() {
+        scope.clearBreadcrumbs()
+    }
+
+    override fun setContext(key: String, value: Any) {
+        scope.setContext(key, value)
+    }
+
+    override fun setContext(key: String, value: Boolean) {
+        scope.setContext(key, value)
+    }
+
+    override fun setContext(key: String, value: String) {
+        scope.setContext(key, value)
+    }
+
+    override fun setContext(key: String, value: Number) {
+        scope.setContext(key, value)
+    }
+
+    override fun setContext(key: String, value: Collection<*>) {
+        scope.setContext(key, value)
+    }
+
+    override fun setContext(key: String, value: Array<Any>) {
+        scope.setContext(key, value)
+    }
+
+    override fun setContext(key: String, value: Char) {
+        scope.setContext(key, value)
+    }
+
+    override fun removeContext(key: String) {
+        scope.removeContext(key)
+    }
+
+    override fun setTag(key: String, value: String) {
+        scope.setContext(key, value)
+    }
+
+    override fun removeTag(key: String) {
+        scope.removeTag(key)
+    }
+
+    override fun setExtra(key: String, value: String) {
+        scope.setExtra(key, value)
+    }
+
+    override fun removeExtra(key: String) {
+        scope.removeExtra(key)
+    }
+
+    override fun clear() {
+        scope.clear()
+    }
 }
 
 interface ISentryScope {
