@@ -23,7 +23,6 @@ actual data class BreadcrumbConverter actual constructor(val breadcrumb: Breadcr
     }
 
     actual fun getLevel(): SentryLevel? {
-        print("hello: " + breadcrumb.getLevel())
         return breadcrumb.toCocoaBreadcrumb().level.toKmpSentryLevel()
     }
 }
