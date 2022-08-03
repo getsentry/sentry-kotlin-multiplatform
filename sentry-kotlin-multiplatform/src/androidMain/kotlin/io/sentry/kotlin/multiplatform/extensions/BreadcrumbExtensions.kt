@@ -24,10 +24,8 @@ fun AndroidBreadcrumb.clone(): AndroidBreadcrumb {
     androidBreadcrumb.message = this.message
     androidBreadcrumb.type = this.type
     androidBreadcrumb.category = this.category
-    data.let { map ->
-        map.forEach {
-            androidBreadcrumb.setData(it.key, it.value)
-        }
+    this.data.forEach {
+        androidBreadcrumb.setData(it.key, it.value)
     }
     androidBreadcrumb.level = this.level
     return androidBreadcrumb
