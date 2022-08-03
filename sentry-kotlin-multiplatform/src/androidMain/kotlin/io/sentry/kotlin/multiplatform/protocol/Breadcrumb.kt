@@ -4,10 +4,12 @@ import io.sentry.kotlin.multiplatform.AndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 
 actual class Breadcrumb actual constructor() {
 
-    private var breadcrumb = AndroidBreadcrumb()
+    var breadcrumb = AndroidBreadcrumb()
+        private set
 
     constructor(breadcrumb: AndroidBreadcrumb) : this() {
         this.breadcrumb = breadcrumb
@@ -15,7 +17,7 @@ actual class Breadcrumb actual constructor() {
 
     actual companion object {
         actual fun user(category: String, message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.user(category, message)
+            return AndroidBreadcrumb.user(category, message).toKmpBreadcrumb()
         }
 
         actual fun http(url: String, method: String): Breadcrumb {
