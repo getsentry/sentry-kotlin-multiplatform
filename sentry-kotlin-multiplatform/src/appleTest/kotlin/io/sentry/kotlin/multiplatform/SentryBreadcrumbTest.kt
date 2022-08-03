@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
-import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +17,7 @@ class CocoaSentryBreadcrumbTest {
         val cocoaBreadcrumb = sentryBreadcrumb.toCocoaBreadcrumb()
 
         assertEquals(sentryBreadcrumb.getData() as Map<Any?, Any>?, cocoaBreadcrumb.data())
-        assertEquals(sentryBreadcrumb.getLevel(), cocoaBreadcrumb.level.toKMPSentryLevel())
+        assertEquals(sentryBreadcrumb.getLevel(), cocoaBreadcrumb.level.toKmpSentryLevel())
         assertEquals(sentryBreadcrumb.getType(), cocoaBreadcrumb.type)
         assertEquals(sentryBreadcrumb.getMessage(), cocoaBreadcrumb.message)
         assertEquals(sentryBreadcrumb.getCategory(), cocoaBreadcrumb.category)

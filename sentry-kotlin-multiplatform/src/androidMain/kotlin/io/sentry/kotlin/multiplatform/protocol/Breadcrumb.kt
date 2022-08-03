@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.protocol
 import io.sentry.kotlin.multiplatform.AndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
-import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 
 actual class Breadcrumb actual constructor() {
@@ -117,7 +117,7 @@ actual class Breadcrumb actual constructor() {
     }
 
     actual fun getLevel(): SentryLevel? {
-        return breadcrumb.level?.toKMPSentryLevel()
+        return breadcrumb.level?.toKmpSentryLevel()
     }
 
     fun setUnknown(unknown: MutableMap<String, Any>?) {

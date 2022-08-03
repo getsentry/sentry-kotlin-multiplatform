@@ -15,7 +15,7 @@ fun SentryUser.toAndroidSentryUser(): AndroidUser {
     return androidUser
 }
 
-fun AndroidUser.toKMPSentryUser(): SentryUser {
+fun AndroidUser.toKmpSentryUser(): SentryUser {
     val kmpSentryUser = SentryUser()
     kmpSentryUser.id = this.id.toString()
     kmpSentryUser.username = this.username.toString()

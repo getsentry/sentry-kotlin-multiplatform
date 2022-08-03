@@ -11,7 +11,7 @@ class SentryScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
             scope.level = value?.toAndroidSentryLevel()
         }
         get() {
-            return scope.level?.toKMPSentryLevel()
+            return scope.level?.toKmpSentryLevel()
         }
 
     override var user: SentryUser?
@@ -19,7 +19,7 @@ class SentryScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
             scope.user = value?.toAndroidSentryUser()
         }
         get() {
-            return scope.user?.toKMPSentryUser()
+            return scope.user?.toKmpSentryUser()
         }
 
     override fun getContexts(): MutableMap<String, Any>? {

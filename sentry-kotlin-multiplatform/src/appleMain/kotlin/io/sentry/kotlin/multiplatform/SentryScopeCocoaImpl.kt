@@ -27,16 +27,18 @@ class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         }
         get() {
             val userMap = scope.serialize()["user"] as Map<String, String>?
-            if (userMap != null) {
-                val sentryUser = SentryUser()
-                sentryUser.email = userMap["email"] as String
-                sentryUser.username = userMap["username"] as String
-                sentryUser.id = userMap["id"] as String
-                sentryUser.ipAddress = userMap["ip_address"] as String
-                return sentryUser
-            }
+            userMap?.let { return toKmpUserFromMap(it) }
             return null
         }
+
+    private fun toKmpUserFromMap(map: Map<String, String>): SentryUser {
+        val sentryUser = SentryUser()
+        sentryUser.email = map["email"] as String
+        sentryUser.username = map["username"] as String
+        sentryUser.id = map["id"] as String
+        sentryUser.ipAddress = map["ip_address"] as String
+        return sentryUser
+    }
 
     override fun getContexts(): MutableMap<String, Any> {
         val context = scope.serialize()["context"]

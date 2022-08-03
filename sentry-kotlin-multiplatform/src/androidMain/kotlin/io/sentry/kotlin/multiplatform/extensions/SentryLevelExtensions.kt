@@ -16,7 +16,7 @@ fun SentryLevel.toAndroidSentryLevel(): AndroidSentryLevel? {
     }
 }
 
-fun AndroidSentryLevel.toKMPSentryLevel(): SentryLevel? {
+fun AndroidSentryLevel.toKmpSentryLevel(): SentryLevel? {
     when (this) {
         AndroidSentryLevel.DEBUG -> return SentryLevel.DEBUG
         AndroidSentryLevel.INFO -> return SentryLevel.INFO

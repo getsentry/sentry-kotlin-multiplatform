@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.protocol
 import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
-import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 
 actual class Breadcrumb actual constructor() {
 
@@ -111,6 +111,6 @@ actual class Breadcrumb actual constructor() {
     }
 
     actual fun getLevel(): SentryLevel? {
-        return breadcrumb.level.toKMPSentryLevel()
+        return breadcrumb.level.toKmpSentryLevel()
     }
 }

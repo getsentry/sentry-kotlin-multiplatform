@@ -42,7 +42,7 @@ fun SentryLevel.toCocoaSentryLevel(): CocoaSentryLevel {
     }
 }
 
-fun CocoaSentryLevel.toKMPSentryLevel(): SentryLevel? {
+fun CocoaSentryLevel.toKmpSentryLevel(): SentryLevel? {
     val level = this
     if (level.convert<Int>().compareTo(1) == 0) {
         return SentryLevel.DEBUG
