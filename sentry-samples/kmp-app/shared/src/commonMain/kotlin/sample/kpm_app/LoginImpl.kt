@@ -3,7 +3,7 @@ package sample.kpm_app
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
-import io.sentry.kotlin.multiplatform.protocol.SentryUser
+import io.sentry.kotlin.multiplatform.protocol.User
 
 class InvalidUsernameException(message: String) : Exception(message)
 
@@ -24,7 +24,7 @@ object LoginImpl {
                 it.setContext("Login", "Failed with Invalid Username")
                 it.setTag("login", "failed auth")
                 it.level = SentryLevel.WARNING
-                val user = SentryUser()
+                val user = User()
                 user.username = "John Doe"
                 user.email = "john@doe.com"
                 it.user = user

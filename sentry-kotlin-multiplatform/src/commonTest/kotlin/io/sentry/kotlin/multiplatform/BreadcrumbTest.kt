@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SentryBreadcrumbTest {
+class BreadcrumbTest {
 
     private val testMessage = "TestMessage"
     private val testCategory = "TestCategory"
@@ -137,15 +137,22 @@ class SentryBreadcrumbTest {
     }
 
     @Test
-    fun `setData methods set values properly`() {
+    fun `setData with map as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
-        breadcrumb.setData("url", testUrl)
-        val map = HashMap<String, Any>()
-        map.put("TestEntry", "TestValue")
-        map.put("TestEntry2", "TestValue2")
+        val map = mutableMapOf("TestEntry" to "TestValue", "TestEntry2" to 12) as MutableMap<String, Any>
+
         breadcrumb.setData(map)
-        map.put("url", testUrl)
 
         assertEquals(map as Map<String, Any>, breadcrumb.getData() as Map<String, Any>)
+    }
+
+    @Test
+    fun `setData with primitive types as value sets values properly`() {
+        val breadcrumb = Breadcrumb.debug(testMessage)
+        val expected = mapOf("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false)
+        breadcrumb.setData("keyExample", "valueExample")
+        breadcrumb.setData("keyExample2", 12)
+        breadcrumb.setData("keyExample3", false)
+        assertEquals(expected, breadcrumb.getData() as Map<String, Any>)
     }
 }

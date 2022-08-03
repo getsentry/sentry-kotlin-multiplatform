@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.*
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import io.sentry.kotlin.multiplatform.protocol.SentryUser
+import io.sentry.kotlin.multiplatform.protocol.User
 import platform.Foundation.NSDictionary
 import platform.Foundation.allKeys
 
@@ -21,23 +21,23 @@ class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
             return null
         }
 
-    override var user: SentryUser?
+    override var user: User?
         set(value) {
             scope.setUser(value?.toCocoaUser())
         }
         get() {
-            val userMap = scope.serialize()["user"] as Map<String, String>?
-            userMap?.let { return toKmpUserFromMap(it) }
+            val map = scope.serialize()["user"] as Map<String, String>?
+            map?.let { return userFromMap(map) }
             return null
         }
 
-    private fun toKmpUserFromMap(map: Map<String, String>): SentryUser {
-        val sentryUser = SentryUser()
-        sentryUser.email = map["email"] as String
-        sentryUser.username = map["username"] as String
-        sentryUser.id = map["id"] as String
-        sentryUser.ipAddress = map["ip_address"] as String
-        return sentryUser
+    private fun userFromMap(map: Map<String, String>): User {
+        val user = User()
+        user.email = map["email"] as String
+        user.username = map["username"] as String
+        user.id = map["id"] as String
+        user.ipAddress = map["ip_address"] as String
+        return user
     }
 
     override fun getContexts(): MutableMap<String, Any> {
@@ -77,14 +77,12 @@ class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
     }
 
     private fun setContextForAnyValue(key: String, value: Any) {
-        val map = HashMap<Any?, Any>()
-        map.put("value", value)
-        scope?.setContextValue(map, key)
+        scope.setContextValue(mapOf("value" to value), key)
     }
 
     override fun setContext(key: String, value: Any) {
         try {
-            scope?.setContextValue(value as Map<Any?, Any>, key)
+            scope.setContextValue(value as Map<Any?, Any>, key)
         } catch (e: Throwable) {
             setContextForAnyValue(key, value)
         }

@@ -1,10 +1,10 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.AndroidUser
-import io.sentry.kotlin.multiplatform.protocol.SentryUser
+import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.util.CollectionUtils
 
-fun SentryUser.toAndroidUser(): AndroidUser {
+fun User.toAndroidUser(): AndroidUser {
     val androidUser = AndroidUser()
     androidUser.id = this.id
     androidUser.username = this.username
@@ -15,17 +15,17 @@ fun SentryUser.toAndroidUser(): AndroidUser {
     return androidUser
 }
 
-fun AndroidUser.toKmpUser(): SentryUser {
-    val kmpSentryUser = SentryUser()
-    kmpSentryUser.id = this.id.toString()
-    kmpSentryUser.username = this.username.toString()
-    kmpSentryUser.email = this.email.toString()
-    kmpSentryUser.ipAddress = this.ipAddress.toString()
+fun AndroidUser.toKmpUser(): User {
+    val kmpUser = User()
+    kmpUser.id = this.id.toString()
+    kmpUser.username = this.username.toString()
+    kmpUser.email = this.email.toString()
+    kmpUser.ipAddress = this.ipAddress.toString()
     CollectionUtils.newConcurrentHashMap(this.others)?.let {
-        kmpSentryUser.other = it
+        kmpUser.other = it
     }
     CollectionUtils.newConcurrentHashMap(this.unknown)?.let {
-        kmpSentryUser.unknown = it
+        kmpUser.unknown = it
     }
-    return kmpSentryUser
+    return kmpUser
 }

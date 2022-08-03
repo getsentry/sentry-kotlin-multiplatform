@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import io.sentry.kotlin.multiplatform.protocol.SentryUser
+import io.sentry.kotlin.multiplatform.protocol.User
 
 class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
 
@@ -13,7 +13,7 @@ class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
             return scope.level
         }
 
-    override var user: SentryUser?
+    override var user: User?
         set(value) {
             scope.user = value
         }
@@ -70,7 +70,7 @@ class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
     }
 
     override fun setTag(key: String, value: String) {
-        scope.setContext(key, value)
+        scope.setTag(key, value)
     }
 
     override fun removeTag(key: String) {
@@ -105,7 +105,7 @@ interface ISentryScope {
     /**
      * The Scope's user
      */
-    var user: SentryUser?
+    var user: User?
 
     /**
      * The Scope's level

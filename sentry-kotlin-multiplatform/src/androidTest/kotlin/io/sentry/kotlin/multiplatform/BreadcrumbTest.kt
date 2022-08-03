@@ -6,12 +6,15 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class AndroidSentryBreadcrumbTest {
+class AndroidBreadcrumbTest {
 
     @Test
     fun `convert SentryBreadcrumb to AndroidBreadcrumb has proper values`() {
         val sentryBreadcrumb = Breadcrumb.debug("test")
         sentryBreadcrumb.setData("my test", "value")
+        sentryBreadcrumb.setMessage("test message")
+        sentryBreadcrumb.setType("user")
+        sentryBreadcrumb.setLevel(SentryLevel.ERROR)
         val androidBreadcrumb = sentryBreadcrumb.toAndroidBreadcrumb()
 
         assertEquals(sentryBreadcrumb.getData(), androidBreadcrumb.data)

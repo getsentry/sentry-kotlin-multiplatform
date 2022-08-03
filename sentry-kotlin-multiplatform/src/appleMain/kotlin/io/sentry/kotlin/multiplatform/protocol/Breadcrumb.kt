@@ -80,14 +80,24 @@ actual class Breadcrumb actual constructor() {
         breadcrumb.message = message
     }
 
+    // Trying to check if breadcrumb.data is null leads to a null pointer exception no matter what
+    // Using this boolean flag we can work around it
+    private var dataIsNotNull = false
+
     actual fun setData(key: String, value: Any) {
-        val map = HashMap<Any?, Any>()
-        map.put(key, value)
-        breadcrumb.setData(map)
+        if (dataIsNotNull) {
+            val previousData = (breadcrumb.data as MutableMap<Any?, Any>).apply {
+                put(key, value)
+            }
+            breadcrumb.setData(previousData)
+        } else {
+            setData(mutableMapOf(key to value))
+        }
     }
 
     actual fun setData(map: MutableMap<String, Any>) {
         breadcrumb.setData(map as Map<Any?, Any>)
+        dataIsNotNull = true
     }
 
     actual fun setLevel(level: SentryLevel?) {
