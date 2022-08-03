@@ -1,33 +1,25 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-data class User(
-    override var email: String = "",
-    override var id: String = "",
-    override var username: String = "",
-    override var ipAddress: String? = null,
-    override var other: MutableMap<String, String> = HashMap(),
-    override var unknown: MutableMap<String, Any> = HashMap(),
-) : ISentryUser {
+data class User(val user: ISentryUser? = null) : ISentryUser {
 
-    constructor(user: ISentryUser) : this() {
-        this.email = user.email
-        this.id = user.id
-        this.username = user.username
-        this.ipAddress = user.ipAddress
-        this.other = user.other
-        this.unknown = user.unknown
-    }
+    override var email: String = ""
+    override var id: String = ""
+    override var username: String = ""
+    override var ipAddress: String? = null
+    override var other: MutableMap<String, String> = HashMap()
+    override var unknown: MutableMap<String, Any> = HashMap()
 
-    override fun equals(other: Any?): Boolean {
-        if (other is User) {
-            return this.email == other.email
-                    && this.id == other.id
-                    && this.username == other.username
-                    && this.ipAddress == other.ipAddress
-                    && this.unknown == other.unknown
-                    && this.other == other.other
-        }
-        return false
+    // This secondary constructor allows Swift also to init without specifying nil explicitly
+    // example: User.init() instead of User.init(user: nil)
+    constructor() : this(null)
+
+    init {
+        this.email = user?.email.toString()
+        this.id = user?.id.toString()
+        this.username = user?.username.toString()
+        this.ipAddress = user?.ipAddress.toString()
+        user?.other?.let { this.other = it }
+        user?.unknown?.let { this.unknown = it }
     }
 }
 

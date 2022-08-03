@@ -5,6 +5,7 @@ import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.User
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 

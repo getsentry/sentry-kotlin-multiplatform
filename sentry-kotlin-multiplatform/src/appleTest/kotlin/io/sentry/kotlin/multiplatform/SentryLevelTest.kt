@@ -20,7 +20,7 @@ class CocoaSentryLevelTest {
         val level = SentryLevel.INFO
         val cocoaSentryLevelInfo = level.toCocoaSentryLevel()
 
-        assertEquals((SentryLevelNumConstants.INFO).convert(), cocoaSentryLevelInfo)
+        assertEquals((SentryLevelNumConstants.INFO_LEVEL).convert(), cocoaSentryLevelInfo)
     }
 
     @Test
@@ -28,7 +28,7 @@ class CocoaSentryLevelTest {
         val level = SentryLevel.WARNING
         val cocoaSentryLevelWarning = level.toCocoaSentryLevel()
 
-        assertEquals((SentryLevelNumConstants.WARNING).convert(), cocoaSentryLevelWarning)
+        assertEquals((SentryLevelNumConstants.WARNING_LEVEL).convert(), cocoaSentryLevelWarning)
     }
 
     @Test
@@ -36,7 +36,7 @@ class CocoaSentryLevelTest {
         val level = SentryLevel.ERROR
         val cocoaSentryLevelError = level.toCocoaSentryLevel()
 
-        assertEquals((SentryLevelNumConstants.ERROR).convert(), cocoaSentryLevelError)
+        assertEquals((SentryLevelNumConstants.ERROR_LEVEL).convert(), cocoaSentryLevelError)
     }
 
     @Test
@@ -44,12 +44,12 @@ class CocoaSentryLevelTest {
         val level = SentryLevel.FATAL
         val cocoaSentryLevelFatal = level.toCocoaSentryLevel()
 
-        assertEquals((SentryLevelNumConstants.FATAL).convert(), cocoaSentryLevelFatal)
+        assertEquals((SentryLevelNumConstants.FATAL_LEVEL).convert(), cocoaSentryLevelFatal)
     }
 
     @Test
     fun `convert AndroidSentryLevel debug to SentryLevel debug has proper value`() {
-        val level: CocoaSentryLevel = SentryLevelNumConstants.DEBUG.convert()
+        val level: CocoaSentryLevel = SentryLevelNumConstants.DEBUG_KEY.convert()
         val kmpSentryLevel = level.toKmpSentryLevel()
 
         assertEquals(SentryLevel.DEBUG, kmpSentryLevel)
@@ -57,7 +57,7 @@ class CocoaSentryLevelTest {
 
     @Test
     fun `convert AndroidSentryLevel info to SentryLevel fatal has proper value`() {
-        val level: CocoaSentryLevel = SentryLevelNumConstants.INFO.convert()
+        val level: CocoaSentryLevel = SentryLevelNumConstants.INFO_LEVEL.convert()
         val kmpSentryLevel = level.toKmpSentryLevel()
 
         assertEquals(SentryLevel.INFO, kmpSentryLevel)
@@ -65,7 +65,7 @@ class CocoaSentryLevelTest {
 
     @Test
     fun `convert AndroidSentryLevel warning to SentryLevel has proper value`() {
-        val level: CocoaSentryLevel = SentryLevelNumConstants.WARNING.convert()
+        val level: CocoaSentryLevel = SentryLevelNumConstants.WARNING_LEVEL.convert()
         val kmpSentryLevel = level.toKmpSentryLevel()
 
         assertEquals(SentryLevel.WARNING, kmpSentryLevel)
@@ -73,7 +73,7 @@ class CocoaSentryLevelTest {
 
     @Test
     fun `convert AndroidSentryLevel error to SentryLevel fatal has proper value`() {
-        val level: CocoaSentryLevel = SentryLevelNumConstants.ERROR.convert()
+        val level: CocoaSentryLevel = SentryLevelNumConstants.ERROR_LEVEL.convert()
         val kmpSentryLevel = level.toKmpSentryLevel()
 
         assertEquals(SentryLevel.ERROR, kmpSentryLevel)
@@ -81,7 +81,7 @@ class CocoaSentryLevelTest {
 
     @Test
     fun `convert AndroidSentryLevel fatal to SentryLevel fatal has proper value`() {
-        val levelFatal: CocoaSentryLevel = SentryLevelNumConstants.FATAL.convert()
+        val levelFatal: CocoaSentryLevel = SentryLevelNumConstants.FATAL_LEVEL.convert()
         val kmpSentryLevel = levelFatal.toKmpSentryLevel()
 
         assertEquals(SentryLevel.FATAL, kmpSentryLevel)

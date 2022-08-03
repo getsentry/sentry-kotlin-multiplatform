@@ -1,19 +1,19 @@
 package io.sentry.kotlin.multiplatform
 
 object SentryLevelNumConstants {
-    const val DEBUG = 1
-    const val INFO = 2
-    const val WARNING = 3
-    const val ERROR = 4
-    const val FATAL = 5
+    const val DEBUG_LEVEL = 1
+    const val INFO_LEVEL = 2
+    const val WARNING_LEVEL = 3
+    const val ERROR_LEVEL = 4
+    const val FATAL_LEVEL = 5
 }
 
 enum class SentryLevel(val value: Int) {
-    DEBUG(SentryLevelNumConstants.DEBUG),
-    INFO(SentryLevelNumConstants.INFO),
-    WARNING(SentryLevelNumConstants.WARNING),
-    ERROR(SentryLevelNumConstants.ERROR),
-    FATAL(SentryLevelNumConstants.FATAL);
+    DEBUG(SentryLevelNumConstants.DEBUG_LEVEL),
+    INFO(SentryLevelNumConstants.INFO_LEVEL),
+    WARNING(SentryLevelNumConstants.WARNING_LEVEL),
+    ERROR(SentryLevelNumConstants.ERROR_LEVEL),
+    FATAL(SentryLevelNumConstants.FATAL_LEVEL);
 
     fun toInt(): Int {
         return this.value

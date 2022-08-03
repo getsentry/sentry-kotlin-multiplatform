@@ -85,7 +85,7 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
         cocoaBreadcrumb.message = message
     }
 
-    // Trying to check if breadcrumb.data is null leads to a null pointer exception no matter what
+    // Trying to check if breadcrumb.data is null (if it's really null) leads to a null pointer exception no matter what
     // Using this boolean flag we can work around it
     private var dataIsNotNull = false
 
