@@ -7,7 +7,7 @@ struct ContentView: View {
         VStack() {
             Button("Capture Message") {
                 Sentry().captureMessage(message: "KMP Sample App " + Platform().platform) { scope in
-                    scope.user = SentryUser()
+                    scope.user = User.init()
                     scope.user?.username = "John Message"
                     scope.user?.email = "john@message.com"
                     scope.setTag(key: "test-tag-key", value: "test-tag-value")
