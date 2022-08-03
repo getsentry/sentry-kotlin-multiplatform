@@ -33,10 +33,10 @@ class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
 
     private fun userFromMap(map: Map<String, String>): User {
         val user = User()
-        user.email = map["email"] as String
-        user.username = map["username"] as String
-        user.id = map["id"] as String
-        user.ipAddress = map["ip_address"] as String
+        user.email = map["email"].toString()
+        user.username = map["username"].toString()
+        user.id = map["id"].toString()
+        user.ipAddress = map["ip_address"].toString()
         return user
     }
 
@@ -104,7 +104,7 @@ class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         setContextForAnyValue(key, value)
     }
 
-    override fun setContext(key: String, value: Array<Any>) {
+    override fun setContext(key: String, value: Array<*>) {
         setContextForAnyValue(key, value)
     }
 

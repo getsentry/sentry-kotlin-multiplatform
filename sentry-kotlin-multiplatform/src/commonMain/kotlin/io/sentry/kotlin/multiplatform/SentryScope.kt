@@ -57,7 +57,7 @@ class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
         scope.setContext(key, value)
     }
 
-    override fun setContext(key: String, value: Array<Any>) {
+    override fun setContext(key: String, value: Array<*>) {
         scope.setContext(key, value)
     }
 
@@ -168,7 +168,7 @@ interface ISentryScope {
      * @param key the context key
      * @param value the context value
      */
-    fun setContext(key: String, value: Array<Any>)
+    fun setContext(key: String, value: Array<*>)
 
     /**
      * Sets the Scope's context

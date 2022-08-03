@@ -8,10 +8,8 @@ fun Breadcrumb.toAndroidBreadcrumb(): AndroidBreadcrumb {
     androidBreadcrumb.message = this.getMessage()
     androidBreadcrumb.type = this.getType()
     androidBreadcrumb.category = this.getCategory()
-    this.getData().let { map ->
-        map.forEach {
-            androidBreadcrumb.setData(it.key, it.value)
-        }
+    this.getData().forEach {
+        androidBreadcrumb.setData(it.key, it.value)
     }
     androidBreadcrumb.level = this.getLevel()?.toAndroidSentryLevel()
     return androidBreadcrumb

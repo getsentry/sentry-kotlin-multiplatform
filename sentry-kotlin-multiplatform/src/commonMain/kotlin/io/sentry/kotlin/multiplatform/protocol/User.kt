@@ -1,13 +1,13 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-class User() : ISentryUser {
-
-    override var email: String = ""
-    override var id: String = ""
-    override var username: String = ""
-    override var ipAddress: String? = null
-    override var other: MutableMap<String, String> = HashMap()
-    override var unknown: MutableMap<String, Any> = HashMap()
+data class User(
+    override var email: String = "",
+    override var id: String = "",
+    override var username: String = "",
+    override var ipAddress: String? = null,
+    override var other: MutableMap<String, String> = HashMap(),
+    override var unknown: MutableMap<String, Any> = HashMap(),
+) : ISentryUser {
 
     constructor(user: ISentryUser) : this() {
         this.email = user.email

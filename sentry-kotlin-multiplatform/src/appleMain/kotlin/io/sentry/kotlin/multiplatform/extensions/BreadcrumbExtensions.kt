@@ -8,10 +8,8 @@ fun Breadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
     this.getMessage().let { cocoaBreadcrumb.setMessage(it) }
     this.getCategory().toString().let { cocoaBreadcrumb.setCategory(it) }
 
-    this.getData().let {
-        val dataClone = it.toMap()
-        cocoaBreadcrumb.setData(dataClone as Map<Any?, Any>)
-    }
+    val dataClone = this.getData().toMap()
+    cocoaBreadcrumb.setData(dataClone as Map<Any?, Any>)
 
     this.getType()?.let { cocoaBreadcrumb.setType(it) }
     this.getLevel()?.let { cocoaBreadcrumb.setLevel(it.toCocoaSentryLevel()) }

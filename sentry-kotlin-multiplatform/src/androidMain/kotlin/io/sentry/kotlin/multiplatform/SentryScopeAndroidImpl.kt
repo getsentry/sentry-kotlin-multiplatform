@@ -59,8 +59,8 @@ class SentryScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
         scope.setContexts(key, value)
     }
 
-    override fun setContext(key: String, value: Array<Any>) {
-        scope.setContexts(key, value)
+    override fun setContext(key: String, value: Array<*>) {
+        scope.setContexts(key, value as Array<Any>)
     }
 
     override fun setContext(key: String, value: Char) {
