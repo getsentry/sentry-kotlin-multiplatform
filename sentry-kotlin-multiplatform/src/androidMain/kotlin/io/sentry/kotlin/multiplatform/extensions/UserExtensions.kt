@@ -1,10 +1,11 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.AndroidUser
+import io.sentry.kotlin.multiplatform.protocol.ISentryUser
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.util.CollectionUtils
 
-fun User.toAndroidUser(): AndroidUser {
+fun ISentryUser.toAndroidUser(): AndroidUser {
     val androidUser = AndroidUser()
     androidUser.id = this.id
     androidUser.username = this.username
