@@ -5,13 +5,6 @@ import kotlinx.cinterop.convert
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-//    kSentryLevelNone = 0,
-//    kSentryLevelDebug = 1,
-//    kSentryLevelInfo = 2,
-//    kSentryLevelWarning = 3,
-//    kSentryLevelError = 4,
-//    kSentryLevelFatal = 5
-
 class CocoaSentryLevelTest {
 
     @Test
@@ -36,5 +29,13 @@ class CocoaSentryLevelTest {
         assertEquals((3).convert(), cocoaSentryLevelWarning)
         assertEquals((4).convert(), cocoaSentryLevelError)
         assertEquals((5).convert(), cocoaSentryLevelFatal)
+    }
+
+    @Test
+    fun `converting null SentryLevel returns null`() {
+        val level: SentryLevel? = null
+        val actual = level?.toCocoaSentryLevel()
+
+        assertEquals(null, actual)
     }
 }

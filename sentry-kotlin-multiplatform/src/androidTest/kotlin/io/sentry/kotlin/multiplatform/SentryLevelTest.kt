@@ -29,4 +29,12 @@ class AndroidSentryLevelTest {
         assertEquals(AndroidSentryLevel.ERROR, androidSentryLevelError)
         assertEquals(AndroidSentryLevel.FATAL, androidSentryLevelFatal)
     }
+
+    @Test
+    fun `converting null SentryLevel returns null`() {
+        val level: SentryLevel? = null
+        val actual = level?.toAndroidSentryLevel()
+
+        assertEquals(null, actual)
+    }
 }
