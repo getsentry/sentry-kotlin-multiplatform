@@ -20,43 +20,43 @@ actual class Breadcrumb actual constructor() {
         }
 
         actual fun http(url: String, method: String): Breadcrumb {
-            return SentryBreadcrumbFactory.http(url, method)
+            return BreadcrumbFactory.http(url, method)
         }
 
         actual fun http(url: String, method: String, code: Int?): Breadcrumb {
-            return SentryBreadcrumbFactory.http(url, method, code)
+            return BreadcrumbFactory.http(url, method, code)
         }
 
         actual fun navigation(from: String, to: String): Breadcrumb {
-            return SentryBreadcrumbFactory.navigation(from, to)
+            return BreadcrumbFactory.navigation(from, to)
         }
 
         actual fun transaction(message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.transaction(message)
+            return BreadcrumbFactory.transaction(message)
         }
 
         actual fun debug(message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.debug(message)
+            return BreadcrumbFactory.debug(message)
         }
 
         actual fun error(message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.error(message)
+            return BreadcrumbFactory.error(message)
         }
 
         actual fun info(message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.info(message)
+            return BreadcrumbFactory.info(message)
         }
 
         actual fun query(message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.query(message)
+            return BreadcrumbFactory.query(message)
         }
 
         actual fun ui(category: String, message: String): Breadcrumb {
-            return SentryBreadcrumbFactory.ui(category, message)
+            return BreadcrumbFactory.ui(category, message)
         }
 
         actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb {
-            return SentryBreadcrumbFactory.userInteraction(subCategory, viewId, viewClass)
+            return BreadcrumbFactory.userInteraction(subCategory, viewId, viewClass)
         }
 
         actual fun userInteraction(
@@ -65,7 +65,7 @@ actual class Breadcrumb actual constructor() {
             viewClass: String?,
             additionalData: Map<String?, Any?>
         ): Breadcrumb {
-            return SentryBreadcrumbFactory.userInteraction(
+            return BreadcrumbFactory.userInteraction(
                 subCategory,
                 viewId,
                 viewClass,

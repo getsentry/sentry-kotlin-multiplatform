@@ -8,7 +8,7 @@ import io.sentry.kotlin.multiplatform.SentryLevel
  *
  * This is only for internal usage and is not exposed to the user.
  */
-internal object SentryBreadcrumbFactory {
+internal object BreadcrumbFactory {
     fun user(category: String, message: String): Breadcrumb {
         val breadcrumb = Breadcrumb()
         breadcrumb.setType("user")

@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.kotlin.multiplatform.CocoaUser
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
-fun SentryUser.toCocoaSentryUser(): CocoaUser {
+fun SentryUser.toCocoaUser(): CocoaUser {
     val cocoaUser = CocoaUser()
     cocoaUser.userId = this.id
     cocoaUser.username = this.username

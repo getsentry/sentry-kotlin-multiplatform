@@ -2,7 +2,6 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.AndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import io.sentry.util.CollectionUtils
 
 fun Breadcrumb.toAndroidBreadcrumb(): AndroidBreadcrumb {
     val androidBreadcrumb = AndroidBreadcrumb()

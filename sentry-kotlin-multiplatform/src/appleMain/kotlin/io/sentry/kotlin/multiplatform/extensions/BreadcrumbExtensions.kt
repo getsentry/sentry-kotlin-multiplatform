@@ -9,8 +9,8 @@ fun Breadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
     this.getCategory().toString().let { cocoaBreadcrumb.setCategory(it) }
 
     this.getData().let {
-        val dataClone = HashMap(it as MutableMap<Any?, Any>)
-        cocoaBreadcrumb.setData(dataClone)
+        val dataClone = it.toMap()
+        cocoaBreadcrumb.setData(dataClone as Map<Any?, Any>)
     }
 
     this.getType()?.let { cocoaBreadcrumb.setType(it) }

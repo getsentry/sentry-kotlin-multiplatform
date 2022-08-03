@@ -23,7 +23,7 @@ class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
 
     override var user: SentryUser?
         set(value) {
-            scope.setUser(value?.toCocoaSentryUser())
+            scope.setUser(value?.toCocoaUser())
         }
         get() {
             val userMap = scope.serialize()["user"] as Map<String, String>?

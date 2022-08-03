@@ -16,10 +16,10 @@ class SentryScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
 
     override var user: SentryUser?
         set(value) {
-            scope.user = value?.toAndroidSentryUser()
+            scope.user = value?.toAndroidUser()
         }
         get() {
-            return scope.user?.toKmpSentryUser()
+            return scope.user?.toKmpUser()
         }
 
     override fun getContexts(): MutableMap<String, Any>? {
