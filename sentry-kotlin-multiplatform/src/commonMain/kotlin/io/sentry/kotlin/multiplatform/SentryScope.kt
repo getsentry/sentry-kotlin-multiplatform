@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
 expect class SentryScope() : ISentryScope {
@@ -9,7 +9,7 @@ expect class SentryScope() : ISentryScope {
     override var user: SentryUser?
     override fun getContexts(): MutableMap<String, Any>?
     override fun getTags(): MutableMap<String, String>?
-    override fun addBreadcrumb(breadcrumb: SentryBreadcrumb)
+    override fun addBreadcrumb(breadcrumb: Breadcrumb)
     override fun clearBreadcrumbs()
     override fun setContext(key: String, value: Any)
     override fun setContext(key: String, value: Boolean)
@@ -53,7 +53,7 @@ interface ISentryScope {
      *
      * @param breadcrumb the breadcrumb
      */
-    fun addBreadcrumb(breadcrumb: SentryBreadcrumb)
+    fun addBreadcrumb(breadcrumb: Breadcrumb)
 
     /** Clear all the breadcrumbs */
     fun clearBreadcrumbs()

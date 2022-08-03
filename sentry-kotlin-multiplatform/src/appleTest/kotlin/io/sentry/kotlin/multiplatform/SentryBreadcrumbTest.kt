@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -10,7 +10,7 @@ class CocoaSentryBreadcrumbTest {
 
     @Test
     fun `convert SentryBreadcrumb to CocoaBreadcrumb has proper values`() {
-        val sentryBreadcrumb = SentryBreadcrumb.debug("test")
+        val sentryBreadcrumb = Breadcrumb.debug("test")
         sentryBreadcrumb.setData("my test", "value")
 
         val cocoaBreadcrumb = sentryBreadcrumb.toCocoaBreadcrumb()

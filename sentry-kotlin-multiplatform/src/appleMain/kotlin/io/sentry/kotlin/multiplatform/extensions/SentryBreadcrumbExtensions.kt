@@ -1,9 +1,9 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.CocoaSentryBreadcrumb
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 
-fun SentryBreadcrumb.toCocoaBreadcrumb(): CocoaSentryBreadcrumb {
+fun Breadcrumb.toCocoaBreadcrumb(): CocoaSentryBreadcrumb {
     val cocoaBreadcrumb = CocoaSentryBreadcrumb()
     this.getMessage().let { cocoaBreadcrumb.setMessage(it) }
     this.getCategory().toString().let { cocoaBreadcrumb.setCategory(it) }

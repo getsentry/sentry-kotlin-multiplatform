@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,7 +19,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `Debug Breadcrumb has proper type and message and level`() {
-        val breadcrumb = SentryBreadcrumb.debug(testMessage)
+        val breadcrumb = Breadcrumb.debug(testMessage)
 
         assertEquals(breadcrumb.getLevel(), SentryLevel.DEBUG)
         assertEquals(breadcrumb.getMessage(), testMessage)
@@ -28,7 +28,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `Info Breadcrumb has proper type and message and level`() {
-        val breadcrumb = SentryBreadcrumb.info(testMessage)
+        val breadcrumb = Breadcrumb.info(testMessage)
 
         assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
         assertEquals(breadcrumb.getMessage(), testMessage)
@@ -37,7 +37,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `Error Breadcrumb has proper type and message and level`() {
-        val breadcrumb = SentryBreadcrumb.error(testMessage)
+        val breadcrumb = Breadcrumb.error(testMessage)
 
         assertEquals(breadcrumb.getType(), "error")
         assertEquals(breadcrumb.getLevel(), SentryLevel.ERROR)
@@ -46,7 +46,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `User Breadcrumb has proper type and message and category`() {
-        val breadcrumb = SentryBreadcrumb.user(testCategory, testMessage)
+        val breadcrumb = Breadcrumb.user(testCategory, testMessage)
 
         assertEquals(breadcrumb.getCategory(), testCategory)
         assertEquals(breadcrumb.getMessage(), testMessage)
@@ -55,7 +55,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `HTTP Breadcrumb has proper type and data and category`() {
-        val breadcrumb = SentryBreadcrumb.http(testUrl, testMethod)
+        val breadcrumb = Breadcrumb.http(testUrl, testMethod)
 
         assertEquals(breadcrumb.getData()?.get("url"), testUrl)
         assertEquals(breadcrumb.getData()?.get("method"), testMethod)
@@ -64,7 +64,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `HTTP Breadcrumb has proper type and data and category and status code`() {
-        val breadcrumb = SentryBreadcrumb.http(testUrl, testMethod, testStatusCode)
+        val breadcrumb = Breadcrumb.http(testUrl, testMethod, testStatusCode)
 
         assertEquals(breadcrumb.getData()?.get("url"), testUrl)
         assertEquals(breadcrumb.getData()?.get("method"), testMethod)
@@ -74,7 +74,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `Navigation Breadcrumb has proper type and data and category`() {
-        val breadcrumb = SentryBreadcrumb.navigation(testFromNav, testToNav)
+        val breadcrumb = Breadcrumb.navigation(testFromNav, testToNav)
 
         assertEquals(breadcrumb.getType(), "navigation")
         assertEquals(breadcrumb.getCategory(), "navigation")
@@ -84,7 +84,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `Transaction Breadcrumb has proper type and message and category`() {
-        val breadcrumb = SentryBreadcrumb.transaction(testMessage)
+        val breadcrumb = Breadcrumb.transaction(testMessage)
 
         assertEquals(breadcrumb.getType(), "default")
         assertEquals(breadcrumb.getCategory(), "sentry.transaction")
@@ -93,7 +93,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `Query Breadcrumb has proper type and message`() {
-        val breadcrumb = SentryBreadcrumb.query(testMessage)
+        val breadcrumb = Breadcrumb.query(testMessage)
 
         assertEquals(breadcrumb.getType(), "query")
         assertEquals(breadcrumb.getMessage(), testMessage)
@@ -101,7 +101,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `UI Breadcrumb has proper type and message and category`() {
-        val breadcrumb = SentryBreadcrumb.ui(testCategory, testMessage)
+        val breadcrumb = Breadcrumb.ui(testCategory, testMessage)
 
         assertEquals(breadcrumb.getType(), "default")
         assertEquals(breadcrumb.getMessage(), testMessage)
@@ -110,7 +110,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `User Interaction Breadcrumb has proper type and message and category and viewId and viewClass and level`() {
-        val breadcrumb = SentryBreadcrumb.userInteraction(testSubCategory, testViewId, testViewClass)
+        val breadcrumb = Breadcrumb.userInteraction(testSubCategory, testViewId, testViewClass)
 
         assertEquals(breadcrumb.getType(), "user")
         assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
@@ -125,7 +125,7 @@ class SentryBreadcrumbTest {
         additionalData.put("message", testMessage)
         additionalData.put("category", testCategory)
 
-        val breadcrumb = SentryBreadcrumb.userInteraction(testSubCategory, testViewId, testViewClass, additionalData)
+        val breadcrumb = Breadcrumb.userInteraction(testSubCategory, testViewId, testViewClass, additionalData)
 
         assertEquals(breadcrumb.getType(), "user")
         assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
@@ -138,7 +138,7 @@ class SentryBreadcrumbTest {
 
     @Test
     fun `setData methods set values properly`() {
-        val breadcrumb = SentryBreadcrumb.debug(testMessage)
+        val breadcrumb = Breadcrumb.debug(testMessage)
         breadcrumb.setData("url", testUrl)
         val map = HashMap<String, Any>()
         map.put("TestEntry", "TestValue")

@@ -4,10 +4,8 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import io.sentry.kotlin.multiplatform.SentryLevel
 import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.init
 import sample.kpm_app.Platform
 

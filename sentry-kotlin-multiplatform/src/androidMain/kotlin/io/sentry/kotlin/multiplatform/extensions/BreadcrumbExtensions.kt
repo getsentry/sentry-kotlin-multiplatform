@@ -1,11 +1,11 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import io.sentry.kotlin.multiplatform.AndroidSentryBreadcrumb
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.AndroidBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.util.CollectionUtils
 
-fun SentryBreadcrumb.toAndroidBreadcrumb(): AndroidSentryBreadcrumb {
-    val androidBreadcrumb = AndroidSentryBreadcrumb()
+fun Breadcrumb.toAndroidBreadcrumb(): AndroidBreadcrumb {
+    val androidBreadcrumb = AndroidBreadcrumb()
     androidBreadcrumb.message = this.getMessage()
     androidBreadcrumb.type = this.getType()
     androidBreadcrumb.category = this.getCategory()
@@ -17,4 +17,8 @@ fun SentryBreadcrumb.toAndroidBreadcrumb(): AndroidSentryBreadcrumb {
     }
     androidBreadcrumb.level = this.getLevel()?.toAndroidSentryLevel()
     return androidBreadcrumb
+}
+
+fun AndroidBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
+    return Breadcrumb(this)
 }

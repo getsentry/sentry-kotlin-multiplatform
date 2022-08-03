@@ -9,16 +9,16 @@ import io.sentry.kotlin.multiplatform.SentryLevel
  * This is only for internal usage and is not exposed to the user.
  */
 internal object SentryBreadcrumbFactory {
-    fun user(category: String, message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun user(category: String, message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("user")
         breadcrumb.setCategory(category)
         breadcrumb.setMessage(message)
         return breadcrumb
     }
 
-    fun http(url: String, method: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun http(url: String, method: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("http")
         breadcrumb.setCategory("http")
         breadcrumb.setData("url", url)
@@ -26,7 +26,7 @@ internal object SentryBreadcrumbFactory {
         return breadcrumb
     }
 
-    fun http(url: String, method: String, code: Int?): SentryBreadcrumb {
+    fun http(url: String, method: String, code: Int?): Breadcrumb {
         val breadcrumb = http(url, method)
         if (code != null) {
             breadcrumb.setData("status_code", code)
@@ -34,8 +34,8 @@ internal object SentryBreadcrumbFactory {
         return breadcrumb
     }
 
-    fun navigation(from: String, to: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun navigation(from: String, to: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setCategory("navigation")
         breadcrumb.setType("navigation")
         breadcrumb.setData("from", from)
@@ -43,55 +43,55 @@ internal object SentryBreadcrumbFactory {
         return breadcrumb
     }
 
-    fun transaction(message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun transaction(message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("default")
         breadcrumb.setCategory("sentry.transaction")
         breadcrumb.setMessage(message)
         return breadcrumb
     }
 
-    fun debug(message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun debug(message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("debug")
         breadcrumb.setMessage(message)
         breadcrumb.setLevel(SentryLevel.DEBUG)
         return breadcrumb
     }
 
-    fun error(message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun error(message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("error")
         breadcrumb.setMessage(message)
         breadcrumb.setLevel(SentryLevel.ERROR)
         return breadcrumb
     }
 
-    fun info(message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun info(message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("info")
         breadcrumb.setMessage(message)
         breadcrumb.setLevel(SentryLevel.INFO)
         return breadcrumb
     }
 
-    fun query(message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun query(message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("query")
         breadcrumb.setMessage(message)
         return breadcrumb
     }
 
-    fun ui(category: String, message: String): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun ui(category: String, message: String): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("default")
         breadcrumb.setCategory("ui.$category")
         breadcrumb.setMessage(message)
         return breadcrumb
     }
 
-    fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): SentryBreadcrumb {
-        val breadcrumb = SentryBreadcrumb()
+    fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): Breadcrumb {
+        val breadcrumb = Breadcrumb()
         breadcrumb.setType("user")
         breadcrumb.setCategory("ui.$subCategory")
         if (viewId != null) {
@@ -107,7 +107,7 @@ internal object SentryBreadcrumbFactory {
         return breadcrumb
     }
 
-    fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): SentryBreadcrumb {
+    fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb {
         return userInteraction(subCategory, viewId, viewClass, emptyMap<String?, Any>())
     }
 }

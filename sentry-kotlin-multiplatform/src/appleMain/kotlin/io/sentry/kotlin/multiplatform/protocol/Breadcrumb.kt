@@ -1,60 +1,60 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-import io.sentry.Breadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
-import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
+import cocoapods.Sentry.SentryBreadcrumb as CocoaBreadcrumb
 
-actual class SentryBreadcrumb {
+actual class Breadcrumb {
 
-    private var breadcrumb: Breadcrumb = Breadcrumb()
+    private var breadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
 
     actual companion object {
-        actual fun user(category: String, message: String): SentryBreadcrumb {
+        actual fun user(category: String, message: String): Breadcrumb {
             return SentryBreadcrumbFactory.user(category, message)
         }
 
-        actual fun http(url: String, method: String): SentryBreadcrumb {
+        actual fun http(url: String, method: String): Breadcrumb {
             return SentryBreadcrumbFactory.http(url, method)
         }
 
-        actual fun http(url: String, method: String, code: Int?): SentryBreadcrumb {
+        actual fun http(url: String, method: String, code: Int?): Breadcrumb {
             return SentryBreadcrumbFactory.http(url, method, code)
         }
 
-        actual fun navigation(from: String, to: String): SentryBreadcrumb {
+        actual fun navigation(from: String, to: String): Breadcrumb {
             return SentryBreadcrumbFactory.navigation(from, to)
         }
 
-        actual fun transaction(message: String): SentryBreadcrumb {
+        actual fun transaction(message: String): Breadcrumb {
             return SentryBreadcrumbFactory.transaction(message)
         }
 
-        actual fun debug(message: String): SentryBreadcrumb {
+        actual fun debug(message: String): Breadcrumb {
             return SentryBreadcrumbFactory.debug(message)
         }
 
-        actual fun error(message: String): SentryBreadcrumb {
+        actual fun error(message: String): Breadcrumb {
             return SentryBreadcrumbFactory.error(message)
         }
 
-        actual fun info(message: String): SentryBreadcrumb {
+        actual fun info(message: String): Breadcrumb {
             return SentryBreadcrumbFactory.info(message)
         }
 
-        actual fun query(message: String): SentryBreadcrumb {
+        actual fun query(message: String): Breadcrumb {
             return SentryBreadcrumbFactory.query(message)
         }
 
-        actual fun ui(category: String, message: String): SentryBreadcrumb {
+        actual fun ui(category: String, message: String): Breadcrumb {
             return SentryBreadcrumbFactory.ui(category, message)
         }
 
-        actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): SentryBreadcrumb {
+        actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb {
             return SentryBreadcrumbFactory.userInteraction(subCategory, viewId, viewClass)
         }
 
-        actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): SentryBreadcrumb {
+        actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): Breadcrumb {
             return SentryBreadcrumbFactory.userInteraction(
                 subCategory,
                 viewId,
@@ -77,21 +77,21 @@ actual class SentryBreadcrumb {
     }
 
     actual fun setData(key: String, value: Any) {
-        breadcrumb.setData(key, value)
+        val map = HashMap<Any?, Any>()
+        map.put(key, value)
+        breadcrumb.setData(map)
     }
 
     actual fun setData(map: Map<String, Any>) {
-        for (key in map.keys) {
-            map.get(key)?.let { breadcrumb.setData(key, it) }
-        }
-    }
-
-    actual fun getData(): MutableMap<String?, Any?>? {
-        return breadcrumb.data
+        breadcrumb.setData(map as Map<Any?, Any>)
     }
 
     actual fun setLevel(level: SentryLevel) {
-        breadcrumb.level = level.toAndroidSentryLevel()
+        breadcrumb.level = level.toCocoaSentryLevel()
+    }
+
+    actual fun getData(): MutableMap<String?, Any?>? {
+        return breadcrumb.data as MutableMap<String?, Any?>?
     }
 
     actual fun getType(): String? {
@@ -107,14 +107,6 @@ actual class SentryBreadcrumb {
     }
 
     actual fun getLevel(): SentryLevel? {
-        return breadcrumb.level?.toKMPSentryLevel()
-    }
-
-    fun setUnknown(unknown: MutableMap<String?, Any?>?) {
-        breadcrumb.unknown = unknown
-    }
-
-    fun getUnknown(): MutableMap<String?, Any?>? {
-        return breadcrumb.unknown
+        return breadcrumb.level.toKMPSentryLevel()
     }
 }

@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryUser
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 import platform.Foundation.NSDictionary
 import platform.Foundation.allKeys
@@ -92,7 +92,7 @@ actual class SentryScope : ISentryScope {
         return HashMap()
     }
 
-    actual override fun addBreadcrumb(breadcrumb: SentryBreadcrumb) {
+    actual override fun addBreadcrumb(breadcrumb: Breadcrumb) {
         scope?.addBreadcrumb(breadcrumb.toCocoaBreadcrumb())
     }
 

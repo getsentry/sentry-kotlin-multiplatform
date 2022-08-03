@@ -1,11 +1,11 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import io.sentry.kotlin.multiplatform.AndroidSentryUser
+import io.sentry.kotlin.multiplatform.AndroidUser
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 import io.sentry.util.CollectionUtils
 
-fun SentryUser.toAndroidSentryUser(): AndroidSentryUser {
-    val androidUser = AndroidSentryUser()
+fun SentryUser.toAndroidSentryUser(): AndroidUser {
+    val androidUser = AndroidUser()
     androidUser.id = this.id
     androidUser.username = this.username
     androidUser.email = this.email
@@ -15,7 +15,7 @@ fun SentryUser.toAndroidSentryUser(): AndroidSentryUser {
     return androidUser
 }
 
-fun AndroidSentryUser.toKMPSentryUser(): SentryUser {
+fun AndroidUser.toKMPSentryUser(): SentryUser {
     val kmpSentryUser = SentryUser()
     kmpSentryUser.id = this.id.toString()
     kmpSentryUser.username = this.username.toString()

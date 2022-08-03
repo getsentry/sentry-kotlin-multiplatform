@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toAndroidBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -10,7 +10,7 @@ class AndroidSentryBreadcrumbTest {
 
     @Test
     fun `convert SentryBreadcrumb to AndroidBreadcrumb has proper values`() {
-        val sentryBreadcrumb = SentryBreadcrumb.debug("test")
+        val sentryBreadcrumb = Breadcrumb.debug("test")
         sentryBreadcrumb.setData("my test", "value")
         val androidBreadcrumb = sentryBreadcrumb.toAndroidBreadcrumb()
 

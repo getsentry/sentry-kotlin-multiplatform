@@ -4,7 +4,7 @@ import io.sentry.SentryOptions
 
 actual abstract class BaseSentryScopeTest {
     actual fun initializeScope(scope: SentryScope) {
-        val androidScope = AndroidSentryScope(SentryOptions())
+        val androidScope = AndroidScope(SentryOptions())
         scope.initWithAndroidScope(androidScope)
     }
 }

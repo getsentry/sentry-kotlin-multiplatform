@@ -1,7 +1,7 @@
 package sample.kpm_app
 
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
@@ -18,7 +18,7 @@ object LoginImpl {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
             Sentry.captureException(exception) {
-                val breadcrumb = SentryBreadcrumb.debug("this is a test breadcrumb")
+                val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
                 breadcrumb.setData("touch event", "on login")
                 it.addBreadcrumb(breadcrumb)
                 it.setContext("Login", "Failed with Invalid Username")

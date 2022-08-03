@@ -2,13 +2,13 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.ScopeCallback
 import io.sentry.kotlin.multiplatform.extensions.*
-import io.sentry.kotlin.multiplatform.protocol.SentryBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryUser
 
 actual class SentryScope : ISentryScope {
 
     // We are directly modifying the Android SDK scope
-    private var scope: AndroidSentryScope? = null
+    private var scope: AndroidScope? = null
 
     actual override var level: SentryLevel?
         set(value) {
@@ -31,7 +31,7 @@ actual class SentryScope : ISentryScope {
     /**
      * Initializes this KMP Scope with the Android Scope
      */
-    internal fun initWithAndroidScope(androidScope: AndroidSentryScope) {
+    internal fun initWithAndroidScope(androidScope: AndroidScope) {
         this.scope = androidScope
     }
 
@@ -53,7 +53,7 @@ actual class SentryScope : ISentryScope {
         return scope?.tags
     }
 
-    actual override fun addBreadcrumb(breadcrumb: SentryBreadcrumb) {
+    actual override fun addBreadcrumb(breadcrumb: Breadcrumb) {
         val androidBreadcrumb = breadcrumb.toAndroidBreadcrumb()
         scope?.addBreadcrumb(androidBreadcrumb)
     }

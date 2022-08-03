@@ -6,6 +6,6 @@ import io.sentry.SentryLevel
 import io.sentry.protocol.User
 
 typealias AndroidSentryLevel = SentryLevel
-typealias AndroidSentryUser = User
-typealias AndroidSentryScope = Scope
-typealias AndroidSentryBreadcrumb = Breadcrumb
+typealias AndroidUser = User
+typealias AndroidScope = Scope
+typealias AndroidBreadcrumb = Breadcrumb
