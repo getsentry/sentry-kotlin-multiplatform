@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryUser
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb

@@ -57,8 +57,8 @@ class SentryBreadcrumbTest {
     fun `HTTP Breadcrumb has proper type and data and category`() {
         val breadcrumb = Breadcrumb.http(testUrl, testMethod)
 
-        assertEquals(breadcrumb.getData()?.get("url"), testUrl)
-        assertEquals(breadcrumb.getData()?.get("method"), testMethod)
+        assertEquals(breadcrumb.getData()["url"], testUrl)
+        assertEquals(breadcrumb.getData()["method"], testMethod)
         assertEquals(breadcrumb.getType(), "http")
     }
 
@@ -66,9 +66,9 @@ class SentryBreadcrumbTest {
     fun `HTTP Breadcrumb has proper type and data and category and status code`() {
         val breadcrumb = Breadcrumb.http(testUrl, testMethod, testStatusCode)
 
-        assertEquals(breadcrumb.getData()?.get("url"), testUrl)
-        assertEquals(breadcrumb.getData()?.get("method"), testMethod)
-        assertEquals(breadcrumb.getData()?.get("status_code"), testStatusCode)
+        assertEquals(breadcrumb.getData()["url"], testUrl)
+        assertEquals(breadcrumb.getData()["method"], testMethod)
+        assertEquals(breadcrumb.getData()["status_code"], testStatusCode)
         assertEquals(breadcrumb.getType(), "http")
     }
 
@@ -78,8 +78,8 @@ class SentryBreadcrumbTest {
 
         assertEquals(breadcrumb.getType(), "navigation")
         assertEquals(breadcrumb.getCategory(), "navigation")
-        assertEquals(breadcrumb.getData()?.get("from"), testFromNav)
-        assertEquals(breadcrumb.getData()?.get("to"), testToNav)
+        assertEquals(breadcrumb.getData()["from"], testFromNav)
+        assertEquals(breadcrumb.getData()["to"], testToNav)
     }
 
     @Test
@@ -115,8 +115,8 @@ class SentryBreadcrumbTest {
         assertEquals(breadcrumb.getType(), "user")
         assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
         assertEquals(breadcrumb.getCategory(), "ui.$testSubCategory")
-        assertEquals(breadcrumb.getData()?.get("view.id"), testViewId)
-        assertEquals(breadcrumb.getData()?.get("view.class"), testViewClass)
+        assertEquals(breadcrumb.getData()["view.id"], testViewId)
+        assertEquals(breadcrumb.getData()["view.class"], testViewClass)
     }
 
     @Test
@@ -130,10 +130,10 @@ class SentryBreadcrumbTest {
         assertEquals(breadcrumb.getType(), "user")
         assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
         assertEquals(breadcrumb.getCategory(), "ui.$testSubCategory")
-        assertEquals(breadcrumb.getData()?.get("view.id"), testViewId)
-        assertEquals(breadcrumb.getData()?.get("view.class"), testViewClass)
-        assertEquals(breadcrumb.getData()?.get("message"), testMessage)
-        assertEquals(breadcrumb.getData()?.get("category"), testCategory)
+        assertEquals(breadcrumb.getData()["view.id"], testViewId)
+        assertEquals(breadcrumb.getData()["view.class"], testViewClass)
+        assertEquals(breadcrumb.getData()["message"], testMessage)
+        assertEquals(breadcrumb.getData()["category"], testCategory)
     }
 
     @Test
