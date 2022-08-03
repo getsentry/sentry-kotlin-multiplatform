@@ -101,7 +101,9 @@ internal object SentryBreadcrumbFactory {
             breadcrumb.setData("view.class", viewClass)
         }
         for ((key, value) in additionalData) {
-            breadcrumb.getData()?.put(key, value)
+            if (key != null && value != null) {
+                breadcrumb.getData().put(key, value)
+            }
         }
         breadcrumb.setLevel(SentryLevel.INFO)
         return breadcrumb

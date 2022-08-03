@@ -19,5 +19,15 @@ fun Breadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
 }
 
 fun CocoaBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
-    return Breadcrumb(this)
+    return Breadcrumb(this.clone())
+}
+
+fun CocoaBreadcrumb.clone(): CocoaBreadcrumb {
+    val cocoaBreadcrumb = CocoaBreadcrumb()
+    cocoaBreadcrumb.message = this.message
+    cocoaBreadcrumb.category = this.category
+    cocoaBreadcrumb.level = this.level
+    cocoaBreadcrumb.data = this.data
+    cocoaBreadcrumb.type = this.type
+    return cocoaBreadcrumb
 }

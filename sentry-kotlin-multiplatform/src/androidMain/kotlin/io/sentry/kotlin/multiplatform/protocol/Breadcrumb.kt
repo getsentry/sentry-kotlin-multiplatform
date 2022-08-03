@@ -8,8 +8,7 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 
 actual class Breadcrumb actual constructor() {
 
-    var breadcrumb = AndroidBreadcrumb()
-        private set
+    private var breadcrumb = AndroidBreadcrumb()
 
     constructor(breadcrumb: AndroidBreadcrumb) : this() {
         this.breadcrumb = breadcrumb

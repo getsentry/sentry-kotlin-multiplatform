@@ -1,10 +1,10 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class CocoaSentryBreadcrumbTest {
 
@@ -20,5 +20,16 @@ class CocoaSentryBreadcrumbTest {
         assertEquals(sentryBreadcrumb.getType(), cocoaBreadcrumb.type)
         assertEquals(sentryBreadcrumb.getMessage(), cocoaBreadcrumb.message)
         assertEquals(sentryBreadcrumb.getCategory(), cocoaBreadcrumb.category)
+    }
+
+    @Test
+    fun `testing me`() {
+        val breadcrumb = Breadcrumb.debug("test")
+        breadcrumb.setMessage("test")
+
+        val cocoaBreadcrumb = breadcrumb.toCocoaBreadcrumb()
+        cocoaBreadcrumb.setMessage("nothing")
+
+        assertNotEquals(breadcrumb.getMessage(), cocoaBreadcrumb.message)
     }
 }
