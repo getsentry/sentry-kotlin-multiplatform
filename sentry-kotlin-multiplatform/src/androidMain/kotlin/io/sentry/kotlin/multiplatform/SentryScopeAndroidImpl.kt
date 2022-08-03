@@ -22,11 +22,11 @@ class SentryScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
             return scope.user?.toKmpUser()
         }
 
-    override fun getContexts(): MutableMap<String, Any>? {
+    override fun getContexts(): MutableMap<String, Any> {
         return scope.contexts
     }
 
-    override fun getTags(): MutableMap<String, String>? {
+    override fun getTags(): MutableMap<String, String> {
         return scope.tags
     }
 

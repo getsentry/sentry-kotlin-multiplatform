@@ -21,11 +21,11 @@ class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
             return scope.user
         }
 
-    override fun getContexts(): MutableMap<String, Any>? {
+    override fun getContexts(): MutableMap<String, Any> {
         return scope.getContexts()
     }
 
-    override fun getTags(): MutableMap<String, String>? {
+    override fun getTags(): MutableMap<String, String> {
         return scope.getTags()
     }
 
@@ -95,12 +95,12 @@ interface ISentryScope {
     /**
      * Returns the scope's tags
      */
-    fun getTags(): MutableMap<String, String>?
+    fun getTags(): MutableMap<String, String>
 
     /**
      * Returns the Scope's contexts
      */
-    fun getContexts(): MutableMap<String, Any>?
+    fun getContexts(): MutableMap<String, Any>
 
     /**
      * The Scope's user

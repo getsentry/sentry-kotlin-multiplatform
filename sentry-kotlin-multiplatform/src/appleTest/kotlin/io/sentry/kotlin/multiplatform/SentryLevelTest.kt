@@ -12,7 +12,7 @@ class CocoaSentryLevelTest {
         val level = SentryLevel.DEBUG
         val cocoaSentryLevelDebug = level.toCocoaSentryLevel()
 
-        assertEquals((SentryLevelNumConstants.DEBUG).convert(), cocoaSentryLevelDebug)
+        assertEquals((SentryLevelNumConstants.DEBUG_LEVEL).convert(), cocoaSentryLevelDebug)
     }
 
     @Test
@@ -49,7 +49,7 @@ class CocoaSentryLevelTest {
 
     @Test
     fun `convert AndroidSentryLevel debug to SentryLevel debug has proper value`() {
-        val level: CocoaSentryLevel = SentryLevelNumConstants.DEBUG_KEY.convert()
+        val level: CocoaSentryLevel = SentryLevelNumConstants.DEBUG_LEVEL.convert()
         val kmpSentryLevel = level.toKmpSentryLevel()
 
         assertEquals(SentryLevel.DEBUG, kmpSentryLevel)

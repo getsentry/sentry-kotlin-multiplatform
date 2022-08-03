@@ -140,19 +140,34 @@ class BreadcrumbTest {
     fun `setData with map as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
         val map = mutableMapOf("TestEntry" to "TestValue", "TestEntry2" to 12) as MutableMap<String, Any>
-
         breadcrumb.setData(map)
 
-        assertEquals(map as Map<String, Any>, breadcrumb.getData() as Map<String, Any>)
+        assertEquals(map, breadcrumb.getData())
     }
 
     @Test
     fun `setData with primitive types as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
-        val expected = mapOf("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false)
+        val expected = mapOf("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false) as MutableMap<String, Any>
         breadcrumb.setData("keyExample", "valueExample")
         breadcrumb.setData("keyExample2", 12)
         breadcrumb.setData("keyExample3", false)
-        assertEquals(expected, breadcrumb.getData() as Map<String, Any>)
+        assertEquals(expected, breadcrumb.getData())
+    }
+
+    @Test
+    fun `using setType sets values properly`() {
+        val breadcrumb = Breadcrumb()
+        breadcrumb.setType(testCategory)
+
+        assertEquals(testCategory, breadcrumb.getType())
+    }
+
+    @Test
+    fun `using setMessage sets values properly`() {
+        val breadcrumb = Breadcrumb()
+        breadcrumb.setMessage(testMessage)
+
+        assertEquals(testMessage, breadcrumb.getMessage())
     }
 }

@@ -129,7 +129,7 @@ class SentryScopeTest : BaseSentryScopeTest() {
     @Test
     fun `clear scope resets scope to default state`() {
         sentryScope?.level = SentryLevel.WARNING
-        sentryScope?.user = User()
+        sentryScope?.user = user
         sentryScope?.user?.username = "test"
 
         sentryScope?.clear()

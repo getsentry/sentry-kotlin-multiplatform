@@ -14,7 +14,7 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
         this.cocoaBreadcrumb = breadcrumb?.toCocoaBreadcrumb() ?: CocoaBreadcrumb()
     }
 
-    constructor(cocoaBreadcrumb: CocoaBreadcrumb) : this() {
+    constructor(cocoaBreadcrumb: CocoaBreadcrumb) : this(null) {
         this.cocoaBreadcrumb = cocoaBreadcrumb
     }
 
