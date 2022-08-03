@@ -170,4 +170,13 @@ class BreadcrumbTest {
 
         assertEquals(testMessage, breadcrumb.getMessage())
     }
+
+    @Test
+    fun `using setLevel sets values properly`() {
+        val breadcrumb = Breadcrumb()
+        breadcrumb.setLevel(SentryLevel.DEBUG)
+
+        assertEquals(SentryLevel.DEBUG, breadcrumb.getLevel())
+    }
+
 }

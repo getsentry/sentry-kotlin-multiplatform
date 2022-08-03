@@ -6,7 +6,8 @@ import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 
-actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrumb?) : ISentryBreadcrumb {
+actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrumb?) :
+    ISentryBreadcrumb {
 
     private var cocoaBreadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
 
@@ -59,11 +60,20 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
             return BreadcrumbFactory.ui(category, message)
         }
 
-        actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb {
+        actual fun userInteraction(
+            subCategory: String,
+            viewId: String?,
+            viewClass: String?
+        ): Breadcrumb {
             return BreadcrumbFactory.userInteraction(subCategory, viewId, viewClass)
         }
 
-        actual fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): Breadcrumb {
+        actual fun userInteraction(
+            subCategory: String,
+            viewId: String?,
+            viewClass: String?,
+            additionalData: Map<String?, Any?>
+        ): Breadcrumb {
             return BreadcrumbFactory.userInteraction(
                 subCategory,
                 viewId,
@@ -73,59 +83,93 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
         }
     }
 
+    /*
+    Trying to access these fields if they are null leads to a null pointer exception no matter what
+    Kotlin -> ObjC behaviour is still wonky at this moment so using these boolean flags we can work around it
+     */
+    private var dataIsNull = true
+    private var typeIsNull = true
+    private var categoryIsNull = true
+    private var levelIsNull = true
+    private var messageIsNull = true
+
     actual override fun setType(type: String?) {
         cocoaBreadcrumb.type = type
+        typeIsNull = false
     }
 
     actual override fun setCategory(category: String?) {
-        category?.let { cocoaBreadcrumb.category = it }
+        category?.let {
+            cocoaBreadcrumb.category = it
+            categoryIsNull = false
+        }
     }
 
     actual override fun setMessage(message: String?) {
         cocoaBreadcrumb.message = message
+        messageIsNull = false
     }
 
-    // Trying to check if breadcrumb.data is null (if it's really null) leads to a null pointer exception no matter what
-    // Using this boolean flag we can work around it
-    private var dataIsNotNull = false
-
     actual override fun setData(key: String, value: Any) {
-        if (dataIsNotNull) {
+        if (dataIsNull) {
+            setData(mutableMapOf(key to value))
+        } else {
             val previousData = (cocoaBreadcrumb.data as MutableMap<Any?, Any>).apply {
                 put(key, value)
             }
             cocoaBreadcrumb.setData(previousData)
-        } else {
-            setData(mutableMapOf(key to value))
         }
     }
 
     actual override fun setData(map: MutableMap<String, Any>) {
         cocoaBreadcrumb.setData(map as Map<Any?, Any>)
-        dataIsNotNull = true
+        dataIsNull = false
     }
 
     actual override fun setLevel(level: SentryLevel?) {
-        level?.let { cocoaBreadcrumb.level = it.toCocoaSentryLevel() }
+        level?.let {
+            cocoaBreadcrumb.level = it.toCocoaSentryLevel()
+            levelIsNull = false
+        }
+
     }
 
     actual override fun getData(): MutableMap<String, Any> {
+        if (dataIsNull) {
+            return HashMap()
+        }
         return cocoaBreadcrumb.data as MutableMap<String, Any>
     }
 
     actual override fun getType(): String? {
+        if (typeIsNull) {
+            return null
+        }
         return cocoaBreadcrumb.type
     }
 
     actual override fun getCategory(): String? {
+        if (categoryIsNull) {
+            return null
+        }
         return cocoaBreadcrumb.category
     }
 
     actual override fun getMessage(): String? {
+        if (messageIsNull) {
+            return null
+        }
         return cocoaBreadcrumb.message
     }
 
     actual override fun getLevel(): SentryLevel? {
+        if (levelIsNull) {
+            return null
+        }
         return cocoaBreadcrumb.level.toKmpSentryLevel()
+    }
+
+    actual override fun clear() {
+        this.cocoaBreadcrumb = CocoaBreadcrumb()
     }
 }

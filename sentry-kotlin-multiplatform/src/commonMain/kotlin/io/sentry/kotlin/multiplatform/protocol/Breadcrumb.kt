@@ -30,6 +30,8 @@ expect class Breadcrumb(breadcrumb: ISentryBreadcrumb? = null) : ISentryBreadcru
     override fun getMessage(): String?
     override fun getData(): MutableMap<String, Any>
     override fun getLevel(): SentryLevel?
+
+    override fun clear()
 }
 
 interface ISentryBreadcrumb {
@@ -45,4 +47,6 @@ interface ISentryBreadcrumb {
     fun getMessage(): String?
     fun getData(): MutableMap<String, Any>
     fun getLevel(): SentryLevel?
+
+    fun clear()
 }

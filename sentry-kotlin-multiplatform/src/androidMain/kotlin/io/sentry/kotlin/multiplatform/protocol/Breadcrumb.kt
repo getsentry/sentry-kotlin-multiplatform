@@ -125,6 +125,10 @@ actual data class Breadcrumb actual constructor(private val breadcrumb: ISentryB
         return androidBreadcrumb.level?.toKmpSentryLevel()
     }
 
+    actual override fun clear() {
+        this.androidBreadcrumb = AndroidBreadcrumb()
+    }
+
     fun setUnknown(unknown: MutableMap<String, Any>?) {
         androidBreadcrumb.unknown = unknown
     }
