@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKMPSentryLevel
 import cocoapods.Sentry.SentryBreadcrumb as CocoaBreadcrumb
 
 actual class SentryBreadcrumb {

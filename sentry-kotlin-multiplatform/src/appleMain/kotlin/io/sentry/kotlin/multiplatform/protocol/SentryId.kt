@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform.protocol
 
+import io.sentry.kotlin.multiplatform.CocoaSentryId
+
 actual class SentryId actual constructor(sentryIdString: String): ISentryId {
 
     actual companion object {
