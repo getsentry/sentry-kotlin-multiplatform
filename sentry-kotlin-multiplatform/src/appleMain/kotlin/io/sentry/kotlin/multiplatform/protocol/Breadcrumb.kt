@@ -88,26 +88,19 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
     Kotlin -> ObjC behaviour is still wonky at this moment so using these boolean flags we can work around it
      */
     private var dataIsNull = true
-    private var typeIsNull = true
-    private var categoryIsNull = true
-    private var levelIsNull = true
-    private var messageIsNull = true
 
     actual override fun setType(type: String?) {
         cocoaBreadcrumb.type = type
-        typeIsNull = false
     }
 
     actual override fun setCategory(category: String?) {
         category?.let {
             cocoaBreadcrumb.category = it
-            categoryIsNull = false
         }
     }
 
     actual override fun setMessage(message: String?) {
         cocoaBreadcrumb.message = message
-        messageIsNull = false
     }
 
     actual override fun setData(key: String, value: Any) {
@@ -129,7 +122,6 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
     actual override fun setLevel(level: SentryLevel?) {
         level?.let {
             cocoaBreadcrumb.level = it.toCocoaSentryLevel()
-            levelIsNull = false
         }
 
     }
@@ -142,30 +134,18 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
     }
 
     actual override fun getType(): String? {
-        if (typeIsNull) {
-            return null
-        }
         return cocoaBreadcrumb.type
     }
 
     actual override fun getCategory(): String? {
-        if (categoryIsNull) {
-            return null
-        }
         return cocoaBreadcrumb.category
     }
 
     actual override fun getMessage(): String? {
-        if (messageIsNull) {
-            return null
-        }
         return cocoaBreadcrumb.message
     }
 
     actual override fun getLevel(): SentryLevel? {
-        if (levelIsNull) {
-            return null
-        }
         return cocoaBreadcrumb.level.toKmpSentryLevel()
     }
 

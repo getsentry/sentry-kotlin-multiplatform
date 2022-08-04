@@ -179,4 +179,10 @@ class BreadcrumbTest {
         assertEquals(SentryLevel.DEBUG, breadcrumb.getLevel())
     }
 
+    @Test
+    fun `accessing setData with key value does not throw NullPointerException`() {
+        val breadcrumb = Breadcrumb()
+
+        breadcrumb.setData("key", "value")
+    }
 }
