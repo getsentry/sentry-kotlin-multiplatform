@@ -36,7 +36,7 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         context?.let {
             val dict = context as NSDictionary
             val keys = dict.allKeys
-            val map: MutableMap<String, Any> = HashMap()
+            val map = mutableMapOf<String, Any>()
             for (key in keys) {
                 dict.objectForKey(key)?.let { map.put(key as String, it) }
             }
@@ -50,7 +50,7 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         tags?.let {
             val dict = tags as NSDictionary
             val keys = dict.allKeys
-            val map: MutableMap<String, String> = HashMap()
+            val map = mutableMapOf<String, String>()
             for (key in keys) {
                 map.put(key as String, dict.objectForKey(key) as String)
             }
