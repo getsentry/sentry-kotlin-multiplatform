@@ -9,16 +9,14 @@ data class User(
     override var unknown: MutableMap<String, Any> = mutableMapOf(),
 ) : ISentryUser {
 
-    constructor(user: ISentryUser? = null) : this("", "", "", null, mutableMapOf(), mutableMapOf()) {
-        user?.let {
-            this.email = it.email
-            this.id = it.id
-            this.username = it.username
-            this.ipAddress = it.ipAddress
-            this.other = it.other
-            this.unknown = it.unknown
-        }
-    }
+    constructor(user: ISentryUser) : this(
+        user.email,
+        user.id,
+        user.username,
+        user.ipAddress,
+        user.other,
+        user.unknown
+    )
 
     // This secondary constructor allows Swift also to init without specifying nil explicitly
     // example: User.init() instead of User.init(user: nil)
