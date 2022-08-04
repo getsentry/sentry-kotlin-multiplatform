@@ -137,7 +137,6 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
     }
 
     actual override fun getType(): String? {
-        print(cocoaBreadcrumb.type)
         return cocoaBreadcrumb.type
     }
 
