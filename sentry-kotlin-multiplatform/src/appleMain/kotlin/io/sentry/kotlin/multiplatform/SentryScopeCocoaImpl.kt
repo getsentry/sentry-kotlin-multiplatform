@@ -6,7 +6,7 @@ import io.sentry.kotlin.multiplatform.protocol.User
 import platform.Foundation.NSDictionary
 import platform.Foundation.allKeys
 
-class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
+internal class SentryScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
 
     override var level: SentryLevel?
         set(value) {

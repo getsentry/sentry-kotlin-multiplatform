@@ -35,18 +35,65 @@ expect class Breadcrumb(breadcrumb: ISentryBreadcrumb? = null) : ISentryBreadcru
 }
 
 interface ISentryBreadcrumb {
+
+    /**
+     * Set's the breadcrumb's type
+     *
+     * @param type The type
+     */
     fun setType(type: String?)
+
+    /**
+     * Set's the breadcrumb's type
+     *
+     * @param category The category
+     */
     fun setCategory(category: String?)
+
+    /**
+     * Set's the breadcrumb's type
+     *
+     * @param message The message
+     */
     fun setMessage(message: String?)
+
+    /**
+     * Set's the breadcrumb's data with key, value
+     *
+     * @param key The key
+     * @param value The value
+     */
     fun setData(key: String, value: Any)
+
+    /**
+     * Set's the breadcrumb's data with a map
+     *
+     * @param map The map
+     */
     fun setData(map: MutableMap<String, Any>)
+
+    /**
+     * Set's the breadcrumb's level
+     *
+     * @param level The level
+     */
     fun setLevel(level: SentryLevel?)
 
+    /** Returns the breadcrumb's type */
     fun getType(): String?
+
+    /** Returns the breadcrumb's category */
     fun getCategory(): String?
+
+    /** Returns the breadcrumb's message */
     fun getMessage(): String?
+
+    /** Returns the breadcrumb's data */
     fun getData(): MutableMap<String, Any>
+
+    /** Returns the breadcrumb's level */
     fun getLevel(): SentryLevel?
 
+    /** Clears the breadcrumb and returns it to the default state */
     fun clear()
 }
