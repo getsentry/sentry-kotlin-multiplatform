@@ -107,15 +107,18 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
         if (dataIsNull) {
             setData(mutableMapOf(key to value))
         } else {
-            val previousData = (cocoaBreadcrumb.data as MutableMap<Any?, Any>).apply {
-                put(key, value)
+            val previousData = (cocoaBreadcrumb.data as? MutableMap<Any?, Any>)?.let {
+                it.apply {
+                    put(key, value)
+                }
             }
             cocoaBreadcrumb.setData(previousData)
         }
     }
 
     actual override fun setData(map: MutableMap<String, Any>) {
-        cocoaBreadcrumb.setData(map as Map<Any?, Any>)
+        val data = map as? MutableMap<Any?, Any>
+        data?.let { cocoaBreadcrumb.setData(it) }
         dataIsNull = false
     }
 
@@ -126,13 +129,15 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
     }
 
     actual override fun getData(): MutableMap<String, Any> {
-        if (dataIsNull) {
+        val data = cocoaBreadcrumb.data as? MutableMap<String, Any>
+        if (dataIsNull || data == null) {
             return HashMap()
         }
-        return cocoaBreadcrumb.data as MutableMap<String, Any>
+        return data
     }
 
     actual override fun getType(): String? {
+        print(cocoaBreadcrumb.type)
         return cocoaBreadcrumb.type
     }
 

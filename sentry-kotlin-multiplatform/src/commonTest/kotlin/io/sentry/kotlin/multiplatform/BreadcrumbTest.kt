@@ -139,7 +139,7 @@ class BreadcrumbTest {
     @Test
     fun `setData with map as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
-        val map = mutableMapOf("TestEntry" to "TestValue", "TestEntry2" to 12) as MutableMap<String, Any>
+        val map = mutableMapOf<String, Any>("TestEntry" to "TestValue", "TestEntry2" to 12)
         breadcrumb.setData(map)
 
         assertEquals(map, breadcrumb.getData())
@@ -148,7 +148,7 @@ class BreadcrumbTest {
     @Test
     fun `setData with primitive types as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
-        val expected = mapOf("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false) as MutableMap<String, Any>
+        val expected = mapOf<String, Any>("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false)
         breadcrumb.setData("keyExample", "valueExample")
         breadcrumb.setData("keyExample2", 12)
         breadcrumb.setData("keyExample3", false)
