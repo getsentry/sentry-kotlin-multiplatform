@@ -26,7 +26,7 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
             scope.setUser(value?.toCocoaUser())
         }
         get() {
-            val map = scope.serialize()["user"] as Map<String, String>?
+            val map = scope.serialize()["user"] as? Map<String, String>?
             map?.let { return User.fromMap(map) }
             return null
         }
