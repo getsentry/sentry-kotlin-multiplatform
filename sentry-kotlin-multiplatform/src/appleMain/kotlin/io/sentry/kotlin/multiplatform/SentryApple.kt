@@ -55,8 +55,10 @@ internal actual object SentryBridge {
             val cocoaScopeImpl = cocoaScope?.let {
                 SentryScopeCocoaImpl(it)
             }
-            val scope = cocoaScopeImpl?.let { Scope(it) }
-            scope?.let { scopeCallback.invoke(it) }
+            cocoaScopeImpl?.let {
+                val scope = Scope(it)
+                scopeCallback.invoke(scope)
+            }
         }
     }
 }
