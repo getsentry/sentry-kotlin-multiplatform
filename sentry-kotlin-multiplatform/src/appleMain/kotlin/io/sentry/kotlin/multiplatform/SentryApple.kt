@@ -53,7 +53,7 @@ internal actual object SentryBridge {
     private fun configureScopeCallback(scopeCallback: (Scope) -> Unit): (CocoaScope?) -> Unit {
         return { cocoaScope ->
             val cocoaScopeImpl = cocoaScope?.let {
-                SentryScopeCocoaImpl(it)
+                ScopeCocoaImpl(it)
             }
             cocoaScopeImpl?.let {
                 val scope = Scope(it)

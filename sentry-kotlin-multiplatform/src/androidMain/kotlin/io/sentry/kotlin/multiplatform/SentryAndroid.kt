@@ -51,7 +51,7 @@ internal actual object SentryBridge {
 
     private fun configureScopeCallback(scopeCallback: (Scope) -> Unit): (AndroidScope) -> Unit {
         return {
-            val androidScopeImpl = SentryScopeAndroidImpl(it)
+            val androidScopeImpl = ScopeAndroidImpl(it)
             val scope = Scope(androidScopeImpl)
             scopeCallback.invoke(scope)
         }

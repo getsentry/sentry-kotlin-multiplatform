@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.extensions.*
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
-class SentryScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
+class ScopeAndroidImpl(private val scope: AndroidScope) : ISentryScope {
 
     override var level: SentryLevel?
         set(value) {
