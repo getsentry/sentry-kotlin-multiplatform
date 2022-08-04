@@ -6,13 +6,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BreadcrumbConversionTest {
-    private lateinit var converter: BreadcrumbConverter
+    private lateinit var converter: BreadcrumbTestConverter
     private lateinit var breadcrumb: Breadcrumb
 
     @BeforeTest
     fun setup() {
         breadcrumb = Breadcrumb()
-        converter = BreadcrumbConverter(breadcrumb)
+        converter = BreadcrumbTestConverter(breadcrumb)
     }
 
     @Test

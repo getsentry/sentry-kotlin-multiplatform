@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 class SentryLevelConversionTest {
 
-    private var converter: SentryLevelConverter? = SentryLevelConverter()
+    private var converter: SentryLevelTestConverter? = SentryLevelTestConverter()
 
     @Test
     fun `convert SentryLevel debug to Platform Sentry Level has proper value`() {

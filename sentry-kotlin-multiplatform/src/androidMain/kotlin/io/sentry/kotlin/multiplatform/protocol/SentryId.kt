@@ -11,7 +11,7 @@ actual data class SentryId actual constructor(val sentryIdString: String): ISent
     private var androidSentryId: AndroidSentryId? = null
 
     init {
-        androidSentryId = if (sentryIdString.isEmpty()) io.sentry.protocol.SentryId.EMPTY_ID
+        androidSentryId = if (sentryIdString.isEmpty()) AndroidSentryId.EMPTY_ID
         else AndroidSentryId(sentryIdString)
     }
 

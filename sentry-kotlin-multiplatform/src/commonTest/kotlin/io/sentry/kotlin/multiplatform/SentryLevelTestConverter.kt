@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-expect class SentryLevelConverter() {
+expect class SentryLevelTestConverter() {
 
     fun convert(sentryLevel: SentryLevel): SentryLevel
 }
