@@ -123,7 +123,6 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
         level?.let {
             cocoaBreadcrumb.level = it.toCocoaSentryLevel()
         }
-
     }
 
     actual override fun getData(): MutableMap<String, Any> {
