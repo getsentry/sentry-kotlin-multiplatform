@@ -17,7 +17,8 @@ data class User(val user: ISentryUser? = null) : ISentryUser {
         this.email = user?.email.toString()
         this.id = user?.id.toString()
         this.username = user?.username.toString()
-        this.ipAddress = user?.ipAddress.toString()
+        // if ipAddress is invalid ("" is invalid), the sentry.io project will show an invalid value error
+        this.ipAddress = user?.ipAddress
         user?.other?.let { this.other = it }
         user?.unknown?.let { this.unknown = it }
     }

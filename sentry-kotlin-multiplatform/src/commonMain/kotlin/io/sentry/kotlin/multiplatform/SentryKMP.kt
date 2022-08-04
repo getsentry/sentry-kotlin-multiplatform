@@ -20,7 +20,7 @@ object Sentry {
      * @param message The message to send.
      * @param scopeCallback The local scope callback.
      */
-    fun captureMessage(message: String, scopeCallback: (SentryScope) -> Unit): SentryId {
+    fun captureMessage(message: String, scopeCallback: (Scope) -> Unit): SentryId {
         return SentryBridge.captureMessage(message, scopeCallback)
     }
 
@@ -39,7 +39,7 @@ object Sentry {
      * @param throwable The exception.
      * @param scopeCallback The local scope callback.
      */
-    fun captureException(throwable: Throwable, scopeCallback: (SentryScope) -> Unit): SentryId {
+    fun captureException(throwable: Throwable, scopeCallback: (Scope) -> Unit): SentryId {
         return SentryBridge.captureException(throwable, scopeCallback)
     }
 
@@ -48,7 +48,7 @@ object Sentry {
      *
      * @param scopeCallback The configure scope callback.
      */
-    fun configureScope(scopeCallback: (SentryScope) -> Unit) {
+    fun configureScope(scopeCallback: (Scope) -> Unit) {
         SentryBridge.configureScope(scopeCallback)
     }
 

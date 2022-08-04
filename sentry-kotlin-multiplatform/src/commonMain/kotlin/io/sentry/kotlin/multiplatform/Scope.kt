@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
-class SentryScope constructor(private val scope: ISentryScope) : ISentryScope {
+class Scope constructor(private val scope: ISentryScope) : ISentryScope {
 
     override var level: SentryLevel?
         set(value) {

@@ -3,25 +3,25 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.User
 import kotlin.test.*
 
-class SentryScopeTest : BaseSentryScopeTest() {
+class ScopeTest : BaseSentryScopeTest() {
 
     private val testUsername = "MyUsername"
     private val testEmail = "Email"
     private val testId = "TestId"
     private val testIpAddress = "0.0.1.0"
 
-    private var sentryScope: SentryScope? = null
+    private var scope: Scope? = null
     private var user: User? = null
 
     @BeforeTest
     fun setup() {
-        sentryScope = initializeScope()
+        scope = initializeScope()
         user = createTestUser()
     }
 
     @AfterTest
     fun tearDown() {
-        sentryScope = null
+        scope = null
         user = null
     }
 
@@ -36,25 +36,25 @@ class SentryScopeTest : BaseSentryScopeTest() {
 
     @Test
     fun `adding user to scope should properly persist user in scope`() {
-        sentryScope?.user = user
+        scope?.user = user
 
-        assertEquals(user, sentryScope?.user)
+        assertEquals(user, scope?.user)
     }
 
     @Test
     fun `modifying user in scope does not persist`() {
-        sentryScope?.user = user
-        sentryScope?.user?.username = "Test Username"
+        scope?.user = user
+        scope?.user?.username = "Test Username"
 
-        assertEquals(testUsername, sentryScope?.user?.username)
+        assertEquals(testUsername, scope?.user?.username)
     }
 
     @Test
     fun `adding tags in scope should be set correctly`() {
-        sentryScope?.setTag("key", "value")
-        sentryScope?.setTag("key2", "value2")
+        scope?.setTag("key", "value")
+        scope?.setTag("key2", "value2")
 
-        sentryScope?.getTags()?.let {
+        scope?.getTags()?.let {
             assertEquals(it["key"], "value")
             assertEquals(it["key2"], "value2")
         }
@@ -64,27 +64,27 @@ class SentryScopeTest : BaseSentryScopeTest() {
     fun `string value context should be set correctly`() {
         val stringContext = mapOf("value" to "Test")
         val expectedContext = mapOf("Context" to stringContext)
-        sentryScope?.setContext("Context", "Test")
+        scope?.setContext("Context", "Test")
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
     fun `number value context should be set correctly`() {
         val numberContext = mapOf("value" to 12)
         val expectedContext = mapOf("Context" to numberContext)
-        sentryScope?.setContext("Context", 12)
+        scope?.setContext("Context", 12)
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
     fun `boolean value context should be set correctly`() {
         val booleanContext = mapOf("value" to false)
         val expectedContext = mapOf("Context" to booleanContext)
-        sentryScope?.setContext("Context", false)
+        scope?.setContext("Context", false)
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
@@ -92,9 +92,9 @@ class SentryScopeTest : BaseSentryScopeTest() {
         val array = arrayOf(1, 2, 3, "2")
         val arrayContext = mapOf("value" to array)
         val expectedContext = mapOf("Context" to arrayContext)
-        sentryScope?.setContext("Context", array)
+        scope?.setContext("Context", array)
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
@@ -102,9 +102,9 @@ class SentryScopeTest : BaseSentryScopeTest() {
         val set = setOf(1, 2, "2", 4)
         val setContext = mapOf("value" to set)
         val expectedContext = mapOf("Context" to setContext)
-        sentryScope?.setContext("Context", set)
+        scope?.setContext("Context", set)
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
@@ -112,31 +112,31 @@ class SentryScopeTest : BaseSentryScopeTest() {
         val list = listOf(1, 2, "2", 4)
         val setContext = mapOf("value" to list)
         val expectedContext = mapOf("Context" to setContext)
-        sentryScope?.setContext("Context", list)
+        scope?.setContext("Context", list)
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
     fun `map value context should be set correctly`() {
         val map = mapOf("test" to "fighter", 1 to "one", "2" to 2)
         val expectedContext = mapOf("Context" to map)
-        sentryScope?.setContext("Context", map)
+        scope?.setContext("Context", map)
 
-        assertEquals(expectedContext as Map<String, Any>?, sentryScope?.getContexts())
+        assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
     @Test
     fun `clear scope resets scope to default state`() {
-        sentryScope?.level = SentryLevel.WARNING
-        sentryScope?.user = user
-        sentryScope?.user?.username = "test"
+        scope?.level = SentryLevel.WARNING
+        scope?.user = user
+        scope?.user?.username = "test"
 
-        sentryScope?.clear()
+        scope?.clear()
 
-        assertNull(sentryScope?.user)
-        assertNull(sentryScope?.level)
-        assertEquals(0, sentryScope?.getContexts()?.size)
-        assertEquals(0, sentryScope?.getTags()?.size)
+        assertNull(scope?.user)
+        assertNull(scope?.level)
+        assertEquals(0, scope?.getContexts()?.size)
+        assertEquals(0, scope?.getTags()?.size)
     }
 }
