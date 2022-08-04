@@ -67,7 +67,7 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         scope.clearBreadcrumbs()
     }
 
-    private fun setContextForAnyValue(key: String, value: Any) {
+    private fun setContextForPrimitiveValues(key: String, value: Any) {
         scope.setContextValue(mapOf("value" to value), key)
     }
 
@@ -75,32 +75,32 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         try {
             scope.setContextValue(value as Map<Any?, Any>, key)
         } catch (e: Throwable) {
-            setContextForAnyValue(key, value)
+            setContextForPrimitiveValues(key, value)
         }
     }
 
     override fun setContext(key: String, value: String) {
-        setContextForAnyValue(key, value)
+        setContextForPrimitiveValues(key, value)
     }
 
     override fun setContext(key: String, value: Boolean) {
-        setContextForAnyValue(key, value)
+        setContextForPrimitiveValues(key, value)
     }
 
     override fun setContext(key: String, value: Number) {
-        setContextForAnyValue(key, value)
+        setContextForPrimitiveValues(key, value)
     }
 
     override fun setContext(key: String, value: Char) {
-        setContextForAnyValue(key, value)
+        setContextForPrimitiveValues(key, value)
     }
 
     override fun setContext(key: String, value: Array<*>) {
-        setContextForAnyValue(key, value)
+        setContextForPrimitiveValues(key, value)
     }
 
     override fun setContext(key: String, value: Collection<*>) {
-        setContextForAnyValue(key, value)
+        setContextForPrimitiveValues(key, value)
     }
 
     override fun removeContext(key: String) {
