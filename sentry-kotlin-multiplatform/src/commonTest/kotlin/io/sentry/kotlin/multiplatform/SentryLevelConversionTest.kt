@@ -5,40 +5,34 @@ import kotlin.test.assertEquals
 
 class SentryLevelConversionTest {
 
-    private var converter: SentryLevelConverter? = null
+    private var converter: SentryLevelConverter? = SentryLevelConverter()
 
     @Test
     fun `convert SentryLevel debug to Platform Sentry Level has proper value`() {
-        converter = SentryLevelConverter(SentryLevel.DEBUG)
-
-        assertEquals(SentryLevel.DEBUG, converter?.getLevel())
+        assertEquals(SentryLevel.DEBUG, converter?.convert(SentryLevel.DEBUG))
     }
 
     @Test
     fun `convert SentryLevel info to Platform Sentry Level has proper value`() {
-        converter = SentryLevelConverter(SentryLevel.INFO)
 
-        assertEquals(SentryLevel.INFO, converter?.getLevel())
+        assertEquals(SentryLevel.INFO, converter?.convert(SentryLevel.INFO))
     }
 
     @Test
     fun `convert SentryLevel warning to Platform Sentry Level has proper value`() {
-        converter = SentryLevelConverter(SentryLevel.WARNING)
 
-        assertEquals(SentryLevel.WARNING, converter?.getLevel())
+        assertEquals(SentryLevel.WARNING, converter?.convert(SentryLevel.WARNING))
     }
 
     @Test
     fun `convert SentryLevel error to Platform Sentry Level has proper value`() {
-        converter = SentryLevelConverter(SentryLevel.ERROR)
 
-        assertEquals(SentryLevel.ERROR, converter?.getLevel())
+        assertEquals(SentryLevel.ERROR, converter?.convert(SentryLevel.ERROR))
     }
 
     @Test
     fun `convert SentryLevel fatal to Platform Sentry Level has proper value`() {
-        converter = SentryLevelConverter(SentryLevel.FATAL)
 
-        assertEquals(SentryLevel.FATAL, converter?.getLevel())
+        assertEquals(SentryLevel.FATAL, converter?.convert(SentryLevel.FATAL))
     }
 }
