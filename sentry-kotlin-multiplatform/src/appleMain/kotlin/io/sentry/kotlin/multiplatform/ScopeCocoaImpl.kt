@@ -27,18 +27,9 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         }
         get() {
             val map = scope.serialize()["user"] as Map<String, String>?
-            map?.let { return userFromMap(map) }
+            map?.let { return User.fromMap(map) }
             return null
         }
-
-    private fun userFromMap(map: Map<String, String>): User {
-        val user = User()
-        user.email = map["email"].toString()
-        user.username = map["username"].toString()
-        user.id = map["id"].toString()
-        user.ipAddress = map["ip_address"].toString()
-        return user
-    }
 
     override fun getContexts(): MutableMap<String, Any> {
         val context = scope.serialize()["context"]
