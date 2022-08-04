@@ -73,7 +73,9 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
 
     override fun setContext(key: String, value: Any) {
         try {
-            scope.setContextValue(value as Map<Any?, Any>, key)
+            (value as? Map<Any?, Any>)?.let {
+                scope.setContextValue(it, key)
+            }
         } catch (e: Throwable) {
             setContextForPrimitiveValues(key, value)
         }
