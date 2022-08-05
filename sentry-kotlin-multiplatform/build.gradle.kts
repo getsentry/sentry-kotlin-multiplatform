@@ -25,15 +25,12 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
-    //jvm()
+    jvm()
     ios()
     iosSimulatorArm64()
-
-    /*
     watchos()
     tvos()
     macosX64()
-     */
 
     sourceSets {
         val commonMain by getting {
@@ -45,36 +42,35 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-common")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
             }
         }
-/*
-        val jvmMain by getting {
+
+        val commonJvmMain by creating {
+            dependsOn(commonMain)
             dependencies {
                 implementation("io.sentry:sentry:6.1.4")
             }
         }
-
-
-        val jvmTest by getting {
+        val commonJvmTest by creating {
             dependsOn(commonTest)
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-junit")
             }
         }
- */
+
+        val jvmMain by getting { dependsOn(commonJvmMain) }
+        val jvmTest by getting { dependsOn(commonJvmTest) }
 
         val androidMain by getting {
+            dependsOn(commonJvmMain)
             dependencies {
-                implementation("io.sentry:sentry-android:6.1.4")
+                implementation("io.sentry:sentry-android:6.1.4") {
+                    // avoid duplicate dependencies since we depend on commonJvmMain
+                    exclude("io.sentry", "sentry")
+                }
             }
         }
-        val androidTest by getting {
-            dependsOn(commonTest)
-            dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-junit")
-            }
-        }
+        val androidTest by getting { dependsOn(commonJvmTest) }
 
         val appleMain by creating { dependsOn(commonMain) }
         val iosMain by getting { dependsOn(appleMain) }
@@ -82,12 +78,10 @@ kotlin {
         val appleTest by creating { dependsOn(commonTest) }
         val iosTest by getting { dependsOn(appleTest) }
         val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
-
-        /*
         val tvosMain by getting { dependsOn(appleMain) }
         val watchosMain by getting { dependsOn(appleMain) }
         val macosX64Main by getting { dependsOn(appleMain) }
-        */
+
         cocoapods {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
             homepage = "https://github.com/getsentry/sentry-cocoa"
@@ -95,9 +89,9 @@ kotlin {
             pod("Sentry", "~> 7.21.0")
 
             ios.deploymentTarget = "9.0"
-            // osx.deploymentTarget = "10.10"
-            // tvos.deploymentTarget = "9.0"
-            // watchos.deploymentTarget = "2.0"
+            osx.deploymentTarget = "10.10"
+            tvos.deploymentTarget = "9.0"
+            watchos.deploymentTarget = "2.0"
         }
     }
 
@@ -114,7 +108,10 @@ kotlin {
     // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
     // if we need to use this class, we'd need to find a better way to work it out
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().all {
-        compilations["main"].cinterops["Sentry"].extraOpts("-compiler-option", "-DSentryMechanismMeta=SentryMechanismMetaUnavailable")
+        compilations["main"].cinterops["Sentry"].extraOpts(
+            "-compiler-option",
+            "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
+        )
     }
 }
 

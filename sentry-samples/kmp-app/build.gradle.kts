@@ -5,3 +5,4 @@ allprojects {
         mavenLocal()
     }
 }
+

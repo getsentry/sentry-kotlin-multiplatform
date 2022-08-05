@@ -9,6 +9,9 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/sentry_kotlin_multiplatform.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '9.0'
+    spec.osx.deployment_target = '10.10'
+    spec.tvos.deployment_target = '9.0'
+    spec.watchos.deployment_target = '2.0'
     spec.dependency 'Sentry', '~> 7.21.0'
                 
     spec.pod_target_xcconfig = {
