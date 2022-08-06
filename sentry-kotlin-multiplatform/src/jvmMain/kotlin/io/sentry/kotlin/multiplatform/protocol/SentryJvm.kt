@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.protocol
 import io.sentry.Sentry
 import io.sentry.kotlin.multiplatform.Sentry as SentryKmp
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptions
+import io.sentry.kotlin.multiplatform.protocol.extensions.toJvmSentryOptions
 
 /**
  * Sentry initialization with an option configuration handler.
