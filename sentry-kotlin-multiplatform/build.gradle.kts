@@ -79,8 +79,11 @@ kotlin {
         val iosTest by getting { dependsOn(appleTest) }
         val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
         val tvosMain by getting { dependsOn(appleMain) }
+        val tvosTest by getting { dependsOn(appleTest) }
         val watchosMain by getting { dependsOn(appleMain) }
+        val watchosTest by getting { dependsOn(appleTest) }
         val macosX64Main by getting { dependsOn(appleMain) }
+        val macosX64Test by getting { dependsOn(appleTest) }
 
         cocoapods {
             summary = "Official Sentry SDK for iOS / tvOS / macOS / watchOS"
@@ -96,7 +99,15 @@ kotlin {
     }
 
     listOf(
-        iosArm64(), iosX64(), iosSimulatorArm64(), watchos(), macosX64(), tvos()
+        iosArm64(),
+        iosX64(),
+        iosSimulatorArm64(),
+        watchosArm32(),
+        watchosArm64(),
+        watchosX64(),
+        tvosArm64(),
+        tvosX64(),
+        macosX64()
     ).forEach {
         it.compilations.getByName("main") {
             cinterops.create("Sentry.NSException") {
