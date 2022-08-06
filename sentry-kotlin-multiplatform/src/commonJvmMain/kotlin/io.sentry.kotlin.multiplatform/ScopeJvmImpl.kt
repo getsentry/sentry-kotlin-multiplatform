@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.extensions.*
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
-class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
+internal class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
 
     override var level: SentryLevel?
         set(value) {
