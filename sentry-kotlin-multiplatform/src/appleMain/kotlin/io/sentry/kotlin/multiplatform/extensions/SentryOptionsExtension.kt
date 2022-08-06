@@ -7,11 +7,12 @@ import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
 internal fun SentryOptions.toCocoaSentryOptions(): CocoaSentryOptions {
-    val sentryAppleOptions = CocoaSentryOptions()
-    sentryAppleOptions.dsn = this.dsn
-    sentryAppleOptions.attachStacktrace = this.attachStackTrace
-    sentryAppleOptions.beforeSend = { event ->
-        dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
+    val outerScope = this
+    return CocoaSentryOptions().apply {
+        dsn = outerScope.dsn
+        attachStacktrace = outerScope.attachStackTrace
+        beforeSend = { event ->
+            dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
+        }
     }
-    return sentryAppleOptions
 }

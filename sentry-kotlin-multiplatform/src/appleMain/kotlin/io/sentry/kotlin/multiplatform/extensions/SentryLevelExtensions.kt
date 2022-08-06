@@ -4,10 +4,6 @@ import io.sentry.kotlin.multiplatform.SentryLevel
 import kotlinx.cinterop.convert
 import cocoapods.Sentry.SentryLevel as CocoaSentryLevel
 
-internal fun SentryLevel.toCocoaSentryLevel(): CocoaSentryLevel {
-    return this.toInt().convert()
-}
+internal fun SentryLevel.toCocoaSentryLevel() = this.toInt().convert<CocoaSentryLevel>()
 
-internal fun CocoaSentryLevel.toKmpSentryLevel(): SentryLevel? {
-    return SentryLevel.fromInt(this.toInt())
-}
+internal fun CocoaSentryLevel.toKmpSentryLevel() = SentryLevel.fromInt(this.toInt())

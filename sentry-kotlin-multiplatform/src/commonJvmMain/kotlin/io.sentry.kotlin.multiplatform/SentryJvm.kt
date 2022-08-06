@@ -3,8 +3,6 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.Sentry
 
-
-
 internal actual object SentryBridge {
 
     actual fun captureMessage(message: String): SentryId {

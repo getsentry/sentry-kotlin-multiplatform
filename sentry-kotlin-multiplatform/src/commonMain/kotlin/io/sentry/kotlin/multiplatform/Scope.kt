@@ -9,17 +9,13 @@ class Scope constructor(private val scope: ISentryScope) : ISentryScope {
         set(value) {
             scope.level = value
         }
-        get() {
-            return scope.level
-        }
+        get() = scope.level
 
     override var user: User?
         set(value) {
             scope.user = value
         }
-        get() {
-            return scope.user
-        }
+        get() = scope.user
 
     override fun getContexts(): MutableMap<String, Any> {
         return scope.getContexts()

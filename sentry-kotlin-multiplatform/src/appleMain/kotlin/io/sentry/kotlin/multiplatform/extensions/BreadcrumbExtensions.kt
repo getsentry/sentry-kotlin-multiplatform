@@ -5,28 +5,28 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.ISentryBreadcrumb
 
 internal fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
-    val cocoaBreadcrumb = CocoaBreadcrumb()
-    this.getMessage().let { cocoaBreadcrumb.setMessage(it) }
-    this.getCategory().toString().let { cocoaBreadcrumb.setCategory(it) }
+    val outerScope = this
+    return CocoaBreadcrumb().apply {
+        outerScope.getMessage().let { setMessage(it) }
+        outerScope.getCategory().toString().let { setCategory(it) }
 
-    val dataClone = this.getData().toMap<Any?, Any>()
-    cocoaBreadcrumb.setData(dataClone)
+        val dataClone = outerScope.getData().toMap<Any?, Any>()
+        setData(dataClone)
 
-    this.getType()?.let { cocoaBreadcrumb.setType(it) }
-    this.getLevel()?.let { cocoaBreadcrumb.setLevel(it.toCocoaSentryLevel()) }
-    return cocoaBreadcrumb
+        outerScope.getType()?.let { setType(it) }
+        outerScope.getLevel()?.let { setLevel(it.toCocoaSentryLevel()) }
+    }
 }
 
-internal fun CocoaBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
-    return Breadcrumb(this.clone())
-}
+internal fun CocoaBreadcrumb.toKmpBreadcrumb() = Breadcrumb(this.clone())
 
 internal fun CocoaBreadcrumb.clone(): CocoaBreadcrumb {
-    val cocoaBreadcrumb = CocoaBreadcrumb()
-    cocoaBreadcrumb.message = this.message
-    cocoaBreadcrumb.category = this.category
-    cocoaBreadcrumb.level = this.level
-    cocoaBreadcrumb.data = this.data
-    cocoaBreadcrumb.type = this.type
-    return cocoaBreadcrumb
+    val outerScope = this
+    return CocoaBreadcrumb().apply {
+        message = outerScope.message
+        category = outerScope.category
+        level = outerScope.level
+        data = outerScope.data
+        type = outerScope.type
+    }
 }

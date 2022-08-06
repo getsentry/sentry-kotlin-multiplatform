@@ -23,13 +23,11 @@ data class User(
     constructor() : this("", "", "", null, null, null)
 
     companion object {
-        fun fromMap(map: Map<String, String>): User {
-            val user = User()
-            user.email = map["email"].orEmpty()
-            user.username = map["username"].orEmpty()
-            user.id = map["id"].orEmpty()
-            user.ipAddress = map["ip_address"]
-            return user
+        fun fromMap(map: Map<String, String>) = User().apply {
+            email = map["email"].orEmpty()
+            username = map["username"].orEmpty()
+            id = map["id"].orEmpty()
+            ipAddress = map["ip_address"]
         }
     }
 }

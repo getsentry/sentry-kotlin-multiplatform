@@ -4,27 +4,21 @@ import io.sentry.kotlin.multiplatform.JvmSentryLevel
 import io.sentry.kotlin.multiplatform.SentryLevel
 
 internal fun SentryLevel.toJvmSentryLevel(): JvmSentryLevel? {
-    when (this) {
-        SentryLevel.DEBUG -> return JvmSentryLevel.DEBUG
-        SentryLevel.INFO -> return JvmSentryLevel.INFO
-        SentryLevel.WARNING -> return JvmSentryLevel.WARNING
-        SentryLevel.ERROR -> return JvmSentryLevel.ERROR
-        SentryLevel.FATAL -> return JvmSentryLevel.FATAL
-        else -> {
-            return null
-        }
+    return when (this) {
+        SentryLevel.DEBUG -> JvmSentryLevel.DEBUG
+        SentryLevel.INFO -> JvmSentryLevel.INFO
+        SentryLevel.WARNING -> JvmSentryLevel.WARNING
+        SentryLevel.ERROR -> JvmSentryLevel.ERROR
+        SentryLevel.FATAL -> JvmSentryLevel.FATAL
     }
 }
 
 fun JvmSentryLevel.toKmpSentryLevel(): SentryLevel? {
-    when (this) {
-        JvmSentryLevel.DEBUG -> return SentryLevel.DEBUG
-        JvmSentryLevel.INFO -> return SentryLevel.INFO
-        JvmSentryLevel.WARNING -> return SentryLevel.WARNING
-        JvmSentryLevel.ERROR -> return SentryLevel.ERROR
-        JvmSentryLevel.FATAL -> return SentryLevel.FATAL
-        else -> {
-            return null
-        }
+    return when (this) {
+        JvmSentryLevel.DEBUG -> SentryLevel.DEBUG
+        JvmSentryLevel.INFO -> SentryLevel.INFO
+        JvmSentryLevel.WARNING -> SentryLevel.WARNING
+        JvmSentryLevel.ERROR -> SentryLevel.ERROR
+        JvmSentryLevel.FATAL -> SentryLevel.FATAL
     }
 }

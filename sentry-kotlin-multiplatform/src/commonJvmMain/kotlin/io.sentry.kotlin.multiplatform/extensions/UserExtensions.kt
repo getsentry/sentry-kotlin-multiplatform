@@ -5,29 +5,25 @@ import io.sentry.kotlin.multiplatform.protocol.ISentryUser
 import io.sentry.kotlin.multiplatform.protocol.User
 
 internal fun ISentryUser.toJvmUser(): JvmUser {
-    val ref = this
+    val outerScope = this
     return JvmUser().apply {
-        id = ref.id
-        username = ref.username
-        email = ref.email
-        ipAddress = ref.ipAddress
-        others = ref.other?.toMutableMap()
-        unknown = ref.unknown?.toMutableMap()
+        id = outerScope.id
+        username = outerScope.username
+        email = outerScope.email
+        ipAddress = outerScope.ipAddress
+        others = outerScope.other?.toMutableMap()
+        unknown = outerScope.unknown?.toMutableMap()
     }
 }
 
 internal fun JvmUser.toKmpUser(): User {
-    val ref = this
+    val outerScope = this
     return User().apply {
-        id = ref.id.toString()
-        username = ref.username.toString()
-        email = ref.email.toString()
-        ipAddress = ref.ipAddress.toString()
-        ref.others?.toMutableMap()?.let {
-            other = it
-        }
-        ref.unknown?.toMutableMap()?.let {
-            unknown = it
-        }
+        id = outerScope.id.toString()
+        username = outerScope.username.toString()
+        email = outerScope.email.toString()
+        ipAddress = outerScope.ipAddress.toString()
+        other = outerScope.others?.toMutableMap()?.let { it }
+        unknown = outerScope.unknown?.toMutableMap()?.let { it }
     }
 }
