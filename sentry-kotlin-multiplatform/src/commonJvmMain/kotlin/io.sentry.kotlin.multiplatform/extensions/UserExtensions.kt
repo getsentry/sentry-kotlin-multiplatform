@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.JvmUser
 import io.sentry.kotlin.multiplatform.protocol.ISentryUser
 import io.sentry.kotlin.multiplatform.protocol.User
 
-fun ISentryUser.toJvmUser(): JvmUser {
+internal fun ISentryUser.toJvmUser(): JvmUser {
     val androidUser = JvmUser()
     androidUser.id = this.id
     androidUser.username = this.username
@@ -15,7 +15,7 @@ fun ISentryUser.toJvmUser(): JvmUser {
     return androidUser
 }
 
-fun JvmUser.toKmpUser(): User {
+internal fun JvmUser.toKmpUser(): User {
     val kmpUser = User()
     kmpUser.id = this.id.toString()
     kmpUser.username = this.username.toString()

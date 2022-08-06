@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.ISentryBreadcrumb
 
-fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
+internal fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
     val cocoaBreadcrumb = CocoaBreadcrumb()
     this.getMessage().let { cocoaBreadcrumb.setMessage(it) }
     this.getCategory().toString().let { cocoaBreadcrumb.setCategory(it) }
@@ -17,11 +17,11 @@ fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
     return cocoaBreadcrumb
 }
 
-fun CocoaBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
+internal fun CocoaBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
     return Breadcrumb(this.clone())
 }
 
-fun CocoaBreadcrumb.clone(): CocoaBreadcrumb {
+internal fun CocoaBreadcrumb.clone(): CocoaBreadcrumb {
     val cocoaBreadcrumb = CocoaBreadcrumb()
     cocoaBreadcrumb.message = this.message
     cocoaBreadcrumb.category = this.category

@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.JvmBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.ISentryBreadcrumb
 
-fun ISentryBreadcrumb.toJvmBreadcrumb(): JvmBreadcrumb {
+internal fun ISentryBreadcrumb.toJvmBreadcrumb(): JvmBreadcrumb {
     val androidBreadcrumb = JvmBreadcrumb()
     androidBreadcrumb.message = this.getMessage()
     androidBreadcrumb.type = this.getType()
@@ -16,11 +16,11 @@ fun ISentryBreadcrumb.toJvmBreadcrumb(): JvmBreadcrumb {
     return androidBreadcrumb
 }
 
-fun JvmBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
+internal fun JvmBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
     return Breadcrumb(this.clone())
 }
 
-fun JvmBreadcrumb.clone(): JvmBreadcrumb {
+internal fun JvmBreadcrumb.clone(): JvmBreadcrumb {
     val androidBreadcrumb = JvmBreadcrumb()
     androidBreadcrumb.message = this.message
     androidBreadcrumb.type = this.type

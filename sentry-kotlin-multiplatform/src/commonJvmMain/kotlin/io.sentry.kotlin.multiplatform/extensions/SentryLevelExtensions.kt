@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.kotlin.multiplatform.JvmSentryLevel
 import io.sentry.kotlin.multiplatform.SentryLevel
 
-fun SentryLevel.toJvmSentryLevel(): JvmSentryLevel? {
+internal fun SentryLevel.toJvmSentryLevel(): JvmSentryLevel? {
     when (this) {
         SentryLevel.DEBUG -> return JvmSentryLevel.DEBUG
         SentryLevel.INFO -> return JvmSentryLevel.INFO
