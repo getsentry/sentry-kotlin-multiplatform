@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-object SentryLevelNumConstants {
+internal object SentryLevelNumConstants {
     const val DEBUG_LEVEL = 1
     const val INFO_LEVEL = 2
     const val WARNING_LEVEL = 3

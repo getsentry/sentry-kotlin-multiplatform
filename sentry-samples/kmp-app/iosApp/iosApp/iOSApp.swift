@@ -9,9 +9,18 @@ struct iOSApp: App {
         sentry.start { options in
             options.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
         }
+        
+        // Shared scope across all platforms
+        AppSetupKt.configureSharedScope()
+        
+        // Add platform specific scope in addition to the shared scope
         sentry.configureScope { scope in
-            scope.setContext(key: "MyContext", value: "iOS Context")
-            scope.setTag(key: "test-tag", value: "custom tag")
+            scope.setContext(key: "iOS Context", value: [
+                "context1": 20,
+                "context2": true
+            ])
+            let breadcrumb = Breadcrumb.companion.debug(message: "initialized Sentry on iOS")
+            scope.addBreadcrumb(breadcrumb: breadcrumb)
         }
     }
 

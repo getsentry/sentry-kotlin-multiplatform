@@ -7,7 +7,10 @@ import android.widget.Button
 import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.init
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import io.sentry.kotlin.multiplatform.protocol.User
 import sample.kpm_app.Platform
+import sample.kpm_app.configureSharedScope
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,11 +29,6 @@ class MainActivity : AppCompatActivity() {
             LoginImpl.login("MyUsername")
         }
 
-        Sentry.configureScope {
-            it.setContext("MyContext", "Android Context")
-            it.setTag("test-tag", "custom tag")
-        }
-
         captureHardCrashBtn.setOnClickListener {
             LoginImpl.login()
         }
@@ -44,6 +42,15 @@ class SentryApplication : Application() {
             it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
             it.attachStackTrace = true
             it.attachThreads = true
+        }
+
+        // Shared scope across all platforms
+        configureSharedScope()
+
+        // Add platform specific scope in addition to the shared scope
+        Sentry.configureScope {
+            it.setContext("Android Context", mapOf("context1" to 12, "context2" to false))
+            it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on Android"))
         }
     }
 }

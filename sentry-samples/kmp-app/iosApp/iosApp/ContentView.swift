@@ -6,12 +6,7 @@ struct ContentView: View {
 		Text("KMP Sample App " + Platform().platform)
         VStack() {
             Button("Capture Message") {
-                Sentry().captureMessage(message: "From KMP Sample App " + Platform().platform) { scope in
-                    scope.user = User.init()
-                    scope.user?.username = "John Message"
-                    scope.user?.email = "john@message.com"
-                    scope.setTag(key: "test-tag-key", value: "test-tag-value")
-                }
+                Sentry().captureMessage(message: "From KMP Sample App " + Platform().platform)
             }
             Button("Capture Exception") {
                 LoginImpl().login(username: "MyUsername")
