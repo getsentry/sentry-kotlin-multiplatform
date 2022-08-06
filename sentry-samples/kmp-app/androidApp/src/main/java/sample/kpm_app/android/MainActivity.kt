@@ -8,7 +8,6 @@ import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import io.sentry.kotlin.multiplatform.protocol.User
 import sample.kpm_app.Platform
 import sample.kpm_app.configureSharedScope
 import sample.kpm_app.optionsConfiguration

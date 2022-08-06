@@ -10,17 +10,14 @@ internal class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
         set(value) {
             scope.level = value?.toJvmSentryLevel()
         }
-        get() {
-            return scope.level?.toKmpSentryLevel()
-        }
+        get() = scope.level?.toKmpSentryLevel()
+
 
     override var user: User?
         set(value) {
             scope.user = value?.toJvmUser()
         }
-        get() {
-            return scope.user?.toKmpUser()
-        }
+        get() = scope.user?.toKmpUser()
 
     override fun getContexts(): MutableMap<String, Any> {
         return scope.contexts
