@@ -5,8 +5,8 @@ data class User(
     override var id: String = "",
     override var username: String = "",
     override var ipAddress: String? = null,
-    override var other: MutableMap<String, String> = mutableMapOf(),
-    override var unknown: MutableMap<String, Any> = mutableMapOf(),
+    override var other: MutableMap<String, String>? = null,
+    override var unknown: MutableMap<String, Any>? = null,
 ) : ISentryUser {
 
     constructor(user: ISentryUser) : this(
@@ -20,7 +20,7 @@ data class User(
 
     // This secondary constructor allows Swift also to init without specifying nil explicitly
     // example: User.init() instead of User.init(user: nil)
-    constructor() : this("", "", "", null, mutableMapOf(), mutableMapOf())
+    constructor() : this("", "", "", null, null, null)
 
     companion object {
         fun fromMap(map: Map<String, String>): User {
@@ -52,8 +52,8 @@ interface ISentryUser {
      * Additional arbitrary fields, as stored in the database (and sometimes as sent by clients). All
      * data from `self.other` should end up here after store normalization.
      */
-    var other: MutableMap<String, String>
+    var other: MutableMap<String, String>?
 
     /** Unknown fields, only internal usage. */
-    var unknown: MutableMap<String, Any>
+    var unknown: MutableMap<String, Any>?
 }

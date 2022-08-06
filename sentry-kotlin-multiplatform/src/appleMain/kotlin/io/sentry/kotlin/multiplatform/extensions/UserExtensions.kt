@@ -4,10 +4,11 @@ import io.sentry.kotlin.multiplatform.CocoaUser
 import io.sentry.kotlin.multiplatform.protocol.User
 
 internal fun User.toCocoaUser(): CocoaUser {
-    val cocoaUser = CocoaUser()
-    cocoaUser.userId = this.id
-    cocoaUser.username = this.username
-    cocoaUser.email = this.email
-    cocoaUser.ipAddress = this.ipAddress
-    return cocoaUser
+    val ref = this
+    return CocoaUser().apply {
+        userId = ref.id
+        username = ref.username
+        email = ref.email
+        ipAddress = ref.ipAddress
+    }
 }
