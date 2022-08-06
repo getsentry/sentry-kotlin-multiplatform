@@ -96,7 +96,7 @@ kotlin {
     }
 
     listOf(
-        iosArm64(), iosX64(), iosSimulatorArm64(),
+        iosArm64(), iosX64(), iosSimulatorArm64(), watchos(), macosX64(), tvos()
     ).forEach {
         it.compilations.getByName("main") {
             cinterops.create("Sentry.NSException") {

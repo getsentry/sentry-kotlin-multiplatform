@@ -5,17 +5,9 @@ pluginManagement {
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
-
-    plugins {
-        kotlin("multiplatform").version("1.7.0")
-        kotlin("android").version("1.7.0")
-        id("com.android.application").version("4.2.2")
-        id("com.android.library").version("4.2.2")
-        id("org.jetbrains.compose").version("1.2.0-alpha01-dev753")
-    }
 }
 
-rootProject.name = "sentry-kotlin-multiplatform"
+rootProject.name = "sentry-kotlin-multiplatform-sdk"
 
 include(":sentry-kotlin-multiplatform")
 

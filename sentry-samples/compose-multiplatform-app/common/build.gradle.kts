@@ -48,14 +48,10 @@ kotlin {
 }
 
 android {
-    compileSdkVersion(31)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    compileSdk = 32
     defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(31)
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        minSdk = 21
+        targetSdk = 32
     }
 }

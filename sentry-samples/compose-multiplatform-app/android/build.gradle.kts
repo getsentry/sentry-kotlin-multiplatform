@@ -10,17 +10,13 @@ dependencies {
 }
 
 android {
-    compileSdkVersion(31)
+    compileSdk = 32
     defaultConfig {
         applicationId = "com.example.android"
-        minSdkVersion(24)
-        targetSdkVersion(31)
+        minSdk = 21
+        targetSdk = 32
         versionCode = 1
-        versionName = "1.0-SNAPSHOT"
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        versionName = "1.0"
     }
     buildTypes {
         getByName("release") {

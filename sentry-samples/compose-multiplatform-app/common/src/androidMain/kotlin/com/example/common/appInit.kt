@@ -2,7 +2,8 @@ package com.example.common
 
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.init
-import io.sentry.kotlin.multiplatform.protocol.User
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 actual fun sentryInit() {

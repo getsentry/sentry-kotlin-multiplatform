@@ -13,7 +13,7 @@ import io.sentry.kotlin.multiplatform.protocol.User
 
 @Composable
 fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
+    var text by remember { mutableStateOf("Hello, Wokkkrld!") }
 
     sentryInit()
 
