@@ -7,9 +7,9 @@ import io.sentry.SentryOptions
 import io.sentry.protocol.SentryId
 import io.sentry.protocol.User
 
-typealias JvmSentryLevel = SentryLevel
-typealias JvmUser = User
-typealias JvmScope = Scope
-typealias JvmBreadcrumb = Breadcrumb
-typealias JvmSentryId = SentryId
-typealias JvmSentryOptions = SentryOptions
+internal typealias JvmSentryLevel = SentryLevel
+internal typealias JvmUser = User
+internal typealias JvmScope = Scope
+internal typealias JvmBreadcrumb = Breadcrumb
+internal typealias JvmSentryId = SentryId
+internal typealias JvmSentryOptions = SentryOptions
