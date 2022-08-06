@@ -27,7 +27,7 @@ internal actual object SentryBridge {
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureMessage(message: String, scopeCallback: (Scope) -> Unit): SentryId {
+    actual fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
         val cocoaSentryId = SentrySDK.captureMessage(message, configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
@@ -37,12 +37,12 @@ internal actual object SentryBridge {
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable, scopeCallback: (Scope) -> Unit): SentryId {
+    actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
         val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun configureScope(scopeCallback: (Scope) -> Unit) {
+    actual fun configureScope(scopeCallback: ScopeCallback) {
         SentrySDK.configureScope(configureScopeCallback(scopeCallback))
     }
 
@@ -50,7 +50,7 @@ internal actual object SentryBridge {
         SentrySDK.close()
     }
 
-    private fun configureScopeCallback(scopeCallback: (Scope) -> Unit): (CocoaScope?) -> Unit {
+    private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit {
         return { cocoaScope ->
             val cocoaScopeImpl = cocoaScope?.let {
                 ScopeCocoaImpl(it)

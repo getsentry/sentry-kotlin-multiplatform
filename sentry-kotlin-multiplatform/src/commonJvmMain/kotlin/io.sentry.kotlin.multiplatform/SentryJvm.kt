@@ -10,7 +10,7 @@ internal actual object SentryBridge {
         return SentryId(androidSentryId.toString())
     }
 
-    actual fun captureMessage(message: String, scopeCallback: (Scope) -> Unit): SentryId {
+    actual fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
         val androidSentryId = Sentry.captureMessage(message, configureScopeCallback(scopeCallback))
         return SentryId(androidSentryId.toString())
     }
@@ -20,12 +20,12 @@ internal actual object SentryBridge {
         return SentryId(androidSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable, scopeCallback: (Scope) -> Unit): SentryId {
+    actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
         val androidSentryId = Sentry.captureException(throwable, configureScopeCallback(scopeCallback))
         return SentryId(androidSentryId.toString())
     }
 
-    actual fun configureScope(scopeCallback: (Scope) -> Unit) {
+    actual fun configureScope(scopeCallback: ScopeCallback) {
         Sentry.configureScope(configureScopeCallback(scopeCallback))
     }
 
@@ -33,7 +33,7 @@ internal actual object SentryBridge {
         Sentry.close()
     }
 
-    private fun configureScopeCallback(scopeCallback: (Scope) -> Unit): (JvmScope) -> Unit {
+    private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmScope) -> Unit {
         return {
             val androidScopeImpl = ScopeJvmImpl(it)
             val scope = Scope(androidScopeImpl)

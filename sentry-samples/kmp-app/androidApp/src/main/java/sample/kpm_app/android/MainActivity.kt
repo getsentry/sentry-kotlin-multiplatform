@@ -11,6 +11,7 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import sample.kpm_app.Platform
 import sample.kpm_app.configureSharedScope
+import sample.kpm_app.optionsConfiguration
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,11 +39,7 @@ class MainActivity : AppCompatActivity() {
 class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Sentry.init(this) {
-            it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
-            it.attachStackTrace = true
-            it.attachThreads = true
-        }
+        Sentry.init(this, optionsConfiguration())
 
         // Shared scope across all platforms
         configureSharedScope()

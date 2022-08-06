@@ -13,12 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.init
 import sample.kpm_app.LoginImpl
 import sample.kpm_app.Platform
 import sample.kpm_app.configureSharedScope
+import sample.kpm_app.optionsConfiguration
 
 @Composable
 @Preview
@@ -49,11 +50,7 @@ fun App() {
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-        Sentry.init {
-            it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
-            it.attachStackTrace = true
-            it.attachThreads = true
-        }
+        Sentry.init(optionsConfiguration())
 
         // Shared scope across all platforms
         configureSharedScope()
