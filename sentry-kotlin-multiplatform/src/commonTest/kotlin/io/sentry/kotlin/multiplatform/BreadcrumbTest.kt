@@ -21,102 +21,102 @@ class BreadcrumbTest {
     fun `Debug Breadcrumb has proper type and message and level`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
 
-        assertEquals(breadcrumb.getLevel(), SentryLevel.DEBUG)
-        assertEquals(breadcrumb.getMessage(), testMessage)
-        assertEquals(breadcrumb.getType(), "debug")
+        assertEquals(breadcrumb.level, SentryLevel.DEBUG)
+        assertEquals(breadcrumb.message, testMessage)
+        assertEquals(breadcrumb.type, "debug")
     }
 
     @Test
     fun `Info Breadcrumb has proper type and message and level`() {
         val breadcrumb = Breadcrumb.info(testMessage)
 
-        assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
-        assertEquals(breadcrumb.getMessage(), testMessage)
-        assertEquals(breadcrumb.getType(), "info")
+        assertEquals(breadcrumb.level, SentryLevel.INFO)
+        assertEquals(breadcrumb.message, testMessage)
+        assertEquals(breadcrumb.type, "info")
     }
 
     @Test
     fun `Error Breadcrumb has proper type and message and level`() {
         val breadcrumb = Breadcrumb.error(testMessage)
 
-        assertEquals(breadcrumb.getType(), "error")
-        assertEquals(breadcrumb.getLevel(), SentryLevel.ERROR)
-        assertEquals(breadcrumb.getMessage(), testMessage)
+        assertEquals(breadcrumb.type, "error")
+        assertEquals(breadcrumb.level, SentryLevel.ERROR)
+        assertEquals(breadcrumb.message, testMessage)
     }
 
     @Test
     fun `User Breadcrumb has proper type and message and category`() {
         val breadcrumb = Breadcrumb.user(testCategory, testMessage)
 
-        assertEquals(breadcrumb.getCategory(), testCategory)
-        assertEquals(breadcrumb.getMessage(), testMessage)
-        assertEquals(breadcrumb.getType(), "user")
+        assertEquals(breadcrumb.category, testCategory)
+        assertEquals(breadcrumb.message, testMessage)
+        assertEquals(breadcrumb.type, "user")
     }
 
     @Test
     fun `HTTP Breadcrumb has proper type and data and category`() {
         val breadcrumb = Breadcrumb.http(testUrl, testMethod)
 
-        assertEquals(breadcrumb.getData()["url"], testUrl)
-        assertEquals(breadcrumb.getData()["method"], testMethod)
-        assertEquals(breadcrumb.getType(), "http")
+        assertEquals(breadcrumb.getData()?.get("url"), testUrl)
+        assertEquals(breadcrumb.getData()?.get("method"), testMethod)
+        assertEquals(breadcrumb.type, "http")
     }
 
     @Test
     fun `HTTP Breadcrumb has proper type and data and category and status code`() {
         val breadcrumb = Breadcrumb.http(testUrl, testMethod, testStatusCode)
 
-        assertEquals(breadcrumb.getData()["url"], testUrl)
-        assertEquals(breadcrumb.getData()["method"], testMethod)
-        assertEquals(breadcrumb.getData()["status_code"], testStatusCode)
-        assertEquals(breadcrumb.getType(), "http")
+        assertEquals(breadcrumb.getData()?.get("url"), testUrl)
+        assertEquals(breadcrumb.getData()?.get("method"), testMethod)
+        assertEquals(breadcrumb.getData()?.get("status_code"), testStatusCode)
+        assertEquals(breadcrumb.type, "http")
     }
 
     @Test
     fun `Navigation Breadcrumb has proper type and data and category`() {
         val breadcrumb = Breadcrumb.navigation(testFromNav, testToNav)
 
-        assertEquals(breadcrumb.getType(), "navigation")
-        assertEquals(breadcrumb.getCategory(), "navigation")
-        assertEquals(breadcrumb.getData()["from"], testFromNav)
-        assertEquals(breadcrumb.getData()["to"], testToNav)
+        assertEquals(breadcrumb.type, "navigation")
+        assertEquals(breadcrumb.category, "navigation")
+        assertEquals(breadcrumb.getData()?.get("from"), testFromNav)
+        assertEquals(breadcrumb.getData()?.get("to"), testToNav)
     }
 
     @Test
     fun `Transaction Breadcrumb has proper type and message and category`() {
         val breadcrumb = Breadcrumb.transaction(testMessage)
 
-        assertEquals(breadcrumb.getType(), "default")
-        assertEquals(breadcrumb.getCategory(), "sentry.transaction")
-        assertEquals(breadcrumb.getMessage(), testMessage)
+        assertEquals(breadcrumb.type, "default")
+        assertEquals(breadcrumb.category, "sentry.transaction")
+        assertEquals(breadcrumb.message, testMessage)
     }
 
     @Test
     fun `Query Breadcrumb has proper type and message`() {
         val breadcrumb = Breadcrumb.query(testMessage)
 
-        assertEquals(breadcrumb.getType(), "query")
-        assertEquals(breadcrumb.getMessage(), testMessage)
+        assertEquals(breadcrumb.type, "query")
+        assertEquals(breadcrumb.message, testMessage)
     }
 
     @Test
     fun `UI Breadcrumb has proper type and message and category`() {
         val breadcrumb = Breadcrumb.ui(testCategory, testMessage)
 
-        assertEquals(breadcrumb.getType(), "default")
-        assertEquals(breadcrumb.getMessage(), testMessage)
-        assertEquals(breadcrumb.getCategory(), "ui.$testCategory")
+        assertEquals(breadcrumb.type, "default")
+        assertEquals(breadcrumb.message, testMessage)
+        assertEquals(breadcrumb.category, "ui.$testCategory")
     }
 
     @Test
     fun `User Interaction Breadcrumb has proper type and message and category and viewId and viewClass and level`() {
         val breadcrumb = Breadcrumb.userInteraction(testSubCategory, testViewId, testViewClass)
 
-        assertEquals(breadcrumb.getType(), "user")
-        assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
-        assertEquals(breadcrumb.getCategory(), "ui.$testSubCategory")
-        assertEquals(breadcrumb.getData()["view.id"], testViewId)
-        assertEquals(breadcrumb.getData()["view.class"], testViewClass)
+        assertEquals(breadcrumb.type, "user")
+        assertEquals(breadcrumb.level, SentryLevel.INFO)
+        assertEquals(breadcrumb.category, "ui.$testSubCategory")
+        assertEquals(breadcrumb.getData()?.get("view.id"), testViewId)
+        assertEquals(breadcrumb.getData()?.get("view.class"), testViewClass)
     }
 
     @Test
@@ -127,13 +127,13 @@ class BreadcrumbTest {
 
         val breadcrumb = Breadcrumb.userInteraction(testSubCategory, testViewId, testViewClass, additionalData)
 
-        assertEquals(breadcrumb.getType(), "user")
-        assertEquals(breadcrumb.getLevel(), SentryLevel.INFO)
-        assertEquals(breadcrumb.getCategory(), "ui.$testSubCategory")
-        assertEquals(breadcrumb.getData()["view.id"], testViewId)
-        assertEquals(breadcrumb.getData()["view.class"], testViewClass)
-        assertEquals(breadcrumb.getData()["message"], testMessage)
-        assertEquals(breadcrumb.getData()["category"], testCategory)
+        assertEquals(breadcrumb.type, "user")
+        assertEquals(breadcrumb.level, SentryLevel.INFO)
+        assertEquals(breadcrumb.category, "ui.$testSubCategory")
+        assertEquals(breadcrumb.getData()?.get("view.id"), testViewId)
+        assertEquals(breadcrumb.getData()?.get("view.class"), testViewClass)
+        assertEquals(breadcrumb.getData()?.get("message"), testMessage)
+        assertEquals(breadcrumb.getData()?.get("category"), testCategory)
     }
 
     @Test
@@ -148,7 +148,7 @@ class BreadcrumbTest {
     @Test
     fun `setData with primitive types as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
-        val expected = mapOf<String, Any>("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false)
+        val expected: Map<String, Any>? = mapOf("keyExample" to "valueExample", "keyExample2" to 12, "keyExample3" to false)
         breadcrumb.setData("keyExample", "valueExample")
         breadcrumb.setData("keyExample2", 12)
         breadcrumb.setData("keyExample3", false)
@@ -158,25 +158,25 @@ class BreadcrumbTest {
     @Test
     fun `using setType sets values properly`() {
         val breadcrumb = Breadcrumb()
-        breadcrumb.setType(testCategory)
+        breadcrumb.type = testCategory
 
-        assertEquals(testCategory, breadcrumb.getType())
+        assertEquals(testCategory, breadcrumb.type)
     }
 
     @Test
     fun `using setMessage sets values properly`() {
         val breadcrumb = Breadcrumb()
-        breadcrumb.setMessage(testMessage)
+        breadcrumb.message = testMessage
 
-        assertEquals(testMessage, breadcrumb.getMessage())
+        assertEquals(testMessage, breadcrumb.message)
     }
 
     @Test
     fun `using setLevel sets values properly`() {
         val breadcrumb = Breadcrumb()
-        breadcrumb.setLevel(SentryLevel.DEBUG)
+        breadcrumb.level = SentryLevel.DEBUG
 
-        assertEquals(SentryLevel.DEBUG, breadcrumb.getLevel())
+        assertEquals(SentryLevel.DEBUG, breadcrumb.level)
     }
 
     @Test

@@ -24,28 +24,28 @@ class BreadcrumbConversionTest {
 
     @Test
     fun `setLevel and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.setLevel(SentryLevel.ERROR)
+        breadcrumb.level = SentryLevel.ERROR
 
         assertEquals(SentryLevel.ERROR, converter.getLevel())
     }
 
     @Test
     fun `setMessage and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.setMessage("TestMessage")
+        breadcrumb.message = "TestMessage"
 
         assertEquals("TestMessage", converter.getMessage())
     }
 
     @Test
     fun `setType and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.setType("TestType")
+        breadcrumb.type = "TestType"
 
         assertEquals("TestType", converter.getType())
     }
 
     @Test
     fun `setCategory and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.setCategory("TestCategory")
+        breadcrumb.category = "TestCategory"
 
         assertEquals("TestCategory", converter.getCategory())
     }

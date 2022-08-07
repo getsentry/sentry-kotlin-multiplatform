@@ -2,60 +2,156 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.SentryLevel
 
-expect class Breadcrumb(breadcrumb: ISentryBreadcrumb? = null) : ISentryBreadcrumb {
+data class Breadcrumb constructor(
+    override var type: String? = null,
+    override var category: String? = null,
+    override var message: String? = null,
+    override var level: SentryLevel? = null,
+    private var data: MutableMap<String, Any>? = null,
+) : ISentryBreadcrumb {
+
     companion object {
-        fun user(category: String, message: String): Breadcrumb
-        fun http(url: String, method: String): Breadcrumb
-        fun http(url: String, method: String, code: Int?): Breadcrumb
-        fun navigation(from: String, to: String): Breadcrumb
-        fun transaction(message: String): Breadcrumb
-        fun debug(message: String): Breadcrumb
-        fun error(message: String): Breadcrumb
-        fun info(message: String): Breadcrumb
-        fun query(message: String): Breadcrumb
-        fun ui(category: String, message: String): Breadcrumb
-        fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb
-        fun userInteraction(subCategory: String, viewId: String?, viewClass: String?, additionalData: Map<String?, Any?>): Breadcrumb
+        fun user(category: String, message: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.category = category
+                this.message = message
+                this.type = "user"
+            }
+        }
+
+        fun http(url: String, method: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "http"
+                this.category = "http"
+                this.setData("url", url)
+                this.setData("method", method.uppercase())
+            }
+        }
+
+        fun http(url: String, method: String, code: Int?): Breadcrumb {
+            return http(url, method).apply {
+                code?.let { this.setData("status_code", code) }
+            }
+        }
+
+        fun navigation(from: String, to: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.category = "navigation"
+                this.type = "navigation"
+                this.setData("from", from)
+                this.setData("to", to)
+            }
+        }
+
+        fun transaction(message: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "default"
+                this.category = "sentry.transaction"
+                this.message = message
+            }
+        }
+
+        fun debug(message: String): Breadcrumb {
+            val breadcrumb = Breadcrumb().apply {
+                this.type = "debug"
+                this.message = message
+                this.level = SentryLevel.DEBUG
+            }
+            return breadcrumb
+        }
+
+        fun error(message: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "error"
+                this.message = message
+                this.level = SentryLevel.ERROR
+            }
+        }
+
+        fun info(message: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "info"
+                this.message = message
+                this.level = SentryLevel.INFO
+            }
+        }
+
+        fun query(message: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "query"
+                this.message = message
+            }
+        }
+
+        fun ui(category: String, message: String): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "default"
+                this.category = "ui.$category"
+                this.message = message
+            }
+        }
+
+        fun userInteraction(
+            subCategory: String,
+            viewId: String?,
+            viewClass: String?,
+            additionalData: Map<String?, Any?>
+        ): Breadcrumb {
+            return Breadcrumb().apply {
+                this.type = "user"
+                this.category = "ui.$subCategory"
+                this.level = SentryLevel.INFO
+                viewId?.let { this.setData("view.id", it) }
+                viewClass?.let { this.setData("view.class", viewClass) }
+                for ((key, value) in additionalData) {
+                    if (key != null && value != null) {
+                        this.setData(key, value)
+                    }
+                }
+            }
+        }
+
+        fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb {
+            return userInteraction(subCategory, viewId, viewClass, emptyMap<String?, Any>())
+        }
     }
 
-    override fun setType(type: String?)
-    override fun setCategory(category: String?)
-    override fun setMessage(message: String?)
-    override fun setData(key: String, value: Any)
-    override fun setData(map: MutableMap<String, Any>)
-    override fun setLevel(level: SentryLevel?)
+    override fun setData(key: String, value: Any) {
+        if (data == null) data = mutableMapOf()
+        data?.put(key, value)
+    }
 
-    override fun getType(): String?
-    override fun getCategory(): String?
-    override fun getMessage(): String?
-    override fun getData(): MutableMap<String, Any>
-    override fun getLevel(): SentryLevel?
+    override fun setData(map: MutableMap<String, Any>) {
+        data = map
+    }
 
-    override fun clear()
+    override fun getData(): MutableMap<String, Any>? {
+        return data
+    }
+
+    override fun clear() {
+        data = null
+        level = null
+        category = null
+        type = null
+        message = null
+    }
 }
+
 
 interface ISentryBreadcrumb {
 
-    /**
-     * Set's the breadcrumb's type
-     *
-     * @param type The type
-     */
-    fun setType(type: String?)
+    /** The breadcrumb's level */
+    var level: SentryLevel?
 
-    /**
-     * Set's the breadcrumb's type
-     *
-     * @param category The category
-     */
-    fun setCategory(category: String?)
+    /** The breadcrumb's type */
+    var type: String?
 
-    /**
-     * Set's the breadcrumb's type
-     *
-     * @param message The message
-     */
-    fun setMessage(message: String?)
+    /** The breadcrumb's message */
+    var message: String?
+
+    /** The breadcrumb's category */
+    var category: String?
 
     /**
      * Set's the breadcrumb's data with key, value
@@ -72,27 +168,8 @@ interface ISentryBreadcrumb {
      */
     fun setData(map: MutableMap<String, Any>)
 
-    /**
-     * Set's the breadcrumb's level
-     *
-     * @param level The level
-     */
-    fun setLevel(level: SentryLevel?)
-
-    /** Returns the breadcrumb's type */
-    fun getType(): String?
-
-    /** Returns the breadcrumb's category */
-    fun getCategory(): String?
-
-    /** Returns the breadcrumb's message */
-    fun getMessage(): String?
-
     /** Returns the breadcrumb's data */
-    fun getData(): MutableMap<String, Any>
-
-    /** Returns the breadcrumb's level */
-    fun getLevel(): SentryLevel?
+    fun getData(): MutableMap<String, Any>?
 
     /** Clears the breadcrumb and returns it to the default state */
     fun clear()
