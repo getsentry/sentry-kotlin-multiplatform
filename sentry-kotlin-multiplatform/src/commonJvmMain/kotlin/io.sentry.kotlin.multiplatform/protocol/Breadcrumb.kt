@@ -9,11 +9,7 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 
 actual data class Breadcrumb actual constructor(private val breadcrumb: ISentryBreadcrumb?) : ISentryBreadcrumb {
 
-    private var jvmBreadcrumb = JvmBreadcrumb()
-    
-    init {
-        this.jvmBreadcrumb = breadcrumb?.toJvmBreadcrumb() ?: JvmBreadcrumb()
-    }
+    private var jvmBreadcrumb = breadcrumb?.toJvmBreadcrumb() ?: JvmBreadcrumb()
 
     constructor(androidBreadcrumb: JvmBreadcrumb) : this() {
         this.jvmBreadcrumb = androidBreadcrumb

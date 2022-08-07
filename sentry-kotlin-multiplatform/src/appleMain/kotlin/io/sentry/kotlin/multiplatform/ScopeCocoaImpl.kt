@@ -14,11 +14,7 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         }
         get() {
             val level = scope.serialize()["level"]
-            level?.let {
-                val levelString = (level as String).uppercase()
-                return SentryLevel.valueOf(levelString)
-            }
-            return null
+            return level?.let { SentryLevel.valueOf((it as String).uppercase()) }
         }
 
     override var user: User?
@@ -27,8 +23,7 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         }
         get() {
             val map = scope.serialize()["user"] as? Map<String, String>?
-            map?.let { return User.fromMap(map) }
-            return null
+            return map?.let { User.fromMap(map) }
         }
 
     override fun getContexts(): MutableMap<String, Any> {

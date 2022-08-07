@@ -9,11 +9,7 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrumb?) :
     ISentryBreadcrumb {
 
-    private var cocoaBreadcrumb: CocoaBreadcrumb = CocoaBreadcrumb()
-
-    init {
-        this.cocoaBreadcrumb = breadcrumb?.toCocoaBreadcrumb() ?: CocoaBreadcrumb()
-    }
+    private var cocoaBreadcrumb = breadcrumb?.toCocoaBreadcrumb() ?: CocoaBreadcrumb()
 
     constructor(cocoaBreadcrumb: CocoaBreadcrumb) : this(null) {
         this.cocoaBreadcrumb = cocoaBreadcrumb
@@ -107,12 +103,12 @@ actual data class Breadcrumb actual constructor(val breadcrumb: ISentryBreadcrum
         if (dataIsNull) {
             setData(mutableMapOf(key to value))
         } else {
-            val previousData = (cocoaBreadcrumb.data as? MutableMap<Any?, Any>)?.let {
+            val data = (cocoaBreadcrumb.data as? MutableMap<Any?, Any>)?.let {
                 it.apply {
                     put(key, value)
                 }
             }
-            cocoaBreadcrumb.setData(previousData)
+            cocoaBreadcrumb.setData(data)
         }
     }
 

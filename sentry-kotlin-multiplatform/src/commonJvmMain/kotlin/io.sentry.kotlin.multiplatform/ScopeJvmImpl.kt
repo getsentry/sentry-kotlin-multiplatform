@@ -28,8 +28,7 @@ internal class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
     }
 
     override fun addBreadcrumb(breadcrumb: Breadcrumb) {
-        val jvmBreadcrumb = breadcrumb.toJvmBreadcrumb()
-        scope.addBreadcrumb(jvmBreadcrumb)
+        scope.addBreadcrumb(breadcrumb.toJvmBreadcrumb())
     }
 
     override fun clearBreadcrumbs() {

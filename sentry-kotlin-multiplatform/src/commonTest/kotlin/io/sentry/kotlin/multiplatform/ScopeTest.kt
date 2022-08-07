@@ -42,6 +42,13 @@ class ScopeTest : BaseSentryScopeTest() {
     }
 
     @Test
+    fun ` user to scope should properly persist user in scope`() {
+
+        assertEquals(null, scope?.level)
+    }
+
+
+    @Test
     fun `modifying user in scope does not persist`() {
         scope?.user = user
         scope?.user?.username = "Test Username"
