@@ -8,7 +8,7 @@ import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import sample.kpm_app.Platform
+import sample.kpm_app.sample.kpm_app.Platform
 import sample.kpm_app.configureSharedScope
 import sample.kpm_app.optionsConfiguration
 
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         val captureHardCrashBtn: Button = findViewById(R.id.captureHardCrash)
 
         captureMessageBtn.setOnClickListener {
-            Sentry.captureMessage("From KMP Sample App: " + Platform().platform)
+            Sentry.captureMessage("From KMP Sample App: " + sample.kpm_app.sample.kpm_app.Platform().platform)
         }
 
         captureExceptionBtn.setOnClickListener {

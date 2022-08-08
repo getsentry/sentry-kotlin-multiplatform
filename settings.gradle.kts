@@ -21,7 +21,9 @@ KMP App with targets:
     - Android
     - iOS with SwiftUI
     - JVM Desktop with Jetpack Compose
+    - JS browser with React
  */
 include("sentry-samples:kmp-app:shared")
 include("sentry-samples:kmp-app:androidApp")
 include("sentry-samples:kmp-app:desktopApp")
+include("sentry-samples:kmp-app:jsApp")

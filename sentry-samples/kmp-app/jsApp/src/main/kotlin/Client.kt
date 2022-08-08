@@ -2,15 +2,15 @@ import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import io.sentry.kotlin.multiplatform.protocol.User
 import kotlinx.browser.document
 import react.create
 import react.dom.client.createRoot
 import sample.kpm_app.configureSharedScope
+import sample.kpm_app.optionsConfiguration
 
 fun main() {
-    Sentry.init {
-        it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
-    }
+    //Sentry.init(optionsConfiguration())
 
     configureSharedScope()
 
@@ -21,8 +21,14 @@ fun main() {
         it.setContext("medium", arrayOf(1, 2, "22222dada2"))
         it.setContext("text", setOf("2", "2", "44"))
         val breadcrumb = Breadcrumb.debug("test message")
-        breadcrumb.setLevel(SentryLevel.FATAL)
+        breadcrumb.level = SentryLevel.FATAL
         it.addBreadcrumb(breadcrumb)
+        val user = User().apply {
+            username = "hallo"
+            email = "hallo@email"
+            id = "testId"
+        }
+        it.user = user
     }
 
     val container = document.createElement("div")

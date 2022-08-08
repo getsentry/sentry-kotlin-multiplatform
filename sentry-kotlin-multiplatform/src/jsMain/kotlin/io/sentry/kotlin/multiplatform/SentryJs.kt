@@ -6,17 +6,20 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 @JsNonModule
 @JsName("Sentry")
 external object SentryJs {
-    interface BrowserOptions
 
-    interface Scope
+    fun init(options: dynamic)
 
-    fun init(options: BrowserOptions = definedExternally)
+    fun captureMessage(message: String): dynamic
 
-    fun captureMessage(message: String)
+    fun captureMessage(message: String, captureContext: (Scope: dynamic) -> Unit): dynamic
 
-    fun captureException(exception: Any)
+    fun captureException(exception: Any): dynamic
+
+    fun captureException(exception: Any, captureContext: (Scope: dynamic) -> Unit): dynamic
 
     fun configureScope(callback: (Scope: dynamic) -> Unit)
+
+    fun close()
 }
 
 fun Sentry.init(configuration: (SentryOptions) -> Unit) {
@@ -30,15 +33,17 @@ fun Sentry.init(configuration: (SentryOptions) -> Unit) {
 internal actual object SentryBridge {
 
     actual fun captureMessage(message: String): SentryId {
-        SentryJs.captureMessage(message)
-        return SentryId.EMPTY_ID
+        val jsSentryId = SentryJs.captureMessage(message)
+        return SentryId(jsSentryId)
     }
 
-    actual fun captureMessage(
-        message: String,
-        scopeCallback: (Scope) -> Unit
-    ): SentryId {
-        return SentryId.EMPTY_ID
+    actual fun captureMessage(message: String, scopeCallback: (Scope) -> Unit): SentryId {
+        val jsSentryId = SentryJs.captureMessage(message) {
+            val scopeJsImpl = ScopeJsImpl(it)
+            val scope = Scope(scopeJsImpl)
+            scopeCallback.invoke(scope)
+        }
+        return SentryId(jsSentryId)
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
@@ -46,11 +51,14 @@ internal actual object SentryBridge {
         return SentryId.EMPTY_ID
     }
 
-    actual fun captureException(
-        throwable: Throwable,
-        scopeCallback: (Scope) -> Unit
-    ): SentryId {
-        return SentryId.EMPTY_ID
+    actual fun captureException(throwable: Throwable, scopeCallback: (Scope) -> Unit): SentryId {
+        val jsSentryId = SentryJs.captureException(throwable) {
+            val scopeJsImpl = ScopeJsImpl(it)
+            val scope = Scope(scopeJsImpl)
+            scopeCallback.invoke(scope)
+        }
+
+        return SentryId(jsSentryId)
     }
 
     actual fun configureScope(scopeCallback: (Scope) -> Unit) {
@@ -62,6 +70,6 @@ internal actual object SentryBridge {
     }
 
     actual fun close() {
-
+        SentryJs.close()
     }
 }

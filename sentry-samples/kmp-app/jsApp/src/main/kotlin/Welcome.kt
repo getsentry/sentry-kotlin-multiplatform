@@ -4,6 +4,7 @@ import react.FC
 import react.Props
 import emotion.react.css
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryLevel
 import react.dom.html.InputType
 import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.div
@@ -39,13 +40,24 @@ val Welcome = FC<WelcomeProps> { props ->
     }
     button {
         onClick = {
-            Sentry.captureMessage("From Kotlin Multiplatform Js Browser")
+            Sentry.captureMessage("From Kotlin Multiplatform Js Browser") {
+                it.level = SentryLevel.FATAL
+                it.setContext("moment", "ME")
+                it.setTag("js-tag", "test test")
+            }
+
+            Sentry.captureMessage("No context available")
+        }
+        +"Capture message"
+    }
+    button {
+        onClick = {
             try {
                 throw RuntimeException("test")
             } catch (err: Throwable) {
                 Sentry.captureException(err)
             }
         }
-        + "Click Me"
+        +"Capture Exception"
     }
 }

@@ -17,11 +17,21 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
 
     override var user: User?
         set(value) {
-
+            val user: dynamic = Any()
+            user.id = value?.id
+            user.username = value?.username
+            user.email = value?.email
+            user.ip_address = value?.ipAddress
+            scope.setUser(user)
         }
         get() {
-            val map = scope.serialize()["user"] as? Map<String, String>?
-            return map?.let { User.fromMap(map) }
+            val jsUser = scope.getUser()
+            return User().apply {
+                id = jsUser.id
+                username = jsUser.username
+                email = jsUser.email
+                ipAddress = jsUser.ip_address
+            }
         }
 
     override fun getContexts(): MutableMap<String, Any> {
@@ -33,8 +43,8 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
     }
 
     override fun addBreadcrumb(breadcrumb: Breadcrumb) {
-        val jsBreadcrumbJson = json("message" to breadcrumb.getMessage())
-        jsBreadcrumbJson.add(json("level" to breadcrumb.getLevel()?.name))
+        val jsBreadcrumbJson = json("message" to breadcrumb.message)
+        jsBreadcrumbJson.add(json("level" to breadcrumb.level?.name))
         scope.addBreadcrumb(jsBreadcrumbJson)
     }
 
@@ -47,7 +57,9 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
     }
 
     var jsonValue: Json? = null
-    fun rec(key: String, value: Any?) {
+
+    // Recursively builds the json from the provided context map
+    private fun buildJsonFromMap(key: String, value: Any?) {
         val nextMap = value as? Map<Any?, Any>
         if (nextMap == null) {
             if (jsonValue == null) {
@@ -58,17 +70,15 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
             return
         } else {
             nextMap.forEach {
-                rec(it.key as String, it.value)
+                buildJsonFromMap(it.key as String, it.value)
             }
         }
     }
 
-    // needs to recursively build the json through map
     override fun setContext(key: String, value: Any) {
         try {
             (value as? Map<Any?, Any>)?.let {
-                it
-                rec(key, value)
+                buildJsonFromMap(key, value)
                 scope.setContext(key, jsonValue)
             }
         } catch (e: Throwable) {
@@ -101,7 +111,7 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
     }
 
     override fun removeContext(key: String) {
-        scope.removeContextForKey(key)
+        scope._contexts = json()
     }
 
     override fun setTag(key: String, value: String) {
@@ -109,15 +119,15 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
     }
 
     override fun removeTag(key: String) {
-        scope.removeTagForKey(key)
+        // todo:
     }
 
     override fun setExtra(key: String, value: String) {
-        scope.setExtraValue(value, key)
+        scope.setExtra(value, key)
     }
 
     override fun removeExtra(key: String) {
-        scope.removeExtraForKey(key)
+        // todo:
     }
 
     override fun clear() {

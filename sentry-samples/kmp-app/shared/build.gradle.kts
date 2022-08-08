@@ -12,6 +12,9 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     jvm()
+    js(IR) {
+        browser()
+    }
 
     cocoapods {
         summary = "Some description for the Shared Module"
@@ -37,6 +40,10 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
             }
+        }
+
+        val jsMain by getting {
+            dependsOn(commonMain)
         }
 
         val androidMain by getting {
