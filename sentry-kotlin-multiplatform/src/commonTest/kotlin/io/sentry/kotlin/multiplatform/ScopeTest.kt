@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.User
+import kotlin.js.JsName
 import kotlin.test.*
 
 class ScopeTest : BaseSentryScopeTest() {
@@ -34,6 +35,7 @@ class ScopeTest : BaseSentryScopeTest() {
         }
     }
 
+    @JsName("When_AddUserToScope_Then_UserPersistsInScope")
     @Test
     fun `adding user to scope should properly persist user in scope`() {
         scope?.user = user
@@ -41,6 +43,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(user, scope?.user)
     }
 
+    @JsName("When_ModifyingUserInScope_Then_UserModificationDoesNotPersistInScope")
     @Test
     fun `modifying user in scope does not persist`() {
         scope?.user = user
@@ -49,6 +52,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(testUsername, scope?.user?.username)
     }
 
+    @JsName("When_AddingTagsToScope_Then_TagsPersistInScope")
     @Test
     fun `adding tags in scope should be set correctly`() {
         scope?.setTag("key", "value")
@@ -60,6 +64,7 @@ class ScopeTest : BaseSentryScopeTest() {
         }
     }
 
+    @JsName("When_SettingStringContext_Then_ContextPersistsInScope")
     @Test
     fun `string value context should be set correctly`() {
         val stringContext = mapOf("value" to "Test")
@@ -69,6 +74,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_SettingNumberContext_Then_ContextPersistsInScope")
     @Test
     fun `number value context should be set correctly`() {
         val numberContext = mapOf("value" to 12)
@@ -78,6 +84,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_SettingBooleanContext_Then_ContextPersistsInScope")
     @Test
     fun `boolean value context should be set correctly`() {
         val booleanContext = mapOf("value" to false)
@@ -87,6 +94,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_SettingArrayContext_Then_ContextPersistsInScope")
     @Test
     fun `array value context should be set correctly`() {
         val array = arrayOf(1, 2, 3, "2")
@@ -97,6 +105,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_SettingCollectionContext_Then_ContextPersistsInScope")
     @Test
     fun `collection set value context should be set correctly`() {
         val set = setOf(1, 2, "2", 4)
@@ -107,6 +116,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_SettingListContext_Then_ContextPersistsInScope")
     @Test
     fun `collection list value context should be set correctly`() {
         val list = listOf(1, 2, "2", 4)
@@ -117,6 +127,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_SettingMapContext_Then_ContextPersistsInScope")
     @Test
     fun `map value context should be set correctly`() {
         val map = mapOf("test" to "fighter", 1 to "one", "2" to 2)
@@ -126,6 +137,7 @@ class ScopeTest : BaseSentryScopeTest() {
         assertEquals(expectedContext as Map<String, Any>?, scope?.getContexts())
     }
 
+    @JsName("When_ClearScope_Then_ResetToDefaultState")
     @Test
     fun `clear scope resets scope to default state`() {
         scope?.level = SentryLevel.WARNING
@@ -133,7 +145,7 @@ class ScopeTest : BaseSentryScopeTest() {
         scope?.user?.username = "test"
 
         scope?.clear()
-
+        // todo add more
         assertNull(scope?.user)
         assertNull(scope?.level)
         assertEquals(0, scope?.getContexts()?.size)

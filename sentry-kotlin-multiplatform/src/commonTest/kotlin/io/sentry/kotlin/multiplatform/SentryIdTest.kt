@@ -1,11 +1,13 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SentryIdTest {
 
+    @JsName("Given_SentryId_Then_ReturnsValidSentryIdString")
     @Test
     fun `SentryId with valid uuid string returns valid SentryId string`() {
         val uuidString = "ec81a720-b6f6-4efc-9d74-6627a09157c1"
@@ -18,6 +20,7 @@ class SentryIdTest {
         assertEquals(32, actual.length)
     }
 
+    @JsName("Given_EmptySentryId_Then_ReturnsSentryIdWithZeroes")
     @Test
     fun `Empty SentryId returns SentryId string with zeroes`() {
         val expected = "00000000000000000000000000000000"

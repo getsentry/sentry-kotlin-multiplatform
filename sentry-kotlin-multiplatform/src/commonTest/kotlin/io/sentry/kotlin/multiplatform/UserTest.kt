@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.User
+import kotlin.js.JsName
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,6 +25,7 @@ class UserTest {
         user = User()
     }
 
+    @JsName("When_InitWithOtherUser_Then_HasProperValues")
     @Test
     fun `initializing with another user sets value properly`() {
         val anotherUser = createTestUser()
