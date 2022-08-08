@@ -10,7 +10,7 @@ import sample.kpm_app.configureSharedScope
 import sample.kpm_app.optionsConfiguration
 
 fun main() {
-    //Sentry.init(optionsConfiguration())
+    Sentry.init(optionsConfiguration())
 
     configureSharedScope()
 
