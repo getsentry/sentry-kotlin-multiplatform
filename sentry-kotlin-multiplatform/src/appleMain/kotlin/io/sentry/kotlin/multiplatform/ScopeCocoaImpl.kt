@@ -33,27 +33,13 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
         }
 
     override fun getContexts(): MutableMap<String, Any> {
-        val map = privateScope?.contextDictionary?.let {
-            val keys = it.allKeys
-            val map = mutableMapOf<String, Any>()
-            for (key in keys) {
-                map.put(key as String, it.objectForKey(key) as Any)
-            }
-            map
-        }
+        val map = privateScope?.contextDictionary?.toMutableMap<String, Any>()
         map?.let { return it }
         return HashMap()
     }
 
     override fun getTags(): MutableMap<String, String> {
-        val map = privateScope?.tagDictionary?.let {
-            val keys = it.allKeys
-            val map = mutableMapOf<String, String>()
-            for (key in keys) {
-                map.put(key as String, it.objectForKey(key) as String)
-            }
-            map
-        }
+        val map = privateScope?.tagDictionary?.toMutableMap<String, String>()
         map?.let { return it }
         return HashMap()
     }

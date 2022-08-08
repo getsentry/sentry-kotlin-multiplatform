@@ -21,15 +21,6 @@ data class User(
     // This secondary constructor allows Swift also to init without specifying nil explicitly
     // example: User.init() instead of User.init(user: nil)
     constructor() : this("", "", "", null, null, null)
-
-    companion object {
-        fun fromMap(map: Map<String, String>) = User().apply {
-            email = map["email"].orEmpty()
-            username = map["username"].orEmpty()
-            id = map["id"].orEmpty()
-            ipAddress = map["ip_address"]
-        }
-    }
 }
 
 interface ISentryUser {

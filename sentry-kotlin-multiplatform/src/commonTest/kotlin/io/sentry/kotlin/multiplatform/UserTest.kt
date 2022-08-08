@@ -25,38 +25,6 @@ class UserTest {
     }
 
     @Test
-    fun `fromMap with empty username value sets empty string`() {
-        val map = mapOf<String, String>()
-        user = User.fromMap(map)
-
-        assertEquals("", user.username)
-    }
-
-    @Test
-    fun `fromMap with empty email value sets empty string`() {
-        val map = mapOf<String, String>()
-        user = User.fromMap(map)
-
-        assertEquals("", user.email)
-    }
-
-    @Test
-    fun `fromMap with empty id value sets empty string`() {
-        val map = mapOf<String, String>()
-        user = User.fromMap(map)
-
-        assertEquals("", user.id)
-    }
-
-    @Test
-    fun `fromMap with empty ip address value sets null`() {
-        val map = mapOf<String, String>()
-        user = User.fromMap(map)
-
-        assertEquals(null, user.ipAddress)
-    }
-
-    @Test
     fun `initializing with another user sets value properly`() {
         val anotherUser = createTestUser()
         user = User(anotherUser)
