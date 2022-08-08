@@ -57,8 +57,8 @@ fun main() = application {
 
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {
-            it.setContext("Android Context", mapOf("context1" to 12, "context2" to false))
-            it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on Android"))
+            it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
+            it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
         }
 
         App()
