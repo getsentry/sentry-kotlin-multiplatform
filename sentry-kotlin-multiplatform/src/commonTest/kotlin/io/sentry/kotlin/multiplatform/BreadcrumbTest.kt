@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -17,6 +18,7 @@ class BreadcrumbTest {
     private val testViewId = "MyCustomViewId"
     private val testViewClass = "MyCustomViewClass"
 
+    @JsName("Given_DebugBreadcrumb_Then_HasProperValues")
     @Test
     fun `Debug Breadcrumb has proper type and message and level`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
@@ -26,6 +28,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.type, "debug")
     }
 
+    @JsName("Given_InfoBreadcrumb_Then_HasProperValues")
     @Test
     fun `Info Breadcrumb has proper type and message and level`() {
         val breadcrumb = Breadcrumb.info(testMessage)
@@ -35,6 +38,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.type, "info")
     }
 
+    @JsName("Given_ErrorBreadcrumb_Then_HasProperValues")
     @Test
     fun `Error Breadcrumb has proper type and message and level`() {
         val breadcrumb = Breadcrumb.error(testMessage)
@@ -44,6 +48,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.message, testMessage)
     }
 
+    @JsName("Given_UserBreadcrumb_Then_HasProperValues")
     @Test
     fun `User Breadcrumb has proper type and message and category`() {
         val breadcrumb = Breadcrumb.user(testCategory, testMessage)
@@ -53,6 +58,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.type, "user")
     }
 
+    @JsName("Given_HTTPBreadcrumb_Then_HasProperValues")
     @Test
     fun `HTTP Breadcrumb has proper type and data and category`() {
         val breadcrumb = Breadcrumb.http(testUrl, testMethod)
@@ -62,6 +68,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.type, "http")
     }
 
+    @JsName("Given_HTTPBreadcrumb_Then_HasProperValuesAndStatusCode")
     @Test
     fun `HTTP Breadcrumb has proper type and data and category and status code`() {
         val breadcrumb = Breadcrumb.http(testUrl, testMethod, testStatusCode)
@@ -72,6 +79,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.type, "http")
     }
 
+    @JsName("Given_NavigationBreadcrumb_Then_HasProperValues")
     @Test
     fun `Navigation Breadcrumb has proper type and data and category`() {
         val breadcrumb = Breadcrumb.navigation(testFromNav, testToNav)
@@ -82,6 +90,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.getData()?.get("to"), testToNav)
     }
 
+    @JsName("Given_TransactionBreadcrumb_Then_HasProperValues")
     @Test
     fun `Transaction Breadcrumb has proper type and message and category`() {
         val breadcrumb = Breadcrumb.transaction(testMessage)
@@ -91,6 +100,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.message, testMessage)
     }
 
+    @JsName("Given_QueryBreadcrumb_Then_HasProperValues")
     @Test
     fun `Query Breadcrumb has proper type and message`() {
         val breadcrumb = Breadcrumb.query(testMessage)
@@ -99,6 +109,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.message, testMessage)
     }
 
+    @JsName("Given_UIBreadcrumb_Then_HasProperValues")
     @Test
     fun `UI Breadcrumb has proper type and message and category`() {
         val breadcrumb = Breadcrumb.ui(testCategory, testMessage)
@@ -108,6 +119,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.category, "ui.$testCategory")
     }
 
+    @JsName("Given_UserInteractionBreadcrumb_Then_HasProperValues")
     @Test
     fun `User Interaction Breadcrumb has proper type and message and category and viewId and viewClass and level`() {
         val breadcrumb = Breadcrumb.userInteraction(testSubCategory, testViewId, testViewClass)
@@ -119,6 +131,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.getData()?.get("view.class"), testViewClass)
     }
 
+    @JsName("Given_UserInteractionBreadcrumb_Then_HasProperValuesAndAdditionalDataAndLevel")
     @Test
     fun `User Interaction Breadcrumb has proper type and message and category and viewId and viewClass and additionalData and level`() {
         val additionalData = HashMap<String?, Any?>()
@@ -136,6 +149,7 @@ class BreadcrumbTest {
         assertEquals(breadcrumb.getData()?.get("category"), testCategory)
     }
 
+    @JsName("Given_SetDataWithMap_Then_DataIsSetProperly")
     @Test
     fun `setData with map as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
@@ -145,6 +159,7 @@ class BreadcrumbTest {
         assertEquals(map, breadcrumb.getData())
     }
 
+    @JsName("Given_SetDataWithPrimitiveTypes_Then_DataIsSetProperly")
     @Test
     fun `setData with primitive types as value sets values properly`() {
         val breadcrumb = Breadcrumb.debug(testMessage)
@@ -155,6 +170,7 @@ class BreadcrumbTest {
         assertEquals(expected, breadcrumb.getData())
     }
 
+    @JsName("Given_SetDataWithSet_Then_DataIsSetProperly")
     @Test
     fun `using setType sets values properly`() {
         val breadcrumb = Breadcrumb()
@@ -163,6 +179,7 @@ class BreadcrumbTest {
         assertEquals(testCategory, breadcrumb.type)
     }
 
+    @JsName("Given_SetMessage_Then_DataIsSetProperly")
     @Test
     fun `using setMessage sets values properly`() {
         val breadcrumb = Breadcrumb()
@@ -171,6 +188,7 @@ class BreadcrumbTest {
         assertEquals(testMessage, breadcrumb.message)
     }
 
+    @JsName("Given_SetLevel_Then_DataIsSetProperly")
     @Test
     fun `using setLevel sets values properly`() {
         val breadcrumb = Breadcrumb()
@@ -179,6 +197,7 @@ class BreadcrumbTest {
         assertEquals(SentryLevel.DEBUG, breadcrumb.level)
     }
 
+    @JsName("When_AccessingSetData_Then_DoesNotThrowNullPointerException")
     @Test
     fun `accessing setData with key value does not throw NullPointerException`() {
         val breadcrumb = Breadcrumb()

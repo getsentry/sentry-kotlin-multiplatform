@@ -25,6 +25,9 @@ kotlin {
     android {
         publishAllLibraryVariants()
     }
+    js(BOTH) {
+        browser()
+    }
     jvm()
     ios()
     iosSimulatorArm64()
@@ -43,6 +46,16 @@ kotlin {
                 implementation("org.jetbrains.kotlin:kotlin-test-common")
                 implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
             }
+        }
+
+        val jsMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(npm("@sentry/browser", "7.9.0"))
+            }
+        }
+        val jsTest by getting {
+            dependsOn(commonTest)
         }
 
         val commonJvmMain by creating {
