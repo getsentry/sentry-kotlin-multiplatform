@@ -111,7 +111,10 @@ kotlin {
     ).forEach {
         it.compilations.getByName("main") {
             cinterops.create("Sentry.NSException") {
-                includeDirs("$projectDir/src/nativeInterop/cinterop/Sentry")
+                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryNSException")
+            }
+            cinterops.create("Sentry.Scope") {
+                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
             }
         }
     }

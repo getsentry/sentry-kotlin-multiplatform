@@ -3,18 +3,24 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.*
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
-import platform.Foundation.NSDictionary
 import platform.Foundation.allKeys
+import Scope.Sentry.SentryScope as PrivateCocoaScope
 
 internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
+
+    /*
+     This bridge exposes private Cocoa SDK API to fetch internal properties such as user, level, etc.
+     We need this in order to return properties because the Cocoa SDK doesn't implement getters.
+     This is only used for get methods.
+     */
+    private val privateScope = scope as? PrivateCocoaScope
 
     override var level: SentryLevel?
         set(value) {
             value?.let { scope.setLevel(it.toCocoaSentryLevel()) }
         }
         get() {
-            val level = scope.serialize()["level"]
-            return level?.let { SentryLevel.valueOf((it as String).uppercase()) }
+            return privateScope?.levelEnum?.toKmpSentryLevel()
         }
 
     override var user: User?
@@ -22,35 +28,33 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
             scope.setUser(value?.toCocoaUser())
         }
         get() {
-            val map = scope.serialize()["user"] as? Map<String, String>?
-            return map?.let { User.fromMap(map) }
+            val privateUser = privateScope?.userObject as? CocoaUser
+            return privateUser?.let { it.toKmpUser() }
         }
 
     override fun getContexts(): MutableMap<String, Any> {
-        val context = scope.serialize()["context"]
-        context?.let {
-            val dict = context as NSDictionary
-            val keys = dict.allKeys
+        val map = privateScope?.contextDictionary?.let {
+            val keys = it.allKeys
             val map = mutableMapOf<String, Any>()
             for (key in keys) {
-                dict.objectForKey(key)?.let { map.put(key as String, it) }
+                map.put(key as String, it.objectForKey(key) as Any)
             }
-            return map
+            map
         }
+        map?.let { return it }
         return HashMap()
     }
 
     override fun getTags(): MutableMap<String, String> {
-        val tags = scope.serialize()["tags"]
-        tags?.let {
-            val dict = tags as NSDictionary
-            val keys = dict.allKeys
+        val map = privateScope?.tagDictionary?.let {
+            val keys = it.allKeys
             val map = mutableMapOf<String, String>()
             for (key in keys) {
-                map.put(key as String, dict.objectForKey(key) as String)
+                map.put(key as String, it.objectForKey(key) as String)
             }
-            return map
+            map
         }
+        map?.let { return it }
         return HashMap()
     }
 

@@ -12,3 +12,14 @@ internal fun User.toCocoaUser(): CocoaUser {
         ipAddress = outerScope.ipAddress
     }
 }
+
+internal fun CocoaUser.toKmpUser(): User {
+    val outerScope = this
+    return User().apply {
+        id = outerScope.userId
+        username = outerScope.username.toString()
+        email = outerScope.email.toString()
+        ipAddress = outerScope.ipAddress.toString()
+        setData(outerScope.data)
+    }
+}
