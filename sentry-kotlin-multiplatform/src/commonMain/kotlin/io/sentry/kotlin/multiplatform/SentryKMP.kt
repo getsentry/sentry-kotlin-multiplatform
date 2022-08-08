@@ -1,7 +1,12 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.SentryId
+
+typealias ScopeCallback = (Scope) -> Unit
+
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
+
     /**
      * Captures the message.
      *
@@ -14,10 +19,39 @@ object Sentry {
     /**
      * Captures the exception.
      *
+     * @param message The message to send.
+     * @param scopeCallback The local scope callback.
+     */
+    fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
+        return SentryBridge.captureMessage(message, scopeCallback)
+    }
+
+    /**
+     * Captures the exception.
+     *
      * @param throwable The exception.
      */
     fun captureException(throwable: Throwable): SentryId {
         return SentryBridge.captureException(throwable)
+    }
+
+    /**
+     * Captures the exception.
+     *
+     * @param throwable The exception.
+     * @param scopeCallback The local scope callback.
+     */
+    fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
+        return SentryBridge.captureException(throwable, scopeCallback)
+    }
+
+        /**
+     * Configures the scope through the callback.
+     *
+     * @param scopeCallback The configure scope callback.
+     */
+    fun configureScope(scopeCallback: ScopeCallback) {
+        SentryBridge.configureScope(scopeCallback)
     }
 
     /**

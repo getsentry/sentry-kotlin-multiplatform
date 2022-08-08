@@ -6,7 +6,7 @@ struct ContentView: View {
 		Text("KMP Sample App " + Platform().platform)
         VStack() {
             Button("Capture Message") {
-                Sentry().captureMessage(message: "KMP Sample App " + Platform().platform)
+                Sentry().captureMessage(message: "From KMP Sample App " + Platform().platform)
             }
             Button("Capture Exception") {
                 LoginImpl().login(username: "MyUsername")

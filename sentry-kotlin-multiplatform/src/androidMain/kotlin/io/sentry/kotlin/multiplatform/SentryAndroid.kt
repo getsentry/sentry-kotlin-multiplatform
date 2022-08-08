@@ -1,33 +1,18 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.Sentry
-import io.sentry.android.core.SentryAndroidOptions
+import android.content.Context
+import io.sentry.android.core.SentryAndroid
+import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptions
+import io.sentry.kotlin.multiplatform.Sentry as SentryKmp
 
-internal actual object SentryBridge {
-
-    actual fun captureMessage(message: String): SentryId {
-        val androidSentryId = Sentry.captureMessage(message)
-        return SentryId(androidSentryId.toString())
-    }
-
-    actual fun captureException(throwable: Throwable): SentryId {
-        val androidSentryId = Sentry.captureException(throwable)
-        return SentryId(androidSentryId.toString())
-    }
-
-    actual fun close() {
-        Sentry.close()
-    }
-
-    internal fun convertToSentryAndroidOptions(options: SentryKMPOptions): (SentryAndroidOptions) -> Unit {
-        return { sentryAndroidOptions ->
-            sentryAndroidOptions.dsn = options.dsn
-            sentryAndroidOptions.isAttachThreads = options.attachThreads
-            sentryAndroidOptions.isAttachStacktrace = options.attachStackTrace
-        }
-    }
-
-    fun SentryBridge.test() {
-
-    }
+/**
+ * Sentry initialization with a context and option configuration handler.
+ *
+ * @param context Application context.
+ * @param configuration Options configuration handler.
+ */
+fun SentryKmp.init(context: Context, configuration: (SentryOptions) -> Unit) {
+    val options = SentryOptions()
+    configuration.invoke(options)
+    SentryAndroid.init(context, options.toAndroidSentryOptions())
 }
