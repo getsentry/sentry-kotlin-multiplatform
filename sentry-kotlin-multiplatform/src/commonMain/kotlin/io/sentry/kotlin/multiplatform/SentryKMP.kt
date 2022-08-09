@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 typealias ScopeCallback = (Scope) -> Unit
 
@@ -43,6 +44,10 @@ object Sentry {
      */
     fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
         return SentryBridge.captureException(throwable, scopeCallback)
+    }
+
+    fun captureUserFeedback(userFeedback: UserFeedback) {
+        return SentryBridge.captureUserFeedback(userFeedback)
     }
 
         /**
