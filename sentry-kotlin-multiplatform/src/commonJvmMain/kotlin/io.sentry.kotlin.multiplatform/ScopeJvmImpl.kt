@@ -12,7 +12,6 @@ internal class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
         }
         get() = scope.level?.toKmpSentryLevel()
 
-
     override var user: User?
         set(value) {
             scope.user = value?.toJvmUser()
