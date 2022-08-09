@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>JS Client</title>
+    <script src="jsApp.js"></script>
+    <script>
+
+        window.onload = jsApp.initApplication()
+    </script>
 </head>
 <body>
-<script src="jsApp.js"></script>
+
+<button onclick="jsApp.captureMessage()">Capture Button</button>
+<button onclick="jsApp.captureException()">Capture Exception</button>
+
 </body>
 </html>

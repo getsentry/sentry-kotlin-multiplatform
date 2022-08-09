@@ -3,13 +3,26 @@ import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
-import kotlinx.browser.document
-import react.create
-import react.dom.client.createRoot
+import sample.kpm_app.LoginImpl
 import sample.kpm_app.configureSharedScope
 import sample.kpm_app.optionsConfiguration
 
-fun main() {
+@JsExport
+fun captureMessage() {
+    Sentry.captureMessage("From Kotlin Multiplatform Js Browser") {
+        it.level = SentryLevel.FATAL
+        it.setContext("moment", "ME")
+        it.setTag("js-tag", "test test")
+    }
+}
+
+@JsExport
+fun captureException() {
+    LoginImpl.login("MyUsername")
+}
+
+@JsExport
+fun initApplication() {
     Sentry.init(optionsConfiguration())
 
     configureSharedScope()
@@ -30,13 +43,4 @@ fun main() {
         }
         it.user = user
     }
-
-    val container = document.createElement("div")
-    document.body!!.appendChild(container)
-
-    val welcome = Welcome.create {
-        name = "Kotlin/JS"
-    }
-
-    createRoot(container).render(welcome)
 }
