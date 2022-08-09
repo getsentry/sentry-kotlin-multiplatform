@@ -19,6 +19,14 @@ internal class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
         }
         get() = scope.user?.toKmpUser()
 
+    override fun addAttachment(attachment: Attachment) {
+        scope.addAttachment(attachment.jvmAttachment)
+    }
+
+    override fun clearAttachments() {
+        scope.clearAttachments()
+    }
+
     override fun getContexts(): MutableMap<String, Any> {
         return scope.contexts
     }

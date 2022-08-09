@@ -5,39 +5,39 @@ import io.sentry.kotlin.multiplatform.extensions.toNSData
 
 actual class Attachment : IAttachment {
 
-    private var attachment: CocoaAttachment
+    var cocoaAttachment: CocoaAttachment
 
     actual override val filename: String
-        get() = attachment.filename
+        get() = cocoaAttachment.filename
 
     actual override val pathname: String?
-        get() = attachment.path
+        get() = cocoaAttachment.path
 
     actual override val bytes: ByteArray?
-        get() = attachment.data?.toByteArray()
+        get() = cocoaAttachment.data?.toByteArray()
 
     actual override val contentType: String?
-        get() = attachment.contentType
+        get() = cocoaAttachment.contentType
 
     actual constructor(pathname: String) {
-        attachment = CocoaAttachment(pathname)
+        cocoaAttachment = CocoaAttachment(pathname)
     }
 
     actual constructor(pathname: String, filename: String) {
-        attachment = CocoaAttachment(pathname, filename)
+        cocoaAttachment = CocoaAttachment(pathname, filename)
     }
 
     actual constructor(pathname: String, filename: String, contentType: String?) {
-        contentType?.let { attachment = CocoaAttachment(pathname, filename, it) }
-        attachment = CocoaAttachment(pathname, filename)
+        contentType?.let { cocoaAttachment = CocoaAttachment(pathname, filename, it) }
+        cocoaAttachment = CocoaAttachment(pathname, filename)
     }
 
     actual constructor(bytes: ByteArray, filename: String) {
-        attachment = CocoaAttachment(bytes.toNSData(), filename)
+        cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename)
     }
 
     actual constructor(bytes: ByteArray, filename: String, contentType: String?) {
-        contentType?.let { attachment = CocoaAttachment(bytes.toNSData(), filename, it) }
-        attachment = CocoaAttachment(bytes.toNSData(), filename)
+        contentType?.let { cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename, it) }
+        cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename)
     }
 }

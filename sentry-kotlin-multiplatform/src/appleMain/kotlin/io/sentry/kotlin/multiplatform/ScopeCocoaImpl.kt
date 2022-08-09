@@ -32,6 +32,14 @@ internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
             return privateUser?.let { it.toKmpUser() }
         }
 
+    override fun addAttachment(attachment: Attachment) {
+        scope.addAttachment(attachment.cocoaAttachment)
+    }
+
+    override fun clearAttachments() {
+        scope.clearAttachments()
+    }
+
     override fun getContexts(): MutableMap<String, Any> {
         val map = privateScope?.contextDictionary?.toMutableMap<String, Any>()
         map?.let { return it }

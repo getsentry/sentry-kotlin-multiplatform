@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.*
+import io.sentry.Attachment
+import io.sentry.Breadcrumb
 import io.sentry.Scope
 import io.sentry.SentryLevel
 import io.sentry.SentryOptions
