@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.Breadcrumb
+import io.sentry.*
 import io.sentry.Scope
 import io.sentry.SentryLevel
 import io.sentry.SentryOptions
@@ -13,3 +13,4 @@ internal typealias JvmScope = Scope
 internal typealias JvmBreadcrumb = Breadcrumb
 internal typealias JvmSentryId = SentryId
 internal typealias JvmSentryOptions = SentryOptions
+internal typealias JvmAttachment = Attachment
