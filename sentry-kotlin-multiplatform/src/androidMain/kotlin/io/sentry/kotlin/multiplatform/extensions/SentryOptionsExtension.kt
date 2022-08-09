@@ -8,12 +8,5 @@ internal fun SentryOptions.toSentryAndroidOptions(): (SentryAndroidOptions) -> U
 
     it.isAnrEnabled = this.anrEnabled
     it.anrTimeoutIntervalMillis = this.anrTimeoutIntervalMillis
-    it.isAnrReportInDebug = this.anrReportInDebug
-    it.isEnableUserInteractionBreadcrumbs = this.enableUserInteractionBreadcrumbs
-    it.isEnableAppLifecycleBreadcrumbs = this.enableAppLifecycleBreadcrumbs
-    it.isEnableActivityLifecycleBreadcrumbs = this.enableActivityLifecycleBreadcrumbs
-    it.isEnableSystemEventBreadcrumbs = this.enableSystemEventBreadcrumbs
-    it.isEnableAppComponentBreadcrumbs = this.enableAppComponentBreadcrumbs
-    it.isCollectAdditionalContext = this.collectAdditionalContext
     it.isAttachScreenshot = this.attachScreenshot
 }
