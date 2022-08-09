@@ -63,13 +63,13 @@ class SentryApplication : Application() {
             Sentry.captureException(e)
         }
 
-        val image = Attachment(imageFile.getAbsolutePath(), "sentry.png", "image/png")
+        val imageAttachment = Attachment(imageFile.getAbsolutePath(), "sentry.png", "image/png")
 
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {
             it.setContext("Android Context", mapOf("context1" to 12, "context2" to false))
             it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on Android"))
-            it.addAttachment(image)
+            it.addAttachment(imageAttachment)
         }
     }
 }
