@@ -5,7 +5,7 @@ import io.sentry.kotlin.multiplatform.extensions.toNSData
 
 actual class Attachment : IAttachment {
 
-    var cocoaAttachment: CocoaAttachment
+    lateinit var cocoaAttachment: CocoaAttachment
 
     actual override val filename: String
         get() = cocoaAttachment.filename
@@ -35,8 +35,9 @@ actual class Attachment : IAttachment {
     }
 
     actual constructor(pathname: String, filename: String, contentType: String?) {
-        contentType?.let { cocoaAttachment = CocoaAttachment(pathname, filename, it) }
-        cocoaAttachment = CocoaAttachment(pathname, filename)
+        contentType?.let { cocoaAttachment = CocoaAttachment(pathname, filename, it) } ?: run {
+            cocoaAttachment = CocoaAttachment(pathname, filename)
+        }
     }
 
     actual constructor(bytes: ByteArray, filename: String) {
@@ -44,7 +45,8 @@ actual class Attachment : IAttachment {
     }
 
     actual constructor(bytes: ByteArray, filename: String, contentType: String?) {
-        contentType?.let { cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename, it) }
-        cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename)
+        contentType?.let { cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename, it) } ?: run {
+            cocoaAttachment = CocoaAttachment(bytes.toNSData(), filename)
+        }
     }
 }

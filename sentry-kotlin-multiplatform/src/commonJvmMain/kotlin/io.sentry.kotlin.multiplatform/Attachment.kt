@@ -14,7 +14,7 @@ actual class Attachment : IAttachment {
         get() = jvmAttachment.bytes
 
     actual override val contentType: String?
-        get() = jvmAttachment.contentType
+        get() = jvmAttachment.contentType ?: "application/octet-stream"
 
     actual companion object {
         actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
