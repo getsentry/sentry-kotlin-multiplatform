@@ -8,9 +8,12 @@ data class UserFeedback(internal val sentryId: SentryId) : IUserFeedback {
 
 interface IUserFeedback {
 
+    /** The user's name */
     var name: String?
 
+    /** The user's email */
     var email: String?
 
+    /** The user's comment */
     var comments: String?
 }

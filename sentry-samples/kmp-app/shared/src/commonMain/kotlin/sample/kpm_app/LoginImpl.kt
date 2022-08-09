@@ -4,6 +4,7 @@ import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.User
+import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 class InvalidUsernameException(message: String) : Exception(message)
 
@@ -17,7 +18,7 @@ object LoginImpl {
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
-            Sentry.captureException(exception) {
+            val sentryId = Sentry.captureException(exception) {
                 val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
                 breadcrumb.setData("touch event", "on login")
                 it.addBreadcrumb(breadcrumb)
@@ -30,6 +31,12 @@ object LoginImpl {
                 }
                 it.user = user
             }
+            val userFeedback = UserFeedback(sentryId).apply {
+                name = "John Doe"
+                email = "john@doe.com"
+                comments = "I had an error during login"
+            }
+            Sentry.captureUserFeedback(userFeedback)
         } catch (exception: IllegalArgumentException) {
             throw exception
         }
