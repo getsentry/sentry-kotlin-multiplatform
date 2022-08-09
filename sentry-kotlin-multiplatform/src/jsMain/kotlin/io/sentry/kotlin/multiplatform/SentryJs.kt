@@ -47,8 +47,8 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
-        SentryJs.captureException(throwable)
-        return SentryId.EMPTY_ID
+        val jsSentryId = SentryJs.captureException(throwable)
+        return SentryId(jsSentryId)
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: (Scope) -> Unit): SentryId {
@@ -57,7 +57,6 @@ internal actual object SentryBridge {
             val scope = Scope(scopeJsImpl)
             scopeCallback.invoke(scope)
         }
-
         return SentryId(jsSentryId)
     }
 
