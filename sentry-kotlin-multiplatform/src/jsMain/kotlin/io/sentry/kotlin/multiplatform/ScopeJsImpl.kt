@@ -35,10 +35,12 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
         }
 
     override fun getContexts(): MutableMap<String, Any> {
+        // TODO: impl json to map mapping
         return HashMap()
     }
 
     override fun getTags(): MutableMap<String, String> {
+        // TODO: impl json to map mapping
         return HashMap()
     }
 
@@ -119,7 +121,7 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
     }
 
     override fun removeTag(key: String) {
-        // todo:
+        // TODO: js sdk doesnt have dedicated remove, maybe we need to clear the variable directly
     }
 
     override fun setExtra(key: String, value: String) {
@@ -127,7 +129,7 @@ internal class ScopeJsImpl(private val scope: dynamic) : ISentryScope {
     }
 
     override fun removeExtra(key: String) {
-        // todo:
+        // TODO: js sdk doesnt have dedicated remove, maybe we need to clear the variable directly
     }
 
     override fun clear() {
