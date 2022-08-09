@@ -26,11 +26,19 @@ expect class Attachment : IAttachment {
 }
 
 interface IAttachment {
+
+    /** The bytes of the attachment. */
     val bytes: ByteArray?
 
+    /**
+     * The content type of the attachment.
+     * The server infers "application/octet-stream" if not set.
+     */
     val contentType: String?
 
+    /** The pathname string of the attachment. */
     val pathname: String?
 
+    /** The name of the attachment to display in Sentry */
     val filename: String
 }
