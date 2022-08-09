@@ -19,6 +19,13 @@ actual class Attachment : IAttachment {
     actual override val contentType: String?
         get() = cocoaAttachment.contentType
 
+    actual companion object {
+        actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
+            val data = screenshotBytes.toNSData()
+            return Attachment(screenshotBytes, "screenshot.png", "image/png")
+        }
+    }
+
     actual constructor(pathname: String) {
         cocoaAttachment = CocoaAttachment(pathname)
     }

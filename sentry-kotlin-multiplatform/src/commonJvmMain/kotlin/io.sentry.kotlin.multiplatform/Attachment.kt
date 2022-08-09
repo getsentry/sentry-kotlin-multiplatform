@@ -16,6 +16,12 @@ actual class Attachment : IAttachment {
     actual override val contentType: String?
         get() = jvmAttachment.contentType
 
+    actual companion object {
+        actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
+            return Attachment(screenshotBytes, "screenshot.png", "image/png")
+        }
+    }
+
     actual constructor(pathname: String) {
         jvmAttachment = JvmAttachment(pathname)
     }

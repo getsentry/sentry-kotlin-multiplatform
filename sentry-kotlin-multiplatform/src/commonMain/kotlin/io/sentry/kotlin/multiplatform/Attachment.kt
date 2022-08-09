@@ -1,7 +1,5 @@
 package io.sentry.kotlin.multiplatform
 
-import kotlin.jvm.JvmInline
-
 expect class Attachment : IAttachment {
 
     override val filename: String
@@ -11,6 +9,10 @@ expect class Attachment : IAttachment {
     override val contentType: String?
 
     override val pathname: String?
+
+    companion object {
+        fun fromScreenshot(screenshotBytes: ByteArray): Attachment
+    }
 
     constructor(bytes: ByteArray, filename: String)
 
