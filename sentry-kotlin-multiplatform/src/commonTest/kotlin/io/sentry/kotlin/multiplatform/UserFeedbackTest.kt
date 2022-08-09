@@ -15,6 +15,8 @@ class UserFeedbackTest {
         userFeedback.email = "test@email.com"
 
         assertEquals("test@email.com", userFeedback.email)
+        assertEquals(null, userFeedback.name)
+        assertEquals(null, userFeedback.comments)
     }
 
     @Test
@@ -23,6 +25,8 @@ class UserFeedbackTest {
         userFeedback.name = "John Doe"
 
         assertEquals("John Doe", userFeedback.name)
+        assertEquals(null, userFeedback.email)
+        assertEquals(null, userFeedback.comments)
     }
 
     @Test
@@ -31,5 +35,7 @@ class UserFeedbackTest {
         userFeedback.comments = "I had an error during login"
 
         assertEquals("I had an error during login", userFeedback.comments)
+        assertEquals(null, userFeedback.name)
+        assertEquals(null, userFeedback.email)
     }
 }
