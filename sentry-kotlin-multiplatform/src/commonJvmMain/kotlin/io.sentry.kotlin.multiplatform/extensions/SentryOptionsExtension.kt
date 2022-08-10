@@ -4,13 +4,14 @@ import io.sentry.kotlin.multiplatform.JvmSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 
 internal fun SentryOptions.toJvmSentryOptions(): (JvmSentryOptions) -> Unit = {
-    it.applyBaseOptions(this)
+    it.applyJvmBaseOptions(this)
 }
 
 /**
- * Applies the given options to this JvmSentryOption
+ * Applies the given base SentryOptions to this JvmSentryOption
+ * This allows separation of SentryAndroidOptions and SentryOptions
  */
-internal fun JvmSentryOptions.applyBaseOptions(options: SentryOptions) {
+internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.dsn = options.dsn
     this.isAttachThreads = options.attachThreads
     this.isAttachStacktrace = options.attachStackTrace
