@@ -34,7 +34,7 @@ object LoginImpl {
             val userFeedback = UserFeedback(sentryId).apply {
                 name = "John Doe"
                 email = "john@doe.com"
-                comments = "I had an error during login"
+                comments = "I had an error during login on ${Platform().platform}"
             }
             Sentry.captureUserFeedback(userFeedback)
         } catch (exception: IllegalArgumentException) {
