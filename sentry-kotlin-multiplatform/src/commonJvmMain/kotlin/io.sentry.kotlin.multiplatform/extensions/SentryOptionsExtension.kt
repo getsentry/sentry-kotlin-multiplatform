@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 
-internal fun SentryOptions.toJvmSentryOptions(): (JvmSentryOptions) -> Unit = {
+internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
 }
 

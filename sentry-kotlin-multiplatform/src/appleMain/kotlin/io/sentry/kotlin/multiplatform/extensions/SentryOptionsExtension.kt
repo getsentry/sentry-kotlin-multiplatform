@@ -7,17 +7,16 @@ import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
-internal fun SentryOptions.toCocoaSentryOptions() = CocoaSentryOptions().apply {
-    val funScope = this@toCocoaSentryOptions
-    this.dsn = funScope.dsn
-    this.sessionTrackingIntervalMillis = funScope.sessionTrackingIntervalMillis.convert()
-    this.enableAutoSessionTracking = funScope.enableAutoSessionTracking
-    this.releaseName = funScope.release
-    this.attachStacktrace = funScope.attachStackTrace
-    this.environment = funScope.environment
-    this.debug = funScope.debug
-    this.dist = funScope.dist
-    this.beforeSend = { event ->
+internal fun SentryOptions.toCocoaSentryOptionsCallback(): (CocoaSentryOptions?) -> Unit = {
+    it?.dsn = this.dsn
+    it?.sessionTrackingIntervalMillis = this.sessionTrackingIntervalMillis.convert()
+    it?.enableAutoSessionTracking = this.enableAutoSessionTracking
+    it?.releaseName = this.release
+    it?.attachStacktrace = this.attachStackTrace
+    it?.environment = this.environment
+    it?.debug = this.debug
+    it?.dist = this.dist
+    it?.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
     }
 }
