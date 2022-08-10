@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
-import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptions
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptionsCallback
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
