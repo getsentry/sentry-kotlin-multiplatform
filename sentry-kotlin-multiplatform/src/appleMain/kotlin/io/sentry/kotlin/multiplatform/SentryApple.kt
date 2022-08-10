@@ -23,6 +23,7 @@ fun Sentry.start(configuration: (SentryOptions) -> Unit) {
 internal actual object SentryBridge {
 
     actual fun captureMessage(message: String): SentryId {
+
         val cocoaSentryId = SentrySDK.captureMessage(message)
         return SentryId(cocoaSentryId.toString())
     }

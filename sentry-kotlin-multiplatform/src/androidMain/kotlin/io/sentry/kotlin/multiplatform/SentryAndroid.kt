@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import android.content.Context
 import io.sentry.android.core.SentryAndroid
-import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptions
+import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 import io.sentry.kotlin.multiplatform.Sentry as SentryKmp
 
 /**
@@ -14,5 +14,5 @@ import io.sentry.kotlin.multiplatform.Sentry as SentryKmp
 fun SentryKmp.init(context: Context, configuration: (SentryOptions) -> Unit) {
     val options = SentryOptions()
     configuration.invoke(options)
-    SentryAndroid.init(context, options.toAndroidSentryOptions())
+    SentryAndroid.init(context, options.toAndroidSentryOptionsCallback())
 }

@@ -45,7 +45,4 @@ open class SentryOptions {
 
     /** Sets the distribution. Think about it together with release and environment */
     var dist: String? = null
-
-    /** Enables or disables the attach screenshot feature when an error happened.  */
-    var attachScreenshot = false
 }
