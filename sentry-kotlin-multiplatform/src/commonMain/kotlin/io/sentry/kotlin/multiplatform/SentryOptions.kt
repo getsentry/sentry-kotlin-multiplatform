@@ -22,15 +22,6 @@ open class SentryOptions {
     var release: String? = null
 
     /**
-     * The session tracking interval in millis. This is the interval to end a session if the App goes
-     * to the background.
-     */
-    var sessionTrackingIntervalMillis: Long = 30000
-
-    /** Whether to enable or disable automatic session tracking. */
-    var enableAutoSessionTracking = true
-
-    /**
      * Turns debug mode on or off. If debug is enabled SDK will attempt to print out useful debugging
      * information if something goes wrong. Default is disabled.
      */

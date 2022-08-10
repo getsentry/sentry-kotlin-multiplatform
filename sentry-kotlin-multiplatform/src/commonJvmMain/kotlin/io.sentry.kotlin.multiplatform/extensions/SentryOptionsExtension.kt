@@ -17,4 +17,6 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.isAttachStacktrace = options.attachStackTrace
     this.dist = options.dist
     this.environment = options.environment
+    this.release = options.release
+    this.isDebug = options.debug
 }

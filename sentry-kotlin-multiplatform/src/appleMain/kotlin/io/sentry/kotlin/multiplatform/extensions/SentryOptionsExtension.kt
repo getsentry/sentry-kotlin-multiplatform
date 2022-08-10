@@ -9,8 +9,6 @@ import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
 internal fun SentryOptions.toCocoaSentryOptionsCallback(): (CocoaSentryOptions?) -> Unit = {
     it?.dsn = this.dsn
-    it?.sessionTrackingIntervalMillis = this.sessionTrackingIntervalMillis.convert()
-    it?.enableAutoSessionTracking = this.enableAutoSessionTracking
     it?.releaseName = this.release
     it?.attachStacktrace = this.attachStackTrace
     it?.environment = this.environment
