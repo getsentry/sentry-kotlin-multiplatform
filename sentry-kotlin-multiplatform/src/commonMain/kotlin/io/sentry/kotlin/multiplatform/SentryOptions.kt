@@ -46,14 +46,6 @@ open class SentryOptions {
     /** Sets the distribution. Think about it together with release and environment */
     var dist: String? = null
 
-    /**
-     * Enable or disable ANR (Application Not Responding) Default is enabled Used by AnrIntegration
-     */
-    var anrEnabled = true
-
-    /** ANR Timeout interval in Millis Default is 5000 = 5s Used by AnrIntegration */
-    var anrTimeoutIntervalMillis: Long = 5000
-
     /** Enables or disables the attach screenshot feature when an error happened.  */
     var attachScreenshot = false
 }
