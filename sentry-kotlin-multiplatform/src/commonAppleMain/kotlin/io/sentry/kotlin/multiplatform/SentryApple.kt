@@ -1,11 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
-<<<<<<< Updated upstream:sentry-kotlin-multiplatform/src/appleMain/kotlin/io/sentry/kotlin/multiplatform/SentryApple.kt
-import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryOptionsCallback
-=======
-import io.sentry.kotlin.multiplatform.extensions.toCocoaOptionsConfiguration
->>>>>>> Stashed changes:sentry-kotlin-multiplatform/src/commonAppleMain/kotlin/io/sentry/kotlin/multiplatform/SentryApple.kt
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 import io.sentry.kotlin.multiplatform.protocol.SentryId
@@ -23,23 +18,11 @@ internal fun SentrySDK.Companion.start(configuration: (CocoaSentryOptions?) -> U
  *
  * @param configuration Options configuration handler.
  */
-/*
-fun Sentry.start(configuration: (SentryOptions) -> Unit) {
-    val options = SentryOptions()
-    configuration.invoke(options)
-<<<<<<< Updated upstream:sentry-kotlin-multiplatform/src/appleMain/kotlin/io/sentry/kotlin/multiplatform/SentryApple.kt
-    SentrySDK.startWithConfigureOptions(options.toCocoaSentryOptionsCallback())
-    setSentryUnhandledExceptionHook()
-=======
-    SentrySDK.start(options.toCocoaOptionsConfiguration())
->>>>>>> Stashed changes:sentry-kotlin-multiplatform/src/commonAppleMain/kotlin/io/sentry/kotlin/multiplatform/SentryApple.kt
-}
- */
+expect fun Sentry.start(configuration: (SentryOptions) -> Unit)
 
 internal actual object SentryBridge {
 
     actual fun captureMessage(message: String): SentryId {
-
         val cocoaSentryId = SentrySDK.captureMessage(message)
         return SentryId(cocoaSentryId.toString())
     }

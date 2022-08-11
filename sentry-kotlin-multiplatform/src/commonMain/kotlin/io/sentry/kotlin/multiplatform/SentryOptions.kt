@@ -36,4 +36,7 @@ open class SentryOptions {
 
     /** Sets the distribution. Think about it together with release and environment */
     var dist: String? = null
+
+    /** Enables/Disables capturing screenshots before an error */
+    var attachScreenshot = false
 }
