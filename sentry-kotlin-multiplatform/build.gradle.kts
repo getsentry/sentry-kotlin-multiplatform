@@ -109,6 +109,7 @@ kotlin {
         val watchosTest by getting { dependsOn(commonAppleTest) }
 
         val macosX64Main by getting { dependsOn(commonAppleMain) }
+        val macosArm64Main by getting { dependsOn(commonAppleMain) }
         val macosX64Test by getting { dependsOn(commonAppleTest) }
 
         cocoapods {
