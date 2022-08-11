@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -26,11 +28,24 @@ kotlin {
         publishAllLibraryVariants()
     }
     jvm()
+
+    // ios shortcut targets: iosArm64, iosX64
+    // iosSimulatorArm64 targets: iOS simulator on Apple Silicon
     ios()
     iosSimulatorArm64()
+
+    // watchos shortcut targets: watchosArm32, watchosArm64, watchosX64
+    // watchosSimulatorArm64 targets: watchOS simulator on Apple Silicon
     watchos()
+    watchosSimulatorArm64()
+
+    // tvos shortcut targets: tvosArm64, tvosX64
+    // tvosSimulatorArm64 targets: tvOS simulator on Apple Silicon
     tvos()
+    tvosSimulatorArm64()
+
     macosX64()
+    macosArm64()
 
     sourceSets {
         val commonMain by getting {
@@ -72,18 +87,29 @@ kotlin {
         }
         val androidTest by getting { dependsOn(commonJvmTest) }
 
-        val appleMain by creating { dependsOn(commonMain) }
-        val iosMain by getting { dependsOn(appleMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(appleMain) }
-        val appleTest by creating { dependsOn(commonTest) }
-        val iosTest by getting { dependsOn(appleTest) }
-        val iosSimulatorArm64Test by getting { dependsOn(appleTest) }
-        val tvosMain by getting { dependsOn(appleMain) }
-        val tvosTest by getting { dependsOn(appleTest) }
-        val watchosMain by getting { dependsOn(appleMain) }
-        val watchosTest by getting { dependsOn(appleTest) }
-        val macosX64Main by getting { dependsOn(appleMain) }
-        val macosX64Test by getting { dependsOn(appleTest) }
+        // Common Apple sourceset - contains all apple targets
+        val commonAppleMain by creating { dependsOn(commonMain) }
+        val commonAppleTest by creating { dependsOn(commonTest) }
+
+        // Common iOS sourceset - contains only iOS targets and depends on appleMain
+        // This is needed since Sentry also has iOS only features such as screenshots
+        val commonIosMain by creating { dependsOn(commonAppleMain) }
+        val commonIosTest by creating { dependsOn(commonAppleTest) }
+        val iosMain by getting { dependsOn(commonIosMain) }
+        val iosSimulatorArm64Main by getting { dependsOn(commonIosMain) }
+        val iosTest by getting { dependsOn(commonIosTest) }
+        val iosSimulatorArm64Test by getting { dependsOn(commonIosTest) }
+
+        val tvosMain by getting { dependsOn(commonAppleMain) }
+        val tvosSimulatorArm64Main by getting { dependsOn(commonAppleMain) }
+        val tvosTest by getting { dependsOn(commonAppleTest) }
+
+        val watchosMain by getting { dependsOn(commonAppleMain) }
+        val watchosSimulatorArm64Main by getting { dependsOn(commonAppleMain) }
+        val watchosTest by getting { dependsOn(commonAppleTest) }
+
+        val macosX64Main by getting { dependsOn(commonAppleMain) }
+        val macosX64Test by getting { dependsOn(commonAppleTest) }
 
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"
@@ -105,9 +131,12 @@ kotlin {
         watchosArm32(),
         watchosArm64(),
         watchosX64(),
+        watchosSimulatorArm64(),
         tvosArm64(),
         tvosX64(),
-        macosX64()
+        tvosSimulatorArm64(),
+        macosX64(),
+        macosArm64()
     ).forEach {
         it.compilations.getByName("main") {
             cinterops.create("Sentry.NSException") {
@@ -121,11 +150,10 @@ kotlin {
 
     // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
     // if we need to use this class, we'd need to find a better way to work it out
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().all {
+    targets.withType<KotlinNativeTarget>().all {
         compilations["main"].cinterops["Sentry"].extraOpts(
             "-compiler-option",
             "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
         )
     }
 }
-

@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.*
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
-import platform.Foundation.allKeys
 import Scope.Sentry.SentryScope as PrivateCocoaScope
 
 internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
