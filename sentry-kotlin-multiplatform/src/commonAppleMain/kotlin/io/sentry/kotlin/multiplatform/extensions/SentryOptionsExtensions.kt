@@ -11,7 +11,8 @@ internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) 
 }
 
 /**
- * Applies the given options to this JvmSentryOption
+ * Applies the given options to this CocoaSentryOptions.
+ * This avoids code duplication for init on iOS.
  */
 internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.dsn = options.dsn
