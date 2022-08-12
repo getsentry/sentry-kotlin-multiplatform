@@ -10,10 +10,22 @@ expect abstract class Context
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
 
+    /**
+     * Sentry initialization with an option configuration handler.
+     *
+     * @param context: The context (used for retrieving Android Context)
+     * @param configuration Options configuration handler.
+     */
     fun init(context: Context, configuration: OptionsCallback) {
         SentryBridge.init(context, configuration)
     }
 
+    /**
+     * Sentry initialization with an option configuration handler.
+     * This is a convenience init for direct initialization on Apple platforms.
+     *
+     * @param configuration Options configuration handler.
+     */
     fun init(configuration: OptionsCallback) {
         SentryBridge.init(configuration = configuration)
     }

@@ -13,19 +13,14 @@ internal fun SentrySDK.Companion.start(configuration: (CocoaSentryOptions?) -> U
     setSentryUnhandledExceptionHook()
 }
 
-/**
- * Sentry initialization with an option configuration handler.
- *
- * @param configuration Options configuration handler.
- */
-internal expect fun init(configuration: (SentryOptions) -> Unit)
-
 actual abstract class Context
+
+internal expect fun initCocoaTarget(configuration: (SentryOptions) -> Unit)
 
 internal actual object SentryBridge {
 
     actual fun init(context: Context?, configuration: (SentryOptions) -> Unit) {
-        init(configuration)
+        initCocoaTarget(configuration)
     }
 
     actual fun captureMessage(message: String): SentryId {

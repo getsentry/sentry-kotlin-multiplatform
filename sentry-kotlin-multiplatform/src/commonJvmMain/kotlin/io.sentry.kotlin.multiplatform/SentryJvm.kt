@@ -3,12 +3,12 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.Sentry
 
-expect fun jnit(context: Context?, configuration: (SentryOptions) -> Unit)
+expect fun initJvmTarget(context: Context?, configuration: (SentryOptions) -> Unit)
 
 internal actual object SentryBridge {
 
     actual fun init(context: Context?, configuration: (SentryOptions) -> Unit) {
-        jnit(context, configuration)
+        initJvmTarget(context, configuration)
     }
 
     actual fun captureMessage(message: String): SentryId {
