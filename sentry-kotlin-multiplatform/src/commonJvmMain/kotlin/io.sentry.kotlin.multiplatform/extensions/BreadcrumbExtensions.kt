@@ -16,3 +16,14 @@ internal fun ISentryBreadcrumb.toJvmBreadcrumb(): JvmBreadcrumb {
         level = outerScope.level?.toJvmSentryLevel()
     }
 }
+
+internal fun JvmBreadcrumb.toSentryBreadcrumb(): Breadcrumb {
+    return Breadcrumb().apply {
+        val funScope = this@toSentryBreadcrumb
+        message = funScope.message
+        type = funScope.type
+        category = funScope.category
+        setData(funScope.data.toMutableMap())
+        level = funScope.level?.toKmpSentryLevel()
+    }
+}

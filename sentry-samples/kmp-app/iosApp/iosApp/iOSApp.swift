@@ -1,18 +1,17 @@
 import SwiftUI
 import shared
+import Sentry
 
 @main
 struct iOSApp: App {
     let sentry = Sentry()
 
     init() {
-        sentry.start { options in
-            options.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
-        }
+        sentry.start(configuration: AppSetupKt.optionsConfiguration())
         
         // Shared scope across all platforms
         AppSetupKt.configureSharedScope()
-        
+                
         // Add platform specific scope in addition to the shared scope
         sentry.configureScope { scope in
             scope.setContext(key: "iOS Context", value: [

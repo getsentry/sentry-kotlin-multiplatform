@@ -14,5 +14,10 @@ internal fun SentryOptions.toCocoaSentryOptions(): CocoaSentryOptions {
         beforeSend = { event ->
             dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
         }
+        beforeBreadcrumb = { breadcrumb ->
+            val kmpBreadcrumb = breadcrumb?.toSentryBreadcrumb()
+            val modifiedBreadcrumb = kmpBreadcrumb?.let { outerScope.beforeBreadcrumb?.invoke(it)?.toCocoaBreadcrumb() }
+            modifiedBreadcrumb ?: breadcrumb
+        }
     }
 }
