@@ -106,14 +106,17 @@ kotlin {
         val tvosMain by getting { dependsOn(commonTvWatchMacOsMain) }
         val tvosSimulatorArm64Main by getting { dependsOn(commonTvWatchMacOsMain) }
         val tvosTest by getting { dependsOn(commonTvWatchMacOsTest) }
+        val tvosSimulatorArm64Test by getting { dependsOn(commonTvWatchMacOsTest) }
 
         val watchosMain by getting { dependsOn(commonTvWatchMacOsMain) }
         val watchosSimulatorArm64Main by getting { dependsOn(commonTvWatchMacOsMain) }
         val watchosTest by getting { dependsOn(commonTvWatchMacOsTest) }
+        val watchosSimulatorArm64Test by getting { dependsOn(commonTvWatchMacOsTest) }
 
         val macosX64Main by getting { dependsOn(commonTvWatchMacOsMain) }
         val macosArm64Main by getting { dependsOn(commonTvWatchMacOsMain) }
         val macosX64Test by getting { dependsOn(commonTvWatchMacOsTest) }
+        val macosArm64Test by getting { dependsOn(commonTvWatchMacOsTest) }
 
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"
