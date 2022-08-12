@@ -4,17 +4,16 @@ import cocoapods.Sentry.SentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
-import kotlinx.cinterop.convert
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
 internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit = {
-    it?.applyBaseOptions(this)
+    it?.applyCocoaBaseOptions(this)
 }
 
 /**
  * Applies the given options to this JvmSentryOption
  */
-internal fun CocoaSentryOptions.applyBaseOptions(options: SentryOptions) {
+internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.dsn = options.dsn
     this.releaseName = options.release
     this.attachStacktrace = options.attachStackTrace
