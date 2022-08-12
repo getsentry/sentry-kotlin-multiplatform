@@ -16,3 +16,5 @@ fun SentryKmp.init(context: Context, configuration: (SentryOptions) -> Unit) {
     configuration.invoke(options)
     SentryAndroid.init(context, options.toAndroidSentryOptionsCallback())
 }
+
+actual typealias Context = Context

@@ -18,9 +18,15 @@ internal fun SentrySDK.Companion.start(configuration: (CocoaSentryOptions?) -> U
  *
  * @param configuration Options configuration handler.
  */
-expect fun Sentry.start(configuration: (SentryOptions) -> Unit)
+internal expect fun init(configuration: (SentryOptions) -> Unit)
+
+actual abstract class Context
 
 internal actual object SentryBridge {
+
+    actual fun init(context: Context?, configuration: (SentryOptions) -> Unit) {
+        init(configuration)
+    }
 
     actual fun captureMessage(message: String): SentryId {
         val cocoaSentryId = SentrySDK.captureMessage(message)

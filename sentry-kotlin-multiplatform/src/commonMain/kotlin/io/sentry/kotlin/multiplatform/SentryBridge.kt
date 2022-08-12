@@ -4,6 +4,8 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 
 internal expect object SentryBridge {
 
+    fun init(context: Context? = null, configuration: (SentryOptions) -> Unit)
+
     fun captureMessage(message: String): SentryId
 
     fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId

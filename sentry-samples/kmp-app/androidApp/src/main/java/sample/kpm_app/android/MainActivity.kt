@@ -39,7 +39,6 @@ class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Sentry.init(this, optionsConfiguration())
-
         // Shared scope across all platforms
         configureSharedScope()
 

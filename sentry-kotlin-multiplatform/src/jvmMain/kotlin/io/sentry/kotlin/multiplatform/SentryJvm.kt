@@ -14,3 +14,6 @@ fun SentryKmp.init(configuration: (SentryOptions) -> Unit) {
     configuration.invoke(options)
     Sentry.init(options.toJvmSentryOptionsCallback())
 }
+
+actual abstract class Context
+

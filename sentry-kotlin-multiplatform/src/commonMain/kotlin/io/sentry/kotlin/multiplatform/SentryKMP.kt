@@ -3,53 +3,20 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 
 typealias ScopeCallback = (Scope) -> Unit
-/*
-class OptionsConfiguration {
-    var dsn: String? = null
 
-    private var androidOptions = AndroidOptions()
-    private var cocoaOptions = CocoaOptions()
-
-    fun android(config: AndroidOptions.() -> Unit) {
-        config.invoke(androidOptions)
-    }
-
-    fun ios(config: CocoaOptions.() -> Unit) {
-        config.invoke(cocoaOptions)
-    }
-
-    class AndroidOptions() {
-        var attach = false
-        var anrEnabled = true
-    }
-
-    class CocoaOptions {
-        var attachScreenshot = false
-    }
-}
-
-inline fun Sentry.init(con: OptionsConfiguration.() -> Unit) {
-    val options = OptionsConfiguration()
-    con.invoke(options)
-}
-
-fun foo() {
-    Sentry.init {
-        dsn = "__dsn__"
-
-        android {
-            anrEnabled = true
-        }
-        ios {
-            attachScreenshot = true
-        }
-    }
-}
-
- */
+expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
+
+    fun init(context: Context, configuration: (SentryOptions) -> Unit) {
+        SentryBridge.init(context, configuration)
+    }
+
+    fun init(configuration: (SentryOptions) -> Unit) {
+        SentryBridge.init(configuration = configuration)
+    }
+
 
     /**
      * Captures the message.

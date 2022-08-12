@@ -5,6 +5,10 @@ import io.sentry.Sentry
 
 internal actual object SentryBridge {
 
+    actual fun init(context: Context?, configuration: (SentryOptions) -> Unit) {
+
+    }
+
     actual fun captureMessage(message: String): SentryId {
         val androidSentryId = Sentry.captureMessage(message)
         return SentryId(androidSentryId.toString())
