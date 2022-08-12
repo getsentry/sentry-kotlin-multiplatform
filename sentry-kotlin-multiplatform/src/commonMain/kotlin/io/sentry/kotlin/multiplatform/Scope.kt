@@ -17,6 +17,14 @@ class Scope constructor(private val scope: ISentryScope) : ISentryScope {
         }
         get() = scope.user
 
+    override fun addAttachment(attachment: Attachment) {
+        scope.addAttachment(attachment)
+    }
+
+    override fun clearAttachments() {
+        scope.clearAttachments()
+    }
+
     override fun getContexts(): MutableMap<String, Any> {
         return scope.getContexts()
     }
@@ -107,6 +115,17 @@ interface ISentryScope {
      * The Scope's level
      */
     var level: SentryLevel?
+
+    /**
+     * Adds an attachment to the Scope's list of attachments. The SDK adds the attachment to every
+     * event and transaction sent to Sentry.
+     *
+     * @param attachment The attachment to add to the Scope's list of attachments.
+     */
+    fun addAttachment(attachment: Attachment)
+
+    /** Clear all attachments */
+    fun clearAttachments()
 
     /**
      * Adds a breadcrumb to the breadcrumbs queue
