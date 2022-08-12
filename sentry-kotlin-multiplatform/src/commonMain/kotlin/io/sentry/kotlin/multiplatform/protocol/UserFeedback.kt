@@ -1,19 +1,13 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-data class UserFeedback(internal val sentryId: SentryId) : IUserFeedback {
-    override var name: String? = null
-    override var email: String? = null
-    override var comments: String? = null
-}
-
-interface IUserFeedback {
+data class UserFeedback(internal val sentryId: SentryId) {
 
     /** The user's name */
-    var name: String?
+    var name: String? = null
 
     /** The user's email */
-    var email: String?
+    var email: String? = null
 
     /** The user's comment */
-    var comments: String?
+    var comments: String? = null
 }
