@@ -7,6 +7,7 @@ import io.sentry.SentryLevel
 import io.sentry.SentryOptions
 import io.sentry.protocol.SentryId
 import io.sentry.protocol.User
+import io.sentry.UserFeedback
 
 internal typealias JvmSentryLevel = SentryLevel
 internal typealias JvmUser = User
@@ -15,3 +16,4 @@ internal typealias JvmBreadcrumb = Breadcrumb
 internal typealias JvmSentryId = SentryId
 internal typealias JvmSentryOptions = SentryOptions
 internal typealias JvmAttachment = Attachment
+internal typealias JvmUserFeedback = UserFeedback
