@@ -9,7 +9,7 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
 
 /**
  * Applies the given base SentryOptions to this JvmSentryOption
- * This allows separation of SentryAndroidOptions and SentryOptions
+ * This avoids code duplication during init on Android
  */
 internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.dsn = options.dsn
