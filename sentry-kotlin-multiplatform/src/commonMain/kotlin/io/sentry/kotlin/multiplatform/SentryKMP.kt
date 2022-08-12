@@ -17,7 +17,6 @@ object Sentry {
         SentryBridge.init(configuration = configuration)
     }
 
-
     /**
      * Captures the message.
      *

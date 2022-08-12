@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.Button
 import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import sample.kpm_app.Platform
 import sample.kpm_app.configureSharedScope
@@ -39,6 +38,7 @@ class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Sentry.init(this, optionsConfiguration())
+
         // Shared scope across all platforms
         configureSharedScope()
 

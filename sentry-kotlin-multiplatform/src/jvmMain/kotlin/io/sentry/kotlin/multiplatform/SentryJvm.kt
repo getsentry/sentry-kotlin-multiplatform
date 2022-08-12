@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.Sentry
-import io.sentry.kotlin.multiplatform.Sentry as SentryKmp
 import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
 
 /**
@@ -9,7 +8,7 @@ import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
  *
  * @param configuration Options configuration handler.
  */
-fun SentryKmp.init(configuration: (SentryOptions) -> Unit) {
+ actual fun jnit(context: Context?, configuration: (SentryOptions) -> Unit) {
     val options = SentryOptions()
     configuration.invoke(options)
     Sentry.init(options.toJvmSentryOptionsCallback())
