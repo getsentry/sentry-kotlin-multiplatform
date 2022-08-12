@@ -37,6 +37,18 @@ open class SentryOptions {
     /** Sets the distribution. Think about it together with release and environment */
     var dist: String? = null
 
-    /** Enables/Disables capturing screenshots before an error */
+    /** Whether to enable or disable automatic session tracking.  */
+    var enableAutoSessionTracking = true
+
+    /**
+     * The session tracking interval in millis. This is the interval to end a session if the App goes
+     * to the background.
+     */
+    var sessionTrackingIntervalMillis: Long = 30000
+
+    /**
+     * Enables/Disables capturing screenshots before an error.
+     * Available on iOS and Android.
+     */
     var attachScreenshot = false
 }
