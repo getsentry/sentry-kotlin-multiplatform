@@ -15,11 +15,11 @@ internal fun SentrySDK.Companion.start(configuration: (CocoaSentryOptions?) -> U
 
 actual abstract class Context
 
-internal expect fun initCocoaTarget(configuration: (SentryOptions) -> Unit)
+internal expect fun initCocoaTarget(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
 
-    actual fun init(context: Context?, configuration: (SentryOptions) -> Unit) {
+    actual fun init(context: Context?, configuration: OptionsConfiguration) {
         initCocoaTarget(configuration)
     }
 

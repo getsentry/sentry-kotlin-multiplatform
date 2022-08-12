@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 
 typealias ScopeCallback = (Scope) -> Unit
-typealias OptionsCallback = (SentryOptions) -> Unit
+typealias OptionsConfiguration = (SentryOptions) -> Unit
 
 expect abstract class Context
 
@@ -16,7 +16,7 @@ object Sentry {
      * @param context: The context (used for retrieving Android Context)
      * @param configuration Options configuration handler.
      */
-    fun init(context: Context, configuration: OptionsCallback) {
+    fun init(context: Context, configuration: OptionsConfiguration) {
         SentryBridge.init(context, configuration)
     }
 
@@ -26,7 +26,7 @@ object Sentry {
      *
      * @param configuration Options configuration handler.
      */
-    fun init(configuration: OptionsCallback) {
+    fun init(configuration: OptionsConfiguration) {
         SentryBridge.init(configuration = configuration)
     }
 

@@ -1,8 +1,8 @@
 package sample.kpm_app
 
 import io.sentry.kotlin.multiplatform.Context
+import io.sentry.kotlin.multiplatform.OptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.SentryOptions
 
 /** Configure scope applicable to all platforms */
 fun configureSentryScope() {
@@ -30,7 +30,7 @@ fun initializeSentry() {
 }
 
 /** Returns a shared options configuration */
-private fun optionsConfiguration(): (SentryOptions) -> Unit {
+private fun optionsConfiguration(): OptionsConfiguration {
     return {
         it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
         it.attachStackTrace = true

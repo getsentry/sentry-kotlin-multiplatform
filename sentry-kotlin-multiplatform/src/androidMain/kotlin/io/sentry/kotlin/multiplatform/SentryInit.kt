@@ -10,7 +10,7 @@ import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
  * @param context Application context.
  * @param configuration Options configuration handler.
  */
-actual fun initJvmTarget(context: Context?, configuration: (SentryOptions) -> Unit) {
+actual fun initJvmTarget(context: Context?, configuration: OptionsConfiguration) {
     val options = SentryOptions()
     configuration.invoke(options)
     context?.let {
