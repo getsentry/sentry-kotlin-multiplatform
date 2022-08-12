@@ -13,12 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import sample.kpm_app.LoginImpl
-import sample.kpm_app.Platform
-import sample.kpm_app.configureSharedScope
-import sample.kpm_app.optionsConfiguration
+import sample.kpm_app.*
 
 @Composable
 @Preview
@@ -49,10 +45,12 @@ fun App() {
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-        Sentry.init(optionsConfiguration())
+
+        // Initialize Sentry using shared code
+        initializeSentry()
 
         // Shared scope across all platforms
-        configureSharedScope()
+        configureSentryScope()
 
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {

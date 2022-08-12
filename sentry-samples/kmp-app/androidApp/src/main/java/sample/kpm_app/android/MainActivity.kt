@@ -4,12 +4,9 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import sample.kpm_app.Platform
-import sample.kpm_app.configureSharedScope
-import sample.kpm_app.optionsConfiguration
+import sample.kpm_app.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +34,12 @@ class MainActivity : AppCompatActivity() {
 class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Sentry.init(this, optionsConfiguration())
+
+        // Initialize Sentry using shared code
+        initializeSentry()
 
         // Shared scope across all platforms
-        configureSharedScope()
+        configureSentryScope()
 
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {

@@ -6,7 +6,8 @@ struct iOSApp: App {
     let sentry = Sentry()
 
     init() {
-        Sentry.shared.doInit(configuration: AppSetupKt.optionsConfiguration())
+        // Initialize Sentry using shared code
+        AppSetupKt.start()
         
         // Shared scope across all platforms
         AppSetupKt.configureSharedScope()

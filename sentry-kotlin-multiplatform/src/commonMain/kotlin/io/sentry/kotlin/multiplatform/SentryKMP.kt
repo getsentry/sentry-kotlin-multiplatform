@@ -3,17 +3,18 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 
 typealias ScopeCallback = (Scope) -> Unit
+typealias OptionsCallback = (SentryOptions) -> Unit
 
 expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
 
-    fun init(context: Context, configuration: (SentryOptions) -> Unit) {
+    fun init(context: Context, configuration: OptionsCallback) {
         SentryBridge.init(context, configuration)
     }
 
-    fun init(configuration: (SentryOptions) -> Unit) {
+    fun init(configuration: OptionsCallback) {
         SentryBridge.init(configuration = configuration)
     }
 
