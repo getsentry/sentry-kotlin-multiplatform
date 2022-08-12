@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 typealias ScopeCallback = (Scope) -> Unit
 typealias OptionsConfiguration = (SentryOptions) -> Unit
@@ -68,7 +69,16 @@ object Sentry {
         return SentryBridge.captureException(throwable, scopeCallback)
     }
 
-        /**
+    /**
+     * Captures a manually created user feedback and sends it to Sentry.
+     *
+     * @param userFeedback The user feedback to send to Sentry.
+     */
+    fun captureUserFeedback(userFeedback: UserFeedback) {
+        return SentryBridge.captureUserFeedback(userFeedback)
+    }
+
+    /**
      * Configures the scope through the callback.
      *
      * @param scopeCallback The configure scope callback.

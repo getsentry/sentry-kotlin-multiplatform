@@ -2,6 +2,7 @@ package sample.kpm_app
 
 import io.sentry.kotlin.multiplatform.Context
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
+import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Sentry
 
 /** Configure scope applicable to all platforms */
@@ -9,6 +10,12 @@ fun configureSentryScope() {
     Sentry.configureScope {
         it.setContext("Custom Context", "Shared Context")
         it.setTag("custom-tag", "from shared code")
+        it.addAttachment(
+            Attachment(
+                "This is a shared text attachment".encodeToByteArray(),
+                "shared.log"
+            )
+        )
     }
 }
 

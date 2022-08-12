@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect object SentryBridge {
 
@@ -15,6 +16,8 @@ internal expect object SentryBridge {
     fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId
 
     fun configureScope(scopeCallback: ScopeCallback)
+
+    fun captureUserFeedback(userFeedback: UserFeedback)
 
     fun close()
 }

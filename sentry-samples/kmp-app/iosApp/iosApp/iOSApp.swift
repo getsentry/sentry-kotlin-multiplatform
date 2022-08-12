@@ -20,6 +20,10 @@ struct iOSApp: App {
             ])
             let breadcrumb = Breadcrumb.companion.debug(message: "initialized Sentry on iOS")
             scope.addBreadcrumb(breadcrumb: breadcrumb)
+            if let path = Bundle.main.path(forResource: "sentry", ofType: "png") {
+                let imageAttachment = Attachment(pathname: path, filename: "sentry.png")
+                scope.addAttachment(attachment: imageAttachment)
+            }
         }
     }
 

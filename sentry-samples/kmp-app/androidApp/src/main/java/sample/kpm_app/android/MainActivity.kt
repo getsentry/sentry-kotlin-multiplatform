@@ -1,12 +1,17 @@
 package sample.kpm_app.android
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import io.sentry.kotlin.multiplatform.Attachment
+import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import sample.kpm_app.*
+import sample.kpm_app.Platform
+import java.io.FileOutputStream
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,10 +46,30 @@ class SentryApplication : Application() {
         // Shared scope across all platforms
         configureSentryScope()
 
+        val imageFile = applicationContext.getFileStreamPath("sentry.png")
+        try {
+            applicationContext.resources.openRawResource(R.raw.sentry).use { inputStream ->
+                FileOutputStream(imageFile).use { outputStream ->
+                    val bytes = ByteArray(1024)
+                    while (inputStream.read(bytes) !== -1) {
+                        // To keep the sample code simple this happens on the main thread. Don't do this in a
+                        // real app.
+                        outputStream.write(bytes)
+                    }
+                    outputStream.flush()
+                }
+            }
+        } catch (e: IOException) {
+            Sentry.captureException(e)
+        }
+
+        val imageAttachment = Attachment(imageFile.getAbsolutePath(), "sentry.png", "image/png")
+
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {
             it.setContext("Android Context", mapOf("context1" to 12, "context2" to false))
             it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on Android"))
+            it.addAttachment(imageAttachment)
         }
     }
 }

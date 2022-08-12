@@ -1,9 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
@@ -41,6 +43,10 @@ internal actual object SentryBridge {
     actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
         val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
+    }
+
+    actual fun captureUserFeedback(userFeedback: UserFeedback) {
+        SentrySDK.captureUserFeedback(userFeedback.toCocoaUserFeedback())
     }
 
     actual fun configureScope(scopeCallback: ScopeCallback) {
