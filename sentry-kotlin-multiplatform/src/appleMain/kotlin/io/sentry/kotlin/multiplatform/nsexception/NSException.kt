@@ -69,6 +69,6 @@ internal class ThrowableNSException(
     name: String,
     reason: String?,
     private val returnAddresses: List<NSNumber>
-): NSException(name, reason, null) {
+) : NSException(name, reason, null) {
     override fun callStackReturnAddresses(): List<NSNumber> = returnAddresses
 }

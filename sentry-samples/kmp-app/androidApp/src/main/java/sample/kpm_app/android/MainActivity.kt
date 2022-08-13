@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import io.sentry.kotlin.multiplatform.Attachment
-import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import sample.kpm_app.LoginImpl
 import sample.kpm_app.Platform
 import sample.kpm_app.configureSharedScope
 import sample.kpm_app.optionsConfiguration
