@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease stop
+.PHONY: all clean compile dryRelease checkFormat format stop
 
 all: stop clean compile
 
