@@ -13,7 +13,7 @@ dryRelease:
 
 # Spotless check's code
 checkFormat:
-	./gradlew spotlessJavaCheck spotlessKotlinCheck
+	./gradlew spotlessKotlinCheck
 
 # Spotless format's code
 format:
