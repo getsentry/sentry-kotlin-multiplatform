@@ -11,6 +11,14 @@ clean:
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
 
+# Spotless check's code
+checkFormat:
+	./gradlew spotlessJavaCheck spotlessKotlinCheck
+
+# Spotless format's code
+format:
+	./gradlew spotlessApply
+
 # build and run tests
 compile:
 	./gradlew build

@@ -1,10 +1,11 @@
+import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
 
 plugins {
     `maven-publish`
-    id("org.jlleitschuh.gradle.ktlint")
     id("com.vanniktech.maven.publish") version "0.18.0"
+    id("com.diffplug.spotless") version "6.7.2"
 }
 
 buildscript {
@@ -19,6 +20,19 @@ buildscript {
     }
 }
 
+spotless {
+    lineEndings = LineEnding.UNIX
+
+    kotlin {
+        target("**/*.kt")
+        ktlint()
+    }
+    kotlinGradle {
+        target("**/*.kts")
+        ktlint()
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -27,13 +41,12 @@ allprojects {
     }
     group = "io.sentry"
     version = properties["versionName"].toString()
+
+    apply(plugin = "com.diffplug.spotless")
 }
 
 subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint") // Version should be inherited from parent
-
     if (!this.name.contains("samples") && !this.name.contains("shared")) {
-
         apply<DistributionPlugin>()
 
         val sep = File.separator

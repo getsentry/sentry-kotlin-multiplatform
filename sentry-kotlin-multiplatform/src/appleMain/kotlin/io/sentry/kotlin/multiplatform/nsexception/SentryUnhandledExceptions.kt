@@ -14,7 +14,28 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import NSException.Sentry.*
+import NSException.Sentry.NSExceptionKt_SentryCrashStackCursorCleanup
+import NSException.Sentry.NSExceptionKt_SentryCrashStackCursorFromNSException
+import NSException.Sentry.NSExceptionKt_SentryMechanismSetNotHandled
+import NSException.Sentry.NSExceptionKt_SentryThreadSetCrashed
+import NSException.Sentry.SentryDependencyContainer
+import NSException.Sentry.SentryEnvelope
+import NSException.Sentry.SentryEnvelopeHeader
+import NSException.Sentry.SentryEnvelopeItem
+import NSException.Sentry.SentryEvent
+import NSException.Sentry.SentryException
+import NSException.Sentry.SentryMechanism
+import NSException.Sentry.SentrySDK
+import NSException.Sentry.SentryThread
+import NSException.Sentry.SentryThreadInspector
+import NSException.Sentry.currentHub
+import NSException.Sentry.isCrashEvent
+import NSException.Sentry.kSentryLevelFatal
+import NSException.Sentry.options
+import NSException.Sentry.prepareEvent
+import NSException.Sentry.sdkInfo
+import NSException.Sentry.storeEnvelope
+import NSException.Sentry.threadInspector
 import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber

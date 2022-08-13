@@ -34,33 +34,32 @@ fun App() {
         }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
             Text("Capture Message", color = Color.White)
         }
-            Button({
-                LoginImpl.login("MyUsername")
-            }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
-                Text("Capture Exception", color = Color.White)
-            }
-                Button({
-                    LoginImpl.login()
-                }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
-                    Text("Crash", color = Color.White)
-                }
-                }
-            }
+        Button({
+            LoginImpl.login("MyUsername")
+        }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
+            Text("Capture Exception", color = Color.White)
+        }
+        Button({
+            LoginImpl.login()
+        }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
+            Text("Crash", color = Color.White)
+        }
+    }
+}
 
-            fun main() = application {
-                Window(onCloseRequest = ::exitApplication) {
-                    Sentry.init(optionsConfiguration())
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication) {
+        Sentry.init(optionsConfiguration())
 
-                    // Shared scope across all platforms
-                    configureSharedScope()
+        // Shared scope across all platforms
+        configureSharedScope()
 
-                    // Add platform specific scope in addition to the shared scope
-                    Sentry.configureScope {
-                        it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
-                        it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
-                    }
+        // Add platform specific scope in addition to the shared scope
+        Sentry.configureScope {
+            it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
+            it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
+        }
 
-                    App()
-                }
-            }
-            
+        App()
+    }
+}

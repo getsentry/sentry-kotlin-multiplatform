@@ -1,7 +1,14 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import kotlinx.cinterop.*
-import platform.Foundation.*
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.allocArrayOf
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
+import platform.Foundation.NSMutableDictionary
+import platform.Foundation.allKeys
+import platform.Foundation.create
 import platform.posix.memcpy
 
 fun <K, V> NSMutableDictionary.toMutableMap(): MutableMap<K, V> {

@@ -31,21 +31,21 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("jvm").contents {
         from("build${sep}publications${sep}jvm")
-        from("build${sep}libs${sep}") {
+        from("build${sep}libs$sep") {
             include("*jvm*")
         }
     }
     this.maybeCreate("iosArm64").contents {
         from("build${sep}publications${sep}iosArm64")
         from("build${sep}libs${sep}iosArm64")
-        from("build${sep}libs${sep}") {
+        from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-iosarm64*")
         }
     }
     this.maybeCreate("iosX64").contents {
         from("build${sep}publications${sep}iosX64")
         from("build${sep}libs${sep}iosX64")
-        from("build${sep}libs${sep}") {
+        from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-iosx64*")
         }
     }
