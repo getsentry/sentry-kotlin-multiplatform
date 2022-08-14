@@ -15,7 +15,9 @@ internal fun SentryOptions.toCocoaSentryOptionsCallback(): (CocoaSentryOptions?)
         }
         this.beforeBreadcrumb?.let { beforeBreadcrumb ->
             cocoaOptions?.setBeforeBreadcrumb { cocoaBreadcrumb ->
-                cocoaBreadcrumb?.toSentryBreadcrumb()?.let { beforeBreadcrumb.invoke(it) }?.toCocoaBreadcrumb()
+                val kmpBreadcrumb = cocoaBreadcrumb?.toSentryBreadcrumb()
+                val modifiedKmpBreadcrumb = kmpBreadcrumb?.let(beforeBreadcrumb)
+                modifiedKmpBreadcrumb?.toCocoaBreadcrumb() ?: cocoaBreadcrumb
             }
         }
     }
