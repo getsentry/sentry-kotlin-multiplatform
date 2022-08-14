@@ -2,8 +2,9 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import io.sentry.kotlin.multiplatform.protocol.ISentryBreadcrumb
 
-internal fun Breadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
+internal fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
     val outerScope = this
     return CocoaBreadcrumb().apply {
         setMessage(outerScope.message)
