@@ -15,9 +15,9 @@ internal fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
     }
 }
 
-internal fun CocoaBreadcrumb.toSentryBreadcrumb(): Breadcrumb {
+internal fun CocoaBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
     return Breadcrumb().apply {
-        val funScope = this@toSentryBreadcrumb
+        val funScope = this@toKmpBreadcrumb
         message = funScope.message
         type = funScope.type
         category = funScope.category
