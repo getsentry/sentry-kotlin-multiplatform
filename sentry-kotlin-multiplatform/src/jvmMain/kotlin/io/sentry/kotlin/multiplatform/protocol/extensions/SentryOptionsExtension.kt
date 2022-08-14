@@ -11,7 +11,7 @@ internal fun SentryOptions.toJvmSentryOptions(): (JvmSentryOptions) -> Unit {
         options.isAttachThreads = this.attachThreads
         options.isAttachStacktrace = this.attachStackTrace
         this.beforeBreadcrumb?.let {
-            options.setBeforeBreadcrumb { jvmBreadcrumb, hint ->
+            options.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
                 val kmpBreadcrumb = jvmBreadcrumb.toKmpBreadcrumb()
                 it.invoke(kmpBreadcrumb).toJvmBreadcrumb()
             }
