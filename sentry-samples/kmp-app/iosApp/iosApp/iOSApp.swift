@@ -1,6 +1,5 @@
 import SwiftUI
 import shared
-import Sentry
 
 @main
 struct iOSApp: App {
