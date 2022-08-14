@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class BreadcrumbTest {
 
@@ -185,4 +186,34 @@ class BreadcrumbTest {
 
         breadcrumb.setData("key", "value")
     }
+
+    @Test
+    fun `Breadcrumb can be modified via callback and should return the modified Breadcrumb`() {
+        val expectedBreadcrumb = Breadcrumb().apply {
+            message = "changed message"
+            type = "test type"
+            category = "test category"
+            setData(mutableMapOf("data1" to 12, "data2" to "value", "key" to "value"))
+        }
+
+        val breadcrumb = Breadcrumb().apply {
+            message = "test message"
+            type = "test type"
+            category = "test category"
+            setData(mutableMapOf("data1" to 12, "data2" to "value"))
+        }
+
+        val options = SentryOptions()
+        options.beforeBreadcrumb = {
+            it.apply {
+                setData("key", "value")
+                message = "changed message"
+            }
+        }
+
+        val modifiedBreadcrumb = breadcrumb.let(options.beforeBreadcrumb!!)
+
+        assertEquals(expectedBreadcrumb, modifiedBreadcrumb)
+    }
+
 }
