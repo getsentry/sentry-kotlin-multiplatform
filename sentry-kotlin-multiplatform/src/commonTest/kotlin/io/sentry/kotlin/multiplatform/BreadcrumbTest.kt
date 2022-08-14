@@ -196,15 +196,15 @@ class BreadcrumbTest {
 
         val expectedBreadcrumb = Breadcrumb().apply {
             message = "changed message"
-            type = "test type"
-            category = "test category"
+            type = "changed type"
+            category = "changed category"
             setData(mutableMapOf("data1" to 12, "data2" to "value", "key" to "value"))
         }
 
         val breadcrumb = Breadcrumb().apply {
-            message = "test message"
-            type = "test type"
-            category = "test category"
+            message = "another message"
+            type = "another type"
+            category = "another category"
             setData(mutableMapOf("data1" to 12, "data2" to "value"))
         }
 
@@ -213,6 +213,8 @@ class BreadcrumbTest {
                 breadcrumb.apply {
                     setData("key", "value")
                     message = "changed message"
+                    type = "changed type"
+                    category = "changed category"
                 }
             }
         }
