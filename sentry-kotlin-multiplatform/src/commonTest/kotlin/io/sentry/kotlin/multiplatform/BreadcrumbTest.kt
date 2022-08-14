@@ -188,7 +188,13 @@ class BreadcrumbTest {
     }
 
     @Test
-    fun `Breadcrumb can be modified via callback and should return the modified Breadcrumb`() {
+    fun `Breadcrumb can be modified via callback in init and should return the modified Breadcrumb`() {
+        val options = SentryOptions()
+
+        fun mockInit(configuration: (SentryOptions) -> Unit) {
+            configuration.invoke(options)
+        }
+
         val expectedBreadcrumb = Breadcrumb().apply {
             message = "changed message"
             type = "test type"
@@ -203,11 +209,12 @@ class BreadcrumbTest {
             setData(mutableMapOf("data1" to 12, "data2" to "value"))
         }
 
-        val options = SentryOptions()
-        options.beforeBreadcrumb = {
-            it.apply {
-                setData("key", "value")
-                message = "changed message"
+        mockInit {
+            it.beforeBreadcrumb = { breadcrumb ->
+                breadcrumb.apply {
+                    setData("key", "value")
+                    message = "changed message"
+                }
             }
         }
 
@@ -215,5 +222,4 @@ class BreadcrumbTest {
 
         assertEquals(expectedBreadcrumb, modifiedBreadcrumb)
     }
-
 }
