@@ -28,22 +28,12 @@ kotlin {
         publishAllLibraryVariants()
     }
     jvm()
-
-    // ios shortcut targets: iosArm64, iosX64
-    // iosSimulatorArm64 targets: iOS simulator on Apple Silicon
     ios()
     iosSimulatorArm64()
-
-    // watchos shortcut targets: watchosArm32, watchosArm64, watchosX64
-    // watchosSimulatorArm64 targets: watchOS simulator on Apple Silicon
     watchos()
     watchosSimulatorArm64()
-
-    // tvos shortcut targets: tvosArm64, tvosX64
-    // tvosSimulatorArm64 targets: tvOS simulator on Apple Silicon
     tvos()
     tvosSimulatorArm64()
-
     macosX64()
     macosArm64()
 
@@ -87,12 +77,9 @@ kotlin {
         }
         val androidTest by getting { dependsOn(commonJvmTest) }
 
-        // Common Apple sourceset - contains all apple targets
         val commonAppleMain by creating { dependsOn(commonMain) }
         val commonAppleTest by creating { dependsOn(commonTest) }
 
-        // Common iOS sourceset - contains only iOS targets and depends on appleMain
-        // This is needed since Sentry also has iOS only features such as screenshots
         val commonIosMain by creating { dependsOn(commonAppleMain) }
         val commonIosTest by creating { dependsOn(commonAppleTest) }
         val iosMain by getting { dependsOn(commonIosMain) }
