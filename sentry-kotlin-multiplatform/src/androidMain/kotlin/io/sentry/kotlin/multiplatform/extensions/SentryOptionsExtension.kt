@@ -9,7 +9,7 @@ internal fun SentryOptions.toAndroidSentryOptions(): (SentryAndroidOptions) -> U
         sentryAndroidOptions.isAttachThreads = this.attachThreads
         sentryAndroidOptions.isAttachStacktrace = this.attachStackTrace
         this.beforeBreadcrumb?.let {
-            sentryAndroidOptions.setBeforeBreadcrumb { androidBreadcrumb, hint ->
+            sentryAndroidOptions.setBeforeBreadcrumb { androidBreadcrumb, _ ->
                 val kmpBreadcrumb = androidBreadcrumb.toKmpBreadcrumb()
                 it.invoke(kmpBreadcrumb).toJvmBreadcrumb()
             }
