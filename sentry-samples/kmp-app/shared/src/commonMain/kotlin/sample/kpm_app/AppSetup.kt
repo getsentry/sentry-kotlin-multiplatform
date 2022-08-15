@@ -43,5 +43,6 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachStackTrace = true
         it.attachThreads = true
         it.attachScreenshot = true
+        it.release = "kmp-release@0.0.1"
     }
 }

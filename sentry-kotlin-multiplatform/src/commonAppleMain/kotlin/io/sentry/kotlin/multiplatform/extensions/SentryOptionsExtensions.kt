@@ -24,7 +24,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.debug = options.debug
     this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis.convert()
     this.enableAutoSessionTracking = options.enableAutoSessionTracking
-
     this.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
     }
