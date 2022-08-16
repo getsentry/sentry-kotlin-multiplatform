@@ -52,7 +52,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation("io.sentry:sentry-android:6.1.4") {
+                implementation("io.sentry:sentry-android:6.3.1") {
                     // avoid duplicate dependencies since we depend on commonJvmMain
                     exclude("io.sentry", "sentry")
                 }
@@ -67,7 +67,7 @@ kotlin {
             jvmMain.dependsOn(this)
             androidMain.dependsOn(this)
             dependencies {
-                implementation("io.sentry:sentry:6.1.4")
+                implementation("io.sentry:sentry:6.3.1")
             }
         }
         val commonJvmTest by creating {
