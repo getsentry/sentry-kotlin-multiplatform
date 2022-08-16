@@ -1,7 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.User
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class ScopeTest : BaseSentryScopeTest() {
 

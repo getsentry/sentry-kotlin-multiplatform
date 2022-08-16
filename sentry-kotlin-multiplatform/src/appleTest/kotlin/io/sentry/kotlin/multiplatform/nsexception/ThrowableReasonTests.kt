@@ -51,10 +51,13 @@ class ThrowableReasonTests {
         val cause = Exception("Cause message")
         val exception = Exception("Test message", cause)
         val reason = exception.getReason(true)
-        assertEquals("""
+        assertEquals(
+            """
             Test message
             Caused by: kotlin.Exception: Cause message
-        """.trimIndent(), reason)
+            """.trimIndent(),
+            reason
+        )
     }
 
     @Test
@@ -62,19 +65,25 @@ class ThrowableReasonTests {
         val cause = Exception("Cause message")
         val exception = Exception(null, cause)
         val reason = exception.getReason(true)
-        assertEquals("""
+        assertEquals(
+            """
             Caused by: kotlin.Exception: Cause message
-        """.trimIndent(), reason)
+            """.trimIndent(),
+            reason
+        )
     }
 
     @Test
     fun testReasonNoCauseMessage() {
         val exception = Exception("Test message", Exception())
         val reason = exception.getReason(true)
-        assertEquals("""
+        assertEquals(
+            """
             Test message
             Caused by: kotlin.Exception
-        """.trimIndent(), reason)
+            """.trimIndent(),
+            reason
+        )
     }
 
     @Test
@@ -83,10 +92,13 @@ class ThrowableReasonTests {
         val cause2 = Exception("Cause2 message", cause1)
         val exception = Exception("Test message", cause2)
         val reason = exception.getReason(true)
-        assertEquals("""
+        assertEquals(
+            """
             Test message
             Caused by: kotlin.Exception: Cause2 message
             Caused by: kotlin.Exception: Cause1 message
-        """.trimIndent(), reason)
+            """.trimIndent(),
+            reason
+        )
     }
 }

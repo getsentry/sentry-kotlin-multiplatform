@@ -4,4 +4,3 @@ expect abstract class BaseSentryScopeTest() {
 
     fun initializeScope(): Scope
 }
-

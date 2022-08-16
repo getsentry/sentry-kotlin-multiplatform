@@ -1,8 +1,8 @@
-package sample.kpm_app
+package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.SentryLevel
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 

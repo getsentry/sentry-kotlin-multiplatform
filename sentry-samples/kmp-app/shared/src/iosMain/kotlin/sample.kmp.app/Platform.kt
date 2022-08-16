@@ -1,4 +1,4 @@
-package sample.kpm_app
+package sample.kmp.app
 
 import platform.UIKit.UIDevice
 

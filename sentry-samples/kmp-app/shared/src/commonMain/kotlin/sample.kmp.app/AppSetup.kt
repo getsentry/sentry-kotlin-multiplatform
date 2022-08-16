@@ -1,4 +1,4 @@
-package sample.kpm_app
+package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Sentry

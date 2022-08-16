@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 
 class ThrowableNameTests {
 
-    private class MyThrowable: Throwable()
+    private class MyThrowable : Throwable()
 
     @Test
     fun testMyThrowableName() {
@@ -35,7 +35,7 @@ class ThrowableNameTests {
 
     @Test
     fun testLocalThrowableName() {
-        class MyLocalThrowable: Throwable()
+        class MyLocalThrowable : Throwable()
         val throwable = MyLocalThrowable()
         assertEquals("MyLocalThrowable", throwable.name)
     }
