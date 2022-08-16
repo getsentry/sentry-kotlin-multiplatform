@@ -6,7 +6,7 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 typealias ScopeCallback = (Scope) -> Unit
 typealias OptionsConfiguration = (SentryOptions) -> Unit
 
-expect abstract class Context
+expect abstract class Context()
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
