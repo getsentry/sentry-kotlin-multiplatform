@@ -60,8 +60,17 @@ cocoapods {
 
 ## Initialization
 
-Remember to execute the initialization as early in your application life cycle as possible.
+There are two main strategies for initializing the SDK:
+  - Platform specific initializers
+  - Shared initializer
 
+Platform specific initializers initialize the SDK directly in the target platform. The benefit is being able to customize the configuration options specific to the platforms.
+
+Shared initializer will initialize the SDK in your shared codebase but you will use the same configuration options for all platforms. 
+
+It is also possible to mix those two strategies based on your needs and project setup.
+
+## Platform Specific Initializers
 ### Android
 
 ```Kotlin
@@ -75,15 +84,56 @@ class YourApplication : Application() {
 }
 ```
 
-### iOS
-Ideally you will call this in `applicationDidFinishLaunching` in AppDelegate or in `init` in your SwiftUI App
+### Cocoa
+```Swift
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+    ) -> Bool {
+        Sentry.shared.doInit() { options in
+          options.dsn = "__DSN__"
+        }
+        return true        
+    }
+}
+```
+
+## Shared Initializer
+
+Create a Kotlin file in your commonMain e.g. `AppSetup.kt` or however you want to call it and create a function that will initialize the SDK.
+
+```Kotlin
+// The context is needed for Android initializations
+fun initializeSentry(context: Context?) {
+  Sentry.init(context) {
+    it.dsn = "__DSN__"
+  }
+}
+```
+
+Now call this function in an early lifecycle stage in your platforms.
+
+### Android
+```Kotlin
+class YourApplication : Application() {
+  override fun onCreate() {
+    super.onCreate()
+      initializeSentry(this)
+   }
+}
+```
+
+### Cocoa
 
 ```Swift
-import shared
-
-// ...
-
-Sentry().start { options in 
-  options.dsn = "___DSN___"
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+    ) -> Bool {
+        AppSetupKt.initializeSentry(context = nil)
+        return true        
+    }
 }
 ```
