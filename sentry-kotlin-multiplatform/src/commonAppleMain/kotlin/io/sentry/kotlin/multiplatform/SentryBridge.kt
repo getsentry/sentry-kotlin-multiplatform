@@ -10,12 +10,16 @@ import platform.Foundation.NSException
 
 actual abstract class Context
 
-internal expect fun initCocoaTarget(configuration: OptionsConfiguration)
+internal expect fun initSentry(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
 
-    actual fun init(context: Context?, configuration: OptionsConfiguration) {
-        initCocoaTarget(configuration)
+    actual fun init(context: Context, configuration: OptionsConfiguration) {
+        initSentry(configuration)
+    }
+
+    actual fun init(configuration: OptionsConfiguration) {
+        initSentry(configuration)
     }
 
     actual fun captureMessage(message: String): SentryId {

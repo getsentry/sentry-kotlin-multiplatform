@@ -8,7 +8,6 @@
         android:theme="@style/AppTheme"
         android:name=".SentryApplication">
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
-        <meta-data android:name="io.sentry.attach-screenshot" android:value="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
