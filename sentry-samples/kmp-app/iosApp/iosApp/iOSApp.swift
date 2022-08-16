@@ -10,7 +10,7 @@ struct iOSApp: App {
         
         // Shared scope across all platforms
         AppSetupKt.configureSharedScope()
-                        
+
         // Add platform specific scope in addition to the shared scope
         sentry.configureScope { scope in
             scope.setContext(key: "iOS Context", value: [
