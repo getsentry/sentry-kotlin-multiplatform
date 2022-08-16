@@ -8,7 +8,7 @@ struct iOSApp: App {
     init() {
         // Initialize Sentry using shared code
         AppSetupKt.initializeSentry()
-        
+
         // Shared scope across all platforms
         AppSetupKt.configureSentryScope()
 

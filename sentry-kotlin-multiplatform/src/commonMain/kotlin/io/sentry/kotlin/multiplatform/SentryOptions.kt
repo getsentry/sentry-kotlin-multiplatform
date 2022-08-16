@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+
 open class SentryOptions {
 
     /**
@@ -51,4 +53,7 @@ open class SentryOptions {
      * Available on iOS and Android.
      */
     var attachScreenshot = false
+
+    /** Hook that is triggered before a breadcrumb is sent to Sentry */
+    var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb)? = null
 }

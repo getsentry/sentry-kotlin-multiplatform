@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.ISentryBreadcrumb
 
 internal fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
@@ -11,5 +12,19 @@ internal fun ISentryBreadcrumb.toCocoaBreadcrumb(): CocoaBreadcrumb {
         outerScope.category?.let { setCategory(it) }
         outerScope.level?.let { setLevel(it.toCocoaSentryLevel()) }
         setData(outerScope.getData()?.toMap())
+    }
+}
+
+internal fun CocoaBreadcrumb.toKmpBreadcrumb(): Breadcrumb {
+    return Breadcrumb().apply {
+        val funScope = this@toKmpBreadcrumb
+        message = funScope.message
+        type = funScope.type
+        category = funScope.category
+        val map = funScope.data as? Map<String, Any>
+        map?.let {
+            this.setData(it.toMutableMap())
+        }
+        level = funScope.level?.toKmpSentryLevel()
     }
 }
