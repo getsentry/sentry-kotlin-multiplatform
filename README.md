@@ -86,6 +86,8 @@ class YourApplication : Application() {
 
 ### Cocoa
 ```Swift
+import shared
+
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
@@ -127,6 +129,8 @@ class YourApplication : Application() {
 ### Cocoa
 
 ```Swift
+import shared
+
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
