@@ -1,17 +1,17 @@
-package sample.kpm_app.android
+package sample.kmp.app.android
 
 import android.app.Application
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import io.sentry.kotlin.multiplatform.Attachment
-import sample.kpm_app.LoginImpl
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import sample.kpm_app.Platform
-import sample.kpm_app.configureSharedScope
-import sample.kpm_app.optionsConfiguration
+import sample.kmp.app.LoginImpl
+import sample.kmp.app.Platform
+import sample.kmp.app.configureSharedScope
+import sample.kmp.app.optionsConfiguration
 import java.io.FileOutputStream
 import java.io.IOException
 

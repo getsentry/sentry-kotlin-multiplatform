@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.JvmSentryId
 
-actual data class SentryId actual constructor(val sentryIdString: String): ISentryId {
+actual data class SentryId actual constructor(val sentryIdString: String) : ISentryId {
 
     actual companion object {
         actual val EMPTY_ID: SentryId = SentryId("")

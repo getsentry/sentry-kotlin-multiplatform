@@ -138,7 +138,6 @@ data class Breadcrumb constructor(
     }
 }
 
-
 interface ISentryBreadcrumb {
 
     /** The breadcrumb's level */

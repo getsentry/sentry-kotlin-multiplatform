@@ -1,8 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.Sentry
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
+import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal actual object SentryBridge {

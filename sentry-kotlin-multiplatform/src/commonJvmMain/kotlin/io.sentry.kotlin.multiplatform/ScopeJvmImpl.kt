@@ -1,6 +1,10 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.extensions.*
+import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
+import io.sentry.kotlin.multiplatform.extensions.toJvmSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toJvmUser
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
@@ -11,7 +15,6 @@ internal class ScopeJvmImpl(private val scope: JvmScope) : ISentryScope {
             scope.level = value?.toJvmSentryLevel()
         }
         get() = scope.level?.toKmpSentryLevel()
-
 
     override var user: User?
         set(value) {
