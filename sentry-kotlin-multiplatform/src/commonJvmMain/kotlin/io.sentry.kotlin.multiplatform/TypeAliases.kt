@@ -5,9 +5,9 @@ import io.sentry.Breadcrumb
 import io.sentry.Scope
 import io.sentry.SentryLevel
 import io.sentry.SentryOptions
+import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
 import io.sentry.protocol.User
-import io.sentry.UserFeedback
 
 internal typealias JvmSentryLevel = SentryLevel
 internal typealias JvmUser = User

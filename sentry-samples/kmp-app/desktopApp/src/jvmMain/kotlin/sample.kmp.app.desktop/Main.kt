@@ -1,4 +1,6 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+package sample.kmp.app.desktop
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +16,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import sample.kpm_app.*
+import sample.kmp.app.LoginImpl
+import sample.kmp.app.Platform
+import sample.kmp.app.configureSentryScope
+import sample.kmp.app.initializeSentry
 
 @Composable
 @Preview
@@ -22,7 +27,7 @@ fun App() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val btnBackgroundColor = Color(56, 31, 67)
         Button({

@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-expect class SentryId(sentryIdString: String): ISentryId {
+expect class SentryId(sentryIdString: String) : ISentryId {
     companion object {
         val EMPTY_ID: SentryId
     }

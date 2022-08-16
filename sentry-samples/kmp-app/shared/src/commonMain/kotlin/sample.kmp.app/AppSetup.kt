@@ -1,8 +1,8 @@
-package sample.kpm_app
+package sample.kmp.app
 
+import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Context
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
-import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Sentry
 
 /** Configure scope applicable to all platforms */

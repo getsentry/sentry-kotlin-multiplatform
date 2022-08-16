@@ -1,12 +1,12 @@
 package io.sentry.kotlin.multiplatform
 
+import cocoapods.Sentry.SentryAttachment
 import cocoapods.Sentry.SentryBreadcrumb
 import cocoapods.Sentry.SentryId
 import cocoapods.Sentry.SentryLevel
 import cocoapods.Sentry.SentryOptions
-import cocoapods.Sentry.SentryUser
 import cocoapods.Sentry.SentryScope
-import cocoapods.Sentry.SentryAttachment
+import cocoapods.Sentry.SentryUser
 import cocoapods.Sentry.SentryUserFeedback
 
 internal typealias CocoaUser = SentryUser

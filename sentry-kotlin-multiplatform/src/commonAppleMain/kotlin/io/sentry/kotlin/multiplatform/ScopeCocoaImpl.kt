@@ -1,6 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.extensions.*
+import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
+import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
+import io.sentry.kotlin.multiplatform.extensions.toKmpUser
+import io.sentry.kotlin.multiplatform.extensions.toMutableMap
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import Scope.Sentry.SentryScope as PrivateCocoaScope

@@ -1,11 +1,12 @@
+import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
 
 plugins {
     `maven-publish`
     id("com.vanniktech.maven.publish") version "0.18.0"
+    id("com.diffplug.spotless") version "6.7.2"
 }
-
 
 buildscript {
     repositories {
@@ -19,6 +20,18 @@ buildscript {
     }
 }
 
+spotless {
+    lineEndings = LineEnding.UNIX
+
+    kotlin {
+        target("**/*.kt")
+        ktlint()
+    }
+    kotlinGradle {
+        target("**/*.kts")
+        ktlint()
+    }
+}
 
 allprojects {
     repositories {
@@ -28,6 +41,8 @@ allprojects {
     }
     group = "io.sentry"
     version = properties["versionName"].toString()
+
+    apply(plugin = "com.diffplug.spotless")
 }
 
 subprojects {

@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease stop
+.PHONY: all clean compile dryRelease checkFormat format stop
 
 all: stop clean compile
 
@@ -10,6 +10,14 @@ clean:
 # local deploy
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
+
+# Spotless check's code
+checkFormat:
+	./gradlew spotlessKotlinCheck
+
+# Spotless format's code
+format:
+	./gradlew spotlessApply
 
 # build and run tests
 compile:
