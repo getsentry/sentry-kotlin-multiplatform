@@ -10,4 +10,3 @@ actual fun initJvmTarget(context: Context?, configuration: OptionsConfiguration)
     configuration.invoke(options)
     Sentry.init(options.toJvmSentryOptionsCallback())
 }
-

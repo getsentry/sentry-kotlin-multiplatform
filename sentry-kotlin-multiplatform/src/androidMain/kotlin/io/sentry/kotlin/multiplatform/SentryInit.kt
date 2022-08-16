@@ -13,4 +13,3 @@ actual fun initJvmTarget(context: Context?, configuration: OptionsConfiguration)
 }
 
 actual typealias Context = Context
-
