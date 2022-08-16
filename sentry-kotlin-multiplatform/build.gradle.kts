@@ -50,24 +50,7 @@ kotlin {
             }
         }
 
-        val commonJvmMain by creating {
-            dependsOn(commonMain)
-            dependencies {
-                implementation("io.sentry:sentry:6.1.4")
-            }
-        }
-        val commonJvmTest by creating {
-            dependsOn(commonTest)
-            dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-junit")
-            }
-        }
-
-        val jvmMain by getting { dependsOn(commonJvmMain) }
-        val jvmTest by getting { dependsOn(commonJvmTest) }
-
         val androidMain by getting {
-            dependsOn(commonJvmMain)
             dependencies {
                 implementation("io.sentry:sentry-android:6.1.4") {
                     // avoid duplicate dependencies since we depend on commonJvmMain
@@ -75,35 +58,83 @@ kotlin {
                 }
             }
         }
-        val androidTest by getting { dependsOn(commonJvmTest) }
+        val androidTest by getting
+        val jvmMain by getting
+        val jvmTest by getting
 
-        val commonAppleMain by creating { dependsOn(commonMain) }
-        val commonAppleTest by creating { dependsOn(commonTest) }
+        val commonJvmMain by creating {
+            dependsOn(commonMain)
+            jvmMain.dependsOn(this)
+            androidMain.dependsOn(this)
+            dependencies {
+                implementation("io.sentry:sentry:6.1.4")
+            }
+        }
+        val commonJvmTest by creating {
+            dependsOn(commonTest)
+            jvmTest.dependsOn(this)
+            androidTest.dependsOn(this)
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+            }
+        }
 
-        val commonIosMain by creating { dependsOn(commonAppleMain) }
-        val commonIosTest by creating { dependsOn(commonAppleTest) }
-        val iosMain by getting { dependsOn(commonIosMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(commonIosMain) }
-        val iosTest by getting { dependsOn(commonIosTest) }
-        val iosSimulatorArm64Test by getting { dependsOn(commonIosTest) }
+        val iosMain by getting
+        val iosSimulatorArm64Main by getting
+        val iosTest by getting
+        val iosSimulatorArm64Test by getting
 
-        val commonTvWatchMacOsMain by creating { dependsOn(commonAppleMain) }
-        val commonTvWatchMacOsTest by creating { dependsOn(commonAppleTest) }
+        val commonIosMain by creating {
+            iosMain.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
+        val commonIosTest by creating {
+            iosTest.dependsOn(this)
+            iosSimulatorArm64Test.dependsOn(this)
+        }
 
-        val tvosMain by getting { dependsOn(commonTvWatchMacOsMain) }
-        val tvosSimulatorArm64Main by getting { dependsOn(commonTvWatchMacOsMain) }
-        val tvosTest by getting { dependsOn(commonTvWatchMacOsTest) }
-        val tvosSimulatorArm64Test by getting { dependsOn(commonTvWatchMacOsTest) }
+        val tvosMain by getting
+        val tvosSimulatorArm64Main by getting
+        val tvosTest by getting
+        val tvosSimulatorArm64Test by getting
 
-        val watchosMain by getting { dependsOn(commonTvWatchMacOsMain) }
-        val watchosSimulatorArm64Main by getting { dependsOn(commonTvWatchMacOsMain) }
-        val watchosTest by getting { dependsOn(commonTvWatchMacOsTest) }
-        val watchosSimulatorArm64Test by getting { dependsOn(commonTvWatchMacOsTest) }
+        val watchosMain by getting
+        val watchosSimulatorArm64Main by getting
+        val watchosTest by getting
+        val watchosSimulatorArm64Test by getting
 
-        val macosX64Main by getting { dependsOn(commonTvWatchMacOsMain) }
-        val macosArm64Main by getting { dependsOn(commonTvWatchMacOsMain) }
-        val macosX64Test by getting { dependsOn(commonTvWatchMacOsTest) }
-        val macosArm64Test by getting { dependsOn(commonTvWatchMacOsTest) }
+        val macosX64Main by getting
+        val macosArm64Main by getting
+        val macosX64Test by getting
+        val macosArm64Test by getting
+
+        val commonTvWatchMacOsMain by creating {
+            tvosMain.dependsOn(this)
+            tvosSimulatorArm64Main.dependsOn(this)
+            watchosMain.dependsOn(this)
+            watchosSimulatorArm64Main.dependsOn(this)
+            macosArm64Main.dependsOn(this)
+            macosX64Main.dependsOn(this)
+        }
+        val commonTvWatchMacOsTest by creating {
+            tvosTest.dependsOn(this)
+            tvosSimulatorArm64Test.dependsOn(this)
+            watchosTest.dependsOn(this)
+            watchosSimulatorArm64Test.dependsOn(this)
+            macosX64Test.dependsOn(this)
+            macosArm64Test.dependsOn(this)
+        }
+
+        val commonAppleMain by creating {
+            dependsOn(commonMain)
+            commonIosMain.dependsOn(this)
+            commonTvWatchMacOsMain.dependsOn(this)
+        }
+        val commonAppleTest by creating {
+            dependsOn(commonTest)
+            commonIosTest.dependsOn(this)
+            commonTvWatchMacOsTest.dependsOn(this)
+        }
 
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"
