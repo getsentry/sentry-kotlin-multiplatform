@@ -42,7 +42,7 @@ class SentryApplication : Application() {
         super.onCreate()
 
         // Initialize Sentry using shared code
-        initializeSentry(this)
+        initializeSentry()
 
         // Shared scope across all platforms
         configureSentryScope()

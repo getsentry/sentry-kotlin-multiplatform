@@ -5,9 +5,7 @@ import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
-internal expect fun initSentry(context: Context, configuration: OptionsConfiguration)
-
-internal class DefaultContext : Context()
+internal expect fun initSentry(context: Context? = null, configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
 
@@ -16,7 +14,7 @@ internal actual object SentryBridge {
     }
 
     actual fun init(configuration: OptionsConfiguration) {
-        initSentry(DefaultContext(), configuration = configuration)
+        initSentry(configuration = configuration)
     }
 
     actual fun captureMessage(message: String): SentryId {

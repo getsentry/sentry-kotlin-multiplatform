@@ -77,6 +77,7 @@ It is also possible to mix those two strategies based on your needs and project 
 class YourApplication : Application() {
   override fun onCreate() {
     super.onCreate()
+      // Make sure to add the context!
       Sentry.init(this) {
         it.dsn = "___DSN___"
       }
@@ -121,6 +122,7 @@ Now call this function in an early lifecycle stage in your platforms.
 class YourApplication : Application() {
   override fun onCreate() {
     super.onCreate()
+      // Make sure to add the context!
       initializeSentry(this)
    }
 }
