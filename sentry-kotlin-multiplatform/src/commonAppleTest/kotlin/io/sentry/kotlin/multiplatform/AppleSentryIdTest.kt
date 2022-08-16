@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SentryIdTest {
+class AppleSentryIdTest {
 
     @Test
     fun `Cocoa SentryId with invalid uuid string returns only zeroes`() {
