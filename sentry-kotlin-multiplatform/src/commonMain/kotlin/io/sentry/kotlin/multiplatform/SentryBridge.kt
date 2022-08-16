@@ -5,7 +5,7 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect object SentryBridge {
 
-    fun init(context: Context? = null, configuration: OptionsConfiguration)
+    fun init(context: Context, configuration: OptionsConfiguration)
 
     fun captureMessage(message: String): SentryId
 
