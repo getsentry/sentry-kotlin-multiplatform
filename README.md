@@ -7,39 +7,41 @@
 </p>
 
 This project is an experimental SDK for Kotlin Multiplatform.
-This SDK is a wrapper around different platforms such as JVM, Android, Cocoa that can be used on Kotlin Multiplatform.
+This SDK is a wrapper around different platforms such as JVM, Android, iOS, macOS, watchOS, tvOS that can be used on Kotlin Multiplatform.
 
-## Installation
+## Supported Platforms
 
-Clone or fork this repo. This SDK is under construction and therefore we only currently publish it to maven local:
+ - JVM
+ - Android
+ - iOS
+ - macOS
+ - watchOS
+ - tvOS
 
-```sh
-./gradlew publishToMavenLocal
-```
+## Configure Repository
 
-### Shared Module
-In your `build.gradle` of your shared module
+The Kotlin Multiplatform SDK is available in the Maven central repository. You can declare this repository in your build script as follows:
 
 ```gradle
 repositories {
-  // Because we only publish to maven local
-  mavenLocal()
+  mavenCentral()
 }
 ```
 
-Add this to your `commonMain` sourceSet.
+## Add dependency
+For a multiplatform project, you need to add the sentry-kotlin-multiplatform artifact to the `commonMain` source set:
 
-```gradle
-// Add this dependency to your commonMain sourceSet
-dependencies {
-  api("io.sentry:sentry-kotlin-multiplatform:0.0.1")
+```Kotlin
+val commonMain by getting {
+  dependencies {
+    api("io.sentry:sentry-kotlin-multiplatform:0.0.1")
+  }
 }
-
 ```
 
 ### Cocoa
 
-For iOS, iPadOS, MacOS, tvOS or watchOS we use CocoaPods to include [sentry-cocoa](https://github.com/getsentry/sentry-cocoa) into this SDK.
+For iOS, MacOS, tvOS or watchOS we use CocoaPods to include [sentry-cocoa](https://github.com/getsentry/sentry-cocoa) into this SDK.
 One way to achieve this is to include the Sentry Cocoa SDK via the Kotlin CocoaPods extension.
 
 ```gradle
@@ -87,3 +89,19 @@ Sentry().start { options in
   options.dsn = "___DSN___"
 }
 ```
+
+## Debug Symbols for Apple targets
+
+A dSYM upload is required for Sentry to symbolicate your crash logs for viewing. The symbolication process unscrambles Apple’s crash logs to reveal the function, variables, file names, and line numbers of the crash. The dSYM file can be uploaded through the sentry-cli tool or through a Fastlane action. Please visit our [sentry.io guide](https://docs.sentry.io/clients/cocoa/dsym/) to get started on uploading debug symbols.
+
+ ## Troubleshooting
+
+ `WARNING: CocoaPods requires your terminal to be using UTF-8 encoding.
+    Consider adding the following to ~/.profile:
+    export LANG=en_US.UTF-8`
+
+  This is a known problem and can easily be fixed as described in this [Stack Overflow post](https://stackoverflow.com/a/69395720)
+
+ ## Contribution
+
+ Please see the [contribution guide](https://github.com/getsentry/sentry-kotlin-multiplatform/blob/main/CONTRIBUTING.md) before contributing
