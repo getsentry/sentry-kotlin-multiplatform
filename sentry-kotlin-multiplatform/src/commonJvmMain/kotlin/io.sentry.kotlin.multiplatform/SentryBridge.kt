@@ -5,7 +5,17 @@ import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
+internal expect fun initSentry(context: Context? = null, configuration: OptionsConfiguration)
+
 internal actual object SentryBridge {
+
+    actual fun init(context: Context, configuration: OptionsConfiguration) {
+        initSentry(context, configuration)
+    }
+
+    actual fun init(configuration: OptionsConfiguration) {
+        initSentry(configuration = configuration)
+    }
 
     actual fun captureMessage(message: String): SentryId {
         val androidSentryId = Sentry.captureMessage(message)

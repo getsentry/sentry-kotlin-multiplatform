@@ -6,12 +6,11 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Sentry
-import io.sentry.kotlin.multiplatform.init
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import sample.kmp.app.LoginImpl
 import sample.kmp.app.Platform
-import sample.kmp.app.configureSharedScope
-import sample.kmp.app.optionsConfiguration
+import sample.kmp.app.configureSentryScope
+import sample.kmp.app.initializeSentry
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -41,10 +40,12 @@ class MainActivity : AppCompatActivity() {
 class SentryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Sentry.init(this, optionsConfiguration())
+
+        // Initialize Sentry using shared code
+        initializeSentry()
 
         // Shared scope across all platforms
-        configureSharedScope()
+        configureSentryScope()
 
         val imageFile = applicationContext.getFileStreamPath("sentry.png")
         try {

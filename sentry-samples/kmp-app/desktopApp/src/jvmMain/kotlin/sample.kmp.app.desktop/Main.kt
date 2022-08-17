@@ -16,11 +16,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import io.sentry.kotlin.multiplatform.protocol.init
 import sample.kmp.app.LoginImpl
 import sample.kmp.app.Platform
-import sample.kmp.app.configureSharedScope
-import sample.kmp.app.optionsConfiguration
+import sample.kmp.app.configureSentryScope
+import sample.kmp.app.initializeSentry
 
 @Composable
 @Preview
@@ -51,10 +50,12 @@ fun App() {
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-        Sentry.init(optionsConfiguration())
+
+        // Initialize Sentry using shared code
+        initializeSentry()
 
         // Shared scope across all platforms
-        configureSharedScope()
+        configureSentryScope()
 
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {
