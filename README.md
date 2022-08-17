@@ -1,7 +1,8 @@
 <p align="center">
-    <a href="https://sentry.io" target="_blank" align="center">
-        <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" width="280">
-    </a>
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://sentry-brand.storage.googleapis.com/sentry-white-black.png">
+    </picture>
 <br/>
     <h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
 </p>
