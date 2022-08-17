@@ -6,10 +6,11 @@ struct iOSApp: App {
     let sentry = Sentry()
 
     init() {
-        sentry.start(configuration: AppSetupKt.optionsConfiguration())
-        
+        // Initialize Sentry using shared code
+        AppSetupKt.initializeSentry()
+
         // Shared scope across all platforms
-        AppSetupKt.configureSharedScope()
+        AppSetupKt.configureSentryScope()
 
         // Add platform specific scope in addition to the shared scope
         sentry.configureScope { scope in

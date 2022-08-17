@@ -4,9 +4,32 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 typealias ScopeCallback = (Scope) -> Unit
+typealias OptionsConfiguration = (SentryOptions) -> Unit
+
+expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
 object Sentry {
+
+    /**
+     * Sentry initialization with an option configuration handler.
+     *
+     * @param context: The context (used for retrieving Android Context)
+     * @param configuration Options configuration handler.
+     */
+    fun init(context: Context, configuration: OptionsConfiguration) {
+        SentryBridge.init(context, configuration)
+    }
+
+    /**
+     * Sentry initialization with an option configuration handler.
+     * This is a convenience init for direct initialization on Apple platforms.
+     *
+     * @param configuration Options configuration handler.
+     */
+    fun init(configuration: OptionsConfiguration) {
+        SentryBridge.init(configuration = configuration)
+    }
 
     /**
      * Captures the message.
