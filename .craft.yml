@@ -15,7 +15,3 @@ targets:
   - name: registry
     sdks:
       maven:io.sentry:sentry-kotlin-multiplatform:
-      maven:io.sentry:sentry-kotlin-multiplatform-android:
-      maven:io.sentry:sentry-kotlin-multiplatform-iosarm64:
-      maven:io.sentry:sentry-kotlin-multiplatform-iosx64:
-      maven:io.sentry:sentry-kotlin-multiplatform-jvm:
