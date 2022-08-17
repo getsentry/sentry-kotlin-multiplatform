@@ -11,12 +11,14 @@ This SDK is a wrapper around different platforms such as JVM, Android, iOS, macO
 
 ## Supported Platforms
 
- - JVM
- - Android
- - iOS
- - macOS
- - watchOS
- - tvOS
+| Target Platform | Target preset |
+|:-------------:|-------------|
+| Android     | <ul><li>`android`</li></ul> |
+| Kotlin/JVM  | <ul><li>`jvm`</li></ul>
+| iOS         | <ul><li>`iosArm64`</li><li>`iosX64`</li><li>`iosSimulatorArm64`</li></ul>|
+| macOS       | <ul><li>`macosArm64`</li><li>`macosX64`</ul>|
+| watchOS     | <ul><li>`watchosArm32`</li><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul>|
+| tvOS        | <ul><li>`tvosArm64`</li><li>`tvosX64`</li><li>`tvosSimulatorArm64`</li></ul>|
 
 ## Configure Repository
 
