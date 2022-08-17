@@ -11,5 +11,6 @@
  - Scope configuration globally and locally
  - User Feedback
  - Attachments to Scope
+ - Screenshots option for Android and iOS
  - Add beforeBreadcrumb hook
  - Kotlin Multiplatform Sample project
