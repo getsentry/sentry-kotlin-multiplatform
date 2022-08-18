@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Features
+
  - JVM, Android, iOS, macOS, watchOS, tvOS integration
  - Sentry init and close
  - Capture Message
