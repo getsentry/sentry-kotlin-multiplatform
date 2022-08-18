@@ -25,8 +25,9 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         from("build${sep}publications${sep}kotlinMultiplatform")
         from("build${sep}kotlinToolingMetadata")
         from("build${sep}libs") {
-            include("*kotlin*")
-            include("*metadata*")
+            include("sentry-kotlin-multiplatform-?.?.*")
+            include("sentry-kotlin-multiplatform-kotlin*")
+            include("sentry-kotlin-multiplatform-metadata*")
         }
     }
     this.maybeCreate("jvm").contents {
