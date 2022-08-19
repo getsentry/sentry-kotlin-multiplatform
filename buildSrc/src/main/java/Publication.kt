@@ -46,7 +46,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("iosArm64").contents {
         from("build${sep}publications${sep}iosArm64")
-        from("build${sep}libs${sep}iosArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-iosarm64*")
             withJavadoc("iosarm64")
@@ -55,7 +54,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("iosX64").contents {
         from("build${sep}publications${sep}iosX64")
-        from("build${sep}libs${sep}iosX64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-iosx64*")
             withJavadoc("iosx64")
@@ -64,7 +62,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("iosSimulatorArm64").contents {
         from("build${sep}publications${sep}iosSimulatorArm64")
-        from("build${sep}libs${sep}iosSimulatorArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-iossimulatorarm64*")
             withJavadoc("iossimulatorarm64")
@@ -73,7 +70,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("macosArm64").contents {
         from("build${sep}publications${sep}macosArm64")
-        from("build${sep}libs${sep}macosArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-macosarm64*")
             withJavadoc("macosarm64")
@@ -82,7 +78,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("macosX64").contents {
         from("build${sep}publications${sep}macosX64")
-        from("build${sep}libs${sep}macosX64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-macosx64*")
             withJavadoc("macosx64")
@@ -91,7 +86,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("watchosX64").contents {
         from("build${sep}publications${sep}watchosX64")
-        from("build${sep}libs${sep}watchosX64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-watchosx64*")
             withJavadoc("watchosx64")
@@ -100,7 +94,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("watchosArm32").contents {
         from("build${sep}publications${sep}watchosArm32")
-        from("build${sep}libs${sep}watchosArm32${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-watchosarm32*")
             withJavadoc("watchosarm32")
@@ -109,7 +102,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("watchosArm64").contents {
         from("build${sep}publications${sep}watchosArm64")
-        from("build${sep}libs${sep}watchosArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-watchosarm64*")
             withJavadoc("watchosarm64")
@@ -118,7 +110,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("watchosSimulatorArm64").contents {
         from("build${sep}publications${sep}watchosSimulatorArm64")
-        from("build${sep}libs${sep}watchosSimulatorArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-watchossimulatorarm64*")
             withJavadoc("watchossimulatorarm64")
@@ -127,7 +118,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("tvosArm64").contents {
         from("build${sep}publications${sep}tvosArm64")
-        from("build${sep}libs${sep}tvosArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-tvosarm64*")
             withJavadoc("tvosarm64")
@@ -136,7 +126,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("tvosX64").contents {
         from("build${sep}publications${sep}tvosX64")
-        from("build${sep}libs${sep}tvosX64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-tvosx64*")
             withJavadoc("tvosx64")
@@ -145,7 +134,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     }
     this.maybeCreate("tvosSimulatorArm64").contents {
         from("build${sep}publications${sep}tvosSimulatorArm64")
-        from("build${sep}libs${sep}tvosSimulatorArm64${sep}main")
         from("build${sep}libs$sep") {
             include("sentry-kotlin-multiplatform-tvossimulatorarm64*")
             withJavadoc("tvossimulatorarm64")
@@ -161,6 +149,12 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
 }
 
 private fun CopySpec.fromKlib(target: String, version: String) {
+    val pos = "sentry-kotlin-multiplatform".length
+    from("build${sep}libs${sep}${target}${sep}main") {
+        rename {
+            it.replaceRange(pos, pos, "-${target.toLowerCase()}-$version")
+        }
+    }
     from("build${sep}classes${sep}kotlin${sep}${target}${sep}main${sep}klib") {
         rename {
             "sentry-kotlin-multiplatform-${target.toLowerCase()}-$version.klib"
