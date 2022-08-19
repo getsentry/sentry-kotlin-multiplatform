@@ -33,7 +33,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
             include("sentry-kotlin-multiplatform-kotlin*")
             include("sentry-kotlin-multiplatform-metadata*")
             rename {
-                it.replace("-kotlin", "").replace("-metadata", "")
+                it.replace("multiplatform-kotlin", "multiplatform").replace("-metadata", "")
             }
         }
     }
