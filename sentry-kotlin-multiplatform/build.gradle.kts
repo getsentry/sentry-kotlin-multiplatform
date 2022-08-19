@@ -25,7 +25,7 @@ android {
 
 kotlin {
     android {
-        publishAllLibraryVariants()
+        publishLibraryVariants("release")
     }
     jvm()
     ios()
