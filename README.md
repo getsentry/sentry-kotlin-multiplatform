@@ -28,8 +28,15 @@ The Kotlin Multiplatform SDK is available in the Maven central repository. You c
 
 ```gradle
 repositories {
-  mavenCentral()
+  // Currently only supported locally
+  mavenLocal()
 }
+```
+
+and then run:
+
+```bash
+./gradlew publishToMavenLocal
 ```
 
 ## Add dependency
