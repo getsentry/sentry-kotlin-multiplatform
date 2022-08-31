@@ -24,7 +24,7 @@ This SDK is a wrapper around different platforms such as JVM, Android, iOS, macO
 
 ## Configure Repository
 
-The Kotlin Multiplatform SDK is available in the Maven central repository. You can declare this repository in your build script as follows:
+The Kotlin Multiplatform SDK is available only on `mavenLocal`. You can declare this repository in your build script as follows:
 
 ```gradle
 repositories {
