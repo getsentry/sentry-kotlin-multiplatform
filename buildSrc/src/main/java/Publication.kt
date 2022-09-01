@@ -198,7 +198,7 @@ private fun CopySpec.renameModule(renameTo: String = "", version: String) {
         target = "-$renameTo"
     }
     rename {
-        it.replace("module.json", "sentry-kotlin-multiplatform${target}-${version}.module")
+        it.replace("module.json", "sentry-kotlin-multiplatform$target-$version.module")
     }
 }
 
