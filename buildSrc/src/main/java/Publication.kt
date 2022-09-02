@@ -50,7 +50,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
             withJavadoc("jvm")
         }
     }
-    this.maybeCreate("iosArm64").contents {
+    this.maybeCreate("iosarm64").contents {
         from("build${sep}publications${sep}iosArm64") {
             renameModule("iosarm64", version)
         }
@@ -60,7 +60,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("iosArm64", version)
     }
-    this.maybeCreate("iosX64").contents {
+    this.maybeCreate("iosx64").contents {
         from("build${sep}publications${sep}iosX64") {
             renameModule("iosx64", version)
         }
@@ -70,7 +70,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("iosX64", version)
     }
-    this.maybeCreate("iosSimulatorArm64").contents {
+    this.maybeCreate("iossimulatorarm64").contents {
         from("build${sep}publications${sep}iosSimulatorArm64") {
             renameModule("iossimulatorarm64", version)
         }
@@ -78,9 +78,9 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
             include("sentry-kotlin-multiplatform-iossimulatorarm64*")
             withJavadoc("iossimulatorarm64")
         }
-        fromKlib("iosSimulatorArm64", version)
+        fromKlib("iossimulatorarm64", version)
     }
-    this.maybeCreate("macosArm64").contents {
+    this.maybeCreate("macosarm64").contents {
         from("build${sep}publications${sep}macosArm64") {
             renameModule("macosarm64", version)
         }
@@ -90,7 +90,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("macosArm64", version)
     }
-    this.maybeCreate("macosX64").contents {
+    this.maybeCreate("macosx64").contents {
         from("build${sep}publications${sep}macosX64") {
             renameModule("macosx64", version)
         }
@@ -100,7 +100,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("macosX64", version)
     }
-    this.maybeCreate("watchosX64").contents {
+    this.maybeCreate("watchosx64").contents {
         from("build${sep}publications${sep}watchosX64") {
             renameModule("watchosx64", version)
         }
@@ -110,7 +110,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("watchosX64", version)
     }
-    this.maybeCreate("watchosArm32").contents {
+    this.maybeCreate("watchosarm32").contents {
         from("build${sep}publications${sep}watchosArm32") {
             renameModule("watchosarm32", version)
         }
@@ -120,7 +120,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("watchosArm32", version)
     }
-    this.maybeCreate("watchosArm64").contents {
+    this.maybeCreate("watchosarm64").contents {
         from("build${sep}publications${sep}watchosArm64") {
             renameModule("watchosarm64", version)
         }
@@ -130,7 +130,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("watchosArm64", version)
     }
-    this.maybeCreate("watchosSimulatorArm64").contents {
+    this.maybeCreate("watchossimulatorarm64").contents {
         from("build${sep}publications${sep}watchosSimulatorArm64") {
             renameModule("watchossimulatorarm64", version)
         }
@@ -140,7 +140,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("watchosSimulatorArm64", version)
     }
-    this.maybeCreate("tvosArm64").contents {
+    this.maybeCreate("tvosarm64").contents {
         from("build${sep}publications${sep}tvosArm64") {
             renameModule("tvosarm64", version)
         }
@@ -150,7 +150,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("tvosArm64", version)
     }
-    this.maybeCreate("tvosX64").contents {
+    this.maybeCreate("tvosx64").contents {
         from("build${sep}publications${sep}tvosX64") {
             renameModule("tvosx64", version)
         }
@@ -160,7 +160,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib("tvosX64", version)
     }
-    this.maybeCreate("tvosSimulatorArm64").contents {
+    this.maybeCreate("tvossimulatorarm64").contents {
         from("build${sep}publications${sep}tvosSimulatorArm64") {
             renameModule("tvossimulatorarm64", version)
         }
