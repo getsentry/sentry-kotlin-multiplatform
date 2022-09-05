@@ -78,7 +78,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
             include("sentry-kotlin-multiplatform-iossimulatorarm64*")
             withJavadoc("iossimulatorarm64")
         }
-        fromKlib("iossimulatorarm64", version)
+        fromKlib("iosSimulatorArm64", version)
     }
     this.maybeCreate("macosarm64").contents {
         from("build${sep}publications${sep}macosArm64") {
