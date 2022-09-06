@@ -13,20 +13,6 @@ val sep = File.separator
 fun DistributionContainer.configureForMultiplatform(project: Project) {
     val version = project.properties["versionName"].toString()
 
-    this.maybeCreate("android").contents {
-        from("build${sep}publications${sep}androidRelease") {
-            renameModule("android", version)
-        }
-        from("build${sep}outputs${sep}aar${sep}sentry-kotlin-multiplatform-release.aar") {
-            rename {
-                it.replace("-release", "-android-release")
-            }
-        }
-        from("build${sep}libs") {
-            include("*android*")
-            withJavadoc("android")
-        }
-    }
     this.getByName("main").contents {
         from("build${sep}publications${sep}kotlinMultiplatform") {
             renameModule(version = version)
@@ -39,6 +25,20 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
             rename {
                 it.replace("multiplatform-kotlin", "multiplatform").replace("-metadata", "")
             }
+        }
+    }
+    this.maybeCreate("android").contents {
+        from("build${sep}publications${sep}androidRelease") {
+            renameModule("android", version)
+        }
+        from("build${sep}outputs${sep}aar${sep}sentry-kotlin-multiplatform-release.aar") {
+            rename {
+                it.replace("-release", "-android-release")
+            }
+        }
+        from("build${sep}libs") {
+            include("*android*")
+            withJavadoc("android")
         }
     }
     this.maybeCreate("jvm").contents {
