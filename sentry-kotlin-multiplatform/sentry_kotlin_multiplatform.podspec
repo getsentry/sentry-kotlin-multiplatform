@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
     spec.osx.deployment_target = '10.10'
     spec.tvos.deployment_target = '9.0'
     spec.watchos.deployment_target = '2.0'
-    spec.dependency 'Sentry', '~> 7.21.0'
+    spec.dependency 'Sentry', '~> 7.24.1'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sentry-kotlin-multiplatform',
