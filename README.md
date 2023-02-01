@@ -83,6 +83,16 @@ Platform specific initializers initialize the SDK directly in the target platfor
 
 It is also possible to mix those two strategies based on your needs and project setup.
 
+## Prerequisites (Android-only)
+
+Both of the strategies require disabling auto-init on Android to not clash with the `ContentProvider`, which auto-initializes the Sentry Android SDK. To do so, add the following to the `AndroidManifest.xml` file under your `androidMain` source set:
+
+```xml
+<application>
+    <meta-data android:name="io.sentry.auto-init" android:value="false" />
+</application>
+```
+
 ## Shared Initializer
 
 Create a Kotlin file in your commonMain e.g. `AppSetup.kt` or however you want to call it and create a function that will initialize the SDK.
