@@ -24,4 +24,4 @@ KMP App with targets:
  */
 include("sentry-samples:kmp-app:shared")
 include("sentry-samples:kmp-app:androidApp")
-include("sentry-samples:kmp-app:desktopApp")
+// include("sentry-samples:kmp-app:desktopApp")

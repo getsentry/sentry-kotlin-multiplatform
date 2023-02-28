@@ -8,10 +8,9 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 33
     defaultConfig {
         minSdk = 16
-        targetSdk = 30
     }
 
     buildTypes {
@@ -19,8 +18,9 @@ android {
             isMinifyEnabled = false
         }
     }
+
     // linking the manifest file manually due to having it in the "androidMain" source set
-    sourceSets.getByName("main").manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    namespace = "io.sentry.kotlin.multiplatform"
 }
 
 kotlin {
@@ -140,12 +140,12 @@ kotlin {
             summary = "Official Sentry SDK Kotlin Multiplatform"
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
 
-            pod("Sentry", "~> 7.24.1")
+            pod("Sentry", "~> 8.2.0")
 
-            ios.deploymentTarget = "9.0"
-            osx.deploymentTarget = "10.10"
-            tvos.deploymentTarget = "9.0"
-            watchos.deploymentTarget = "2.0"
+            ios.deploymentTarget = "11.0"
+            osx.deploymentTarget = "10.13"
+            tvos.deploymentTarget = "11.0"
+            watchos.deploymentTarget = "4.0"
         }
     }
 

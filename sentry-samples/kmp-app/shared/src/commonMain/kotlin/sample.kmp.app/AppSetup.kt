@@ -39,7 +39,7 @@ fun initializeSentry() {
 /** Returns a shared options configuration */
 private fun optionsConfiguration(): OptionsConfiguration {
     return {
-        it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
+        it.dsn = "https://26ba9de3c0c247f4b2c3e4ee646f2ebb@o1249351.ingest.sentry.io/6587139"
         it.attachStackTrace = true
         it.attachThreads = true
         it.attachScreenshot = true

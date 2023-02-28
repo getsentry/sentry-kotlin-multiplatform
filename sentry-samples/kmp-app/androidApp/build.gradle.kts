@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "sample.kpm_app.android"
-        minSdk = 16
-        targetSdk = 32
+        minSdk = 24
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }

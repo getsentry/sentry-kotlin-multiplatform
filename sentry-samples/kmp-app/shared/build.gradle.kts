@@ -8,10 +8,10 @@ version = "1.0"
 
 kotlin {
     android()
+    jvm()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    jvm()
 
     cocoapods {
         summary = "Some description for the Shared Module"
@@ -19,7 +19,7 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
-        pod("Sentry", "~> 7.21.0")
+        pod("Sentry", "~> 8.2.0")
 
         framework {
             baseName = "shared"
@@ -70,10 +70,10 @@ kotlin {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 16
-        targetSdk = 32
+        minSdk = 24
+        targetSdk = 33
     }
 }
