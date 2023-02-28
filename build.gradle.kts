@@ -3,7 +3,6 @@ import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
 
 plugins {
-    `maven-publish`
     id("com.vanniktech.maven.publish") version "0.18.0"
     id("com.diffplug.spotless") version "6.7.2"
 }
@@ -12,7 +11,6 @@ buildscript {
     repositories {
         gradlePluginPortal()
         google()
-        mavenCentral()
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0")

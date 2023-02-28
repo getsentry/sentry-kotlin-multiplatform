@@ -17,7 +17,7 @@ actual class Attachment : IAttachment {
         get() = cocoaAttachment.data?.toByteArray()
 
     actual override val contentType: String?
-        get() = cocoaAttachment.contentType
+        get() = cocoaAttachment.contentType ?: "application/octet-stream"
 
     actual companion object {
         actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
