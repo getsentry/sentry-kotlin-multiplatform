@@ -52,13 +52,13 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation("io.sentry:sentry-android:6.3.1") {
+                implementation("io.sentry:sentry-android:6.14.0") {
                     // avoid duplicate dependencies since we depend on commonJvmMain
                     exclude("io.sentry", "sentry")
                 }
             }
         }
-        val androidTest by getting
+        val androidUnitTest by getting
         val jvmMain by getting
         val jvmTest by getting
 
@@ -67,13 +67,13 @@ kotlin {
             jvmMain.dependsOn(this)
             androidMain.dependsOn(this)
             dependencies {
-                implementation("io.sentry:sentry:6.3.1")
+                implementation("io.sentry:sentry:6.14.0")
             }
         }
         val commonJvmTest by creating {
             dependsOn(commonTest)
             jvmTest.dependsOn(this)
-            androidTest.dependsOn(this)
+            androidUnitTest.dependsOn(this)
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test-junit")
             }

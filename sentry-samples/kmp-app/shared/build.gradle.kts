@@ -46,7 +46,7 @@ kotlin {
         val androidMain by getting {
             dependsOn(commonMain)
         }
-        val androidTest by getting
+        val androidUnitTest by getting
 
         val iosX64Main by getting
         val iosArm64Main by getting

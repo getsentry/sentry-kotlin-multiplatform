@@ -8,6 +8,7 @@ pluginManagement {
 
     plugins {
         kotlin("multiplatform").version(extra["kotlin.version"] as String)
+        kotlin("native.cocoapods").version(extra["kotlin.version"] as String)
         id("org.jetbrains.compose").version(extra["compose.version"] as String)
     }
 }
@@ -24,4 +25,4 @@ KMP App with targets:
  */
 include("sentry-samples:kmp-app:shared")
 include("sentry-samples:kmp-app:androidApp")
-// include("sentry-samples:kmp-app:desktopApp")
+include("sentry-samples:kmp-app:desktopApp")
