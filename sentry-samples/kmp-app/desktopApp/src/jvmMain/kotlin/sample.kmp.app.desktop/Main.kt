@@ -50,7 +50,6 @@ fun App() {
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-
         // Initialize Sentry using shared code
         initializeSentry()
 

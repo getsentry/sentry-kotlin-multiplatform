@@ -7,7 +7,7 @@ data class Breadcrumb constructor(
     override var category: String? = null,
     override var message: String? = null,
     override var level: SentryLevel? = null,
-    private var data: MutableMap<String, Any>? = null,
+    private var data: MutableMap<String, Any>? = null
 ) : ISentryBreadcrumb {
 
     companion object {

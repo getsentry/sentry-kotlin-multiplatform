@@ -19,7 +19,7 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
-        pod("Sentry", "~> 8.2.0")
+        pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
 
         framework {
             baseName = "shared"
@@ -70,9 +70,9 @@ kotlin {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = Config.Android.compileSdkVersion
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 16
+        minSdk = Config.Android.minSdkVersion
     }
 }

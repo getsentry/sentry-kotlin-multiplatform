@@ -11,8 +11,11 @@ actual data class SentryId actual constructor(val sentryIdString: String) : ISen
     private var cocoaSentryId: CocoaSentryId? = null
 
     init {
-        cocoaSentryId = if (sentryIdString.isEmpty()) CocoaSentryId.empty()
-        else CocoaSentryId(sentryIdString)
+        cocoaSentryId = if (sentryIdString.isEmpty()) {
+            CocoaSentryId.empty()
+        } else {
+            CocoaSentryId(sentryIdString)
+        }
     }
 
     actual override fun toString(): String {

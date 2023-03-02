@@ -8,9 +8,9 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = Config.Android.compileSdkVersion
     defaultConfig {
-        minSdk = 16
+        minSdk = Config.Android.minSdkVersion
     }
 
     buildTypes {
@@ -18,9 +18,6 @@ android {
             isMinifyEnabled = false
         }
     }
-
-    // linking the manifest file manually due to having it in the "androidMain" source set
-    namespace = "io.sentry.kotlin.multiplatform"
 }
 
 kotlin {
@@ -40,19 +37,19 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib")
+                implementation(Config.Libs.kotlinStd)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-common")
-                implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
+                implementation(Config.TestLibs.kotlinCommon)
+                implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation("io.sentry:sentry-android:6.14.0") {
+                implementation(Config.Libs.sentryAndroid) {
                     // avoid duplicate dependencies since we depend on commonJvmMain
                     exclude("io.sentry", "sentry")
                 }
@@ -67,7 +64,7 @@ kotlin {
             jvmMain.dependsOn(this)
             androidMain.dependsOn(this)
             dependencies {
-                implementation("io.sentry:sentry:6.14.0")
+                implementation(Config.Libs.sentryJava)
             }
         }
         val commonJvmTest by creating {
@@ -75,8 +72,20 @@ kotlin {
             jvmTest.dependsOn(this)
             androidUnitTest.dependsOn(this)
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+                implementation(Config.TestLibs.kotlinJunit)
             }
+        }
+
+        cocoapods {
+            summary = "Official Sentry SDK Kotlin Multiplatform"
+            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
+
+            pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
+
+            ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
+            osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
+            tvos.deploymentTarget = Config.Cocoa.tvosDeploymentTarget
+            watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
         }
 
         val iosMain by getting
@@ -134,18 +143,6 @@ kotlin {
             dependsOn(commonTest)
             commonIosTest.dependsOn(this)
             commonTvWatchMacOsTest.dependsOn(this)
-        }
-
-        cocoapods {
-            summary = "Official Sentry SDK Kotlin Multiplatform"
-            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
-
-            pod("Sentry", "~> 8.2.0")
-
-            ios.deploymentTarget = "11.0"
-            osx.deploymentTarget = "10.13"
-            tvos.deploymentTarget = "11.0"
-            watchos.deploymentTarget = "4.0"
         }
     }
 
