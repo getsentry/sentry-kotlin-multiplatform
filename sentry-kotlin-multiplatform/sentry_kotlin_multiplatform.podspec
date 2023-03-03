@@ -8,11 +8,11 @@ Pod::Spec.new do |spec|
     spec.summary                  = 'Official Sentry SDK Kotlin Multiplatform'
     spec.vendored_frameworks      = 'build/cocoapods/framework/sentry_kotlin_multiplatform.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '9.0'
-    spec.osx.deployment_target = '10.10'
-    spec.tvos.deployment_target = '9.0'
-    spec.watchos.deployment_target = '2.0'
-    spec.dependency 'Sentry', '~> 7.24.1'
+    spec.ios.deployment_target = '11.0'
+    spec.osx.deployment_target = '10.13'
+    spec.tvos.deployment_target = '11.0'
+    spec.watchos.deployment_target = '4.0'
+    spec.dependency 'Sentry', '~> 8.2.0'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sentry-kotlin-multiplatform',
@@ -25,8 +25,8 @@ Pod::Spec.new do |spec|
             :execution_position => :before_compile,
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT
-                if [ "YES" = "$COCOAPODS_SKIP_KOTLIN_BUILD" ]; then
-                  echo "Skipping Gradle build task invocation due to COCOAPODS_SKIP_KOTLIN_BUILD environment variable set to \"YES\""
+                if [ "YES" = "$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED" ]; then
+                  echo "Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\""
                   exit 0
                 fi
                 set -ev

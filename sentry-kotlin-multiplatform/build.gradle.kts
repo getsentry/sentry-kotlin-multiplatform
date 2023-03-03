@@ -8,10 +8,9 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = Config.Android.compileSdkVersion
     defaultConfig {
-        minSdk = 16
-        targetSdk = 30
+        minSdk = Config.Android.minSdkVersion
     }
 
     buildTypes {
@@ -19,8 +18,6 @@ android {
             isMinifyEnabled = false
         }
     }
-    // linking the manifest file manually due to having it in the "androidMain" source set
-    sourceSets.getByName("main").manifest.srcFile("src/androidMain/AndroidManifest.xml")
 }
 
 kotlin {
@@ -40,25 +37,25 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib")
+                implementation(Config.Libs.kotlinStd)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-common")
-                implementation("org.jetbrains.kotlin:kotlin-test-annotations-common")
+                implementation(Config.TestLibs.kotlinCommon)
+                implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation("io.sentry:sentry-android:6.3.1") {
+                implementation(Config.Libs.sentryAndroid) {
                     // avoid duplicate dependencies since we depend on commonJvmMain
                     exclude("io.sentry", "sentry")
                 }
             }
         }
-        val androidTest by getting
+        val androidUnitTest by getting
         val jvmMain by getting
         val jvmTest by getting
 
@@ -67,16 +64,28 @@ kotlin {
             jvmMain.dependsOn(this)
             androidMain.dependsOn(this)
             dependencies {
-                implementation("io.sentry:sentry:6.3.1")
+                implementation(Config.Libs.sentryJava)
             }
         }
         val commonJvmTest by creating {
             dependsOn(commonTest)
             jvmTest.dependsOn(this)
-            androidTest.dependsOn(this)
+            androidUnitTest.dependsOn(this)
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+                implementation(Config.TestLibs.kotlinJunit)
             }
+        }
+
+        cocoapods {
+            summary = "Official Sentry SDK Kotlin Multiplatform"
+            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
+
+            pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
+
+            ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
+            osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
+            tvos.deploymentTarget = Config.Cocoa.tvosDeploymentTarget
+            watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
         }
 
         val iosMain by getting
@@ -134,18 +143,6 @@ kotlin {
             dependsOn(commonTest)
             commonIosTest.dependsOn(this)
             commonTvWatchMacOsTest.dependsOn(this)
-        }
-
-        cocoapods {
-            summary = "Official Sentry SDK Kotlin Multiplatform"
-            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
-
-            pod("Sentry", "~> 7.24.1")
-
-            ios.deploymentTarget = "9.0"
-            osx.deploymentTarget = "10.10"
-            tvos.deploymentTarget = "9.0"
-            watchos.deploymentTarget = "2.0"
         }
     }
 

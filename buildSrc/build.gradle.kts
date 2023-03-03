@@ -9,5 +9,7 @@ repositories {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+    kotlinOptions {
+        jvmTarget = properties["jvm.version"].toString()
+    }
 }

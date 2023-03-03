@@ -6,7 +6,7 @@ data class User(
     override var username: String = "",
     override var ipAddress: String? = null,
     override var other: MutableMap<String, String>? = null,
-    override var unknown: MutableMap<String, Any>? = null,
+    override var unknown: MutableMap<String, Any>? = null
 ) : ISentryUser {
 
     constructor(user: ISentryUser) : this(

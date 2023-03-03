@@ -11,8 +11,11 @@ actual data class SentryId actual constructor(val sentryIdString: String) : ISen
     private var jvmSentryId: JvmSentryId? = null
 
     init {
-        jvmSentryId = if (sentryIdString.isEmpty()) JvmSentryId.EMPTY_ID
-        else JvmSentryId(sentryIdString)
+        jvmSentryId = if (sentryIdString.isEmpty()) {
+            JvmSentryId.EMPTY_ID
+        } else {
+            JvmSentryId(sentryIdString)
+        }
     }
 
     actual override fun toString(): String {

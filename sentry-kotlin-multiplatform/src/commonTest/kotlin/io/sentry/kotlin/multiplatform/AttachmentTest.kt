@@ -6,8 +6,6 @@ import kotlin.test.assertEquals
 
 class AttachmentTest {
 
-    private val defaultContentType = "application/octet-stream"
-
     @Test
     fun `adding pathname to attachment returns correct values`() {
         val pathname = "test"
@@ -16,7 +14,7 @@ class AttachmentTest {
         assertEquals(pathname, attachment.pathname)
         assertEquals(pathname, attachment.filename)
         assertEquals(null, attachment.bytes)
-        assertEquals(defaultContentType, attachment.contentType)
+        assertEquals(null, attachment.contentType)
     }
 
     @Test
@@ -28,7 +26,7 @@ class AttachmentTest {
         assertEquals(pathname, attachment.pathname)
         assertEquals(filename, attachment.filename)
         assertEquals(null, attachment.bytes)
-        assertEquals(defaultContentType, attachment.contentType)
+        assertEquals(null, attachment.contentType)
     }
 
     @Test
@@ -52,7 +50,7 @@ class AttachmentTest {
 
         assertContentEquals(bytes, attachment.bytes)
         assertEquals(filename, attachment.filename)
-        assertEquals(defaultContentType, attachment.contentType)
+        assertEquals(null, attachment.contentType)
         assertEquals(null, attachment.pathname)
     }
 

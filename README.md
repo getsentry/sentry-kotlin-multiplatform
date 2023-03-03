@@ -60,7 +60,7 @@ cocoapods {
   // ...
   
   // Make sure Sentry Cocoa in your project matches this version
-  pod("Sentry", "~> 7.21.0")
+  pod("Sentry", "~> 8.2.0")
 
   framework {
     baseName = "shared"
@@ -176,7 +176,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 ## Debug Symbols for Apple targets
 
-A dSYM upload is required for Sentry to symbolicate your crash logs for viewing. The symbolication process unscrambles Apple’s crash logs to reveal the function, variables, file names, and line numbers of the crash. The dSYM file can be uploaded through the sentry-cli tool or through a Fastlane action. Please visit our [sentry.io guide](https://docs.sentry.io/clients/cocoa/dsym/) to get started on uploading debug symbols.
+A dSYM upload is required for Sentry to symbolicate your crash logs for viewing. The symbolication process unscrambles Apple’s crash logs to reveal the function, variables, file names, and line numbers of the crash. The dSYM file can be uploaded through the sentry-cli tool or through a Fastlane action. Please visit our [sentry.io guide](https://docs.sentry.io/platforms/apple/dsym/) to get started on uploading debug symbols.
 
  ## Troubleshooting
 
