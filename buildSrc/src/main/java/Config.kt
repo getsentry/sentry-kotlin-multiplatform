@@ -10,6 +10,11 @@ object Config {
     val gradleMavenPublishPlugin = "com.vanniktech.maven.publish"
     val androidGradle = "com.android.library"
 
+    object BuildPlugins {
+        val buildConfig = "com.github.gmazzo.buildconfig"
+        val buildConfigVersion = "3.1.0"
+    }
+
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
         val spotlessVersion = "6.11.0"
@@ -22,7 +27,7 @@ object Config {
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
-        val sentryCocoaVersion = "~> 8.2.0"
+        val sentryCocoaVersion = "8.2.0"
         val sentryCocoa = "Sentry"
     }
 
@@ -45,5 +50,12 @@ object Config {
         val osxDeploymentTarget = "10.13"
         val tvosDeploymentTarget = "11.0"
         val watchosDeploymentTarget = "4.0"
+    }
+
+    object Sentry {
+        val SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME = "sentry.kotlin.kotlin-multiplatform"
+        val group = "io.sentry"
+        val description = "SDK for sentry.io"
+        val versionNameProp = "versionName"
     }
 }

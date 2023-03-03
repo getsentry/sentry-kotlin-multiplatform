@@ -1,9 +1,10 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("native.cocoapods")
-    id("com.android.library")
+    kotlin(Config.multiplatform)
+    kotlin(Config.cocoapods)
+    id(Config.androidGradle)
+    id(Config.BuildPlugins.buildConfig)
     `maven-publish`
 }
 
@@ -80,7 +81,7 @@ kotlin {
             summary = "Official Sentry SDK Kotlin Multiplatform"
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
 
-            pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
+            pod(Config.Libs.sentryCocoa, "~> ${Config.Libs.sentryCocoaVersion}")
 
             ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
             osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
@@ -178,4 +179,11 @@ kotlin {
             "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
         )
     }
+}
+
+buildConfig {
+    buildConfigField("String", "SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME", "\"${Config.Sentry.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME}\"")
+    buildConfigField("String", "VERSION_NAME", "\"${project.version}\"")
+    buildConfigField("String", "SENTRY_ANDROID_VERSION", "\"${Config.Libs.sentryJavaVersion}\"")
+    buildConfigField("String", "SENTRY_COCOA_VERSION", "\"${Config.Libs.sentryCocoaVersion}\"")
 }
