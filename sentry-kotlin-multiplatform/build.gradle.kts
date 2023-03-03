@@ -1,3 +1,4 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -181,9 +182,16 @@ kotlin {
     }
 }
 
-buildConfig {
-    buildConfigField("String", "SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME", "\"${Config.Sentry.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME}\"")
-    buildConfigField("String", "VERSION_NAME", "\"${project.version}\"")
-    buildConfigField("String", "SENTRY_ANDROID_VERSION", "\"${Config.Libs.sentryJavaVersion}\"")
-    buildConfigField("String", "SENTRY_COCOA_VERSION", "\"${Config.Libs.sentryCocoaVersion}\"")
+buildkonfig {
+    packageName = "io.sentry.kotlin.multiplatform"
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME",
+            Config.Sentry.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME
+        )
+        buildConfigField(STRING, "VERSION_NAME", project.version.toString())
+        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
+        buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+    }
 }

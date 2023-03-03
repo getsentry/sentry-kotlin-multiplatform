@@ -1,12 +1,12 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import cocoapods.Sentry.SentryEvent
+import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 import io.sentry.kotlin.multiplatform.protocol.addPackage
-import io.sentry.sentry_kotlin_multiplatform.BuildConfig
 import kotlinx.cinterop.convert
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
@@ -32,10 +32,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
         val sdk = SdkVersion(
-            BuildConfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
-            BuildConfig.VERSION_NAME
+            BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
+            BuildKonfig.VERSION_NAME
         ).apply {
-            addPackage("cocoapods:sentry-cocoa", "8.2.0")
+            addPackage("cocoapods:sentry-cocoa", BuildKonfig.SENTRY_COCOA_VERSION)
         }.toCocoaSdkVersion()
         event?.setSdk(sdk)
         event

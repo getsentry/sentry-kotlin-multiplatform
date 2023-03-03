@@ -11,8 +11,8 @@ object Config {
     val androidGradle = "com.android.library"
 
     object BuildPlugins {
-        val buildConfig = "com.github.gmazzo.buildconfig"
-        val buildConfigVersion = "3.1.0"
+        val buildConfig = "com.codingfeline.buildkonfig"
+        val buildConfigVersion = "0.13.3"
     }
 
     object QualityPlugins {
