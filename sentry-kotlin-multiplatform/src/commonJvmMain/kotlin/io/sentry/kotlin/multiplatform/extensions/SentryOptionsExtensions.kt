@@ -24,7 +24,6 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.isDebug = options.debug
     this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
     this.isEnableAutoSessionTracking = options.enableAutoSessionTracking
-
     this.setBeforeSend { event, _ ->
         val sdk = SdkVersion(
             BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
@@ -34,5 +33,11 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
         }.toJvmSdkVersion()
         event.sdk = sdk
         event
+    }
+    this.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
+        jvmBreadcrumb
+            .toKmpBreadcrumb()
+            .apply { options.beforeBreadcrumb?.invoke(this) }
+            .toJvmBreadcrumb()
     }
 }

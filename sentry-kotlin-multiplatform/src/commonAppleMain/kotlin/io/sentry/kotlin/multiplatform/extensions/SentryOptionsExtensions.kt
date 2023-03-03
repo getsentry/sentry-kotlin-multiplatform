@@ -40,4 +40,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         event?.setSdk(sdk)
         event
     }
+    this.beforeBreadcrumb = { cocoaBreadcrumb ->
+        cocoaBreadcrumb
+            ?.toKmpBreadcrumb()
+            .apply { this?.let { options.beforeBreadcrumb?.invoke(it) } }
+            ?.toCocoaBreadcrumb()
+    }
 }
