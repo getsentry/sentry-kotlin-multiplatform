@@ -29,4 +29,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
     }
+    this.beforeBreadcrumb = { cocoaBreadcrumb ->
+        cocoaBreadcrumb
+            ?.toKmpBreadcrumb()
+            .apply { this?.let { options.beforeBreadcrumb?.invoke(it) } }
+            ?.toCocoaBreadcrumb()
+    }
 }

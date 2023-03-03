@@ -21,4 +21,10 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.isDebug = options.debug
     this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
     this.isEnableAutoSessionTracking = options.enableAutoSessionTracking
+    this.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
+        jvmBreadcrumb
+            .toKmpBreadcrumb()
+            .apply { options.beforeBreadcrumb?.invoke(this) }
+            .toJvmBreadcrumb()
+    }
 }
