@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 
 class AttachmentTest {
 
-    private val defaultContentType = "application/octet-stream"
+    private val defaultContentType = null
 
     @Test
     fun `adding pathname to attachment returns correct values`() {
