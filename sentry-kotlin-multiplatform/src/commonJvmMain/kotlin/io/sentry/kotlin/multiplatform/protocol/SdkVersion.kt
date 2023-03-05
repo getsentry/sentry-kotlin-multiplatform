@@ -4,12 +4,12 @@ import io.sentry.protocol.SdkVersion as JvmSdkVersion
 
 actual data class SdkVersion actual constructor(
     actual val name: String,
-    actual val version: String
+    actual val version: String,
+    actual val packages: MutableList<Package>
 ) {
-    actual val packages: MutableList<Package> = mutableListOf()
 
     fun toJvmSdkVersion(): JvmSdkVersion {
-        val sdk = JvmSdkVersion(name, version)
+        val sdk = JvmSdkVersion(this.name, this.version)
         packages.forEach { pkg ->
             sdk.addPackage(pkg.name, pkg.version)
         }

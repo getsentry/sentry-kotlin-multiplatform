@@ -5,8 +5,7 @@ import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
-import io.sentry.kotlin.multiplatform.protocol.SdkVersion
-import io.sentry.kotlin.multiplatform.protocol.addPackage
+import io.sentry.kotlin.multiplatform.protocol.Package
 import kotlinx.cinterop.convert
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
@@ -34,18 +33,13 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
         val cocoaName = BuildKonfig.SENTRY_COCOA_SDK_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
-
-        // The SdkVersion expect class contains default constructor arguments but for native modules those do not work
-        // The workaround is to explicitly set the values
-        // This should be fixed in Kotlin 1.8.20: https://youtrack.jetbrains.com/issue/KT-53201/Native-compileNativeMainKotlinMetadata-fails-on-default-parameters-in-expected-declarations
-        val defaultSdk = SdkVersion(
-            BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
-            BuildKonfig.VERSION_NAME
-        ).apply {
-            addPackage(cocoaName, cocoaVersion)
-        }.toCocoaSdkVersion()
-
-        event?.sdk = options.sdk?.toCocoaSdkVersion() ?: defaultSdk
+        options.sdk.apply {
+            val pkg = Package(cocoaName, cocoaVersion)
+            if (!this.packages.contains(pkg)) {
+                this.packages.add(Package(cocoaName, cocoaVersion))
+            }
+        }
+        event?.sdk = options.sdk.toCocoaSdkVersion()
         event
     }
     this.beforeBreadcrumb = { cocoaBreadcrumb ->
