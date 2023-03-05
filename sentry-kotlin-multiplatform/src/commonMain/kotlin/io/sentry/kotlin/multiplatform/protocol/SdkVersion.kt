@@ -8,8 +8,13 @@ expect class SdkVersion(
     version: String = BuildKonfig.VERSION_NAME,
     packages: MutableList<Package> = mutableListOf()
 ) {
+    /** The name of the SDK. */
     val name: String
+
+    /** The version of the SDK. */
     val version: String
+
+    /** A list of packages used by the SDK. */
     val packages: MutableList<Package>
 }
 
