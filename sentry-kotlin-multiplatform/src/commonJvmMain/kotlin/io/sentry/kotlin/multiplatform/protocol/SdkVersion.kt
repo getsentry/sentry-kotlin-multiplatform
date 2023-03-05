@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.protocol.SdkVersion as JvmSdkVersion
 
-actual class SdkVersion actual constructor(
+actual data class SdkVersion actual constructor(
     actual val name: String,
     actual val version: String
 ) {

@@ -25,13 +25,14 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
     this.isEnableAutoSessionTracking = options.enableAutoSessionTracking
     this.setBeforeSend { event, _ ->
-        val sdk = SdkVersion(
-            BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
-            BuildKonfig.VERSION_NAME
-        ).apply {
-            addPackage(" maven:io.sentry:sentry", BuildKonfig.VERSION_NAME)
+        val jvmName = BuildKonfig.SENTRY_JVM_SDK_NAME
+        val jvmVersion = BuildKonfig.SENTRY_JVM_VERSION
+
+        val defaultSdk = SdkVersion().apply {
+            addPackage(jvmName, jvmVersion)
         }.toJvmSdkVersion()
-        event.sdk = sdk
+
+        event.sdk = options.sdk?.toJvmSdkVersion() ?: defaultSdk
         event
     }
     this.setBeforeBreadcrumb { jvmBreadcrumb, _ ->

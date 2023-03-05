@@ -31,19 +31,25 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.enableAutoSessionTracking = options.enableAutoSessionTracking
     this.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
-        val sdk = SdkVersion(
+
+        val cocoaName = BuildKonfig.SENTRY_COCOA_SDK_NAME
+        val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
+
+        // The SdkVersion expect class contains default constructor arguments but for native modules those do not work
+        // The workaround is to explicitly set the values
+        // This should be fixed in Kotlin 1.8.20: https://youtrack.jetbrains.com/issue/KT-53201/Native-compileNativeMainKotlinMetadata-fails-on-default-parameters-in-expected-declarations
+        val defaultSdk = SdkVersion(
             BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
             BuildKonfig.VERSION_NAME
         ).apply {
-            addPackage("cocoapods:sentry-cocoa", BuildKonfig.SENTRY_COCOA_VERSION)
+            addPackage(cocoaName, cocoaVersion)
         }.toCocoaSdkVersion()
-        event?.setSdk(sdk)
+
+        event?.sdk = options.sdk?.toCocoaSdkVersion() ?: defaultSdk
         event
     }
     this.beforeBreadcrumb = { cocoaBreadcrumb ->
-        cocoaBreadcrumb
-            ?.toKmpBreadcrumb()
-            .apply { this?.let { options.beforeBreadcrumb?.invoke(it) } }
-            ?.toCocoaBreadcrumb()
+        cocoaBreadcrumb?.toKmpBreadcrumb()
+            .apply { this?.let { options.beforeBreadcrumb?.invoke(it) } }?.toCocoaBreadcrumb()
     }
 }
