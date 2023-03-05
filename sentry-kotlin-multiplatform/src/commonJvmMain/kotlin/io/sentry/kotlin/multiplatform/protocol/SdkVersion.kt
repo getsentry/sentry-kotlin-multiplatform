@@ -7,7 +7,6 @@ actual data class SdkVersion actual constructor(
     actual val version: String,
     actual val packages: MutableList<Package>
 ) {
-
     fun toJvmSdkVersion(): JvmSdkVersion {
         val sdk = JvmSdkVersion(this.name, this.version)
         packages.forEach { pkg ->
