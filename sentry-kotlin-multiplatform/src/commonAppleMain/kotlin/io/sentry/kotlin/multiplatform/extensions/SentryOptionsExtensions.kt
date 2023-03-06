@@ -34,9 +34,9 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
         options.sdk.apply {
-            val pkg = Package(cocoaName, cocoaVersion)
-            if (!this.packages.contains(pkg)) {
-                this.packages.add(Package(cocoaName, cocoaVersion))
+            val names = this.packages?.map { it.name }
+            if (names?.contains(cocoaName) != true) {
+                this.addPackage(cocoaName, cocoaVersion)
             }
         }
         event?.sdk = options.sdk.toCocoaSdkVersion()

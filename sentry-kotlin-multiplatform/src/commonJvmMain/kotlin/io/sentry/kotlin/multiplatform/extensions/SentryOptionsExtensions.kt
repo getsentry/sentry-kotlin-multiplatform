@@ -8,11 +8,10 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
     it.applyJvmBaseOptions(this)
 
     // Apply JVM specific options
+    this.sdk.apply {
+        addPackage(BuildKonfig.SENTRY_JVM_PACKAGE_NAME, BuildKonfig.SENTRY_JVM_VERSION)
+    }
     it.sdkVersion = this.sdk.toJvmSdkVersion()
-    it.sdkVersion?.addPackage(
-        BuildKonfig.SENTRY_JVM_PACKAGE_NAME,
-        BuildKonfig.SENTRY_JVM_VERSION
-    )
 }
 
 /**
