@@ -53,7 +53,10 @@ object Config {
     }
 
     object Sentry {
-        val SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME = "sentry.kotlin.kotlin-multiplatform"
+        val kotlinMultiplatformSdkName = "sentry.kotlin.kotlin-multiplatform"
+        val javaPackageName = "maven:io.sentry:sentry"
+        val androidPackageName = "maven:io.sentry:sentry-android"
+        val cocoaPackageName = "cocoapods:sentry-cocoa"
         val group = "io.sentry"
         val description = "SDK for sentry.io"
         val versionNameProp = "versionName"

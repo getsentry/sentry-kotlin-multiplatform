@@ -31,7 +31,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
 
-        val cocoaName = BuildKonfig.SENTRY_COCOA_SDK_NAME
+        val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
         options.sdk.apply {
             val pkg = Package(cocoaName, cocoaVersion)

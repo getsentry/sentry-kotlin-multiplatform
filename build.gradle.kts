@@ -13,7 +13,7 @@ plugins {
 }
 
 allprojects {
-    group = "io.sentry"
+    group = Config.Sentry.group
     version = properties["versionName"].toString()
 }
 
