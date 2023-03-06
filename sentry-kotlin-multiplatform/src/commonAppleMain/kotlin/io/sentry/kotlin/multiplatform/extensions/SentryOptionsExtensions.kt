@@ -39,13 +39,14 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
                 this.addPackage(cocoaName, cocoaVersion)
             }
         }
-        val sdkPackages = event?.sdk?.toMutableMap()
-        sdkPackages?.set(
+        val sdk = event?.sdk?.toMutableMap()
+        sdk?.set(
             "packages",
             options.sdk.packages?.map {
                 mapOf("name" to it.name, "version" to it.version)
             }
         )
+        event?.sdk = sdk
 
         event
     }
