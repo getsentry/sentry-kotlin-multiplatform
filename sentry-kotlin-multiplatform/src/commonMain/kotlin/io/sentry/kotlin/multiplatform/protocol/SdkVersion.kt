@@ -8,7 +8,7 @@ data class SdkVersion(
     val name: String = BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
 
     /** The version of the SDK. */
-    val version: String = BuildKonfig.VERSION_NAME,
+    val version: String = BuildKonfig.VERSION_NAME
 ) {
     /** Packages used by the SDK. */
     var packages: List<Package>? = mutableListOf()

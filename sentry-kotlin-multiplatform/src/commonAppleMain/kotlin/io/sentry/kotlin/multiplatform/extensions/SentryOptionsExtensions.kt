@@ -5,7 +5,6 @@ import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
-import io.sentry.kotlin.multiplatform.protocol.Package
 import kotlinx.cinterop.convert
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
