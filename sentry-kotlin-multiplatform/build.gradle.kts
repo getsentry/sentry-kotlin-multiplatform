@@ -169,6 +169,9 @@ kotlin {
             cinterops.create("Sentry.Scope") {
                 includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
             }
+            cinterops.create("Sentry.PrivateSentrySDKOnly") {
+                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryPrivateSentrySDKOnly")
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.extensions
 
+import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentryEvent
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
@@ -38,9 +39,17 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
                 this.addPackage(cocoaName, cocoaVersion)
             }
         }
-        event?.sdk = options.sdk.toCocoaSdkVersion()
+        val sdkPackages = event?.sdk?.toMutableMap()
+        sdkPackages?.set(
+            "packages",
+            options.sdk.packages?.map {
+                mapOf("name" to it.name, "version" to it.version)
+            }
+        )
+
         event
     }
+    PrivateSentrySDKOnly.setSdkName(options.sdk.name, options.sdk.version)
     this.beforeBreadcrumb = { cocoaBreadcrumb ->
         cocoaBreadcrumb?.toKmpBreadcrumb()
             .apply { this?.let { options.beforeBreadcrumb?.invoke(it) } }?.toCocoaBreadcrumb()
