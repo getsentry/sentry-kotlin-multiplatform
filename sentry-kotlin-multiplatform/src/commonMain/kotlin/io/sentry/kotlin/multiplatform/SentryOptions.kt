@@ -59,5 +59,5 @@ open class SentryOptions {
     var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb)? = null
 
     /** Information about the Sentry SDK that generated this event. */
-    var sdk: SdkVersion = SdkVersion()
+    var sdk: SdkVersion = SdkVersion(BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME, BuildKonfig.VERSION_NAME)
 }

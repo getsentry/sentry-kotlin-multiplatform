@@ -1,14 +1,12 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-import io.sentry.kotlin.multiplatform.BuildKonfig
-
 /** The SDK Interface describes the Sentry SDK and its configuration used to capture and transmit an event. */
 data class SdkVersion(
     /** The name of the SDK. */
-    val name: String = BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME,
+    val name: String,
 
     /** The version of the SDK. */
-    val version: String = BuildKonfig.VERSION_NAME
+    val version: String
 ) {
     /** Packages used by the SDK. */
     var packages: List<Package>? = mutableListOf()
