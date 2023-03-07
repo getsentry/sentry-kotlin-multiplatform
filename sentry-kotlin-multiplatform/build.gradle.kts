@@ -1,9 +1,11 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("native.cocoapods")
-    id("com.android.library")
+    kotlin(Config.multiplatform)
+    kotlin(Config.cocoapods)
+    id(Config.androidGradle)
+    id(Config.BuildPlugins.buildConfig)
     `maven-publish`
 }
 
@@ -80,7 +82,7 @@ kotlin {
             summary = "Official Sentry SDK Kotlin Multiplatform"
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
 
-            pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
+            pod(Config.Libs.sentryCocoa, "~> ${Config.Libs.sentryCocoaVersion}")
 
             ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
             osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
@@ -167,6 +169,9 @@ kotlin {
             cinterops.create("Sentry.Scope") {
                 includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
             }
+            cinterops.create("Sentry.PrivateSentrySDKOnly") {
+                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryPrivateSentrySDKOnly")
+            }
         }
     }
 
@@ -177,5 +182,24 @@ kotlin {
             "-compiler-option",
             "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
         )
+    }
+}
+
+buildkonfig {
+    packageName = "io.sentry.kotlin.multiplatform"
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME",
+            Config.Sentry.kotlinMultiplatformSdkName
+        )
+        buildConfigField(STRING, "VERSION_NAME", project.version.toString())
+        buildConfigField(STRING, "SENTRY_JVM_PACKAGE_NAME", Config.Sentry.javaPackageName)
+        buildConfigField(STRING, "SENTRY_ANDROID_PACKAGE_NAME", Config.Sentry.androidPackageName)
+        buildConfigField(STRING, "SENTRY_COCOA_PACKAGE_NAME", Config.Sentry.cocoaPackageName)
+
+        buildConfigField(STRING, "SENTRY_JVM_VERSION", Config.Libs.sentryJavaVersion)
+        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
+        buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
     }
 }

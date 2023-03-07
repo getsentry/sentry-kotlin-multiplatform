@@ -1,10 +1,17 @@
 package io.sentry.kotlin.multiplatform.extensions
 
+import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
+
+    // Apply JVM specific options
+    this.sdk.apply {
+        addPackage(BuildKonfig.SENTRY_JVM_PACKAGE_NAME, BuildKonfig.SENTRY_JVM_VERSION)
+    }
+    it.sdkVersion = this.sdk.toJvmSdkVersion()
 }
 
 /**

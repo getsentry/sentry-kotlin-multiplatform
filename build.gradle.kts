@@ -9,10 +9,11 @@ plugins {
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
     id(Config.androidGradle).version(Config.agpVersion).apply(false)
+    id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
 }
 
 allprojects {
-    group = "io.sentry"
+    group = Config.Sentry.group
     version = properties["versionName"].toString()
 }
 

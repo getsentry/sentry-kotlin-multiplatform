@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 
 open class SentryOptions {
 
@@ -56,4 +57,7 @@ open class SentryOptions {
 
     /** Hook that is triggered before a breadcrumb is sent to Sentry */
     var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb)? = null
+
+    /** Information about the Sentry SDK that generated this event. */
+    var sdk: SdkVersion = SdkVersion(BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME, BuildKonfig.VERSION_NAME)
 }
