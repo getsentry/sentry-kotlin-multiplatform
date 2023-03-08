@@ -17,7 +17,11 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         from("build${sep}publications${sep}kotlinMultiplatform") {
             renameModule(version = version)
         }
-        from("build${sep}kotlinToolingMetadata")
+        from("build${sep}kotlinToolingMetadata") {
+            rename {
+                it.replace("kotlin-tooling-metadata.json", "sentry-kotlin-multiplatform-$version-kotlin-tooling-metadata.json")
+            }
+        }
         from("build${sep}libs") {
             include("sentry-kotlin-multiplatform-?.?.*")
             include("sentry-kotlin-multiplatform-kotlin*")
