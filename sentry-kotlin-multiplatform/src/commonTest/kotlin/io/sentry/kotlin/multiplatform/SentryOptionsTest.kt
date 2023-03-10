@@ -63,5 +63,4 @@ class SentryOptionsTest {
 
         assertEquals(null, modifiedBreadcrumb)
     }
-
 }
