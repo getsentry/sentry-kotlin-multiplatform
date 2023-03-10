@@ -43,4 +43,25 @@ class SentryOptionsTest {
 
         assertEquals(expectedBreadcrumb, modifiedBreadcrumb)
     }
+
+    @Test
+    fun `Breadcrumb can be dropped via beforeBreadcrumb hook`() {
+        val options = SentryOptions()
+
+        fun mockInit(configuration: (SentryOptions) -> Unit) {
+            configuration.invoke(options)
+        }
+
+        mockInit {
+            it.beforeBreadcrumb = { breadcrumb ->
+                breadcrumb.message = "message"
+                null
+            }
+        }
+
+        val modifiedBreadcrumb = options.beforeBreadcrumb?.invoke(Breadcrumb())
+
+        assertEquals(null, modifiedBreadcrumb)
+    }
+
 }

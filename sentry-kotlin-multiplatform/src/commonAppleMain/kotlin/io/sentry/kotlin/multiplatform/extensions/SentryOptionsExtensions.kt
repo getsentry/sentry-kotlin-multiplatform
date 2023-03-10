@@ -28,6 +28,8 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.debug = options.debug
     this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis.convert()
     this.enableAutoSessionTracking = options.enableAutoSessionTracking
+    this.maxAttachmentSize = options.maxAttachmentSize.convert()
+    this.maxBreadcrumbs = options.maxBreadcrumbs.convert()
     this.beforeSend = { event ->
         dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
 
@@ -53,6 +55,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     PrivateSentrySDKOnly.setSdkName(options.sdk.name, options.sdk.version)
     this.beforeBreadcrumb = { cocoaBreadcrumb ->
         cocoaBreadcrumb?.toKmpBreadcrumb()
-            .apply { this?.let { options.beforeBreadcrumb?.invoke(it) } }?.toCocoaBreadcrumb()
+            ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
     }
 }

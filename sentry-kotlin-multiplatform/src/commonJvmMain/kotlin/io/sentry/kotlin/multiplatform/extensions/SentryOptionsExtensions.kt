@@ -28,10 +28,9 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.isDebug = options.debug
     this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
     this.isEnableAutoSessionTracking = options.enableAutoSessionTracking
+    this.maxAttachmentSize = options.maxAttachmentSize
+    this.maxBreadcrumbs = options.maxBreadcrumbs
     this.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
-        jvmBreadcrumb
-            .toKmpBreadcrumb()
-            .apply { options.beforeBreadcrumb?.invoke(this) }
-            .toJvmBreadcrumb()
+        options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
     }
 }
