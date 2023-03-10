@@ -43,6 +43,7 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachStackTrace = true
         it.attachThreads = true
         it.attachScreenshot = true
+        it.attachViewHierarchy = true
         it.release = "kmp-release@0.0.1"
         it.beforeBreadcrumb = { breadcrumb ->
             breadcrumb.message = "Add message before every breadcrumb"

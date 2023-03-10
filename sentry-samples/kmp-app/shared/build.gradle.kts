@@ -19,7 +19,11 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
-        pod(Config.Libs.sentryCocoa, "~> ${Config.Libs.sentryCocoaVersion}")
+        pod(Config.Libs.sentryCocoa) {
+            source = git("https://github.com/getsentry/sentry-cocoa.git") {
+                tag = Config.Libs.sentryCocoaVersion
+            }
+        }
 
         framework {
             baseName = "shared"

@@ -66,4 +66,7 @@ open class SentryOptions {
 
     /** This variable controls the max attachment size in bytes */
     var maxAttachmentSize: Long = 20 * 1024 * 1024
+
+    /** Enables or disables the attach view hierarchy feature when an error happened. */
+    var attachViewHierarchy = false
 }

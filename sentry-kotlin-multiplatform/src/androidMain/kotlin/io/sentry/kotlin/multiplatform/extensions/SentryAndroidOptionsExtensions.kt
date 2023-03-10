@@ -12,4 +12,5 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     it.isAttachScreenshot = this.attachScreenshot
     sdk.addPackage(BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME, BuildKonfig.SENTRY_ANDROID_VERSION)
     it.sdkVersion = sdk.toJvmSdkVersion()
+    it.isAttachViewHierarchy = this.attachViewHierarchy
 }

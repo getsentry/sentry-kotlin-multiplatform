@@ -9,4 +9,5 @@ internal fun SentryOptions.toIosOptionsConfiguration(): (CocoaSentryOptions?) ->
 
     // Apply iOS specific options
     it?.attachScreenshot = this.attachScreenshot
+    it?.attachViewHierarchy = this.attachViewHierarchy
 }
