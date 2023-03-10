@@ -25,7 +25,7 @@ internal expect object SentryBridge {
 
     fun addBreadcrumb(breadcrumb: Breadcrumb)
 
-    fun setUser(user: User)
+    fun setUser(user: User?)
 
     fun close()
 }

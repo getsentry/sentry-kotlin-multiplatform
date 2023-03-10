@@ -103,7 +103,7 @@ object Sentry {
      *
      * @param user The user to set.
      */
-    fun setUser(user: User) {
+    fun setUser(user: User?) {
         SentryBridge.setUser(user)
     }
 

@@ -53,8 +53,8 @@ internal actual object SentryBridge {
         Sentry.addBreadcrumb(breadcrumb.toJvmBreadcrumb())
     }
 
-    actual fun setUser(user: User) {
-        Sentry.setUser(user.toJvmUser())
+    actual fun setUser(user: User?) {
+        Sentry.setUser(user?.toJvmUser())
     }
 
     actual fun close() {

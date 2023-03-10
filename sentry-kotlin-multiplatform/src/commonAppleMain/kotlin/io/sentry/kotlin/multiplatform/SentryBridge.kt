@@ -58,8 +58,8 @@ internal actual object SentryBridge {
         SentrySDK.addBreadcrumb(breadcrumb.toCocoaBreadcrumb())
     }
 
-    actual fun setUser(user: User) {
-        SentrySDK.setUser(user.toCocoaUser())
+    actual fun setUser(user: User?) {
+        SentrySDK.setUser(user?.toCocoaUser())
     }
 
     actual fun close() {
