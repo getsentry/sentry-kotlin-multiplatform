@@ -1,9 +1,13 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
+import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import platform.Foundation.NSError
 import platform.Foundation.NSException
@@ -48,6 +52,14 @@ internal actual object SentryBridge {
 
     actual fun configureScope(scopeCallback: ScopeCallback) {
         SentrySDK.configureScope(configureScopeCallback(scopeCallback))
+    }
+
+    actual fun addBreadcrumb(breadcrumb: Breadcrumb) {
+        SentrySDK.addBreadcrumb(breadcrumb.toCocoaBreadcrumb())
+    }
+
+    actual fun setUser(user: User?) {
+        SentrySDK.setUser(user?.toCocoaUser())
     }
 
     actual fun close() {

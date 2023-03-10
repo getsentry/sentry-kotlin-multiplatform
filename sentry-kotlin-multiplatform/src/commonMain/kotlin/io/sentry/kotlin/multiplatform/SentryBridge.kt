@@ -1,6 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect object SentryBridge {
@@ -20,6 +22,10 @@ internal expect object SentryBridge {
     fun configureScope(scopeCallback: ScopeCallback)
 
     fun captureUserFeedback(userFeedback: UserFeedback)
+
+    fun addBreadcrumb(breadcrumb: Breadcrumb)
+
+    fun setUser(user: User?)
 
     fun close()
 }

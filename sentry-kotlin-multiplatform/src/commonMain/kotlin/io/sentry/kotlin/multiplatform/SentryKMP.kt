@@ -1,6 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 typealias ScopeCallback = (Scope) -> Unit
@@ -85,6 +87,24 @@ object Sentry {
      */
     fun configureScope(scopeCallback: ScopeCallback) {
         SentryBridge.configureScope(scopeCallback)
+    }
+
+    /**
+     * Adds a breadcrumb to the current Scope.
+     *
+     * @param breadcrumb The breadcrumb to add.
+     */
+    fun addBreadcrumb(breadcrumb: Breadcrumb) {
+        SentryBridge.addBreadcrumb(breadcrumb)
+    }
+
+    /**
+     * Sets the user to the current scope.
+     *
+     * @param user The user to set.
+     */
+    fun setUser(user: User?) {
+        SentryBridge.setUser(user)
     }
 
     /**

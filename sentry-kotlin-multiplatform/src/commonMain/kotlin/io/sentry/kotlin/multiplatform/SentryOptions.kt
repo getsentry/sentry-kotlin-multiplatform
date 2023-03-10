@@ -56,8 +56,14 @@ open class SentryOptions {
     var attachScreenshot = false
 
     /** Hook that is triggered before a breadcrumb is sent to Sentry */
-    var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb)? = null
+    var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb?)? = null
 
     /** Information about the Sentry SDK that generated this event. */
     var sdk: SdkVersion = SdkVersion(BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME, BuildKonfig.VERSION_NAME)
+
+    /** This variable controls the total amount of breadcrumbs that should be captured. Default is 100. */
+    var maxBreadcrumbs = 100
+
+    /** This variable controls the max attachment size in bytes */
+    var maxAttachmentSize: Long = 20 * 1024 * 1024
 }

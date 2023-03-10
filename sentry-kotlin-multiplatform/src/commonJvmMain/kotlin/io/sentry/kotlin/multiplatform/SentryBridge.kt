@@ -1,8 +1,12 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.Sentry
+import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
+import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
+import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect fun initSentry(context: Context? = null, configuration: OptionsConfiguration)
@@ -43,6 +47,14 @@ internal actual object SentryBridge {
 
     actual fun configureScope(scopeCallback: ScopeCallback) {
         Sentry.configureScope(configureScopeCallback(scopeCallback))
+    }
+
+    actual fun addBreadcrumb(breadcrumb: Breadcrumb) {
+        Sentry.addBreadcrumb(breadcrumb.toJvmBreadcrumb())
+    }
+
+    actual fun setUser(user: User?) {
+        Sentry.setUser(user?.toJvmUser())
     }
 
     actual fun close() {
