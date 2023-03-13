@@ -1,4 +1,4 @@
-minVersion: 0.33.2
+minVersion: 1.2.0
 changelogPolicy: auto
 targets:
   - name: maven
@@ -11,6 +11,9 @@ targets:
       distDirRegex: /^(sentry-android-|.*-android).*$/
       fileReplaceeRegex: /\d\.\d\.\d(-\w+(\.\d)?)?(-SNAPSHOT)?/
       fileReplacerStr: release.aar
+    kmp:
+      rootDistDirRegex: /^(?!.*(?:jvm|android|ios|watchos|tvos|macos)).*$/
+      appleDistDirRegex: /(ios|watchos|tvos|macos)/
   - name: github
   - name: registry
     sdks:
