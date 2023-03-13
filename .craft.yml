@@ -1,4 +1,4 @@
-minVersion: 0.33.2
+minVersion: 1.2.0
 changelogPolicy: auto
 targets:
   - name: maven
