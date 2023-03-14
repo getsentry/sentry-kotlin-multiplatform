@@ -50,14 +50,14 @@ val commonMain by getting {
 ### Cocoa
 
 If you are targeting Apple platforms (iOS, macOS, watchOS, tvOS), then you need to use CocoaPods to include [Sentry Cocoa](https://github.com/getsentry/sentry-cocoa) into this SDK.
-One way to achieve this is to include the Sentry Cocoa SDK via the Kotlin CocoaPods extension. Be aware that your Sentry Cocoa version has to match the SDK's version. Currently the supported version is `pod("Sentry", "~> 8.1.0")` 
+One way to achieve this is to include the Sentry Cocoa SDK via the Kotlin CocoaPods extension. Be aware that your Sentry Cocoa version has to match the SDK's version. Currently the supported version is `pod("Sentry", "~> 8.2.0")` 
 
 ```gradle
 cocoapods {
   // ...
   
   // Make sure Sentry Cocoa in your project matches this version
-  pod("Sentry", "~> 8.1.0")
+  pod("Sentry", "~> 8.2.0")
 
   framework {
     baseName = "shared"
