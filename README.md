@@ -24,19 +24,12 @@ This SDK is a wrapper around different platforms such as JVM, Android, iOS, macO
 
 ## Configure Repository
 
-The Kotlin Multiplatform SDK is available only on `mavenLocal`. You can declare this repository in your build script as follows:
+The Kotlin Multiplatform SDK is available on `mavenCentral`. You can declare this repository in your build script as follows:
 
 ```gradle
 repositories {
-  // Currently only supported locally
-  mavenLocal()
+  mavenCentral()
 }
-```
-
-and then run:
-
-```bash
-./gradlew publishToMavenLocal
 ```
 
 ## Add dependency
@@ -45,7 +38,7 @@ For a multiplatform project, you need to add the sentry-kotlin-multiplatform art
 ```Kotlin
 val commonMain by getting {
   dependencies {
-    api("io.sentry:sentry-kotlin-multiplatform:0.0.1")
+    api("io.sentry:sentry-kotlin-multiplatform:0.0.1-alpha.2")
   }
 }
 ```
@@ -66,7 +59,7 @@ cocoapods {
     baseName = "shared"
 
     // Export the SDK in order to be able to access it directly in the iOS project
-    export("io.sentry:sentry-kotlin-multiplatform:0.0.1")
+    export("io.sentry:sentry-kotlin-multiplatform:0.0.1-alpha.2")
   }
 }
 ```
