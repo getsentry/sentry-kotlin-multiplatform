@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.0.1-alpha.2
 
 ### Features
 
@@ -15,3 +15,4 @@
  - Screenshots option for Android and iOS
  - Add beforeBreadcrumb hook
  - Kotlin Multiplatform Sample project
+
