@@ -19,6 +19,10 @@ checkFormat:
 format:
 	./gradlew spotlessApply
 
+# Update the README.md file
+update-readme:
+	./gradlew updateReadme
+
 # build and run tests
 compile:
 	./gradlew build

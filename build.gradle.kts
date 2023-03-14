@@ -50,6 +50,20 @@ subprojects {
     }
 }
 
+tasks.register("updateReadme") {
+    doLast {
+        val readmeFile = File("README.md")
+
+        // Replace sentry-kotlin-multiplatform version
+        val regex = Regex("io\\.sentry:sentry-kotlin-multiplatform:[^\"]*")
+        var newContents = readmeFile.readText().replace(regex, "io.sentry:sentry-kotlin-multiplatform:${project.version}")
+
+        // Replace sentry cocoa version
+        newContents = newContents.replace(Regex("pod\\(\"Sentry\", \"~>[^\"]*\"\\)"), "pod(\"Sentry\", \"~> ${Config.Libs.sentryCocoaVersion}\")")
+        readmeFile.writeText(newContents)
+    }
+}
+
 spotless {
     lineEndings = LineEnding.UNIX
 
