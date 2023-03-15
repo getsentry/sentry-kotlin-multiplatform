@@ -50,7 +50,6 @@ subprojects {
     }
 }
 
-
 tasks.register("updateReadme") {
     val filename = "README.md"
     val kmpRegex = Regex("io\\.sentry:sentry-kotlin-multiplatform:[^\"]*")
