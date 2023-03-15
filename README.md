@@ -42,15 +42,15 @@ For a multiplatform project, you need to add the sentry-kotlin-multiplatform art
 ```Kotlin
 val commonMain by getting {
   dependencies {
-    api("io.sentry:sentry-kotlin-multiplatform:0.0.1-alpha.2")
+    api("io.sentry:sentry-kotlin-multiplatform:latest")
   }
 }
 ```
 
 ### Cocoa
 
-If you are targeting Apple platforms (iOS, macOS, watchOS, tvOS), then you need to use CocoaPods to include [Sentry Cocoa](https://github.com/getsentry/sentry-cocoa) into this SDK.
-One way to achieve this is to include the Sentry Cocoa SDK via the Kotlin CocoaPods extension. Be aware that your Sentry Cocoa version has to match the SDK's version. Currently the supported version is `pod("Sentry", "~> 8.2.0")` 
+If you are targeting Apple platforms (iOS, macOS, watchOS, tvOS), then you can use CocoaPods to include [Sentry Cocoa](https://github.com/getsentry/sentry-cocoa) into this SDK.
+One way to achieve this is to include the Sentry Cocoa SDK via the Kotlin CocoaPods extension. Be aware that your Sentry Cocoa version has to match the version used in the KMP SDK.
 
 ```gradle
 cocoapods {
@@ -63,7 +63,7 @@ cocoapods {
     baseName = "shared"
 
     // Export the SDK in order to be able to access it directly in the iOS project
-    export("io.sentry:sentry-kotlin-multiplatform:0.0.1-alpha.2")
+    export("io.sentry:sentry-kotlin-multiplatform:latest")
   }
 }
 ```

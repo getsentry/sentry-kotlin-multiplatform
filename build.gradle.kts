@@ -50,26 +50,6 @@ subprojects {
     }
 }
 
-tasks.register("updateReadme") {
-    val filename = "README.md"
-    val kmpRegex = Regex("io\\.sentry:sentry-kotlin-multiplatform:[^\"]*")
-    val cocoaRegex = Regex("pod\\(\"Sentry\", \"~>[^\"]*\"\\)")
-
-    doLast {
-        try {
-            val readmeFile = File(filename)
-
-            val newContents = readmeFile.readText()
-                .replace(kmpRegex, "io.sentry:sentry-kotlin-multiplatform:${project.version}")
-                .replace(cocoaRegex, "pod(\"Sentry\", \"~> ${Config.Libs.sentryCocoaVersion}\")")
-
-            readmeFile.writeText(newContents)
-        } catch (e: Exception) {
-            throw GradleException("Failed to update README file: ${e.message}")
-        }
-    }
-}
-
 spotless {
     lineEndings = LineEnding.UNIX
 

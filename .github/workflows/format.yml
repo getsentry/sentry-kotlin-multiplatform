@@ -26,9 +26,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Make format
-        run: make format
-
       - name: Update README
         run: make update-readme
  
