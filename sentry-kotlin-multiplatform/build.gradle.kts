@@ -188,17 +188,16 @@ kotlin {
 buildkonfig {
     packageName = "io.sentry.kotlin.multiplatform"
     defaultConfigs {
-        buildConfigField(
-            STRING,
-            "SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME",
-            Config.Sentry.kotlinMultiplatformSdkName
-        )
+        buildConfigField(STRING, "SENTRY_KMP_COCOA_SDK_NAME", Config.Sentry.kmpCocoaSdkName)
+        buildConfigField(STRING, "SENTRY_KMP_JAVA_SDK_NAME", Config.Sentry.kmpJavaSdkName)
+        buildConfigField(STRING, "SENTRY_KMP_ANDROID_SDK_NAME", Config.Sentry.kmpAndroidSdkName)
+
         buildConfigField(STRING, "VERSION_NAME", project.version.toString())
-        buildConfigField(STRING, "SENTRY_JVM_PACKAGE_NAME", Config.Sentry.javaPackageName)
+        buildConfigField(STRING, "SENTRY_JAVA_PACKAGE_NAME", Config.Sentry.javaPackageName)
         buildConfigField(STRING, "SENTRY_ANDROID_PACKAGE_NAME", Config.Sentry.androidPackageName)
         buildConfigField(STRING, "SENTRY_COCOA_PACKAGE_NAME", Config.Sentry.cocoaPackageName)
 
-        buildConfigField(STRING, "SENTRY_JVM_VERSION", Config.Libs.sentryJavaVersion)
+        buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
     }

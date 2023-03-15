@@ -8,10 +8,16 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
     it.applyJvmBaseOptions(this)
 
     // Apply JVM specific options
-    this.sdk.apply {
-        addPackage(BuildKonfig.SENTRY_JVM_PACKAGE_NAME, BuildKonfig.SENTRY_JVM_VERSION)
+    it.sdkVersion?.name = this.sdk?.name ?: BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
+    it.sdkVersion?.version = this.sdk?.version ?: BuildKonfig.VERSION_NAME
+
+    this.sdk?.packages?.forEach { sdkPackage ->
+        it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
     }
-    it.sdkVersion = this.sdk.toJvmSdkVersion()
+
+    if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_JAVA_PACKAGE_NAME } == true) {
+        it.sdkVersion?.addPackage(BuildKonfig.SENTRY_JAVA_PACKAGE_NAME, BuildKonfig.SENTRY_JAVA_VERSION)
+    }
 }
 
 /**
