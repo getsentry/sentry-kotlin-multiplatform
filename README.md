@@ -42,7 +42,7 @@ For a multiplatform project, you need to add the sentry-kotlin-multiplatform art
 ```Kotlin
 val commonMain by getting {
   dependencies {
-    api("io.sentry:sentry-kotlin-multiplatform:latest")
+    api("io.sentry:sentry-kotlin-multiplatform:[version]")
   }
 }
 ```
@@ -63,7 +63,7 @@ cocoapods {
     baseName = "shared"
 
     // Export the SDK in order to be able to access it directly in the iOS project
-    export("io.sentry:sentry-kotlin-multiplatform:latest")
+    export("io.sentry:sentry-kotlin-multiplatform:[version]")
   }
 }
 ```
