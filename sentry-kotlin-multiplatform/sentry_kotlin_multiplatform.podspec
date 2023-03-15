@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'sentry_kotlin_multiplatform'
-    spec.version                  = '0.0.1'
+    spec.version                  = '0.0.1-alpha.2'
     spec.homepage                 = 'https://github.com/getsentry/sentry-kotlin-multiplatform'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
     spec.osx.deployment_target = '10.13'
     spec.tvos.deployment_target = '11.0'
     spec.watchos.deployment_target = '4.0'
-    spec.dependency 'Sentry'
+    spec.dependency 'Sentry', '~> 8.3.0'
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sentry-kotlin-multiplatform',

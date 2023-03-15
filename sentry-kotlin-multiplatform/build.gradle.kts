@@ -82,11 +82,7 @@ kotlin {
             summary = "Official Sentry SDK Kotlin Multiplatform"
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
 
-            pod(Config.Libs.sentryCocoa) {
-                source = git("https://github.com/getsentry/sentry-cocoa.git") {
-                    tag = Config.Libs.sentryCocoaVersion
-                }
-            }
+            pod(Config.Libs.sentryCocoa, "~> ${Config.Libs.sentryCocoaVersion}")
 
             ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
             osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
