@@ -57,7 +57,7 @@ cocoapods {
   // ...
   
   // Make sure Sentry Cocoa in your project matches this version
-  pod("Sentry", "~> 8.2.0")
+  pod("Sentry", "~> 8.3.0")
 
   framework {
     baseName = "shared"
