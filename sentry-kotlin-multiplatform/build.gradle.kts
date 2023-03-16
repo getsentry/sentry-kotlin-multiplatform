@@ -81,6 +81,7 @@ kotlin {
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
+            version = "0.0.1"
 
             pod(Config.Libs.sentryCocoa, "~> ${Config.Libs.sentryCocoaVersion}")
 
