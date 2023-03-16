@@ -42,7 +42,7 @@ For a multiplatform project, you need to add the sentry-kotlin-multiplatform art
 ```Kotlin
 val commonMain by getting {
   dependencies {
-    api("io.sentry:sentry-kotlin-multiplatform:[version]")
+    api("io.sentry:sentry-kotlin-multiplatform:<version>")
   }
 }
 ```
@@ -63,7 +63,7 @@ cocoapods {
     baseName = "shared"
 
     // Export the SDK in order to be able to access it directly in the iOS project
-    export("io.sentry:sentry-kotlin-multiplatform:[version]")
+    export("io.sentry:sentry-kotlin-multiplatform:<version>")
   }
 }
 ```
@@ -76,7 +76,7 @@ There are two main strategies for initializing the SDK:
 
 Shared initializer will initialize the SDK in your shared codebase but you will use the same configuration options for all platforms. 
 
-Platform specific initializers initialize the SDK directly in the target platform. The benefit is being able to customize the configuration options specific to the platforms.
+Platform-specific initializers initialize the SDK directly in the target platform. The benefit is being able to customize the configuration options specific to the platforms.
 
 It is also possible to mix those two strategies based on your needs and project setup.
 
@@ -137,7 +137,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 ```
 
-## Platform Specific Initializers
+## Platform-Specific Initializers
 ### Android
 
 ```Kotlin
