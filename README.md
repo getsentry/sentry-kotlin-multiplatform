@@ -72,7 +72,7 @@ cocoapods {
 
 There are two main strategies for initializing the SDK:
   - Shared initializer
-  - Platform specific initializers
+  - Platform-specific initializers
 
 Shared initializer will initialize the SDK in your shared codebase but you will use the same configuration options for all platforms. 
 
