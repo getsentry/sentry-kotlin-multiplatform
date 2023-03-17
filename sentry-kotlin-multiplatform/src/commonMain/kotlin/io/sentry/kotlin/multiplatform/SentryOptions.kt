@@ -59,7 +59,7 @@ open class SentryOptions {
     var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb?)? = null
 
     /** Information about the Sentry SDK that generated this event. */
-    var sdk: SdkVersion = SdkVersion(BuildKonfig.SENTRY_KOTLIN_MULTIPLATFORM_SDK_NAME, BuildKonfig.VERSION_NAME)
+    var sdk: SdkVersion? = null
 
     /** This variable controls the total amount of breadcrumbs that should be captured. Default is 100. */
     var maxBreadcrumbs = 100

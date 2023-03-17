@@ -10,6 +10,15 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
 
     // Apply Android specific options
     it.isAttachScreenshot = this.attachScreenshot
-    sdk.addPackage(BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME, BuildKonfig.SENTRY_ANDROID_VERSION)
-    it.sdkVersion = sdk.toJvmSdkVersion()
+
+    it.sdkVersion?.name = this.sdk?.name ?: BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME
+    it.sdkVersion?.version = this.sdk?.version ?: BuildKonfig.VERSION_NAME
+
+    this.sdk?.packages?.forEach { sdkPackage ->
+        it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
+    }
+
+    if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME } == true) {
+        it.sdkVersion?.addPackage(BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME, BuildKonfig.SENTRY_ANDROID_VERSION)
+    }
 }
