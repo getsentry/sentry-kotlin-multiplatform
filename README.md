@@ -97,13 +97,21 @@ Create a Kotlin file in your commonMain e.g. `AppSetup.kt` or however you want t
 ```Kotlin
 import io.sentry.kotlin.multiplatform.Context
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.OptionsConfiguration
 
 // The context is needed for Android initializations
-fun initializeSentry(context: Context?) {
-  Sentry.init(context) {
-    it.dsn = "__DSN__"
-  }
+fun initializeSentry(context: Context) {
+  Sentry.init(context, optionsConfiguration())
 }
+
+fun initializeSentry() {
+  Sentry.init(optionsConfiguration())
+}
+
+private fun optionsConfiguration(): OptionsConfiguration = {
+  it.dsn = "__DSN__"
+}
+
 ```
 
 Now call this function in an early lifecycle stage in your platforms.
@@ -131,7 +139,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        AppSetupKt.initializeSentry(context = nil)
+        AppSetupKt.initializeSentry()
         return true        
     }
 }
