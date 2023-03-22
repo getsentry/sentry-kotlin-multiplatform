@@ -18,17 +18,4 @@ targets:
   - name: registry
     sdks:
       maven:io.sentry:sentry-kotlin-multiplatform:
-      maven:io.sentry:sentry-kotlin-multiplatform-android:
-      maven:io.sentry:sentry-kotlin-multiplatform-jvm:
-      maven:io.sentry:sentry-kotlin-multiplatform-iosarm64:
-      maven:io.sentry:sentry-kotlin-multiplatform-iosx64:
-      maven:io.sentry:sentry-kotlin-multiplatform-iossimulatorarm64:
-      maven:io.sentry:sentry-kotlin-multiplatform-macosx64:
-      maven:io.sentry:sentry-kotlin-multiplatform-macosArm64:
-      maven:io.sentry:sentry-kotlin-multiplatform-watchosarm32:
-      maven:io.sentry:sentry-kotlin-multiplatform-watchosarm64:
-      maven:io.sentry:sentry-kotlin-multiplatform-watchosx64:
-      maven:io.sentry:sentry-kotlin-multiplatform-tvosarm64:
-      maven:io.sentry:sentry-kotlin-multiplatform-tvosx64:
-      maven:io.sentry:sentry-kotlin-multiplatform-tvossimulatorarm64:
 
