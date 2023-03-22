@@ -100,8 +100,8 @@ import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
 
 // The context is needed for Android initializations
-fun initializeSentry(context: Context?) {
-  Sentry.init(optionsConfiguration())
+fun initializeSentry(context: Context) {
+  Sentry.init(context, optionsConfiguration())
 }
 
 fun initializeSentry() {
