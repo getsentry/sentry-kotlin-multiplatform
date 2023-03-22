@@ -109,7 +109,7 @@ fun initializeSentry() {
 }
 
 private fun optionsConfiguration(): OptionsConfiguration = {
-  it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
+  it.dsn = "__DSN__"
 }
 
 ```
