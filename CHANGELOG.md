@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.2
+
+### Various fixes & improvements
+
+- remove other sdks in .craft.yml (#58) by @buenaflor
+- fix: sdk name (#57) by @buenaflor
+- chore: update readme (#56) by @buenaflor
+- bump craft minVersion to 1.2.1 (#55) by @buenaflor
+
 ## 0.0.1-alpha.2
 
 ### Features
