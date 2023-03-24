@@ -51,10 +51,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation(Config.Libs.sentryAndroid) {
-                    // avoid duplicate dependencies since we depend on commonJvmMain
-                    exclude("io.sentry", "sentry")
-                }
+                implementation(Config.Libs.sentryAndroid)
             }
         }
         val androidUnitTest by getting
