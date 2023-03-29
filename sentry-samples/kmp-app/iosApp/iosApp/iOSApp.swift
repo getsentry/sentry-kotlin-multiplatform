@@ -3,15 +3,15 @@ import shared
 
 @main
 struct iOSApp: App {
-    let sentry = Sentry()
-
+    let sentry = Sentry.shared
+    
     init() {
         // Initialize Sentry using shared code
         AppSetupKt.initializeSentry()
 
         // Shared scope across all platforms
         AppSetupKt.configureSentryScope()
-
+        
         // Add platform specific scope in addition to the shared scope
         sentry.configureScope { scope in
             scope.setContext(key: "iOS Context", value: [
