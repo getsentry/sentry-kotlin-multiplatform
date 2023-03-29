@@ -2,6 +2,10 @@
 
 ## 0.0.3
 
+### Features
+
+- Improve Objc/Swift experience with @HiddenFromObjc ([#62](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/62))
+
 ### Fixes
 
 - fix: crash on Android API levels 23 and below ([#61](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/61))
