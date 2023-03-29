@@ -1,10 +1,12 @@
 # Changelog
 
-## 0.0.3
+## Unreleased
 
 ### Features
 
 - Improve Objc/Swift experience with @HiddenFromObjc ([#62](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/62))
+
+## 0.0.3
 
 ### Fixes
 
