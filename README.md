@@ -8,10 +8,10 @@
     <h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
 </p>
 
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+
 This project is an experimental SDK for Kotlin Multiplatform.
 This SDK is a wrapper around different platforms such as JVM, Android, iOS, macOS, watchOS, tvOS that can be used on Kotlin Multiplatform.
-
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 
 | Packages                                | Maven Central
 |-----------------------------------------| -------
