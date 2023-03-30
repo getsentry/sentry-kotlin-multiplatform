@@ -12,7 +12,7 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
-actual abstract class Context
+public actual abstract class Context
 
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
@@ -68,10 +68,10 @@ internal actual object SentryBridge {
 
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit {
         return { cocoaScope ->
-            val cocoaScopeImpl = cocoaScope?.let {
-                ScopeCocoaImpl(it)
+            val cocoaScopeProvider = cocoaScope?.let {
+                CocoaScopeProvider(it)
             }
-            cocoaScopeImpl?.let {
+            cocoaScopeProvider?.let {
                 val scope = Scope(it)
                 scopeCallback.invoke(scope)
             }
@@ -79,10 +79,10 @@ internal actual object SentryBridge {
     }
 }
 
-fun Sentry.captureError(error: NSError) {
+public fun captureError(error: NSError) {
     SentrySDK.captureError(error)
 }
 
-fun Sentry.captureException(exception: NSException) {
+public fun captureException(exception: NSException) {
     SentrySDK.captureException(exception)
 }

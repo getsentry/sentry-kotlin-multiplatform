@@ -13,7 +13,7 @@ internal fun SentryLevel.toJvmSentryLevel(): JvmSentryLevel? {
     }
 }
 
-fun JvmSentryLevel.toKmpSentryLevel(): SentryLevel? {
+internal fun JvmSentryLevel.toKmpSentryLevel(): SentryLevel? {
     return when (this) {
         JvmSentryLevel.DEBUG -> SentryLevel.DEBUG
         JvmSentryLevel.INFO -> SentryLevel.INFO

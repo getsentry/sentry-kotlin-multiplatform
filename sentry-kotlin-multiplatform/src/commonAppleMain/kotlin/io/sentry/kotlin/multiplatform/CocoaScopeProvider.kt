@@ -10,7 +10,7 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import Scope.Sentry.SentryScope as PrivateCocoaScope
 
-internal class ScopeCocoaImpl(private val scope: CocoaScope) : ISentryScope {
+internal class CocoaScopeProvider(private val scope: CocoaScope) : ScopeProvider {
 
     /*
      This bridge exposes private Cocoa SDK API to fetch internal properties such as user, level, etc.
