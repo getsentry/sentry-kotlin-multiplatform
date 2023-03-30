@@ -11,6 +11,8 @@
 This project is an experimental SDK for Kotlin Multiplatform.
 This SDK is a wrapper around different platforms such as JVM, Android, iOS, macOS, watchOS, tvOS that can be used on Kotlin Multiplatform.
 
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+
 | Packages                                | Maven Central
 |-----------------------------------------| -------
 | sentry-kotlin-multiplatform                          | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.sentry/sentry-kotlin-multiplatform/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.sentry/sentry-kotlin-multiplatform)
