@@ -31,8 +31,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.maxAttachmentSize = options.maxAttachmentSize.convert()
     this.maxBreadcrumbs = options.maxBreadcrumbs.convert()
     this.beforeSend = { event ->
-        dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
-
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
 
@@ -50,7 +48,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         sdk?.set("packages", packages)
 
         event?.sdk = sdk
-        event
+        dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
     }
 
     val sdkName = options.sdk?.name ?: BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME

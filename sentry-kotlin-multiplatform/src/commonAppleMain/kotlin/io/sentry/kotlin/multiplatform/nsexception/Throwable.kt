@@ -22,9 +22,8 @@ package io.sentry.kotlin.multiplatform.nsexception
 val Throwable.causes: List<Throwable> get() = buildList {
     val causes = mutableSetOf<Throwable>()
     var cause = cause
-    while (cause != null && cause !in causes) {
+    while (cause != null && causes.add(cause)) {
         add(cause)
-        causes.add(cause)
         cause = cause.cause
     }
 }
