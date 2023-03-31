@@ -1,44 +1,44 @@
 package io.sentry.kotlin.multiplatform
 
-actual class Attachment : IAttachment {
+public actual class Attachment {
 
-    var jvmAttachment: JvmAttachment
+    internal var jvmAttachment: JvmAttachment
 
-    actual override val filename: String
+    public actual val filename: String
         get() = jvmAttachment.filename
 
-    actual override val pathname: String?
+    public actual val pathname: String?
         get() = jvmAttachment.pathname
 
-    actual override val bytes: ByteArray?
+    public actual val bytes: ByteArray?
         get() = jvmAttachment.bytes
 
-    actual override val contentType: String?
+    public actual val contentType: String?
         get() = jvmAttachment.contentType
 
-    actual companion object {
-        actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
+    public actual companion object {
+        public actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
             return Attachment(screenshotBytes, "screenshot.png", "image/png")
         }
     }
 
-    actual constructor(pathname: String) {
+    public actual constructor(pathname: String) {
         jvmAttachment = JvmAttachment(pathname)
     }
 
-    actual constructor(pathname: String, filename: String) {
+    public actual constructor(pathname: String, filename: String) {
         jvmAttachment = JvmAttachment(pathname, filename)
     }
 
-    actual constructor(pathname: String, filename: String, contentType: String?) {
+    public actual constructor(pathname: String, filename: String, contentType: String?) {
         jvmAttachment = JvmAttachment(pathname, filename, contentType)
     }
 
-    actual constructor(bytes: ByteArray, filename: String) {
+    public actual constructor(bytes: ByteArray, filename: String) {
         jvmAttachment = JvmAttachment(bytes, filename)
     }
 
-    actual constructor(bytes: ByteArray, filename: String, contentType: String?) {
+    public actual constructor(bytes: ByteArray, filename: String, contentType: String?) {
         jvmAttachment = JvmAttachment(bytes, filename, contentType)
     }
 }

@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-data class UserFeedback(internal val sentryId: SentryId) {
+public data class UserFeedback(val sentryId: SentryId) {
 
     /** The user's name */
     var name: String? = null
