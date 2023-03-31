@@ -6,6 +6,10 @@
 
 - Improve Objc/Swift experience with @HiddenFromObjc ([#62](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/62))
 
+### Fixes
+
+- fix: cocoa crash handling due to sdkInfo removal in cocoa sdk ([#68](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/68))
+
 ## 0.0.3
 
 ### Fixes
