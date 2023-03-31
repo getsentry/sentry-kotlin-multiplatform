@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
+import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
@@ -17,6 +18,14 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
 
     if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_JAVA_PACKAGE_NAME } == true) {
         it.sdkVersion?.addPackage(BuildKonfig.SENTRY_JAVA_PACKAGE_NAME, BuildKonfig.SENTRY_JAVA_VERSION)
+    }
+
+    it.setBeforeSend { event, hint ->
+        val kmpSentryEvent = this.beforeSend?.invoke(SentryEvent(event))
+        kmpSentryEvent?.let { kmpSentryEvent ->
+            event.applyKmpEvent(kmpSentryEvent)
+        }
+        event
     }
 }
 

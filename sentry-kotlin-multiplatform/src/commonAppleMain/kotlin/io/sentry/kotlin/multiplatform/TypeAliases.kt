@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentryAttachment
 import cocoapods.Sentry.SentryBreadcrumb
+import cocoapods.Sentry.SentryEvent
 import cocoapods.Sentry.SentryId
 import cocoapods.Sentry.SentryLevel
 import cocoapods.Sentry.SentryOptions
@@ -17,3 +18,4 @@ internal typealias CocoaSentryId = SentryId
 internal typealias CocoaSentryLevel = SentryLevel
 internal typealias CocoaAttachment = SentryAttachment
 internal typealias CocoaUserFeedback = SentryUserFeedback
+internal typealias CocoaSentryEvent = SentryEvent
