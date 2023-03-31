@@ -64,12 +64,12 @@ internal fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHoo
 /**
  * Tag used to mark the Kotlin termination crash.
  */
-private const val kotlinCrashedTag = "nsexceptionkt.kotlin_crashed"
+internal const val kotlinCrashedTag = "nsexceptionkt.kotlin_crashed"
 
 /**
  * Converts `this` [Throwable] to a [SentryEnvelope].
  */
-private fun Throwable.asSentryEnvelope(): SentryEnvelope {
+internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
     val event = asSentryEvent()
     val preparedEvent = SentrySDK.currentHub().let { hub ->
         hub.getClient()?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isCrashEvent = true)
