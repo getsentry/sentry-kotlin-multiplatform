@@ -7,6 +7,4 @@ public expect class SentryEvent : SentryBaseEvent {
     public var logger: String?
     public var level: SentryLevel?
     public var fingerprint: List<String>?
-    public fun isCrashed(): Boolean
-    public fun isError(): Boolean
 }

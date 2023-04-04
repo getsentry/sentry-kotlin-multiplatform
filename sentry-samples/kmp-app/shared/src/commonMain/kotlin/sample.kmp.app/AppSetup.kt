@@ -44,6 +44,13 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachThreads = true
         it.attachScreenshot = true
         it.release = "kmp-release@0.0.1"
+        it.beforeSend = { event ->
+            if (event.environment == "test") {
+                null
+            } else {
+                event
+            }
+        }
         it.beforeBreadcrumb = { breadcrumb ->
             breadcrumb.message = "Add message before every breadcrumb"
             breadcrumb

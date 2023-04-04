@@ -2,13 +2,13 @@ package io.sentry.kotlin.multiplatform.protocol
 
 public data class User(
     /** The user's email */
-    var email: String = "",
+    var email: String? = null,
 
     /** The user's id */
-    var id: String = "",
+    var id: String? = null,
 
     /** The user's username */
-    var username: String = "",
+    var username: String? = null,
 
     /** The user's ip address*/
     var ipAddress: String? = null,
@@ -34,5 +34,5 @@ public data class User(
 
     // This secondary constructor allows Swift also to init without specifying nil explicitly
     // example: User.init() instead of User.init(user: nil)
-    public constructor() : this("", "", "", null, null, null)
+    public constructor() : this(null, null, null, null, null, null)
 }

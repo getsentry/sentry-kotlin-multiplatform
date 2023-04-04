@@ -17,15 +17,10 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
     }
 
     if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_JAVA_PACKAGE_NAME } == true) {
-        it.sdkVersion?.addPackage(BuildKonfig.SENTRY_JAVA_PACKAGE_NAME, BuildKonfig.SENTRY_JAVA_VERSION)
-    }
-
-    it.setBeforeSend { event, hint ->
-        val kmpSentryEvent = this.beforeSend?.invoke(SentryEvent(event))
-        kmpSentryEvent?.let { kmpSentryEvent ->
-            event.applyKmpEvent(kmpSentryEvent)
-        }
-        event
+        it.sdkVersion?.addPackage(
+            BuildKonfig.SENTRY_JAVA_PACKAGE_NAME,
+            BuildKonfig.SENTRY_JAVA_VERSION
+        )
     }
 }
 
@@ -47,5 +42,11 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     this.maxBreadcrumbs = options.maxBreadcrumbs
     this.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
+    }
+
+    this.setBeforeSend { jvmSentryEvent, hint ->
+        options.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
+            jvmSentryEvent.applyKmpEvent(it)
+        }
     }
 }
