@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
-import cocoapods.Sentry.SentryException
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
