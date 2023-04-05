@@ -13,30 +13,38 @@ public abstract class SentryBaseEvent(public var eventId: SentryId = SentryId.EM
     public open var user: User? = null
     public open var serverName: String? = null
     public open var dist: String? = null
-    private var breadcrumbs: MutableList<Breadcrumb>? = null
-    private var tags: MutableMap<String, String>? = null
+    private var _breadcrumbs: MutableList<Breadcrumb>? = null
+    public open var breadcrumbs: List<Breadcrumb>?
+        get() = _breadcrumbs
+        set(value) {
+            _breadcrumbs = value?.toMutableList()
+        }
 
-    public fun getBreadcrumbs(): List<Breadcrumb>? = breadcrumbs
+    private var _tags: MutableMap<String, String>? = null
+    public open var tags: Map<String, String>?
+        get() = _tags
+        set(value) {
+            _tags = value?.toMutableMap()
+        }
 
-    public fun getTags(): Map<String, String>? = tags
-    public fun getTag(key: String): String? = tags?.get(key)
+    public fun getTag(key: String): String? = _tags?.get(key)
 
     public fun removeTag(key: String) {
-        tags?.remove(key)
+        _tags?.remove(key)
     }
 
     public fun setTag(key: String, value: String) {
-        if (tags == null) {
-            tags = HashMap()
+        if (_tags == null) {
+            _tags = HashMap()
         }
-        tags!![key] = value
+        _tags!![key] = value
     }
 
     public fun addBreadcrumb(breadcrumb: Breadcrumb) {
-        if (breadcrumbs == null) {
-            breadcrumbs = mutableListOf()
+        if (_breadcrumbs == null) {
+            _breadcrumbs = mutableListOf()
         }
-        breadcrumbs?.add(breadcrumb)
+        _breadcrumbs?.add(breadcrumb)
     }
 
     public fun addBreadcrumb(message: String?) {

@@ -2,28 +2,44 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKmpMessage
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryException
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.protocol.Message
+import io.sentry.kotlin.multiplatform.protocol.SentryException
 import io.sentry.kotlin.multiplatform.protocol.User
 
-public actual class SentryEvent(jvmSentryEvent: JvmSentryEvent? = null) : SentryBaseEvent() {
-    public actual var level: SentryLevel? = jvmSentryEvent?.level?.toKmpSentryLevel()
-    public actual var message: Message? = jvmSentryEvent?.message?.toKmpMessage()
-    public actual var logger: String? = jvmSentryEvent?.logger
-    public actual var fingerprint: List<String>? = jvmSentryEvent?.fingerprints?.toList()
-    public override var release: String? = jvmSentryEvent?.release
-    public override var environment: String? = jvmSentryEvent?.environment
-    public override var platform: String? = jvmSentryEvent?.platform
-    public override var user: User? = jvmSentryEvent?.user?.toKmpUser()
-    public override var serverName: String? = jvmSentryEvent?.serverName
-    public override var dist: String? = jvmSentryEvent?.dist
+public actual class SentryEvent actual constructor() : SentryBaseEvent() {
 
-    init {
-        jvmSentryEvent?.breadcrumbs?.forEach {
-            addBreadcrumb(it.toKmpBreadcrumb())
+    public actual var level: SentryLevel? = null
+    public actual var message: Message? = null
+    public actual var logger: String? = null
+    public actual var fingerprint: List<String>? = null
+    public actual var exceptions: List<SentryException>? = null
+    public override var release: String? = null
+    public override var environment: String? = null
+    public override var platform: String? = null
+    public override var user: User? = null
+    public override var serverName: String? = null
+    public override var dist: String? = null
+
+    public constructor(jvmSentryEvent: JvmSentryEvent) : this() {
+        level = jvmSentryEvent.level?.toKmpSentryLevel()
+        message = jvmSentryEvent.message?.toKmpMessage()
+        logger = jvmSentryEvent.logger
+        fingerprint = jvmSentryEvent.fingerprints?.toList()
+        exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toList()
+        println("exceptions: $exceptions")
+        release = jvmSentryEvent.release
+        environment = jvmSentryEvent.environment
+        platform = jvmSentryEvent.platform
+        user = jvmSentryEvent.user?.toKmpUser()
+        serverName = jvmSentryEvent.serverName
+        dist = jvmSentryEvent.dist
+        jvmSentryEvent.breadcrumbs?.forEach { breadcrumb ->
+            addBreadcrumb(breadcrumb.toKmpBreadcrumb())
         }
-        jvmSentryEvent?.tags?.forEach { (key, value) ->
+        jvmSentryEvent.tags?.forEach { (key, value) ->
             setTag(key, value)
         }
     }

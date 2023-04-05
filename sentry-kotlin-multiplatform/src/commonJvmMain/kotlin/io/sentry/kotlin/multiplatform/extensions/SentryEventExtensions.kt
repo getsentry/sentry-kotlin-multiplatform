@@ -15,7 +15,7 @@ internal fun JvmSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): JvmSentryEvent
     this.user = kmpEvent.user?.toJvmUser()
     this.serverName = kmpEvent.serverName
     this.dist = kmpEvent.dist
-    this.breadcrumbs = kmpEvent.getBreadcrumbs()?.map { it.toJvmBreadcrumb() }?.toMutableList()
-    this.tags = kmpEvent.getTags()?.toMutableMap()
+    this.breadcrumbs = kmpEvent.breadcrumbs?.map { it.toJvmBreadcrumb() }?.toMutableList()
+    this.tags = kmpEvent.tags?.toMutableMap()
     return this
 }

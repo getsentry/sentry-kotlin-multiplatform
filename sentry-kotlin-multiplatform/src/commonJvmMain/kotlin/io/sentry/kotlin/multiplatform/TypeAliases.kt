@@ -8,6 +8,7 @@ import io.sentry.SentryLevel
 import io.sentry.SentryOptions
 import io.sentry.UserFeedback
 import io.sentry.protocol.Message
+import io.sentry.protocol.SentryException
 import io.sentry.protocol.SentryId
 import io.sentry.protocol.User
 
@@ -21,3 +22,4 @@ internal typealias JvmAttachment = Attachment
 internal typealias JvmUserFeedback = UserFeedback
 internal typealias JvmSentryEvent = SentryEvent
 internal typealias JvmMessage = Message
+internal typealias JvmSentryException = SentryException

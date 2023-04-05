@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
+import cocoapods.Sentry.SentryException
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
@@ -54,11 +55,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
         options.beforeSend?.invoke(SentryEvent(event))?.let {
             event?.applyKmpEvent(it)
-        }.also {
-            println(it?.user?.userId)
-            println(it?.user?.username)
-            println(it?.user?.email)
-            println(it?.user?.ipAddress)
         }
     }
 
