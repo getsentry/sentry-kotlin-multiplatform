@@ -11,7 +11,8 @@ internal fun CocoaMessage.toKmpMessage() = Message(
 
 internal fun Message.toCocoaMessage(): CocoaMessage {
     val scope = this@toCocoaMessage
-    return (scope.formatted?.let { CocoaMessage(it) } ?: CocoaMessage()).apply {
+    val cocoaMessage = scope.formatted?.let { CocoaMessage(it) } ?: CocoaMessage()
+    return cocoaMessage.apply {
         message = scope.message
         params = scope.params
     }

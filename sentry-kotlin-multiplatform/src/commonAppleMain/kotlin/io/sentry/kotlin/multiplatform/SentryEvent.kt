@@ -7,6 +7,7 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.protocol.Message
 import io.sentry.kotlin.multiplatform.protocol.SentryException
+import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
 public actual class SentryEvent actual constructor() : SentryBaseEvent() {
@@ -24,6 +25,7 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public override var dist: String? = null
 
     public constructor(cocoaSentryEvent: CocoaSentryEvent?) : this() {
+        eventId = SentryId(cocoaSentryEvent?.eventId.toString())
         level = cocoaSentryEvent?.level?.toKmpSentryLevel()
         message = cocoaSentryEvent?.message?.toKmpMessage()
         logger = cocoaSentryEvent?.logger

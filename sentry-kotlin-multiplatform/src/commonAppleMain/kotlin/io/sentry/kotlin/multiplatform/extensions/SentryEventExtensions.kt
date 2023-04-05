@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.extensions
 
+import cocoapods.Sentry.SentryId
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.SentryEvent
 
@@ -16,5 +17,6 @@ internal fun CocoaSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): CocoaSentryE
     this.dist = kmpEvent.dist
     this.breadcrumbs = kmpEvent.breadcrumbs?.map { it.toCocoaBreadcrumb() }?.toMutableList()
     this.tags = kmpEvent.tags?.toMutableMap()
+    this.eventId = SentryId(kmpEvent.eventId.toString())
     return this
 }

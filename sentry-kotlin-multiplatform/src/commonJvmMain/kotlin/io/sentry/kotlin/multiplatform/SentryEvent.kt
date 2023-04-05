@@ -7,6 +7,7 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.protocol.Message
 import io.sentry.kotlin.multiplatform.protocol.SentryException
+import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
 public actual class SentryEvent actual constructor() : SentryBaseEvent() {
@@ -24,18 +25,19 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public override var dist: String? = null
 
     public constructor(jvmSentryEvent: JvmSentryEvent) : this() {
+        eventId = SentryId(jvmSentryEvent.eventId.toString())
         level = jvmSentryEvent.level?.toKmpSentryLevel()
         message = jvmSentryEvent.message?.toKmpMessage()
         logger = jvmSentryEvent.logger
         fingerprint = jvmSentryEvent.fingerprints?.toList()
         exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toList()
-        println("exceptions: $exceptions")
         release = jvmSentryEvent.release
         environment = jvmSentryEvent.environment
         platform = jvmSentryEvent.platform
         user = jvmSentryEvent.user?.toKmpUser()
         serverName = jvmSentryEvent.serverName
         dist = jvmSentryEvent.dist
+        _contexts = jvmSentryEvent.contexts
         jvmSentryEvent.breadcrumbs?.forEach { breadcrumb ->
             addBreadcrumb(breadcrumb.toKmpBreadcrumb())
         }

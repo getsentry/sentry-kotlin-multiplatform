@@ -1,9 +1,9 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.JvmSentryEvent
+import io.sentry.kotlin.multiplatform.JvmSentryId
 import io.sentry.kotlin.multiplatform.SentryEvent
 
-// Todo: test how null values are behaving
 internal fun JvmSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): JvmSentryEvent {
     this.level = kmpEvent.level?.toJvmSentryLevel()
     this.message = kmpEvent.message?.toJvmMessage()
@@ -16,6 +16,7 @@ internal fun JvmSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): JvmSentryEvent
     this.serverName = kmpEvent.serverName
     this.dist = kmpEvent.dist
     this.breadcrumbs = kmpEvent.breadcrumbs?.map { it.toJvmBreadcrumb() }?.toMutableList()
+    this.eventId = JvmSentryId(kmpEvent.eventId.toString())
     this.tags = kmpEvent.tags?.toMutableMap()
     return this
 }

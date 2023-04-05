@@ -4,15 +4,16 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
-public abstract class SentryBaseEvent(public var eventId: SentryId = SentryId.EMPTY_ID) {
+public abstract class SentryBaseEvent(public open var eventId: SentryId = SentryId.EMPTY_ID) {
 
-    // public val contexts = Contexts()
     public open var release: String? = null
     public open var environment: String? = null
     public open var platform: String? = null
     public open var user: User? = null
     public open var serverName: String? = null
     public open var dist: String? = null
+    protected var _contexts: Map<String, Any>? = null
+    public open val contexts: Map<String, Any>? get() = _contexts
     private var _breadcrumbs: MutableList<Breadcrumb>? = null
     public open var breadcrumbs: List<Breadcrumb>?
         get() = _breadcrumbs
