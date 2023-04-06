@@ -39,6 +39,8 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         user = cocoaSentryEvent?.user?.toKmpUser()
         serverName = cocoaSentryEvent?.serverName
         dist = cocoaSentryEvent?.dist
+        _contexts =
+            cocoaSentryEvent?.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
         cocoaSentryEvent?.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }?.forEach {
             addBreadcrumb(it.toKmpBreadcrumb())
         }
