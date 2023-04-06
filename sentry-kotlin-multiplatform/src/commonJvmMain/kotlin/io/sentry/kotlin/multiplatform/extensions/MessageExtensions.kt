@@ -4,14 +4,14 @@ import io.sentry.kotlin.multiplatform.JvmMessage
 import io.sentry.kotlin.multiplatform.protocol.Message
 
 internal fun JvmMessage.toKmpMessage() = Message(
-    message = message,
-    params = params,
-    formatted = formatted
+    message = this.message,
+    params = this.params,
+    formatted = this.formatted
 )
 
 internal fun Message.toJvmMessage() = JvmMessage().apply {
     val scope = this@toJvmMessage
-    message = scope.message
-    params = scope.params
-    formatted = scope.formatted
+    this.message = scope.message
+    this.params = scope.params
+    this.formatted = scope.formatted
 }
