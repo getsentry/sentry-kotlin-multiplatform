@@ -12,43 +12,43 @@ public abstract class SentryBaseEvent(public open var eventId: SentryId = Sentry
     public open var user: User? = null
     public open var serverName: String? = null
     public open var dist: String? = null
-    protected var _contexts: Map<String, Any>? = null
-    public open val contexts: Map<String, Any>? get() = _contexts
-    private var _breadcrumbs: MutableList<Breadcrumb>? = null
+    protected var mutableContexts: Map<String, Any>? = null
+    public open val contexts: Map<String, Any>? get() = mutableContexts
+    private var mutableBreadcrumbs: MutableList<Breadcrumb>? = null
     public open var breadcrumbs: List<Breadcrumb>?
-        get() = _breadcrumbs
+        get() = this.mutableBreadcrumbs
         set(value) {
-            _breadcrumbs = value?.toMutableList()
+            this.mutableBreadcrumbs = value?.toMutableList()
         }
 
-    private var _tags: MutableMap<String, String>? = null
+    private var mutableTags: MutableMap<String, String>? = null
     public open var tags: Map<String, String>?
-        get() = _tags
+        get() = this.mutableTags
         set(value) {
-            _tags = value?.toMutableMap()
+            this.mutableTags = value?.toMutableMap()
         }
 
-    public fun getTag(key: String): String? = _tags?.get(key)
+    public fun getTag(key: String): String? = this.mutableTags?.get(key)
 
     public fun removeTag(key: String) {
-        _tags?.remove(key)
+        this.mutableTags?.remove(key)
     }
 
     public fun setTag(key: String, value: String) {
-        if (_tags == null) {
-            _tags = HashMap()
+        if (mutableTags == null) {
+            this.mutableTags = HashMap()
         }
-        _tags!![key] = value
+        this.mutableTags!![key] = value
     }
 
     public fun addBreadcrumb(breadcrumb: Breadcrumb) {
-        if (_breadcrumbs == null) {
-            _breadcrumbs = mutableListOf()
+        if (mutableBreadcrumbs == null) {
+            this.mutableBreadcrumbs = mutableListOf()
         }
-        _breadcrumbs?.add(breadcrumb)
+        this.mutableBreadcrumbs?.add(breadcrumb)
     }
 
     public fun addBreadcrumb(message: String?) {
-        addBreadcrumb(Breadcrumb(message = message))
+        this.addBreadcrumb(Breadcrumb(message = message))
     }
 }

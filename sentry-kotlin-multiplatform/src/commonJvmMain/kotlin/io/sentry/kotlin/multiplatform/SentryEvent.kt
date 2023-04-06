@@ -25,24 +25,24 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public override var dist: String? = null
 
     public constructor(jvmSentryEvent: JvmSentryEvent) : this() {
-        eventId = SentryId(jvmSentryEvent.eventId.toString())
-        level = jvmSentryEvent.level?.toKmpSentryLevel()
-        message = jvmSentryEvent.message?.toKmpMessage()
-        logger = jvmSentryEvent.logger
-        fingerprint = jvmSentryEvent.fingerprints?.toList()
-        exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toList()
-        release = jvmSentryEvent.release
-        environment = jvmSentryEvent.environment
-        platform = jvmSentryEvent.platform
-        user = jvmSentryEvent.user?.toKmpUser()
-        serverName = jvmSentryEvent.serverName
-        dist = jvmSentryEvent.dist
-        _contexts = jvmSentryEvent.contexts
+        this.eventId = SentryId(jvmSentryEvent.eventId.toString())
+        this.level = jvmSentryEvent.level?.toKmpSentryLevel()
+        this.message = jvmSentryEvent.message?.toKmpMessage()
+        this.logger = jvmSentryEvent.logger
+        this.fingerprint = jvmSentryEvent.fingerprints?.toList()
+        this.exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toList()
+        this.release = jvmSentryEvent.release
+        this.environment = jvmSentryEvent.environment
+        this.platform = jvmSentryEvent.platform
+        this.user = jvmSentryEvent.user?.toKmpUser()
+        this.serverName = jvmSentryEvent.serverName
+        this.dist = jvmSentryEvent.dist
+        this.mutableContexts = jvmSentryEvent.contexts
         jvmSentryEvent.breadcrumbs?.forEach { breadcrumb ->
-            addBreadcrumb(breadcrumb.toKmpBreadcrumb())
+            this.addBreadcrumb(breadcrumb.toKmpBreadcrumb())
         }
         jvmSentryEvent.tags?.forEach { (key, value) ->
-            setTag(key, value)
+            this.setTag(key, value)
         }
     }
 }

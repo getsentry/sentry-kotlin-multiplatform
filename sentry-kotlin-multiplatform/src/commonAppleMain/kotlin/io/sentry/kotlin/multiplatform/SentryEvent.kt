@@ -25,27 +25,27 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public override var dist: String? = null
 
     public constructor(cocoaSentryEvent: CocoaSentryEvent?) : this() {
-        eventId = SentryId(cocoaSentryEvent?.eventId.toString())
-        level = cocoaSentryEvent?.level?.toKmpSentryLevel()
-        message = cocoaSentryEvent?.message?.toKmpMessage()
-        logger = cocoaSentryEvent?.logger
-        fingerprint = cocoaSentryEvent?.fingerprint()?.toList() as? List<String>
-        exceptions =
+        this.eventId = SentryId(cocoaSentryEvent?.eventId.toString())
+        this.level = cocoaSentryEvent?.level?.toKmpSentryLevel()
+        this.message = cocoaSentryEvent?.message?.toKmpMessage()
+        this.logger = cocoaSentryEvent?.logger
+        this.fingerprint = cocoaSentryEvent?.fingerprint()?.toList() as? List<String>
+        this.exceptions =
             cocoaSentryEvent?.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
                 ?.toList()
-        release = cocoaSentryEvent?.releaseName
-        environment = cocoaSentryEvent?.environment
-        platform = cocoaSentryEvent?.platform
-        user = cocoaSentryEvent?.user?.toKmpUser()
-        serverName = cocoaSentryEvent?.serverName
-        dist = cocoaSentryEvent?.dist
-        _contexts =
+        this.release = cocoaSentryEvent?.releaseName
+        this.environment = cocoaSentryEvent?.environment
+        this.platform = cocoaSentryEvent?.platform
+        this.user = cocoaSentryEvent?.user?.toKmpUser()
+        this.serverName = cocoaSentryEvent?.serverName
+        this.dist = cocoaSentryEvent?.dist
+        this.mutableContexts =
             cocoaSentryEvent?.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
         cocoaSentryEvent?.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }?.forEach {
-            addBreadcrumb(it.toKmpBreadcrumb())
+            this.addBreadcrumb(it.toKmpBreadcrumb())
         }
         cocoaSentryEvent?.tags?.filterValues { it is String }?.forEach { (key, value) ->
-            setTag(key as String, value as String)
+            this.setTag(key as String, value as String)
         }
     }
 }
