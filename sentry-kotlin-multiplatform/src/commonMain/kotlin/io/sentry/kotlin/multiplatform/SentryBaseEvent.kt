@@ -4,6 +4,7 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
+/** Base class for all Sentry events. */
 public abstract class SentryBaseEvent(public open var eventId: SentryId = SentryId.EMPTY_ID) {
 
     public open var release: String? = null
