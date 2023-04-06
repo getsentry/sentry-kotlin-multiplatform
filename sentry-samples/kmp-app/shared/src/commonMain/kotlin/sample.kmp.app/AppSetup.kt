@@ -48,7 +48,6 @@ private fun optionsConfiguration(): OptionsConfiguration {
             if (event.environment == "test") {
                 null
             } else {
-                println("contexts: ${event.contexts}")
                 event
             }
         }
