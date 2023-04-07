@@ -24,27 +24,27 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public override var serverName: String? = null
     public override var dist: String? = null
 
-    public constructor(cocoaSentryEvent: CocoaSentryEvent?) : this() {
-        this.eventId = SentryId(cocoaSentryEvent?.eventId.toString())
-        this.level = cocoaSentryEvent?.level?.toKmpSentryLevel()
-        this.message = cocoaSentryEvent?.message?.toKmpMessage()
-        this.logger = cocoaSentryEvent?.logger
-        this.fingerprint = cocoaSentryEvent?.fingerprint()?.toList() as? List<String>
+    public constructor(cocoaSentryEvent: CocoaSentryEvent) : this() {
+        this.eventId = SentryId(cocoaSentryEvent.eventId.toString())
+        this.level = cocoaSentryEvent.level?.toKmpSentryLevel()
+        this.message = cocoaSentryEvent.message?.toKmpMessage()
+        this.logger = cocoaSentryEvent.logger
+        this.fingerprint = cocoaSentryEvent.fingerprint()?.toList() as? List<String>
         this.exceptions =
-            cocoaSentryEvent?.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
+            cocoaSentryEvent.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
                 ?.toList()
-        this.release = cocoaSentryEvent?.releaseName
-        this.environment = cocoaSentryEvent?.environment
-        this.platform = cocoaSentryEvent?.platform
-        this.user = cocoaSentryEvent?.user?.toKmpUser()
-        this.serverName = cocoaSentryEvent?.serverName
-        this.dist = cocoaSentryEvent?.dist
+        this.release = cocoaSentryEvent.releaseName
+        this.environment = cocoaSentryEvent.environment
+        this.platform = cocoaSentryEvent.platform
+        this.user = cocoaSentryEvent.user?.toKmpUser()
+        this.serverName = cocoaSentryEvent.serverName
+        this.dist = cocoaSentryEvent.dist
         this.mutableContexts =
-            cocoaSentryEvent?.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
-        cocoaSentryEvent?.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }?.forEach {
+            cocoaSentryEvent.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
+        cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }?.forEach {
             this.addBreadcrumb(it.toKmpBreadcrumb())
         }
-        cocoaSentryEvent?.tags?.filterValues { it is String }?.forEach { (key, value) ->
+        cocoaSentryEvent.tags?.filterValues { it is String }?.forEach { (key, value) ->
             this.setTag(key as String, value as String)
         }
     }

@@ -50,8 +50,9 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
         event?.sdk = sdk
 
-        val modifiedEvent = options.beforeSend?.invoke(SentryEvent(event))?.let {
-            event?.applyKmpEvent(it)
+        val modifiedEvent = event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
+            val result = options.beforeSend?.invoke(unwrappedEvent)
+            result?.let { event.applyKmpEvent(it) }
         }
 
         dropKotlinCrashEvent(modifiedEvent as NSExceptionSentryEvent?) as CocoaSentryEvent?
