@@ -39,6 +39,6 @@ KMP App with targets:
     - Dependency Injection with Koin
     - MVVM Architecture
  */
-include("sentry-samples:kmp-app-2:iosApp")
-include("sentry-samples:kmp-app-2:androidApp")
-include("sentry-samples:kmp-app-2:shared")
+include("sentry-samples:kmp-app-mvvm-di:iosApp")
+include("sentry-samples:kmp-app-mvvm-di:androidApp")
+include("sentry-samples:kmp-app-mvvm-di:shared")

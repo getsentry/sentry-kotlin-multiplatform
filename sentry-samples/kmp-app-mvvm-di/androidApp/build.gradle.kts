@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation(rootProject.project(":sentry-samples:kmp-app-2:shared"))
+    implementation(rootProject.project(":sentry-samples:kmp-app-mvvm-di:shared"))
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("androidx.appcompat:appcompat:1.6.1")

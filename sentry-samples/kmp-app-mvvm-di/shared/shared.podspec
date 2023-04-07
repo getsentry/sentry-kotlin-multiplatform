@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
     spec.dependency 'Sentry', '~> 8.3.3'
                 
     spec.pod_target_xcconfig = {
-        'KOTLIN_PROJECT_PATH' => ':sentry-samples:kmp-app-2:shared',
+        'KOTLIN_PROJECT_PATH' => ':sentry-samples:kmp-app-mvvm-di:shared',
         'PRODUCT_MODULE_NAME' => 'shared',
     }
                 
