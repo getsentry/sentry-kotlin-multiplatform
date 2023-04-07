@@ -1,0 +1,30 @@
+PODS:
+  - Sentry (8.3.3):
+    - Sentry/Core (= 8.3.3)
+    - SentryPrivate (= 8.3.3)
+  - Sentry/Core (8.3.3):
+    - SentryPrivate (= 8.3.3)
+  - SentryPrivate (8.3.3)
+  - shared (1.0):
+    - Sentry (~> 8.3.3)
+
+DEPENDENCIES:
+  - shared (from `../shared`)
+
+SPEC REPOS:
+  trunk:
+    - Sentry
+    - SentryPrivate
+
+EXTERNAL SOURCES:
+  shared:
+    :path: "../shared"
+
+SPEC CHECKSUMS:
+  Sentry: 8ffc397d98fe58d693e73959b26ed0eaee55646a
+  SentryPrivate: bf776a47a131648f5023097215987b40fbd47025
+  shared: ca840f618eed601b609feebc53a7e930427e5b00
+
+PODFILE CHECKSUM: f282da88f39e69507b0a255187c8a6b644477756
+
+COCOAPODS: 1.12.0
