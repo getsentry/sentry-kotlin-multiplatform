@@ -71,5 +71,5 @@ android {
         minSdk = 21
         targetSdk = 31
     }
-    namespace = "io.sentry.kmp.demo"
+    namespace = "sentry.kmp.demo"
 }

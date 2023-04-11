@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "io.sentry.kmp.demo.android"
+    namespace = "sentry.kmp.demo.android"
     compileSdk = 33
     defaultConfig {
-        applicationId = "io.sentry.kmp.demo"
+        applicationId = "sentry.kmp.demo"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
