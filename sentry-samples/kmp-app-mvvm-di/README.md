@@ -9,6 +9,12 @@ This is a demo app for the Sentry Kotlin Multiplatform SDK that includes a nativ
 
 ## Getting Started
 
+### Cocoapods
+You need Cocoapods installed on your machine.
+
+`pod install` will automatically run through gradle if you run the iOS app.
+However, you can still run `pod install` on the ios folder manually if you want to make sure the pods are up to date.
+
 ### DSN
 If you need to change the `DSN` you can do so in the `SentrySetup.kt` file in the `shared` module.
 
