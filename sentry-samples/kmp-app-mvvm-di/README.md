@@ -14,9 +14,10 @@ This is a demo app for the Sentry Kotlin Multiplatform SDK that includes a nativ
 Install the [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio.
 
 You can use Android Studio to run both the Android and iOS sample apps.
-Alternatively you can also run the iOS app directly from Xcode.
 
-The targets are both available as `sentry-samples.kmp-app-mvvm-di.iosApp` and `sentry-samples.kmp-app-mvvm-di.androidApp`.
+The android target is available as `sentry-samples.kmp-app-mvvm-di.androidApp` automatically.
+The iOS target needs to be configured: add a new run configuration and select an iOS application as a new target.
+You can then select the `iosApp.xcworkspace` file for the required `Xcode project file`.
 
 ### Android
 - Export your `ANDROID_HOME` environment variable if you haven't done already.
