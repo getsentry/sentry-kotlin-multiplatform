@@ -30,7 +30,7 @@ You need Cocoapods installed on your machine.
 
 Run `export LANG=en_US.UTF-8` to avoid encoding issues.
 
-`pod install` will automatically run through gradle if you run the iOS app.
+`pod install` will automatically run through gradle if you run the iOS app through Android Studio.
 However, you can still run `pod install` on the iOS folder manually if you want to make sure the pods are up to date.
 
 #### DSYMS
