@@ -183,7 +183,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which sentry-cli >/dev/null; then\nexport SENTRY_ORG=sentry-sdks\nexport SENTRY_PROJECT=sentry-kotlin-multiplatform\nexport SENTRY_AUTH_TOKEN=14e7bf400bc449589fdc32fad8beaad003456b05b784403fb11d109b6276cefe\nERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+			shellScript = "if which sentry-cli >/dev/null; then\nexport SENTRY_ORG=<org_slug>\nexport SENTRY_PROJECT=<project_slug>\nexport SENTRY_AUTH_TOKEN=<auth_token>\nERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
 		3620F85FA2EFF718C6F7366B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
