@@ -111,7 +111,7 @@
 				7555FF79242A565900829871 /* Resources */,
 				DAA6816987C1F96EB698F1CE /* Frameworks */,
 				80B824D75AE06EF6630365EC /* [CP] Embed Pods Frameworks */,
-				244CD81729DF007900F8451F /* Sentry dsyms upload */,
+				244CD82729E54BA500F8451F /* Sentry dsyms upload */,
 			);
 			buildRules = (
 			);
@@ -168,7 +168,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		244CD81729DF007900F8451F /* Sentry dsyms upload */ = {
+		244CD82729E54BA500F8451F /* Sentry dsyms upload */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -185,8 +185,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "
-";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 		4E7E0840DFEC454A512192BD /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
