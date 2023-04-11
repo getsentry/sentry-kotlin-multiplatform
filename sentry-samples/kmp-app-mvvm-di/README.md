@@ -15,19 +15,23 @@ Install the [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/p
 
 You can use Android Studio to run both the Android and iOS sample apps.
 
+The targets are both available as `sentry-samples.kmp-app-mvvm-di.iosApp` and `sentry-samples.kmp-app-mvvm-di.androidApp`.
 
 ### Android
 - Export your `ANDROID_HOME` environment variable if you haven't done already.
+- You can run `./gradlew :sentry-samples:kmp-app:androidApp:assembleDebug` to compile the Android app.
 
 ### iOS
 
 #### Cocoapods
 You need Cocoapods installed on your machine.
 
-`pod install` will automatically run through gradle if you run the iOS app.
-However, you can still run `pod install` on the ios folder manually if you want to make sure the pods are up to date.
+Run `export LANG=en_US.UTF-8` to avoid encoding issues.
 
-### DSYMS for iOS
+`pod install` will automatically run through gradle if you run the iOS app.
+However, you can still run `pod install` on the iOS folder manually if you want to make sure the pods are up to date.
+
+#### DSYMS
 First you need to have `sentry-cli` installed.
 
 Then add the following script to your `Build Phases` in Xcode and change the `org`, `project`, `auth_token` slug placeholders accordingly:
@@ -47,5 +51,5 @@ echo "warning: sentry-cli not installed, download from https://github.com/getsen
 fi
 ```
 
-### Setup
+### Sentry Setup
 If you need to change the `DSN` or any options you can do so in the `SentrySetup.kt` file in the `shared` module.
