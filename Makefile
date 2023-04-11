@@ -24,7 +24,9 @@ compile:
 	./gradlew build
 	sudo xcode-select --switch /Applications/Xcode.app && /usr/bin/xcodebuild -version
 	cd ./sentry-samples/kmp-app/iosApp; pod install
+	cd ./sentry-samples/kmp-app-mvvm-di/iosApp; pod install
 	xcodebuild -workspace ./sentry-samples/kmp-app/iosApp/iosApp.xcworkspace -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
+	xcodebuild -workspace ./sentry-samples/kmp-app-mvvm-di/iosApp/iosApp.xcworkspace -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
 
 # We stop gradle at the end to make sure the cache folders
 # don't contain any lock files and are free to be cached.
