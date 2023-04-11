@@ -9,19 +9,29 @@ This is a demo app for the Sentry Kotlin Multiplatform SDK that includes a nativ
 
 ## Getting Started
 
-### Cocoapods
+### IDE
+
+Install the [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio.
+
+You can use Android Studio to run both the Android and iOS sample apps.
+
+
+### Android
+- Export your `ANDROID_HOME` environment variable if you haven't done already.
+
+### iOS
+
+#### Cocoapods
 You need Cocoapods installed on your machine.
 
 `pod install` will automatically run through gradle if you run the iOS app.
 However, you can still run `pod install` on the ios folder manually if you want to make sure the pods are up to date.
 
-### DSN
-If you need to change the `DSN` you can do so in the `SentrySetup.kt` file in the `shared` module.
-
 ### DSYMS for iOS
 First you need to have `sentry-cli` installed.
 
-Then add the following script to your `Build Phases` in Xcode and change the `org`, `project`, `auth_token` slugs accordingly:
+Then add the following script to your `Build Phases` in Xcode and change the `org`, `project`, `auth_token` slug placeholders accordingly:
+Make sure to change the placeholders correctly, otherwise the iOS app will not run.
 
 ```shell
 if which sentry-cli >/dev/null; then
@@ -36,3 +46,6 @@ else
 echo "warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases"
 fi
 ```
+
+### Setup
+If you need to change the `DSN` or any options you can do so in the `SentrySetup.kt` file in the `shared` module.

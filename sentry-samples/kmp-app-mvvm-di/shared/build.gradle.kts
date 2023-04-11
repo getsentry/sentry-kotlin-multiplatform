@@ -40,7 +40,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("androidx.lifecycle:lifecycle-viewmodel:2.4.0-alpha03")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
             }
         }
         val androidUnitTest by getting
