@@ -5,18 +5,18 @@ import io.sentry.kotlin.multiplatform.JvmSentryId
 import io.sentry.kotlin.multiplatform.SentryEvent
 
 internal fun JvmSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): JvmSentryEvent {
-    this.level = kmpEvent.level?.toJvmSentryLevel()
-    this.message = kmpEvent.message?.toJvmMessage()
-    this.logger = kmpEvent.logger
-    this.fingerprints = kmpEvent.fingerprint
-    this.release = kmpEvent.release
-    this.environment = kmpEvent.environment
-    this.platform = kmpEvent.platform
-    this.user = kmpEvent.user?.toJvmUser()
-    this.serverName = kmpEvent.serverName
-    this.dist = kmpEvent.dist
-    this.breadcrumbs = kmpEvent.breadcrumbs?.map { it.toJvmBreadcrumb() }?.toMutableList()
-    this.eventId = JvmSentryId(kmpEvent.eventId.toString())
-    this.tags = kmpEvent.tags?.toMutableMap()
+    level = kmpEvent.level?.toJvmSentryLevel()
+    message = kmpEvent.message?.toJvmMessage()
+    logger = kmpEvent.logger
+    fingerprints = kmpEvent.fingerprint
+    release = kmpEvent.release
+    environment = kmpEvent.environment
+    platform = kmpEvent.platform
+    user = kmpEvent.user?.toJvmUser()
+    serverName = kmpEvent.serverName
+    dist = kmpEvent.dist
+    breadcrumbs = kmpEvent.breadcrumbs?.map { it.toJvmBreadcrumb() }?.toMutableList()
+    eventId = JvmSentryId(kmpEvent.eventId.toString())
+    tags = kmpEvent.tags?.toMutableMap()
     return this
 }

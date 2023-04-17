@@ -4,8 +4,8 @@ import io.sentry.kotlin.multiplatform.JvmSentryException
 import io.sentry.kotlin.multiplatform.protocol.SentryException
 
 internal fun JvmSentryException.toKmpSentryException() = SentryException(
-    type = this.type,
-    value = this.value,
-    module = this.module,
-    threadId = this.threadId
+    type = type,
+    value = value,
+    module = module,
+    threadId = threadId
 )

@@ -5,18 +5,18 @@ import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.SentryEvent
 
 internal fun CocoaSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): CocoaSentryEvent {
-    kmpEvent.level?.let { this.level = it.toCocoaSentryLevel() }
-    kmpEvent.platform?.let { this.platform = it }
-    this.message = kmpEvent.message?.toCocoaMessage()
-    this.logger = kmpEvent.logger
-    this.fingerprint = kmpEvent.fingerprint
-    this.releaseName = kmpEvent.release
-    this.environment = kmpEvent.environment
-    this.user = kmpEvent.user?.toCocoaUser()
-    this.serverName = kmpEvent.serverName
-    this.dist = kmpEvent.dist
-    this.breadcrumbs = kmpEvent.breadcrumbs?.map { it.toCocoaBreadcrumb() }?.toMutableList()
-    this.tags = kmpEvent.tags?.toMutableMap()
-    this.eventId = SentryId(kmpEvent.eventId.toString())
+    kmpEvent.level?.let { level = it.toCocoaSentryLevel() }
+    kmpEvent.platform?.let { platform = it }
+    message = kmpEvent.message?.toCocoaMessage()
+    logger = kmpEvent.logger
+    fingerprint = kmpEvent.fingerprint
+    releaseName = kmpEvent.release
+    environment = kmpEvent.environment
+    user = kmpEvent.user?.toCocoaUser()
+    serverName = kmpEvent.serverName
+    dist = kmpEvent.dist
+    breadcrumbs = kmpEvent.breadcrumbs?.map { it.toCocoaBreadcrumb() }?.toMutableList()
+    tags = kmpEvent.tags?.toMutableMap()
+    eventId = SentryId(kmpEvent.eventId.toString())
     return this
 }

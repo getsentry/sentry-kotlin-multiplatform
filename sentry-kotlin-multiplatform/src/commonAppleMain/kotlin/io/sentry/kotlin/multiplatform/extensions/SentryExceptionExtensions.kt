@@ -4,8 +4,8 @@ import io.sentry.kotlin.multiplatform.CocoaSentryException
 import io.sentry.kotlin.multiplatform.protocol.SentryException
 
 internal fun CocoaSentryException.toKmpSentryException() = SentryException(
-    type = this.type,
-    value = this.value,
-    module = this.module,
-    threadId = this.threadId as Long?
+    type = type,
+    value = value,
+    module = module,
+    threadId = threadId as Long?
 )
