@@ -38,11 +38,7 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         this.serverName = jvmSentryEvent.serverName
         this.dist = jvmSentryEvent.dist
         this.mutableContexts = jvmSentryEvent.contexts
-        jvmSentryEvent.breadcrumbs?.forEach { breadcrumb ->
-            this.addBreadcrumb(breadcrumb.toKmpBreadcrumb())
-        }
-        jvmSentryEvent.tags?.forEach { (key, value) ->
-            this.setTag(key, value)
-        }
+        this.mutableBreadcrumbs = jvmSentryEvent.breadcrumbs?.map { it.toKmpBreadcrumb() }?.toMutableList()
+        this.mutableTags = jvmSentryEvent.tags
     }
 }

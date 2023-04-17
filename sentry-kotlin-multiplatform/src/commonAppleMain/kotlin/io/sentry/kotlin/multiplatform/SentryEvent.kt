@@ -41,11 +41,11 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         this.dist = cocoaSentryEvent.dist
         this.mutableContexts =
             cocoaSentryEvent.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
-        cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }?.forEach {
-            this.addBreadcrumb(it.toKmpBreadcrumb())
-        }
-        cocoaSentryEvent.tags?.filterValues { it is String }?.forEach { (key, value) ->
-            this.setTag(key as String, value as String)
-        }
+        this.mutableBreadcrumbs =
+            cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }
+                ?.map { it.toKmpBreadcrumb() }?.toMutableList()
+        this.mutableTags =
+            cocoaSentryEvent.tags?.filterValues { it is String }?.mapKeys { it.key as String }
+                ?.mapValues { it.value as String }?.toMutableMap()
     }
 }
