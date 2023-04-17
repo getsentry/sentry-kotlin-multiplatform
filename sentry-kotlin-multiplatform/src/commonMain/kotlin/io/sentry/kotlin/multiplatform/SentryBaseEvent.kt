@@ -16,37 +16,37 @@ public abstract class SentryBaseEvent(public open var eventId: SentryId = Sentry
 
     /** This is not thread-safe */
     public open val contexts: Map<String, Any>? get() = mutableContexts
-    protected var mutableContexts: Map<String, Any>? = null
+    internal var mutableContexts: Map<String, Any>? = null
 
     /** This is not thread-safe */
-    public open val breadcrumbs: List<Breadcrumb>? get() = this.mutableBreadcrumbs
-    protected var mutableBreadcrumbs: MutableList<Breadcrumb>? = null
+    public open val breadcrumbs: List<Breadcrumb>? get() = mutableBreadcrumbs
+    internal var mutableBreadcrumbs: MutableList<Breadcrumb>? = null
 
     /** This is not thread-safe */
-    public open val tags: Map<String, String>? get() = this.mutableTags
-    protected var mutableTags: MutableMap<String, String>? = null
+    public open val tags: Map<String, String>? get() = mutableTags
+    internal var mutableTags: MutableMap<String, String>? = null
 
-    public fun getTag(key: String): String? = this.mutableTags?.get(key)
+    public fun getTag(key: String): String? = mutableTags?.get(key)
 
     public fun removeTag(key: String) {
-        this.mutableTags?.remove(key)
+        mutableTags?.remove(key)
     }
 
     public fun setTag(key: String, value: String) {
         if (mutableTags == null) {
-            this.mutableTags = HashMap()
+            mutableTags = HashMap()
         }
-        this.mutableTags?.set(key, value)
+        mutableTags?.set(key, value)
     }
 
     public fun addBreadcrumb(breadcrumb: Breadcrumb) {
         if (mutableBreadcrumbs == null) {
-            this.mutableBreadcrumbs = mutableListOf()
+            mutableBreadcrumbs = mutableListOf()
         }
-        this.mutableBreadcrumbs?.add(breadcrumb)
+        mutableBreadcrumbs?.add(breadcrumb)
     }
 
     public fun addBreadcrumb(message: String?) {
-        this.addBreadcrumb(Breadcrumb(message = message))
+        addBreadcrumb(Breadcrumb(message = message))
     }
 }

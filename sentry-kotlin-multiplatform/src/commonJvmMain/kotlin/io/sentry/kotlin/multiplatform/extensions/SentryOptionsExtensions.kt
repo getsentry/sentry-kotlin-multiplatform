@@ -9,10 +9,10 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
     it.applyJvmBaseOptions(this)
 
     // Apply JVM specific options
-    it.sdkVersion?.name = this.sdk?.name ?: BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
-    it.sdkVersion?.version = this.sdk?.version ?: BuildKonfig.VERSION_NAME
+    it.sdkVersion?.name = sdk?.name ?: BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
+    it.sdkVersion?.version = sdk?.version ?: BuildKonfig.VERSION_NAME
 
-    this.sdk?.packages?.forEach { sdkPackage ->
+    sdk?.packages?.forEach { sdkPackage ->
         it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
     }
 
@@ -29,21 +29,21 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
  * This avoids code duplication during init on Android
  */
 internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
-    this.dsn = options.dsn
-    this.isAttachThreads = options.attachThreads
-    this.isAttachStacktrace = options.attachStackTrace
-    this.dist = options.dist
-    this.environment = options.environment
-    this.release = options.release
-    this.isDebug = options.debug
-    this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
-    this.isEnableAutoSessionTracking = options.enableAutoSessionTracking
-    this.maxAttachmentSize = options.maxAttachmentSize
-    this.maxBreadcrumbs = options.maxBreadcrumbs
-    this.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
+    dsn = options.dsn
+    isAttachThreads = options.attachThreads
+    isAttachStacktrace = options.attachStackTrace
+    dist = options.dist
+    environment = options.environment
+    release = options.release
+    isDebug = options.debug
+    sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
+    isEnableAutoSessionTracking = options.enableAutoSessionTracking
+    maxAttachmentSize = options.maxAttachmentSize
+    maxBreadcrumbs = options.maxBreadcrumbs
+    setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
     }
-    this.setBeforeSend { jvmSentryEvent, hint ->
+    setBeforeSend { jvmSentryEvent, hint ->
         options.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
             jvmSentryEvent.applyKmpEvent(it)
         }

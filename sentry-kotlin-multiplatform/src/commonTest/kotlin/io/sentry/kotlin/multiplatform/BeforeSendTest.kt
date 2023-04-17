@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Message
+import io.sentry.kotlin.multiplatform.protocol.SentryException
 import io.sentry.kotlin.multiplatform.protocol.User
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -206,5 +207,41 @@ class BeforeSendTest {
 
         assertTrue(event?.tags?.containsKey(expectedKey) ?: false)
         assertEquals(event?.tags?.get(expectedKey), expectedValue)
+    }
+
+    @Test
+    fun `beforeSend receives contexts`() {
+        var contexts: Map<String, Any>? = mapOf()
+        val options = SentryOptions()
+        options.beforeSend = {
+            contexts = it.contexts
+            it
+        }
+
+        val event = options.beforeSend?.invoke(
+            SentryEvent().apply {
+                mutableContexts = mapOf("test" to "test")
+            }
+        )
+
+        assertEquals(contexts, event?.contexts)
+    }
+
+    @Test
+    fun `beforeSend modifies exceptions`() {
+        var exceptions: List<SentryException>? = listOf()
+        val options = SentryOptions()
+        options.beforeSend = {
+            exceptions = it.exceptions
+            it
+        }
+
+        val event = options.beforeSend?.invoke(
+            SentryEvent().apply {
+                exceptions = listOf(SentryException("test"))
+            }
+        )
+
+        assertEquals(exceptions, event?.exceptions)
     }
 }
