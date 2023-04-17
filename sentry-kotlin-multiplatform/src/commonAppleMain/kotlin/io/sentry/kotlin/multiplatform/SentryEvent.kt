@@ -25,26 +25,26 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public override var dist: String? = null
 
     public constructor(cocoaSentryEvent: CocoaSentryEvent) : this() {
-        this.eventId = SentryId(cocoaSentryEvent.eventId.toString())
-        this.level = cocoaSentryEvent.level?.toKmpSentryLevel()
-        this.message = cocoaSentryEvent.message?.toKmpMessage()
-        this.logger = cocoaSentryEvent.logger
-        this.fingerprint = cocoaSentryEvent.fingerprint()?.toList() as? List<String>
-        this.exceptions =
+        eventId = SentryId(cocoaSentryEvent.eventId.toString())
+        level = cocoaSentryEvent.level?.toKmpSentryLevel()
+        message = cocoaSentryEvent.message?.toKmpMessage()
+        logger = cocoaSentryEvent.logger
+        fingerprint = cocoaSentryEvent.fingerprint()?.toList() as? List<String>
+        exceptions =
             cocoaSentryEvent.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
                 ?.toList()
-        this.release = cocoaSentryEvent.releaseName
-        this.environment = cocoaSentryEvent.environment
-        this.platform = cocoaSentryEvent.platform
-        this.user = cocoaSentryEvent.user?.toKmpUser()
-        this.serverName = cocoaSentryEvent.serverName
-        this.dist = cocoaSentryEvent.dist
-        this.mutableContexts =
+        release = cocoaSentryEvent.releaseName
+        environment = cocoaSentryEvent.environment
+        platform = cocoaSentryEvent.platform
+        user = cocoaSentryEvent.user?.toKmpUser()
+        serverName = cocoaSentryEvent.serverName
+        dist = cocoaSentryEvent.dist
+        mutableContexts =
             cocoaSentryEvent.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
-        this.mutableBreadcrumbs =
+        mutableBreadcrumbs =
             cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }
                 ?.map { it.toKmpBreadcrumb() }?.toMutableList()
-        this.mutableTags =
+        mutableTags =
             cocoaSentryEvent.tags?.filterValues { it is String }?.mapKeys { it.key as String }
                 ?.mapValues { it.value as String }?.toMutableMap()
     }
