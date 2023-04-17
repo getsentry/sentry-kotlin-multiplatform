@@ -2,16 +2,24 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.SentryLevel
 
-data class Breadcrumb constructor(
-    override var type: String? = null,
-    override var category: String? = null,
-    override var message: String? = null,
-    override var level: SentryLevel? = null,
-    private var data: MutableMap<String, Any>? = null
-) : ISentryBreadcrumb {
+public data class Breadcrumb constructor(
+    /** The breadcrumb's level */
+    var level: SentryLevel? = null,
 
-    companion object {
-        fun user(category: String, message: String): Breadcrumb {
+    /** The breadcrumb's type */
+    var type: String? = null,
+
+    /** The breadcrumb's message */
+    var message: String? = null,
+
+    /** The breadcrumb's category */
+    var category: String? = null,
+
+    private var data: MutableMap<String, Any>? = null
+) {
+
+    public companion object {
+        public fun user(category: String, message: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.category = category
                 this.message = message
@@ -19,7 +27,7 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun http(url: String, method: String): Breadcrumb {
+        public fun http(url: String, method: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.type = "http"
                 this.category = "http"
@@ -28,13 +36,13 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun http(url: String, method: String, code: Int?): Breadcrumb {
+        public fun http(url: String, method: String, code: Int?): Breadcrumb {
             return http(url, method).apply {
                 code?.let { this.setData("status_code", code) }
             }
         }
 
-        fun navigation(from: String, to: String): Breadcrumb {
+        public fun navigation(from: String, to: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.category = "navigation"
                 this.type = "navigation"
@@ -43,7 +51,7 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun transaction(message: String): Breadcrumb {
+        public fun transaction(message: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.type = "default"
                 this.category = "sentry.transaction"
@@ -51,7 +59,7 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun debug(message: String): Breadcrumb {
+        public fun debug(message: String): Breadcrumb {
             val breadcrumb = Breadcrumb().apply {
                 this.type = "debug"
                 this.message = message
@@ -60,7 +68,7 @@ data class Breadcrumb constructor(
             return breadcrumb
         }
 
-        fun error(message: String): Breadcrumb {
+        public fun error(message: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.type = "error"
                 this.message = message
@@ -68,7 +76,7 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun info(message: String): Breadcrumb {
+        public fun info(message: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.type = "info"
                 this.message = message
@@ -76,14 +84,14 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun query(message: String): Breadcrumb {
+        public fun query(message: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.type = "query"
                 this.message = message
             }
         }
 
-        fun ui(category: String, message: String): Breadcrumb {
+        public fun ui(category: String, message: String): Breadcrumb {
             return Breadcrumb().apply {
                 this.type = "default"
                 this.category = "ui.$category"
@@ -91,7 +99,7 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun userInteraction(
+        public fun userInteraction(
             subCategory: String,
             viewId: String?,
             viewClass: String?,
@@ -111,46 +119,14 @@ data class Breadcrumb constructor(
             }
         }
 
-        fun userInteraction(subCategory: String, viewId: String?, viewClass: String?): Breadcrumb {
+        public fun userInteraction(
+            subCategory: String,
+            viewId: String?,
+            viewClass: String?
+        ): Breadcrumb {
             return userInteraction(subCategory, viewId, viewClass, emptyMap<String?, Any>())
         }
     }
-
-    override fun setData(key: String, value: Any) {
-        if (data == null) data = mutableMapOf()
-        data?.put(key, value)
-    }
-
-    override fun setData(map: MutableMap<String, Any>) {
-        data = map
-    }
-
-    override fun getData(): MutableMap<String, Any>? {
-        return data
-    }
-
-    override fun clear() {
-        data = null
-        level = null
-        category = null
-        type = null
-        message = null
-    }
-}
-
-interface ISentryBreadcrumb {
-
-    /** The breadcrumb's level */
-    var level: SentryLevel?
-
-    /** The breadcrumb's type */
-    var type: String?
-
-    /** The breadcrumb's message */
-    var message: String?
-
-    /** The breadcrumb's category */
-    var category: String?
 
     /**
      * Set's the breadcrumb's data with key, value
@@ -158,18 +134,31 @@ interface ISentryBreadcrumb {
      * @param key The key
      * @param value The value
      */
-    fun setData(key: String, value: Any)
+    public fun setData(key: String, value: Any) {
+        if (data == null) data = mutableMapOf()
+        data?.put(key, value)
+    }
 
     /**
      * Set's the breadcrumb's data with a map
      *
      * @param map The map
      */
-    fun setData(map: MutableMap<String, Any>)
+    public fun setData(map: MutableMap<String, Any>) {
+        data = map
+    }
 
     /** Returns the breadcrumb's data */
-    fun getData(): MutableMap<String, Any>?
+    public fun getData(): MutableMap<String, Any>? {
+        return data
+    }
 
     /** Clears the breadcrumb and returns it to the default state */
-    fun clear()
+    public fun clear() {
+        data = null
+        level = null
+        category = null
+        type = null
+        message = null
+    }
 }

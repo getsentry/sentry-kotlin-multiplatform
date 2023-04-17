@@ -8,18 +8,18 @@ internal object SentryLevelNumConstants {
     const val FATAL_LEVEL = 5
 }
 
-enum class SentryLevel(val value: Int) {
+public enum class SentryLevel(private val value: Int) {
     DEBUG(SentryLevelNumConstants.DEBUG_LEVEL),
     INFO(SentryLevelNumConstants.INFO_LEVEL),
     WARNING(SentryLevelNumConstants.WARNING_LEVEL),
     ERROR(SentryLevelNumConstants.ERROR_LEVEL),
     FATAL(SentryLevelNumConstants.FATAL_LEVEL);
 
-    fun toInt(): Int {
+    internal fun toInt(): Int {
         return this.value
     }
 
-    companion object {
+    internal companion object {
         fun fromInt(value: Int): SentryLevel? {
             return try {
                 values().first {

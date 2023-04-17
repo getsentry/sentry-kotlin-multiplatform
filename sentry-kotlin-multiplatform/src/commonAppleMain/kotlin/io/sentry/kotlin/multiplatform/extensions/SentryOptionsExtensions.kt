@@ -31,28 +31,30 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     this.maxAttachmentSize = options.maxAttachmentSize.convert()
     this.maxBreadcrumbs = options.maxBreadcrumbs.convert()
     this.beforeSend = { event ->
-        dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
-
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
-        options.sdk.apply {
-            val names = this.packages?.map { it.name }
-            if (names?.contains(cocoaName) != true) {
-                this.addPackage(cocoaName, cocoaVersion)
-            }
-        }
-        val sdk = event?.sdk?.toMutableMap()
-        sdk?.set(
-            "packages",
-            options.sdk.packages?.map {
-                mapOf("name" to it.name, "version" to it.version)
-            }
-        )
-        event?.sdk = sdk
 
-        event
+        val sdk = event?.sdk?.toMutableMap()
+
+        val packages = options.sdk?.packages?.map {
+            mapOf("name" to it.name, "version" to it.version)
+        }?.toMutableList() ?: mutableListOf()
+
+        val names = packages.map { it["name"] }
+        if (!names.contains(cocoaName)) {
+            packages.add(mapOf("name" to cocoaName, "version" to cocoaVersion))
+        }
+
+        sdk?.set("packages", packages)
+
+        event?.sdk = sdk
+        dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as SentryEvent?
     }
-    PrivateSentrySDKOnly.setSdkName(options.sdk.name, options.sdk.version)
+
+    val sdkName = options.sdk?.name ?: BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME
+    val sdkVersion = options.sdk?.version ?: BuildKonfig.VERSION_NAME
+    PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
+
     this.beforeBreadcrumb = { cocoaBreadcrumb ->
         cocoaBreadcrumb?.toKmpBreadcrumb()
             ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()

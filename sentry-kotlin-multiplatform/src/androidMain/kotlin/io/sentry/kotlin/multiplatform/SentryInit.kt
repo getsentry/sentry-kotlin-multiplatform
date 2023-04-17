@@ -12,4 +12,4 @@ internal actual fun initSentry(context: Context?, configuration: OptionsConfigur
     }
 }
 
-actual typealias Context = Context
+public actual typealias Context = Context

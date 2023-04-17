@@ -4,14 +4,16 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import kotlin.experimental.ExperimentalObjCRefinement
+import kotlin.native.HiddenFromObjC
 
-typealias ScopeCallback = (Scope) -> Unit
-typealias OptionsConfiguration = (SentryOptions) -> Unit
+public typealias ScopeCallback = (Scope) -> Unit
+public typealias OptionsConfiguration = (SentryOptions) -> Unit
 
-expect abstract class Context
+public expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point */
-object Sentry {
+public object Sentry {
 
     /**
      * Sentry initialization with an option configuration handler.
@@ -19,7 +21,9 @@ object Sentry {
      * @param context: The context (used for retrieving Android Context)
      * @param configuration Options configuration handler.
      */
-    fun init(context: Context, configuration: OptionsConfiguration) {
+    @OptIn(ExperimentalObjCRefinement::class)
+    @HiddenFromObjC
+    public fun init(context: Context, configuration: OptionsConfiguration) {
         SentryBridge.init(context, configuration)
     }
 
@@ -29,7 +33,7 @@ object Sentry {
      *
      * @param configuration Options configuration handler.
      */
-    fun init(configuration: OptionsConfiguration) {
+    public fun init(configuration: OptionsConfiguration) {
         SentryBridge.init(configuration = configuration)
     }
 
@@ -38,7 +42,7 @@ object Sentry {
      *
      * @param message The message to send.
      */
-    fun captureMessage(message: String): SentryId {
+    public fun captureMessage(message: String): SentryId {
         return SentryBridge.captureMessage(message)
     }
 
@@ -48,7 +52,7 @@ object Sentry {
      * @param message The message to send.
      * @param scopeCallback The local scope callback.
      */
-    fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
+    public fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
         return SentryBridge.captureMessage(message, scopeCallback)
     }
 
@@ -57,7 +61,7 @@ object Sentry {
      *
      * @param throwable The exception.
      */
-    fun captureException(throwable: Throwable): SentryId {
+    public fun captureException(throwable: Throwable): SentryId {
         return SentryBridge.captureException(throwable)
     }
 
@@ -67,7 +71,7 @@ object Sentry {
      * @param throwable The exception.
      * @param scopeCallback The local scope callback.
      */
-    fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
+    public fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
         return SentryBridge.captureException(throwable, scopeCallback)
     }
 
@@ -76,7 +80,7 @@ object Sentry {
      *
      * @param userFeedback The user feedback to send to Sentry.
      */
-    fun captureUserFeedback(userFeedback: UserFeedback) {
+    public fun captureUserFeedback(userFeedback: UserFeedback) {
         return SentryBridge.captureUserFeedback(userFeedback)
     }
 
@@ -85,7 +89,7 @@ object Sentry {
      *
      * @param scopeCallback The configure scope callback.
      */
-    fun configureScope(scopeCallback: ScopeCallback) {
+    public fun configureScope(scopeCallback: ScopeCallback) {
         SentryBridge.configureScope(scopeCallback)
     }
 
@@ -94,7 +98,7 @@ object Sentry {
      *
      * @param breadcrumb The breadcrumb to add.
      */
-    fun addBreadcrumb(breadcrumb: Breadcrumb) {
+    public fun addBreadcrumb(breadcrumb: Breadcrumb) {
         SentryBridge.addBreadcrumb(breadcrumb)
     }
 
@@ -103,21 +107,21 @@ object Sentry {
      *
      * @param user The user to set.
      */
-    fun setUser(user: User?) {
+    public fun setUser(user: User?) {
         SentryBridge.setUser(user)
     }
 
     /**
      * Throws a RuntimeException, useful for testing.
      */
-    fun crash() {
+    public fun crash() {
         throw RuntimeException("Uncaught Exception from Kotlin Multiplatform.")
     }
 
     /**
      * Closes the SDK.
      */
-    fun close() {
+    public fun close() {
         SentryBridge.close()
     }
 }
