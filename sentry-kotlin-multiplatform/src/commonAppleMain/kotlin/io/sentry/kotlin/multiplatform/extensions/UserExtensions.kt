@@ -5,16 +5,16 @@ import io.sentry.kotlin.multiplatform.protocol.User
 
 internal fun User.toCocoaUser() = CocoaUser().apply {
     val scope = this@toCocoaUser
-    this.userId = scope.id
-    this.username = scope.username
-    this.email = scope.email
-    this.ipAddress = scope.ipAddress
+    userId = scope.id
+    username = scope.username
+    email = scope.email
+    ipAddress = scope.ipAddress
 }
 
 internal fun CocoaUser.toKmpUser() = User().apply {
     val scope = this@toKmpUser
-    this.id = scope.userId
-    this.username = scope.username
-    this.email = scope.email
-    this.ipAddress = scope.ipAddress
+    id = scope.userId
+    username = scope.username
+    email = scope.email
+    ipAddress = scope.ipAddress
 }
