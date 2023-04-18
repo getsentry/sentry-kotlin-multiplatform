@@ -72,4 +72,30 @@ public open class SentryOptions {
      * This is only available on iOS and Android.
      */
     public var attachViewHierarchy: Boolean = false
+
+    /**
+     * Enables or disables the feature to automatically capture HTTP client errors.
+     * This is enabled by default.
+     *
+     * Available on Apple.
+     */
+    public var enableCaptureFailedRequests: Boolean = true
+
+    /**
+     * A list of HTTP status code ranges indicating which client errors should be captured as errors.
+     * By default, only HTTP client errors with a response code between 500 and 599 are captured as errors.
+     * To capture additional client errors, you can add new HttpStatusCodeRange objects to this list.
+     *
+     * Available on Apple.
+     */
+    public var failedRequestStatusCodes: List<HttpStatusCodeRange> = listOf()
+
+    /**
+     * A list of HTTP request targets indicating which client errors should be captured as errors with either regex or a plain string.
+     * By default, HTTP client errors from every target (.* regular expression) are automatically captured.
+     * To capture additional client errors, you can add new request targets to this list.
+     *
+     * Available on Apple.
+     */
+    public var failedRequestTargets: List<String> = listOf()
 }

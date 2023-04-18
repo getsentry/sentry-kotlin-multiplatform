@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentryEvent
+import cocoapods.Sentry.SentryHttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryOptions
@@ -59,4 +60,8 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         cocoaBreadcrumb?.toKmpBreadcrumb()
             ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
     }
+
+    enableCaptureFailedRequests = options.enableCaptureFailedRequests
+    failedRequestTargets = options.failedRequestTargets
+    failedRequestStatusCodes = options.failedRequestStatusCodes.map { SentryHttpStatusCodeRange(min = it.min, max = it.max) }
 }
