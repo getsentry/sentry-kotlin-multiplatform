@@ -2,6 +2,7 @@ package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Context
+import io.sentry.kotlin.multiplatform.HttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
 
@@ -45,6 +46,8 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachScreenshot = true
         it.attachViewHierarchy = true
         it.release = "kmp-release@0.0.1"
+        it.failedRequestStatusCodes = listOf(HttpStatusCodeRange(400, 599))
+        it.failedRequestTargets = listOf("httpbin.org")
         it.beforeBreadcrumb = { breadcrumb ->
             breadcrumb.message = "Add message before every breadcrumb"
             breadcrumb

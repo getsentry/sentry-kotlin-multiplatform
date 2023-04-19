@@ -11,6 +11,9 @@ struct ContentView: View {
             Button("Capture Exception") {
                 LoginImpl().login(username: "MyUsername")
             }
+            Button("Capture Http Client Error") {
+                HttpClientKt.captureHttpClientError()
+            }
             Button("Hard Crash") {
                 LoginImpl().login(username: nil)
             }
