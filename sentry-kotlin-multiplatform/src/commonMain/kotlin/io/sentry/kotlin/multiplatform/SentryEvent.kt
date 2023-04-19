@@ -10,8 +10,8 @@ public expect class SentryEvent() : SentryBaseEvent {
     public var level: SentryLevel?
 
     /** This is not thread-safe */
-    public var fingerprint: List<String>?
+    public var fingerprint: MutableList<String>?
 
     /** This is not thread-safe */
-    public var exceptions: List<SentryException>?
+    public var exceptions: MutableList<SentryException>?
 }

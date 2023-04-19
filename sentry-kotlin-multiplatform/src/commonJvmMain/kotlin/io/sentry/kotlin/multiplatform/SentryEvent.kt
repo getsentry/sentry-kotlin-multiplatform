@@ -15,8 +15,8 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public actual var level: SentryLevel? = null
     public actual var message: Message? = null
     public actual var logger: String? = null
-    public actual var fingerprint: List<String>? = null
-    public actual var exceptions: List<SentryException>? = null
+    public actual var fingerprint: MutableList<String>? = null
+    public actual var exceptions: MutableList<SentryException>? = null
     public override var release: String? = null
     public override var environment: String? = null
     public override var platform: String? = null
@@ -29,8 +29,8 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         level = jvmSentryEvent.level?.toKmpSentryLevel()
         message = jvmSentryEvent.message?.toKmpMessage()
         logger = jvmSentryEvent.logger
-        fingerprint = jvmSentryEvent.fingerprints?.toList()
-        exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toList()
+        fingerprint = jvmSentryEvent.fingerprints
+        exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toMutableList()
         release = jvmSentryEvent.release
         environment = jvmSentryEvent.environment
         platform = jvmSentryEvent.platform
@@ -38,7 +38,7 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         serverName = jvmSentryEvent.serverName
         dist = jvmSentryEvent.dist
         mutableContexts = jvmSentryEvent.contexts
-        mutableBreadcrumbs = jvmSentryEvent.breadcrumbs?.map { it.toKmpBreadcrumb() }?.toMutableList()
-        mutableTags = jvmSentryEvent.tags
+        breadcrumbs = jvmSentryEvent.breadcrumbs?.map { it.toKmpBreadcrumb() }?.toMutableList()
+        tags = jvmSentryEvent.tags
     }
 }

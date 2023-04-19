@@ -15,8 +15,8 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public actual var level: SentryLevel? = null
     public actual var message: Message? = null
     public actual var logger: String? = null
-    public actual var fingerprint: List<String>? = null
-    public actual var exceptions: List<SentryException>? = null
+    public actual var fingerprint: MutableList<String>? = null
+    public actual var exceptions: MutableList<SentryException>? = null
     public override var release: String? = null
     public override var environment: String? = null
     public override var platform: String? = null
@@ -29,10 +29,10 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         level = cocoaSentryEvent.level?.toKmpSentryLevel()
         message = cocoaSentryEvent.message?.toKmpMessage()
         logger = cocoaSentryEvent.logger
-        fingerprint = cocoaSentryEvent.fingerprint()?.toList() as? List<String>
+        fingerprint = cocoaSentryEvent.fingerprint()?.toMutableList() as? MutableList<String>
         exceptions =
             cocoaSentryEvent.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
-                ?.toList()
+                ?.toMutableList()
         release = cocoaSentryEvent.releaseName
         environment = cocoaSentryEvent.environment
         platform = cocoaSentryEvent.platform
@@ -41,10 +41,11 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         dist = cocoaSentryEvent.dist
         mutableContexts =
             cocoaSentryEvent.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
-        mutableBreadcrumbs =
+                ?.toMutableMap()
+        breadcrumbs =
             cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }
                 ?.map { it.toKmpBreadcrumb() }?.toMutableList()
-        mutableTags =
+        tags =
             cocoaSentryEvent.tags?.filterValues { it is String }?.mapKeys { it.key as String }
                 ?.mapValues { it.value as String }?.toMutableMap()
     }

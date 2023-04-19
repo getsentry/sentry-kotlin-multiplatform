@@ -16,37 +16,11 @@ public abstract class SentryBaseEvent(public open var eventId: SentryId = Sentry
 
     /** This is not thread-safe */
     public open val contexts: Map<String, Any>? get() = mutableContexts
-    internal var mutableContexts: Map<String, Any>? = null
+    internal var mutableContexts: MutableMap<String, Any>? = mutableMapOf()
 
     /** This is not thread-safe */
-    public open val breadcrumbs: List<Breadcrumb>? get() = mutableBreadcrumbs
-    internal var mutableBreadcrumbs: MutableList<Breadcrumb>? = null
+    public open var breadcrumbs: MutableList<Breadcrumb>? = mutableListOf()
 
     /** This is not thread-safe */
-    public open val tags: Map<String, String>? get() = mutableTags
-    internal var mutableTags: MutableMap<String, String>? = null
-
-    public fun getTag(key: String): String? = mutableTags?.get(key)
-
-    public fun removeTag(key: String) {
-        mutableTags?.remove(key)
-    }
-
-    public fun setTag(key: String, value: String) {
-        if (mutableTags == null) {
-            mutableTags = HashMap()
-        }
-        mutableTags?.set(key, value)
-    }
-
-    public fun addBreadcrumb(breadcrumb: Breadcrumb) {
-        if (mutableBreadcrumbs == null) {
-            mutableBreadcrumbs = mutableListOf()
-        }
-        mutableBreadcrumbs?.add(breadcrumb)
-    }
-
-    public fun addBreadcrumb(message: String?) {
-        addBreadcrumb(Breadcrumb(message = message))
-    }
+    public open var tags: MutableMap<String, String>? = mutableMapOf()
 }
