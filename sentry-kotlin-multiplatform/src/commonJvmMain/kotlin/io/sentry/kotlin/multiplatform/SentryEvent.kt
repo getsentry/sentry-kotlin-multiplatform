@@ -37,7 +37,7 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         user = jvmSentryEvent.user?.toKmpUser()
         serverName = jvmSentryEvent.serverName
         dist = jvmSentryEvent.dist
-        mutableContexts = jvmSentryEvent.contexts
+        contexts = jvmSentryEvent.contexts
         breadcrumbs = jvmSentryEvent.breadcrumbs?.map { it.toKmpBreadcrumb() }?.toMutableList()
         tags = jvmSentryEvent.tags
     }

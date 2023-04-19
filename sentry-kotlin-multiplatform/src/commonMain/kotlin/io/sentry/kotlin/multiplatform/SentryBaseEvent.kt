@@ -15,8 +15,8 @@ public abstract class SentryBaseEvent(public open var eventId: SentryId = Sentry
     public open var dist: String? = null
 
     /** This is not thread-safe */
-    public open val contexts: Map<String, Any>? get() = mutableContexts
-    internal var mutableContexts: MutableMap<String, Any>? = mutableMapOf()
+    public var contexts: Map<String, Any>? = mapOf()
+        internal set
 
     /** This is not thread-safe */
     public open var breadcrumbs: MutableList<Breadcrumb>? = mutableListOf()
