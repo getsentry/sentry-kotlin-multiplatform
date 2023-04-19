@@ -87,7 +87,7 @@ public open class SentryOptions {
      *
      * Available on Apple.
      */
-    public var failedRequestStatusCodes: List<HttpStatusCodeRange> = listOf()
+    public var failedRequestStatusCodes: List<HttpStatusCodeRange> = listOf(HttpStatusCodeRange())
 
     /**
      * A list of HTTP request targets indicating which client errors should be captured as errors with either regex or a plain string.
@@ -95,5 +95,5 @@ public open class SentryOptions {
      *
      * Available on Apple.
      */
-    public var failedRequestTargets: List<String> = listOf()
+    public var failedRequestTargets: List<String> = listOf(".*")
 }

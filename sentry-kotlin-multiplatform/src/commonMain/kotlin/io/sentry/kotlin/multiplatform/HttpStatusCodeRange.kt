@@ -6,7 +6,7 @@ package io.sentry.kotlin.multiplatform
  *
  * Example for a single status code 400, 500
  */
-public data class HttpStatusCodeRange(val min: Int, val max: Int) {
+public data class HttpStatusCodeRange(val min: Int = DEFAULT_MIN, val max: Int = DEFAULT_MAX) {
 
     public constructor(statusCode: Int) : this(statusCode, statusCode)
 

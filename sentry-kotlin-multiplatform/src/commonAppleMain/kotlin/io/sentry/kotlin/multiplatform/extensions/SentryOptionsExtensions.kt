@@ -62,10 +62,11 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     }
 
     enableCaptureFailedRequests = options.enableCaptureFailedRequests
-    if (options.failedRequestTargets.isNotEmpty()) {
-        failedRequestTargets = options.failedRequestTargets
-    }
-    if (options.failedRequestStatusCodes.isNotEmpty()) {
-        failedRequestStatusCodes = options.failedRequestStatusCodes.map { SentryHttpStatusCodeRange(min = it.min.convert(), max = it.max.convert()) }
+    failedRequestTargets = options.failedRequestTargets
+    failedRequestStatusCodes = options.failedRequestStatusCodes.map {
+        SentryHttpStatusCodeRange(
+            min = it.min.convert(),
+            max = it.max.convert()
+        )
     }
 }
