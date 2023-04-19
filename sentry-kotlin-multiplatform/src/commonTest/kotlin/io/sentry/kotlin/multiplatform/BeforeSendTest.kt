@@ -70,7 +70,7 @@ class BeforeSendTest {
 
     @Test
     fun `beforeSend modifies fingerprint`() {
-        val expected = listOf("test")
+        val expected = mutableListOf("test")
 
         val options = SentryOptions()
         options.beforeSend = {
@@ -220,7 +220,7 @@ class BeforeSendTest {
 
         val event = options.beforeSend?.invoke(
             SentryEvent().apply {
-                mutableContexts = mapOf("test" to "test")
+                contexts = mapOf("test" to "test")
             }
         )
 

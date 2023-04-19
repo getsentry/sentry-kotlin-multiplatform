@@ -29,7 +29,7 @@ class SentryEventTest {
         val event = SentryEvent()
         val breadcrumb = Breadcrumb(message = "test")
         event.addBreadcrumb(breadcrumb)
-        assertEquals(listOf(breadcrumb), event.breadcrumbs)
+        assertEquals(mutableListOf(breadcrumb), event.breadcrumbs)
     }
 
     @Test
@@ -50,7 +50,7 @@ class SentryEventTest {
     @Test
     fun `contexts should contain value if not null`() {
         val event = SentryEvent()
-        event.mutableContexts = mutableMapOf("key" to "value")
+        event.contexts = mutableMapOf("key" to "value")
         assertEquals("value", event.contexts?.get("key"))
     }
 
@@ -58,14 +58,14 @@ class SentryEventTest {
     fun `breadcrumbs should contain value if not null`() {
         val event = SentryEvent()
         val breadcrumb = Breadcrumb(message = "test")
-        event.mutableBreadcrumbs = mutableListOf(breadcrumb)
-        assertEquals(listOf(breadcrumb), event.breadcrumbs)
+        event.breadcrumbs = mutableListOf(breadcrumb)
+        assertEquals(mutableListOf(breadcrumb), event.breadcrumbs)
     }
 
     @Test
     fun `tags should contain value if not null`() {
         val event = SentryEvent()
-        event.mutableTags = mutableMapOf("key" to "value")
+        event.tags = mutableMapOf("key" to "value")
         assertEquals("value", event.tags?.get("key"))
     }
 
@@ -78,8 +78,8 @@ class SentryEventTest {
     @Test
     fun `fingerprint should contain value if not null`() {
         val event = SentryEvent()
-        event.fingerprint = listOf("error", "exception")
-        assertEquals(listOf("error", "exception"), event.fingerprint)
+        event.fingerprint = mutableListOf("error", "exception")
+        assertEquals(mutableListOf("error", "exception"), event.fingerprint)
     }
 
     @Test
@@ -93,7 +93,7 @@ class SentryEventTest {
         val event = SentryEvent()
         val exception1 = SentryException(type = "NullPointerException")
         val exception2 = SentryException(type = "IllegalArgumentException")
-        event.exceptions = listOf(exception1, exception2)
-        assertEquals(listOf(exception1, exception2), event.exceptions)
+        event.exceptions = mutableListOf(exception1, exception2)
+        assertEquals(mutableListOf(exception1, exception2), event.exceptions)
     }
 }
