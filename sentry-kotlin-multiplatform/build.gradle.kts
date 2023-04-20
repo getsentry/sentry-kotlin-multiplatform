@@ -46,6 +46,7 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
                 implementation(Config.TestLibs.kotlinCommon)
                 implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
@@ -200,5 +201,48 @@ buildkonfig {
         buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+    }
+}
+
+// copyNativeResources("commonAppleTest")
+
+fun copyNativeResources(sourceSet: String) {
+    if (sourceSet.isEmpty()) throw IllegalStateException("Valid sourceSet required")
+
+    val prefix = "copy${sourceSet.capitalize()}Resources"
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink> {
+        val firstIndex = name.indexOfFirst { it.isUpperCase() }
+        val sourceSetName = name.substring(firstIndex)
+        val taskName = "$prefix$sourceSetName"
+
+        val copyTask = tasks.register<Copy>(taskName) {
+            from("src/$sourceSet/resources")
+            val a = destinationDirectory.dir(
+                destinationDirectory.get().toString() + "/test.kexe.dSYM/Contents"
+            )
+            when (outputKind) {
+                org.jetbrains.kotlin.konan.target.CompilerOutputKind.FRAMEWORK -> into(outputFile.get())
+                org.jetbrains.kotlin.konan.target.CompilerOutputKind.PROGRAM -> into(
+                    destinationDirectory.get()
+                )
+
+                else -> throw IllegalStateException("Unhandled binary outputKind: $outputKind")
+            }
+            mustRunAfter(task("linkDebugTestIosSimulatorArm64"))
+        }
+        dependsOn(copyTask)
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask> {
+        val firstIndex = name.indexOfFirst { it.isUpperCase() }
+        val taskName = "$prefix${name.substring(firstIndex)}"
+
+        dependsOn(
+            tasks.register<Copy>(taskName) {
+                from("src/$sourceSet/resources")
+                into(fatFramework)
+            }
+        )
     }
 }

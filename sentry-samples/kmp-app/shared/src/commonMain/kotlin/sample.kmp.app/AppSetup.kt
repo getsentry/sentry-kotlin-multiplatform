@@ -46,6 +46,7 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachScreenshot = true
         it.attachViewHierarchy = true
         it.release = "kmp-release@0.0.1"
+        it.debug = true
         it.failedRequestStatusCodes = listOf(HttpStatusCodeRange(400, 599))
         it.failedRequestTargets = listOf("httpbin.org")
         it.beforeBreadcrumb = { breadcrumb ->
