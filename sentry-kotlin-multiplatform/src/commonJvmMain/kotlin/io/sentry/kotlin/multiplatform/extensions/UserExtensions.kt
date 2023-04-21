@@ -15,10 +15,10 @@ internal fun User.toJvmUser() = JvmUser().apply {
 
 internal fun JvmUser.toKmpUser() = User().apply {
     val scope = this@toKmpUser
-    id = scope.id.toString()
-    username = scope.username.toString()
-    email = scope.email.toString()
-    ipAddress = scope.ipAddress.toString()
-    other = scope.others?.toMutableMap()?.let { it }
-    unknown = scope.unknown?.toMutableMap()?.let { it }
+    id = scope.id
+    username = scope.username
+    email = scope.email
+    ipAddress = scope.ipAddress
+    other = scope.others?.toMutableMap()
+    unknown = scope.unknown?.toMutableMap()
 }

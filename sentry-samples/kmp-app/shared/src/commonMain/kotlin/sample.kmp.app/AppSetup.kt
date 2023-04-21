@@ -52,5 +52,12 @@ private fun optionsConfiguration(): OptionsConfiguration {
             breadcrumb.message = "Add message before every breadcrumb"
             breadcrumb
         }
+        it.beforeSend = { event ->
+            if (event.environment == "test") {
+                null
+            } else {
+                event
+            }
+        }
     }
 }
