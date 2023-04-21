@@ -37,8 +37,8 @@ class SentryEventTest {
     fun `addBreadcrumb should add a new breadcrumb with a message`() {
         val event = SentryEvent()
         event.addBreadcrumb("test")
-        assertEquals(1, event.breadcrumbs?.size)
-        assertEquals("test", event.breadcrumbs?.get(0)?.message)
+        assertEquals(1, event.breadcrumbs.size)
+        assertEquals("test", event.breadcrumbs[0].message)
     }
 
     @Test
@@ -52,7 +52,7 @@ class SentryEventTest {
     fun `contexts should contain value if not empty`() {
         val event = SentryEvent()
         event.contexts = mutableMapOf("key" to "value")
-        assertEquals("value", event.contexts?.get("key"))
+        assertEquals("value", event.contexts["key"])
     }
 
     @Test
@@ -67,7 +67,7 @@ class SentryEventTest {
     fun `tags should contain value if not empty`() {
         val event = SentryEvent()
         event.tags = mutableMapOf("key" to "value")
-        assertEquals("value", event.tags?.get("key"))
+        assertEquals("value", event.tags["key"])
     }
 
     @Test
