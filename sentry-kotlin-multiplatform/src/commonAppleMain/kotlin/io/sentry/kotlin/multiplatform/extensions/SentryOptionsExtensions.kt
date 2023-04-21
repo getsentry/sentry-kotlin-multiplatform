@@ -20,19 +20,19 @@ internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) 
  * This avoids code duplication for init on iOS.
  */
 internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
-    this.dsn = options.dsn
-    this.attachStacktrace = options.attachStackTrace
-    this.dist = options.dist
+    dsn = options.dsn
+    attachStacktrace = options.attachStackTrace
+    dist = options.dist
     options.environment?.let {
-        this.environment = it
+        environment = it
     }
-    this.releaseName = options.release
-    this.debug = options.debug
-    this.sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis.convert()
-    this.enableAutoSessionTracking = options.enableAutoSessionTracking
-    this.maxAttachmentSize = options.maxAttachmentSize.convert()
-    this.maxBreadcrumbs = options.maxBreadcrumbs.convert()
-    this.beforeSend = { event ->
+    releaseName = options.release
+    debug = options.debug
+    sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis.convert()
+    enableAutoSessionTracking = options.enableAutoSessionTracking
+    maxAttachmentSize = options.maxAttachmentSize.convert()
+    maxBreadcrumbs = options.maxBreadcrumbs.convert()
+    beforeSend = { event ->
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
 
@@ -63,7 +63,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     val sdkVersion = options.sdk?.version ?: BuildKonfig.VERSION_NAME
     PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
 
-    this.beforeBreadcrumb = { cocoaBreadcrumb ->
+    beforeBreadcrumb = { cocoaBreadcrumb ->
         cocoaBreadcrumb?.toKmpBreadcrumb()
             ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
     }
