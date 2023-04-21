@@ -22,7 +22,7 @@ include(":sentry-kotlin-multiplatform")
 /*
 KMP App with targets:
     - Android
-    - iOS with SwiftUI
+    - iOS with SwiftUI and Cocoapods
     - JVM Desktop with Jetpack Compose
  */
 include("sentry-samples:kmp-app:shared")

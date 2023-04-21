@@ -88,7 +88,9 @@ listOf(
     it.binaries.framework {
         baseName = "shared"
         isStatic = true
-        export("io.sentry:sentry-kotlin-multiplatform:0.1.0")
+        
+        // Export the SDK in order to be able to access it directly in the iOS project
+        export("io.sentry:sentry-kotlin-multiplatform:<version>")
     }
 }
 ```
