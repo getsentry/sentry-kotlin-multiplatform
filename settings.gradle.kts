@@ -20,11 +20,21 @@ rootProject.name = "sentry-kotlin-multiplatform-sdk"
 include(":sentry-kotlin-multiplatform")
 
 /*
-KMP App with targets:
+Simple KMP App with targets:
+    - Android
+    - iOS with SwiftUI and SPM
+    - JVM Desktop with Jetpack Compose
+ */
+include("sentry-samples:kmp-app-spm:shared")
+include("sentry-samples:kmp-app-spm:androidApp")
+include("sentry-samples:kmp-app-spm:desktopApp")
+
+/*
+Simple KMP App with targets:
     - Android
     - iOS with SwiftUI and Cocoapods
     - JVM Desktop with Jetpack Compose
  */
-include("sentry-samples:kmp-app:shared")
-include("sentry-samples:kmp-app:androidApp")
-include("sentry-samples:kmp-app:desktopApp")
+include("sentry-samples:kmp-app-cocoapods:shared")
+include("sentry-samples:kmp-app-cocoapods:androidApp")
+include("sentry-samples:kmp-app-cocoapods:desktopApp")

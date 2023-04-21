@@ -1,7 +1,7 @@
 plugins {
-    kotlin("multiplatform") version "1.8.0"
-    kotlin("native.cocoapods") version "1.8.0"
-    id("com.android.library") version "7.4.2"
+    kotlin("multiplatform")
+    kotlin("native.cocoapods")
+    id("com.android.library")
 }
 
 kotlin {
@@ -12,6 +12,7 @@ kotlin {
             }
         }
     }
+    jvm()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -23,18 +24,18 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
-        pod("sentry", "~> 8.4.0")
+        pod("Sentry", "~> 8.4.0")
 
         framework {
             baseName = "shared"
-            export("com.rickclephas.kmp:nsexception-kt-sentry")
+            export(project(":sentry-kotlin-multiplatform"))
         }
     }
-    
+
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.rickclephas.kmp:nsexception-kt-sentry")
+                api(project(":sentry-kotlin-multiplatform"))
             }
         }
         val commonTest by getting {
@@ -42,6 +43,7 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+        val jvmMain by getting
         val androidMain by getting
         val androidUnitTest by getting
         val iosX64Main by getting

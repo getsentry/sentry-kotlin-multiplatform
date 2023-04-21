@@ -1,11 +1,12 @@
 plugins {
-    kotlin("multiplatform") version "1.8.0"
-    id("com.android.library") version "7.4.2"
+    kotlin("multiplatform")
+    id("com.android.library")
 }
 
 kotlin {
     android()
-    
+    jvm()
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -14,14 +15,14 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
-            export("com.rickclephas.kmp:nsexception-kt-sentry")
+            export(project(":sentry-kotlin-multiplatform"))
         }
     }
 
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.rickclephas.kmp:nsexception-kt-sentry")
+                api(project(":sentry-kotlin-multiplatform"))
             }
         }
         val commonTest by getting {
@@ -29,6 +30,7 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+        val jvmMain by getting
         val androidMain by getting
         val iosX64Main by getting
         val iosArm64Main by getting
@@ -52,10 +54,9 @@ kotlin {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = Config.Android.compileSdkVersion
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 27
-        targetSdk = 32
+        minSdk = Config.Android.minSdkVersion
     }
 }
