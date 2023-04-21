@@ -6,7 +6,7 @@ plugins {
 android {
     compileSdk = Config.Android.compileSdkVersion
     defaultConfig {
-        applicationId = "sample.kpm_app.android"
+        applicationId = "sample.kpm.app.android"
         minSdk = Config.Android.minSdkVersion
         targetSdk = Config.Android.targetSdkVersion
         versionCode = 1
