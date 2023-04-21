@@ -6,6 +6,7 @@ import io.sentry.kotlin.multiplatform.protocol.SentryException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class SentryEventTest {
 
@@ -48,14 +49,14 @@ class SentryEventTest {
     }
 
     @Test
-    fun `contexts should contain value if not null`() {
+    fun `contexts should contain value if not empty`() {
         val event = SentryEvent()
         event.contexts = mutableMapOf("key" to "value")
         assertEquals("value", event.contexts?.get("key"))
     }
 
     @Test
-    fun `breadcrumbs should contain value if not null`() {
+    fun `breadcrumbs should contain value if not empty`() {
         val event = SentryEvent()
         val breadcrumb = Breadcrumb(message = "test")
         event.breadcrumbs = mutableListOf(breadcrumb)
@@ -63,33 +64,33 @@ class SentryEventTest {
     }
 
     @Test
-    fun `tags should contain value if not null`() {
+    fun `tags should contain value if not empty`() {
         val event = SentryEvent()
         event.tags = mutableMapOf("key" to "value")
         assertEquals("value", event.tags?.get("key"))
     }
 
     @Test
-    fun `fingerprint should be null by default`() {
+    fun `fingerprint should be empty by default`() {
         val event = SentryEvent()
-        assertNull(event.fingerprint)
+        assertTrue(event.fingerprint.isEmpty())
     }
 
     @Test
-    fun `fingerprint should contain value if not null`() {
+    fun `fingerprint should contain value if not empty`() {
         val event = SentryEvent()
         event.fingerprint = mutableListOf("error", "exception")
         assertEquals(mutableListOf("error", "exception"), event.fingerprint)
     }
 
     @Test
-    fun `exceptions should be null by default`() {
+    fun `exceptions should be empty by default`() {
         val event = SentryEvent()
-        assertNull(event.exceptions)
+        assertTrue(event.exceptions.isEmpty())
     }
 
     @Test
-    fun `exceptions should contain value if not null`() {
+    fun `exceptions should contain value if not empty`() {
         val event = SentryEvent()
         val exception1 = SentryException(type = "NullPointerException")
         val exception2 = SentryException(type = "IllegalArgumentException")

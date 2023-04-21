@@ -11,12 +11,11 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
 public actual class SentryEvent actual constructor() : SentryBaseEvent() {
-
     public actual var level: SentryLevel? = null
     public actual var message: Message? = null
     public actual var logger: String? = null
-    public actual var fingerprint: MutableList<String>? = null
-    public actual var exceptions: MutableList<SentryException>? = null
+    public actual var fingerprint: MutableList<String> = mutableListOf()
+    public actual var exceptions: MutableList<SentryException> = mutableListOf()
     public override var release: String? = null
     public override var environment: String? = null
     public override var platform: String? = null
@@ -29,8 +28,6 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         level = jvmSentryEvent.level?.toKmpSentryLevel()
         message = jvmSentryEvent.message?.toKmpMessage()
         logger = jvmSentryEvent.logger
-        fingerprint = jvmSentryEvent.fingerprints
-        exceptions = jvmSentryEvent.exceptions?.map { it.toKmpSentryException() }?.toMutableList()
         release = jvmSentryEvent.release
         environment = jvmSentryEvent.environment
         platform = jvmSentryEvent.platform
@@ -38,7 +35,9 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         serverName = jvmSentryEvent.serverName
         dist = jvmSentryEvent.dist
         contexts = jvmSentryEvent.contexts
-        breadcrumbs = jvmSentryEvent.breadcrumbs?.map { it.toKmpBreadcrumb() }?.toMutableList()
-        tags = jvmSentryEvent.tags
+        jvmSentryEvent.fingerprints?.let { fingerprint = it }
+        jvmSentryEvent.exceptions?.let { exceptions = it.map { it.toKmpSentryException() }.toMutableList() }
+        jvmSentryEvent.breadcrumbs?.let { breadcrumbs = it.map { it.toKmpBreadcrumb() }.toMutableList() }
+        jvmSentryEvent.tags?.let { tags = it }
     }
 }

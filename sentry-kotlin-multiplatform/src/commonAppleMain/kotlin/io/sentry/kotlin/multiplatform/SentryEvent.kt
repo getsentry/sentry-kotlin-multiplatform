@@ -11,12 +11,11 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
 public actual class SentryEvent actual constructor() : SentryBaseEvent() {
-
     public actual var level: SentryLevel? = null
     public actual var message: Message? = null
     public actual var logger: String? = null
-    public actual var fingerprint: MutableList<String>? = null
-    public actual var exceptions: MutableList<SentryException>? = null
+    public actual var fingerprint: MutableList<String> = mutableListOf()
+    public actual var exceptions: MutableList<SentryException> = mutableListOf()
     public override var release: String? = null
     public override var environment: String? = null
     public override var platform: String? = null
@@ -29,23 +28,30 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         level = cocoaSentryEvent.level?.toKmpSentryLevel()
         message = cocoaSentryEvent.message?.toKmpMessage()
         logger = cocoaSentryEvent.logger
-        fingerprint = cocoaSentryEvent.fingerprint()?.toMutableList() as? MutableList<String>
-        exceptions =
-            cocoaSentryEvent.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
-                ?.toMutableList()
         release = cocoaSentryEvent.releaseName
         environment = cocoaSentryEvent.environment
         platform = cocoaSentryEvent.platform
         user = cocoaSentryEvent.user?.toKmpUser()
         serverName = cocoaSentryEvent.serverName
         dist = cocoaSentryEvent.dist
-        contexts =
+
+        val cocoaFingerprint =
+            cocoaSentryEvent.fingerprint()?.toMutableList() as? MutableList<String>
+        val cocoaSentryExceptions =
+            cocoaSentryEvent.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
+                ?.toMutableList()
+        val cocoaContexts =
             cocoaSentryEvent.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
-        breadcrumbs =
-            cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }
-                ?.map { it.toKmpBreadcrumb() }?.toMutableList()
-        tags =
-            cocoaSentryEvent.tags?.filterValues { it is String }?.mapKeys { it.key as String }
-                ?.mapValues { it.value as String }?.toMutableMap()
+        val cocoaBreadcrumbs = cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }
+            ?.map { it.toKmpBreadcrumb() }?.toMutableList()
+        val cocoaTags =
+            cocoaSentryEvent.tags?.mapKeys { it.key as String }?.mapValues { it.value as String }
+                ?.toMutableMap()
+
+        cocoaFingerprint?.let { fingerprint = it }
+        cocoaSentryExceptions?.let { exceptions = it }
+        cocoaContexts?.let { contexts = it }
+        cocoaBreadcrumbs?.let { breadcrumbs = it }
+        cocoaTags?.let { tags = it }
     }
 }
