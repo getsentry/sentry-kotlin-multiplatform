@@ -10,9 +10,11 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		1DBB948028897D4700E79663 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 1DBB947F28897D4700E79663 /* Sentry */; };
-		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
-		243652EF29F34FF500FD902A /* sentry.png in Resources */ = {isa = PBXBuildFile; fileRef = 243652EE29F34FF500FD902A /* sentry.png */; };
-		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		243652ED29F34FBF00FD902A /* sentry.png in Resources */ = {isa = PBXBuildFile; fileRef = 243652EC29F34FBF00FD902A /* sentry.png */; };
+		243652F629F3516400FD902A /* Koin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 243652F229F3516400FD902A /* Koin.swift */; };
+		243652F729F3516400FD902A /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 243652F329F3516400FD902A /* LoginScreen.swift */; };
+		243652F829F3516400FD902A /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 243652F429F3516400FD902A /* HomeScreen.swift */; };
+		243652F929F3516400FD902A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 243652F529F3516400FD902A /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,10 +33,12 @@
 /* Begin PBXFileReference section */
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
-		243652EE29F34FF500FD902A /* sentry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sentry.png; sourceTree = "<group>"; };
+		243652EC29F34FBF00FD902A /* sentry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sentry.png; sourceTree = "<group>"; };
+		243652F229F3516400FD902A /* Koin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Koin.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/Koin.swift"; sourceTree = "<group>"; };
+		243652F329F3516400FD902A /* LoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginScreen.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/LoginScreen.swift"; sourceTree = "<group>"; };
+		243652F429F3516400FD902A /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeScreen.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/HomeScreen.swift"; sourceTree = "<group>"; };
+		243652F529F3516400FD902A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/AppDelegate.swift"; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,11 +82,13 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				243652EE29F34FF500FD902A /* sentry.png */,
+				243652EC29F34FBF00FD902A /* sentry.png */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
-				7555FF82242A565900829871 /* ContentView.swift */,
+				243652F529F3516400FD902A /* AppDelegate.swift */,
+				243652F429F3516400FD902A /* HomeScreen.swift */,
+				243652F229F3516400FD902A /* Koin.swift */,
+				243652F329F3516400FD902A /* LoginScreen.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
-				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 			);
 			path = iosApp;
@@ -162,7 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
-				243652EF29F34FF500FD902A /* sentry.png in Resources */,
+				243652ED29F34FBF00FD902A /* sentry.png in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,7 +191,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "../../gradlew :sentry-samples:kmp-app-spm:shared:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "../../gradlew :sentry-samples:kmp-app-mvvm-di:shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -194,8 +200,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
-				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				243652F929F3516400FD902A /* AppDelegate.swift in Sources */,
+				243652F629F3516400FD902A /* Koin.swift in Sources */,
+				243652F829F3516400FD902A /* HomeScreen.swift in Sources */,
+				243652F729F3516400FD902A /* LoginScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
