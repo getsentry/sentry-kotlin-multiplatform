@@ -46,6 +46,6 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     setBeforeSend { jvmSentryEvent, hint ->
         options.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
             jvmSentryEvent.applyKmpEvent(it)
-        }
+        } ?: jvmSentryEvent
     }
 }
