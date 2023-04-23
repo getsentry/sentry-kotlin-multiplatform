@@ -46,7 +46,6 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
                 implementation(Config.TestLibs.kotlinCommon)
                 implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
