@@ -5,6 +5,7 @@ import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.utils.dsn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -13,6 +14,11 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class SentryIntegrationTest {
+    @AfterTest
+    fun tearDown() {
+        Sentry.close()
+    }
+
     @Test
     fun `captureMessage sends the correct message`() {
         val expected = "test"
@@ -44,16 +50,13 @@ class SentryIntegrationTest {
         Sentry.captureException(RuntimeException("test"))
         Sentry.captureException(RuntimeException("test2"))
 
-        // contains the events from the previous two calls
         assertEquals(2, capturedEvents.size)
 
-        // the first event
         val event = capturedEvents[0]
         event.exceptions.first().type?.let { assertTrue(it.contains("RuntimeException")) }
         assertEquals("test", event.exceptions.first().value)
         assertNotEquals("test2", event.exceptions.first().value)
 
-        // the second event
         val event2 = capturedEvents[1]
         event2.exceptions.first().type?.let { assertTrue(it.contains("RuntimeException")) }
         assertEquals("test2", event2.exceptions.first().value)

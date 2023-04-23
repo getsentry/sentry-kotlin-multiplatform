@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         val captureHardCrashBtn: Button = findViewById(R.id.captureHardCrash)
 
         captureMessageBtn.setOnClickListener {
-            Sentry.captureMessage("From KMP Sample App: " + Platform().platform)
+            val a = Sentry.captureMessage("From KMP Sample App: " + Platform().platform)
+            println(a)
         }
 
         captureExceptionBtn.setOnClickListener {

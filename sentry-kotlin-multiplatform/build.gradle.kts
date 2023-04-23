@@ -6,6 +6,7 @@ plugins {
     kotlin(Config.cocoapods)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
+    kotlin("plugin.serialization") version "1.8.0"
     `maven-publish`
 }
 
@@ -48,6 +49,9 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0-RC")
+                implementation("io.ktor:ktor-client-core:2.3.0")
+                implementation("io.ktor:ktor-client-serialization:2.3.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
                 implementation(Config.TestLibs.kotlinCommon)
                 implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
@@ -76,6 +80,7 @@ kotlin {
             androidUnitTest.dependsOn(this)
             dependencies {
                 implementation(Config.TestLibs.kotlinJunit)
+                implementation("io.ktor:ktor-client-okhttp:2.3.0")
             }
         }
 
@@ -147,6 +152,9 @@ kotlin {
             dependsOn(commonTest)
             commonIosTest.dependsOn(this)
             commonTvWatchMacOsTest.dependsOn(this)
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:2.3.0")
+            }
         }
     }
 
