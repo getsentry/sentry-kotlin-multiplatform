@@ -64,7 +64,7 @@ class SentryE2ETest : BaseSentryTest() {
     }
 
     @Test
-    fun `capture message and persist it in the sentry project`() = runTest(timeout = 30.seconds) {
+    fun `capture message and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
         if (platform != "Apple") {
             val eventId = Sentry.captureMessage("Test running on $platform")
             val fetchedEvent = waitForEventRetrieval(eventId.toString())
@@ -73,7 +73,7 @@ class SentryE2ETest : BaseSentryTest() {
     }
 
     @Test
-    fun `capture exception and persist it in the sentry project`() = runTest(timeout = 30.seconds) {
+    fun `capture exception and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
         if (platform != "Apple") {
             val eventId =
                 Sentry.captureException(IllegalArgumentException("Test exception on platform $platform"))
