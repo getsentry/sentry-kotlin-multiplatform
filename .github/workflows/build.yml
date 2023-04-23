@@ -41,7 +41,7 @@ jobs:
       - name: Make all
         run: make all
         env:
-          AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       # We stop gradle at the end to make s ure the cache folders
       # don't contain any lock files and are free to be cached.
