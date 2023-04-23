@@ -25,7 +25,6 @@ private data class Event(val id: String)
 class SentryE2ETest : BaseSentryTest() {
     private val client = HttpClient()
     private val jsonDecoder = Json { ignoreUnknownKeys = true }
-    private val authToken = "" // TODO: Add auth token to github env
 
     @BeforeTest
     fun setup() {
