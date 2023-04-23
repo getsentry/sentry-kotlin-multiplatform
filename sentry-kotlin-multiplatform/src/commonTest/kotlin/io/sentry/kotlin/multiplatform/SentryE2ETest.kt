@@ -17,6 +17,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
@@ -28,6 +29,7 @@ class SentryE2ETest : BaseSentryTest() {
 
     @BeforeTest
     fun setup() {
+        assertNotNull(authToken)
         sentryInit { options ->
             options.dsn = realDsn
             options.beforeSend = { event ->
@@ -61,6 +63,9 @@ class SentryE2ETest : BaseSentryTest() {
         }
         return result
     }
+
+    // TODO: e2e tests are currently disabled for Apple targets as there are SSL issues that prevent sending events in tests
+    // See: https://github.com/getsentry/sentry-kotlin-multiplatform/issues/17
 
     @Test
     fun `capture message and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
