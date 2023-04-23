@@ -5,6 +5,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
+import io.sentry.kotlin.multiplatform.utils.realDsn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -22,7 +23,6 @@ import kotlin.time.Duration.Companion.seconds
 private data class Event(val id: String)
 
 class SentryE2ETest : BaseSentryTest() {
-    private val realDsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
     private val client = HttpClient()
     private val jsonDecoder = Json { ignoreUnknownKeys = true }
     private val authToken = "" // TODO: Add auth token to github env
