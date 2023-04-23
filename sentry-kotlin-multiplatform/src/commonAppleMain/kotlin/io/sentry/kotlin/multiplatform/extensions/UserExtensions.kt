@@ -13,9 +13,8 @@ internal fun User.toCocoaUser() = CocoaUser().apply {
 
 internal fun CocoaUser.toKmpUser() = User().apply {
     val scope = this@toKmpUser
-    id = scope.userId.toString()
-    username = scope.username.toString()
-    email = scope.email.toString()
-    ipAddress = scope.ipAddress.toString()
-    setData(scope.data)
+    id = scope.userId
+    username = scope.username
+    email = scope.email
+    ipAddress = scope.ipAddress
 }

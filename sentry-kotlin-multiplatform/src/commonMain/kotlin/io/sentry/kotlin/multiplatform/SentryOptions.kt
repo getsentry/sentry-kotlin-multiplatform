@@ -58,6 +58,9 @@ public open class SentryOptions {
     /** Hook that is triggered before a breadcrumb is sent to Sentry */
     public var beforeBreadcrumb: ((Breadcrumb) -> Breadcrumb?)? = null
 
+    /** Hook that is triggered before an event is sent to Sentry */
+    public var beforeSend: ((SentryEvent) -> SentryEvent?)? = null
+
     /** Information about the Sentry SDK that generated this event. */
     public var sdk: SdkVersion? = null
 
