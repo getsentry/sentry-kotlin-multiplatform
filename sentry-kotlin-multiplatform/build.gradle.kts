@@ -14,8 +14,13 @@ android {
     compileSdk = Config.Android.compileSdkVersion
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -62,7 +67,12 @@ kotlin {
                 implementation(Config.Libs.sentryAndroid)
             }
         }
-        val androidUnitTest by getting
+        val androidUnitTest by getting {
+            dependencies {
+                implementation("org.robolectric:robolectric:4.9")
+                implementation("androidx.test.ext:junit-ktx:1.1.5")
+            }
+        }
         val jvmMain by getting
         val jvmTest by getting
 

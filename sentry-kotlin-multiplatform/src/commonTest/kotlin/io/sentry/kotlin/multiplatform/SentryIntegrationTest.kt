@@ -2,18 +2,17 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
-import io.sentry.kotlin.multiplatform.utils.dsn
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class SentryIntegrationTest {
+class SentryIntegrationTest : BaseSentryTest() {
     @AfterTest
     fun tearDown() {
         Sentry.close()
@@ -23,8 +22,8 @@ class SentryIntegrationTest {
     fun `captureMessage sends the correct message`() {
         val expected = "test"
         var actual = ""
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 actual = event.message?.formatted ?: ""
                 null
@@ -39,8 +38,8 @@ class SentryIntegrationTest {
     @Test
     fun `captureException sends the correct exceptions`() {
         val capturedEvents = mutableListOf<SentryEvent>()
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 capturedEvents.add(event)
                 null
@@ -66,8 +65,8 @@ class SentryIntegrationTest {
     @Test
     fun `capturing no events is correct`() {
         val capturedEvents = mutableListOf<SentryEvent>()
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 capturedEvents.add(event)
                 null
@@ -75,15 +74,14 @@ class SentryIntegrationTest {
         }
 
         assertEquals(0, capturedEvents.size)
-        assertNotEquals(1, capturedEvents.size)
     }
 
     @Test
     fun `beforeBreadcrumb receives breadcrumbs correctly`() {
         val breadcrumb = Breadcrumb(message = "test")
         val breadcrumbs = mutableListOf<Breadcrumb>()
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeBreadcrumb = { breadcrumb ->
                 breadcrumbs.add(breadcrumb)
                 null
@@ -94,20 +92,17 @@ class SentryIntegrationTest {
         Sentry.captureException(RuntimeException("test"))
 
         assertTrue { breadcrumbs.any { it.message == "test" } }
-        assertFalse { breadcrumbs.any { it.message == "test2" } }
     }
 
     @Test
     fun `scope is correct when modified with capturing an event`() {
         val expectedKey = "testABC"
         val expectedValue = "valueABC"
-        var actualKey = ""
         var actualValue = ""
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
-                actualKey = event.tags.keys.first()
-                actualValue = event.tags.values.first()
+                actualValue = event.tags[expectedKey] ?: ""
                 null
             }
         }
@@ -116,9 +111,7 @@ class SentryIntegrationTest {
             it.setTag(expectedKey, expectedValue)
         }
 
-        assertEquals(expectedKey, actualKey)
         assertEquals(expectedValue, actualValue)
-        assertNotEquals("testABC2", actualKey)
         assertNotEquals("valueABC2", actualValue)
     }
 
@@ -126,13 +119,11 @@ class SentryIntegrationTest {
     fun `local scope overrides global scope when capturing an event and then capturing another event`() {
         val expectedKey = "testABC"
         val expectedValue = "valueABC"
-        var actualKey = ""
         var actualValue = ""
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
-                actualKey = event.tags.keys.first()
-                actualValue = event.tags.values.first()
+                actualValue = event.tags[expectedKey] ?: ""
                 null
             }
         }
@@ -145,23 +136,18 @@ class SentryIntegrationTest {
             it.setTag("testABC", "valueABC")
         }
 
-        assertEquals(expectedKey, actualKey)
         assertEquals(expectedValue, actualValue)
-        assertNotEquals("testABC2", actualKey)
-        assertNotEquals("valueABC2", actualValue)
     }
 
     @Test
     fun `global scope sets tag correctly`() {
         val expectedKey = "testABC"
         val expectedValue = "valueABC"
-        var actualKey = ""
         var actualValue = ""
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
-                actualKey = event.tags.keys.first()
-                actualValue = event.tags.values.first()
+                actualValue = event.tags[expectedKey] ?: ""
                 null
             }
         }
@@ -172,18 +158,15 @@ class SentryIntegrationTest {
 
         Sentry.captureException(RuntimeException("test"))
 
-        assertEquals(expectedKey, actualKey)
         assertEquals(expectedValue, actualValue)
-        assertNotEquals("testABC2", actualKey)
-        assertNotEquals("valueABC2", actualValue)
     }
 
     @Test
     fun `global scope sets level correctly`() {
         val expectedLevel = SentryLevel.DEBUG
         var actualLevel: SentryLevel? = null
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 actualLevel = event.level
                 null
@@ -198,7 +181,6 @@ class SentryIntegrationTest {
 
         assertNotNull(actualLevel)
         assertEquals(expectedLevel, actualLevel)
-        assertNotEquals(SentryLevel.INFO, actualLevel)
     }
 
     @Test
@@ -212,8 +194,8 @@ class SentryIntegrationTest {
         var actualIpAddress = ""
         var actualUsername = ""
 
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 val user = event.user
                 actualEmail = user?.email ?: ""
@@ -253,8 +235,8 @@ class SentryIntegrationTest {
         val collectionValue = listOf("abc", 123, true)
 
         val deferred = CompletableDeferred<Unit>()
-        Sentry.init {
-            it.dsn = dsn
+        sentryInit {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 val contexts = event.contexts
                 try {
