@@ -17,6 +17,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.time.Duration.Companion.seconds
 
@@ -58,6 +59,7 @@ class SentryE2ETest : BaseSentryTest() {
             while (json.isEmpty() || json.contains("Event not found")) {
                 delay(5000)
                 json = fetchEvent(eventId)
+                assertFalse(json.contains("Invalid token"), "Invalid auth token")
             }
             jsonDecoder.decodeFromString(json)
         }
