@@ -51,12 +51,15 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
         event?.sdk = sdk
 
-        val modifiedEvent = event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
-            val result = options.beforeSend?.invoke(unwrappedEvent)
-            result?.let { event.applyKmpEvent(it) }
-        } ?: event
-
-        dropKotlinCrashEvent(modifiedEvent as NSExceptionSentryEvent?) as CocoaSentryEvent?
+        if (options.beforeSend == null) {
+            dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as CocoaSentryEvent?
+        } else {
+            val modifiedEvent = event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
+                val result = options.beforeSend?.invoke(unwrappedEvent)
+                result?.let { event.applyKmpEvent(it) }
+            }
+            dropKotlinCrashEvent(modifiedEvent as NSExceptionSentryEvent?) as CocoaSentryEvent?
+        }
     }
 
     val sdkName = options.sdk?.name ?: BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME
