@@ -22,11 +22,29 @@ import kotlin.test.assertNotNull
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
-private data class Event(val id: String)
+private data class SentryEventSerializable(
+    val id: String? = null,
+    val project: Long? = null,
+    val release: String? = null,
+    val platform: String? = null,
+    val message: String? = "",
+    val tags: List<TagSerializable> = listOf(),
+    val fingerprint: List<String> = listOf(),
+    val level: String? = null,
+    val logger: String? = null,
+    val title: String? = null
+)
+
+@Serializable
+private data class TagSerializable(
+    val key: String? = null,
+    val value: String? = null
+)
 
 class SentryE2ETest : BaseSentryTest() {
     private val client = HttpClient()
     private val jsonDecoder = Json { ignoreUnknownKeys = true }
+    private var sentEvent: SentryEvent? = null
 
     @BeforeTest
     fun setup() {
@@ -34,6 +52,7 @@ class SentryE2ETest : BaseSentryTest() {
         sentryInit { options ->
             options.dsn = realDsn
             options.beforeSend = { event ->
+                sentEvent = event
                 event
             }
         }
@@ -53,9 +72,9 @@ class SentryE2ETest : BaseSentryTest() {
         return response.bodyAsText()
     }
 
-    private suspend fun waitForEventRetrieval(eventId: String): Event {
+    private suspend fun waitForEventRetrieval(eventId: String): SentryEventSerializable {
         var json = ""
-        val result: Event = withContext(Dispatchers.Default) {
+        val result: SentryEventSerializable = withContext(Dispatchers.Default) {
             while (json.isEmpty() || json.contains("Event not found")) {
                 delay(5000)
                 json = fetchEvent(eventId)
@@ -72,24 +91,40 @@ class SentryE2ETest : BaseSentryTest() {
     @Test
     fun `capture message and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
         if (platform != "Apple") {
-            val eventId = Sentry.captureMessage("Test running on $platform")
+            val message = "Test running on $platform"
+            val eventId = Sentry.captureMessage(message)
             val fetchedEvent = waitForEventRetrieval(eventId.toString())
             assertEquals(eventId.toString(), fetchedEvent.id)
+            assertEquals(sentEvent?.message?.formatted, fetchedEvent.message)
+            assertEquals(message, fetchedEvent.title)
+            assertEquals(sentEvent?.release, fetchedEvent.release)
+            assertEquals(sentEvent?.environment, fetchedEvent.tags.find { it.key == "environment" }?.value)
+            assertEquals(sentEvent?.fingerprint?.toList(), fetchedEvent.fingerprint)
+            assertEquals(sentEvent?.level?.name?.lowercase(), fetchedEvent.tags.find { it.key == "level" }?.value)
+            assertEquals(sentEvent?.logger, fetchedEvent.logger)
         }
     }
 
     @Test
     fun `capture exception and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
         if (platform != "Apple") {
+            val exceptionMessage = "Test exception on platform $platform"
             val eventId =
-                Sentry.captureException(IllegalArgumentException("Test exception on platform $platform"))
+                Sentry.captureException(IllegalArgumentException(exceptionMessage))
             val fetchedEvent = waitForEventRetrieval(eventId.toString())
             assertEquals(eventId.toString(), fetchedEvent.id)
+            assertEquals("IllegalArgumentException: $exceptionMessage", fetchedEvent.title)
+            assertEquals(sentEvent?.release, fetchedEvent.release)
+            assertEquals(sentEvent?.environment, fetchedEvent.tags.find { it.key == "environment" }?.value)
+            assertEquals(sentEvent?.fingerprint?.toList(), fetchedEvent.fingerprint)
+            assertEquals(SentryLevel.ERROR.toString().lowercase(), fetchedEvent.tags.find { it.key == "level" }?.value)
+            assertEquals(sentEvent?.logger, fetchedEvent.logger)
         }
     }
 
     @AfterTest
     fun tearDown() {
+        sentEvent = null
         Sentry.close()
     }
 }
