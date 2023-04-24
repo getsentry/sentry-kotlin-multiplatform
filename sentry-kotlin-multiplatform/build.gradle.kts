@@ -158,7 +158,7 @@ kotlin {
             commonIosTest.dependsOn(this)
             commonTvWatchMacOsTest.dependsOn(this)
             dependencies {
-                implementation("io.ktor:ktor-client-darwin:2.3.0")
+                implementation(Config.TestLibs.ktorClientDarwin)
             }
         }
     }
