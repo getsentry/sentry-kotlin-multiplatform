@@ -6,7 +6,7 @@ plugins {
     kotlin(Config.cocoapods)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin(Config.kotlinSerializationPlugin)
     `maven-publish`
 }
 
@@ -47,11 +47,11 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0-RC")
-                implementation("io.ktor:ktor-client-core:2.3.0")
-                implementation("io.ktor:ktor-client-serialization:2.3.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+                implementation(Config.TestLibs.kotlinCoroutinesCore)
+                implementation(Config.TestLibs.kotlinCoroutinesTest)
+                implementation(Config.TestLibs.ktorClientCore)
+                implementation(Config.TestLibs.ktorClientSerialization)
+                implementation(Config.TestLibs.kotlinxSerializationJson)
                 implementation(Config.TestLibs.kotlinCommon)
                 implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
@@ -64,8 +64,8 @@ kotlin {
         }
         val androidUnitTest by getting {
             dependencies {
-                implementation("org.robolectric:robolectric:4.9")
-                implementation("androidx.test.ext:junit-ktx:1.1.5")
+                implementation(Config.TestLibs.roboelectric)
+                implementation(Config.TestLibs.junitKtx)
             }
         }
         val jvmMain by getting
@@ -85,7 +85,7 @@ kotlin {
             androidUnitTest.dependsOn(this)
             dependencies {
                 implementation(Config.TestLibs.kotlinJunit)
-                implementation("io.ktor:ktor-client-okhttp:2.3.0")
+                implementation(Config.TestLibs.ktorClientOkHttp)
             }
         }
 
