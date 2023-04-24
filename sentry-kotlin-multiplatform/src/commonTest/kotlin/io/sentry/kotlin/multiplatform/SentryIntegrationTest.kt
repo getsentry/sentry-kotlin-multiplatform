@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -54,12 +53,10 @@ class SentryIntegrationTest : BaseSentryTest() {
         val event = capturedEvents[0]
         event.exceptions.first().type?.let { assertTrue(it.contains("RuntimeException")) }
         assertEquals("test", event.exceptions.first().value)
-        assertNotEquals("test2", event.exceptions.first().value)
 
         val event2 = capturedEvents[1]
         event2.exceptions.first().type?.let { assertTrue(it.contains("RuntimeException")) }
         assertEquals("test2", event2.exceptions.first().value)
-        assertNotEquals("test", event2.exceptions.first().value)
     }
 
     @Test
@@ -112,7 +109,6 @@ class SentryIntegrationTest : BaseSentryTest() {
         }
 
         assertEquals(expectedValue, actualValue)
-        assertNotEquals("valueABC2", actualValue)
     }
 
     @Test
@@ -234,21 +230,25 @@ class SentryIntegrationTest : BaseSentryTest() {
         val collectionKey = "collectionKey"
         val collectionValue = listOf("abc", 123, true)
 
-        val deferred = CompletableDeferred<Unit>()
+        val expectedStringValue = mapOf("value" to stringValue)
+        val expectedBooleanValue = mapOf("value" to booleanValue)
+        val expectedNumberValue = mapOf("value" to numberValue)
+        val expectedCollectionValue = mapOf("value" to collectionValue)
+
+        var actualStringValue: Map<String, Any>? = null
+        var actualBooleanValue: Map<String, Any>? = null
+        var actualNumberValue: Map<String, Any>? = null
+        var actualCollectionValue: Map<String, Any>? = null
+
         sentryInit {
             it.dsn = fakeDsn
             it.beforeSend = { event ->
                 val contexts = event.contexts
-                try {
-                    assertNotNull(contexts)
-                    assertEquals(mapOf("value" to stringValue), contexts[stringKey])
-                    assertEquals(mapOf("value" to booleanValue), contexts[booleanKey])
-                    assertEquals(mapOf("value" to numberValue), contexts[numberKey])
-                    assertEquals(mapOf("value" to collectionValue), contexts[collectionKey])
-                    deferred.complete(Unit)
-                } catch (e: Throwable) {
-                    deferred.completeExceptionally(e)
-                }
+                assertNotNull(contexts)
+                actualStringValue = contexts[stringKey] as Map<String, Any>?
+                actualBooleanValue = contexts[booleanKey] as Map<String, Any>?
+                actualNumberValue = contexts[numberKey] as Map<String, Any>?
+                actualCollectionValue = contexts[collectionKey] as Map<String, Any>?
                 null
             }
         }
@@ -261,6 +261,10 @@ class SentryIntegrationTest : BaseSentryTest() {
         }
 
         Sentry.captureException(RuntimeException("test"))
-        deferred.await()
+
+        assertEquals(expectedStringValue, actualStringValue)
+        assertEquals(expectedBooleanValue, actualBooleanValue)
+        assertEquals(expectedNumberValue, actualNumberValue)
+        assertEquals(expectedCollectionValue, actualCollectionValue)
     }
 }
