@@ -44,8 +44,12 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
         options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
     }
     setBeforeSend { jvmSentryEvent, hint ->
-        options.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
-            jvmSentryEvent.applyKmpEvent(it)
+        if (options.beforeSend == null) {
+            jvmSentryEvent
+        } else {
+            options.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
+                jvmSentryEvent.applyKmpEvent(it)
+            }
         }
     }
 }
