@@ -39,9 +39,10 @@ In the shared code of each sample you will find a `SentrySetup.kt` file where yo
 Run configurations are automatically set through Android Studio. Further configurations are generally not needed.
 
 ## Troubleshooting
-> iOS app configuration is not working / shows an error
+> iOS app run configuration in Android Studio is not working / shows an error
 
-Reimporting the `.xcodeproj` or `.xcworkspace` in configurations depending on whether you run the SPM or Cocoapods sample usually works. It should automatically reload the project scheme and configuration.
+Reimporting the `.xcodeproj` or `.xcworkspace` in run configurations depending on whether you run the SPM or Cocoapods sample usually fixes the problem. 
+It should automatically reload the project scheme and configuration.
 
 > WARNING: CocoaPods requires your terminal to be using UTF-8 encoding. Consider adding the following to ~/.profile:
 
