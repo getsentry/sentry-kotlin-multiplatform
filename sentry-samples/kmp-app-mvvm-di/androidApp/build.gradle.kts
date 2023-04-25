@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    id("io.sentry.android.gradle") version "3.5.0"
 }
 
 android {
@@ -16,10 +17,20 @@ android {
     buildFeatures {
         compose = true
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("sentry.keystore")
+            storePassword = "sentry"
+            keyAlias = "Sentry Android Key"
+            keyPassword = "sentry"
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isDefault = true
+            isMinifyEnabled = true
+            proguardFiles.add(getDefaultProguardFile("proguard-android-optimize.txt"))
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

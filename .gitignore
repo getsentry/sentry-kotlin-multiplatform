@@ -26,6 +26,10 @@ Pods/
 .DS_Store
 tmp
 
+# Samples
+iosApp.xcconfig
+sentry.properties
+release/
 
 # Xcode
 
