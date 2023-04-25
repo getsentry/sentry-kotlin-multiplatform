@@ -5,6 +5,8 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
+import io.sentry.kotlin.multiplatform.utils.org
+import io.sentry.kotlin.multiplatform.utils.projectSlug
 import io.sentry.kotlin.multiplatform.utils.realDsn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -19,6 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
@@ -28,17 +31,11 @@ private data class SentryEventSerializable(
     val release: String? = null,
     val platform: String? = null,
     val message: String? = "",
-    val tags: List<TagSerializable> = listOf(),
+    val tags: List<Map<String, String>> = listOf(),
     val fingerprint: List<String> = listOf(),
     val level: String? = null,
     val logger: String? = null,
     val title: String? = null
-)
-
-@Serializable
-private data class TagSerializable(
-    val key: String? = null,
-    val value: String? = null
 )
 
 class SentryE2ETest : BaseSentryTest() {
@@ -49,6 +46,7 @@ class SentryE2ETest : BaseSentryTest() {
     @BeforeTest
     fun setup() {
         assertNotNull(authToken)
+        assertTrue(authToken.isNotEmpty())
         sentryInit { options ->
             options.dsn = realDsn
             options.beforeSend = { event ->
@@ -60,7 +58,7 @@ class SentryE2ETest : BaseSentryTest() {
 
     private suspend fun fetchEvent(eventId: String): String {
         val url =
-            "https://sentry.io/api/0/projects/sentry-sdks/sentry-kotlin-multiplatform/events/$eventId/"
+            "https://sentry.io/api/0/projects/$org/$projectSlug/events/$eventId/"
         val response = client.get(url) {
             headers {
                 append(
@@ -94,13 +92,14 @@ class SentryE2ETest : BaseSentryTest() {
             val message = "Test running on $platform"
             val eventId = Sentry.captureMessage(message)
             val fetchedEvent = waitForEventRetrieval(eventId.toString())
+            fetchedEvent.tags.forEach { println(it["value"]) }
             assertEquals(eventId.toString(), fetchedEvent.id)
             assertEquals(sentEvent?.message?.formatted, fetchedEvent.message)
             assertEquals(message, fetchedEvent.title)
             assertEquals(sentEvent?.release, fetchedEvent.release)
-            assertEquals(sentEvent?.environment, fetchedEvent.tags.find { it.key == "environment" }?.value)
+            assertEquals(2, fetchedEvent.tags.find { it["value"] == sentEvent?.environment }?.size)
             assertEquals(sentEvent?.fingerprint?.toList(), fetchedEvent.fingerprint)
-            assertEquals(sentEvent?.level?.name?.lowercase(), fetchedEvent.tags.find { it.key == "level" }?.value)
+            assertEquals(2, fetchedEvent.tags.find { it["value"] == sentEvent?.level?.name?.lowercase() }?.size)
             assertEquals(sentEvent?.logger, fetchedEvent.logger)
         }
     }
@@ -115,9 +114,9 @@ class SentryE2ETest : BaseSentryTest() {
             assertEquals(eventId.toString(), fetchedEvent.id)
             assertEquals("IllegalArgumentException: $exceptionMessage", fetchedEvent.title)
             assertEquals(sentEvent?.release, fetchedEvent.release)
-            assertEquals(sentEvent?.environment, fetchedEvent.tags.find { it.key == "environment" }?.value)
+            assertEquals(2, fetchedEvent.tags.find { it["value"] == sentEvent?.environment }?.size)
             assertEquals(sentEvent?.fingerprint?.toList(), fetchedEvent.fingerprint)
-            assertEquals(SentryLevel.ERROR.toString().lowercase(), fetchedEvent.tags.find { it.key == "level" }?.value)
+            assertEquals(2, fetchedEvent.tags.find { it["value"] == SentryLevel.ERROR.toString().lowercase() }?.size)
             assertEquals(sentEvent?.logger, fetchedEvent.logger)
         }
     }
