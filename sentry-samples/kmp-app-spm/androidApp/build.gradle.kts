@@ -37,3 +37,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 }
+
+// Prevent Sentry from being included in the Android app through the AGP.
+configurations {
+    compileOnly {
+        exclude(group = "io.sentry", module = "sentry")
+        exclude(group = "io.sentry", module = "sentry-android")
+    }
+}

@@ -63,3 +63,11 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.5.0-alpha02")
     implementation("androidx.compose.material:material:1.5.0-alpha02")
 }
+
+// Prevent Sentry from being included in the Android app through the AGP.
+configurations {
+    compileOnly {
+        exclude(group = "io.sentry", module = "sentry")
+        exclude(group = "io.sentry", module = "sentry-android")
+    }
+}
