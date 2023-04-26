@@ -7,10 +7,10 @@ struct iOSApp: App {
 
     init() {
         // Initialize Sentry using shared code
-        SentrySetup.initializeSentry()
+        SentrySetupKt.initializeSentry()
 
         // Shared scope across all platforms
-        SentrySetup.configureSentryScope()
+        SentrySetupKt.configureSentryScope()
 
         // Add platform specific scope in addition to the shared scope
         sentry.configureScope { scope in
