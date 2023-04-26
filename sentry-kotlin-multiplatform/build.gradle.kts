@@ -6,6 +6,7 @@ plugins {
     kotlin(Config.cocoapods)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
+    kotlin(Config.kotlinSerializationPlugin)
     `maven-publish`
 }
 
@@ -13,8 +14,8 @@ android {
     compileSdk = Config.Android.compileSdkVersion
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -46,6 +47,11 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
+                implementation(Config.TestLibs.kotlinCoroutinesCore)
+                implementation(Config.TestLibs.kotlinCoroutinesTest)
+                implementation(Config.TestLibs.ktorClientCore)
+                implementation(Config.TestLibs.ktorClientSerialization)
+                implementation(Config.TestLibs.kotlinxSerializationJson)
                 implementation(Config.TestLibs.kotlinCommon)
                 implementation(Config.TestLibs.kotlinCommonAnnotation)
             }
@@ -56,7 +62,12 @@ kotlin {
                 implementation(Config.Libs.sentryAndroid)
             }
         }
-        val androidUnitTest by getting
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(Config.TestLibs.roboelectric)
+                implementation(Config.TestLibs.junitKtx)
+            }
+        }
         val jvmMain by getting
         val jvmTest by getting
 
@@ -74,6 +85,7 @@ kotlin {
             androidUnitTest.dependsOn(this)
             dependencies {
                 implementation(Config.TestLibs.kotlinJunit)
+                implementation(Config.TestLibs.ktorClientOkHttp)
             }
         }
 
@@ -145,6 +157,9 @@ kotlin {
             dependsOn(commonTest)
             commonIosTest.dependsOn(this)
             commonTvWatchMacOsTest.dependsOn(this)
+            dependencies {
+                implementation(Config.TestLibs.ktorClientDarwin)
+            }
         }
     }
 
