@@ -99,7 +99,8 @@ public enum class SpanStatus {
          * @return span status equivalent of http status code or defaultStatus if not found
          */
         public fun fromHttpStatusCode(
-            httpStatusCode: Int?, defaultStatus: SpanStatus
+            httpStatusCode: Int?,
+            defaultStatus: SpanStatus
         ): SpanStatus {
             val spanStatus =
                 if (httpStatusCode != null) fromHttpStatusCode(httpStatusCode) else defaultStatus
