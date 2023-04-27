@@ -27,6 +27,7 @@ auth.token=YOUR_AUTH_TOKEN
 #### Android
 Before running the Android app, execute the `./prepare-android-build.sh` script in the `.../sentry-samples/scripts` directory.
 By default the Android application is using the `release` build and will automatically upload proguard mapping files for deobfuscation.
+You might need to re-sync your gradle files afterwards.
 
 #### iOS
 Before running the iOS app, execute the `./prepare-apple-build.sh` script in the `.../sentry-samples/scripts` directory.

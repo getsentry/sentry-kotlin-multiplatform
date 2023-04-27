@@ -71,3 +71,7 @@ configurations {
         exclude(group = "io.sentry", module = "sentry-android")
     }
 }
+
+sentry {
+    autoUploadProguardMapping.set(false)
+}

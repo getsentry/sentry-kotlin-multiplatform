@@ -23,6 +23,8 @@ for dir in $dirs; do
     # Create the sentry.properties file in the directory and write the contents to it
     echo "$sentry_props" > "$dir/sentry.properties"
     echo "Added sentry.properties to $dir"
+    sed -i '' 's/autoUploadProguardMapping.set(false)/autoUploadProguardMapping.set(true)/g' "$dir"/build.gradle.kts
+    echo "Updated autoUploadProguardMapping to true in $dir"
   else
     echo "$dir does not exist"
   fi
