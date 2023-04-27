@@ -40,6 +40,14 @@ public open class SentryOptions {
     /** Sets the distribution. Think about it together with release and environment */
     public var dist: String? = null
 
+    /**
+     * Configures the sample rate as a percentage of transactions to be sent in the range of 0.0 to 1.0.
+     * If set to 1.0 then 100% of transactions are sent.
+     * If set to 0.1 only 10% of transactions are sent.
+     * Transactions are picked randomly. Default is null (disabled)
+     */
+    public var tracesSampleRate: Double? = null
+
     /** Whether to enable or disable automatic session tracking.  */
     public var enableAutoSessionTracking: Boolean = true
 

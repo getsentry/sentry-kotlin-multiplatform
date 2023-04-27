@@ -33,6 +33,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     isAttachThreads = options.attachThreads
     isAttachStacktrace = options.attachStackTrace
     dist = options.dist
+    tracesSampleRate = options.tracesSampleRate
     environment = options.environment
     release = options.release
     isDebug = options.debug
