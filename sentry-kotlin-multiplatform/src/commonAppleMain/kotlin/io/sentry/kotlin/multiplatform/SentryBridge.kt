@@ -62,6 +62,11 @@ internal actual object SentryBridge {
         SentrySDK.setUser(user?.toCocoaUser())
     }
 
+    actual fun startTransaction(operation: String, description: String): Transaction {
+        val cocoaTransaction = SentrySDK.startTransactionWithName(operation, description)
+        return
+    }
+
     actual fun close() {
         SentrySDK.close()
     }

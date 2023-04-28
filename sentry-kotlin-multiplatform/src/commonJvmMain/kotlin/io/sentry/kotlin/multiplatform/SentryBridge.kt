@@ -57,6 +57,11 @@ internal actual object SentryBridge {
         Sentry.setUser(user?.toJvmUser())
     }
 
+    actual fun startTransaction(operation: String, description: String): Transaction {
+        val jvmTransaction = Sentry.startTransaction(operation, description)
+        return Transaction(jvmTransaction)
+    }
+
     actual fun close() {
         Sentry.close()
     }

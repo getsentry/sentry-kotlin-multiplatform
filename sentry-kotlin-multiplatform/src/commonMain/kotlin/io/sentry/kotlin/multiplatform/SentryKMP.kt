@@ -111,6 +111,10 @@ public object Sentry {
         SentryBridge.setUser(user)
     }
 
+    public fun startTransaction(name: String, operation: String): Transaction {
+        return SentryBridge.startTransaction(name, operation)
+    }
+
     /**
      * Throws a RuntimeException, useful for testing.
      */
