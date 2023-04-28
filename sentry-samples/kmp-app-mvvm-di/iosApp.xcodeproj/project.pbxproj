@@ -34,10 +34,10 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		243652EC29F34FBF00FD902A /* sentry.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sentry.png; sourceTree = "<group>"; };
-		243652F229F3516400FD902A /* Koin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Koin.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/Koin.swift"; sourceTree = "<group>"; };
-		243652F329F3516400FD902A /* LoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginScreen.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/LoginScreen.swift"; sourceTree = "<group>"; };
-		243652F429F3516400FD902A /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeScreen.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/HomeScreen.swift"; sourceTree = "<group>"; };
-		243652F529F3516400FD902A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../../../temp/kmp-app-mvvm-di/iosApp/iosApp/AppDelegate.swift"; sourceTree = "<group>"; };
+		243652F229F3516400FD902A /* Koin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Koin.swift; sourceTree = "<group>"; };
+		243652F329F3516400FD902A /* LoginScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
+		243652F429F3516400FD902A /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		243652F529F3516400FD902A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		24B0FC5A29F826B300434F1C /* iosApp.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iosApp.xcconfig; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
