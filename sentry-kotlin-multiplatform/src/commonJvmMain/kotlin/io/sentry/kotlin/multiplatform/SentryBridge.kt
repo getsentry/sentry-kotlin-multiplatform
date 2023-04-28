@@ -1,6 +1,9 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.Sentry
+import io.sentry.SentryDateProvider
+import io.sentry.SentryInstantDate
+import io.sentry.SentryLongDate
 import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
@@ -58,8 +61,7 @@ internal actual object SentryBridge {
     }
 
     actual fun startTransaction(operation: String, description: String): Transaction {
-        val jvmTransaction = Sentry.startTransaction(operation, description)
-        return Transaction(jvmTransaction)
+        TODO("Not yet implemented")
     }
 
     actual fun close() {

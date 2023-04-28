@@ -63,8 +63,8 @@ internal actual object SentryBridge {
     }
 
     actual fun startTransaction(operation: String, description: String): Transaction {
-        val cocoaTransaction = SentrySDK.startTransactionWithName(operation, description)
-        return
+        val span = SentrySDK.startTransactionWithName(operation, description)
+        TODO()
     }
 
     actual fun close() {

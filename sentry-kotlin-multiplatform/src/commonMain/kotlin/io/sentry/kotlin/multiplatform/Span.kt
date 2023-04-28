@@ -9,13 +9,6 @@ public interface Span {
      */
     public fun startChild(operation: String): Span
 
-    public fun startChild(
-        operation: String,
-        description: String?,
-        timestamp: SentryDate,
-        instrumenter: Instrumenter
-    ): Span
-
     /**
      * Starts a child Span.
      *
@@ -35,14 +28,6 @@ public interface Span {
      */
     public fun finish(status: SpanStatus)
 
-    /**
-     * Sets span timestamp marking this span as finished.
-     *
-     * @param status - the status
-     * @param timestamp - the end timestamp
-     */
-    public fun finish(status: SpanStatus?, timestamp: SentryDate)
-
     /** The span operation. */
     public var operation: String
 
@@ -50,10 +35,7 @@ public interface Span {
     public var description: String?
 
     /** The span status. */
-    public var status: SpanStatus
-
-    /** The throwable that was thrown during the execution of the span. */
-    public var throwable: Throwable?
+    public var status: SpanStatus?
 
     /**
      * Sets the tag on span or transaction.

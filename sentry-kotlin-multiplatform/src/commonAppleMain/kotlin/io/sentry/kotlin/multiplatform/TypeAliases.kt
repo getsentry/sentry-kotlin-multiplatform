@@ -9,6 +9,7 @@ import cocoapods.Sentry.SentryLevel
 import cocoapods.Sentry.SentryMessage
 import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentryScope
+import cocoapods.Sentry.SentrySpanStatus
 import cocoapods.Sentry.SentryUser
 import cocoapods.Sentry.SentryUserFeedback
 
@@ -23,3 +24,4 @@ internal typealias CocoaUserFeedback = SentryUserFeedback
 internal typealias CocoaSentryEvent = SentryEvent
 internal typealias CocoaMessage = SentryMessage
 internal typealias CocoaSentryException = SentryException
+internal typealias CocoaSpanStatus = SentrySpanStatus

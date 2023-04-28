@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.Attachment
 import io.sentry.Breadcrumb
+import io.sentry.Instrumenter
 import io.sentry.Scope
 import io.sentry.SentryEvent
 import io.sentry.SentryLevel
@@ -12,6 +13,7 @@ import io.sentry.protocol.Message
 import io.sentry.protocol.SentryException
 import io.sentry.protocol.SentryId
 import io.sentry.protocol.User
+import io.sentry.SpanStatus
 
 internal typealias JvmSentryLevel = SentryLevel
 internal typealias JvmUser = User
@@ -25,3 +27,4 @@ internal typealias JvmSentryEvent = SentryEvent
 internal typealias JvmMessage = Message
 internal typealias JvmSentryException = SentryException
 internal typealias JvmContexts = Contexts
+internal typealias JvmSpanStatus = SpanStatus
