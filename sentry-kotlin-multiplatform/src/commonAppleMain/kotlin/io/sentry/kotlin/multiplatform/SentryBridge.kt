@@ -86,10 +86,12 @@ internal actual object SentryBridge {
     }
 }
 
-public fun captureError(error: NSError) {
+@Suppress("unused")
+public fun Sentry.captureError(error: NSError) {
     SentrySDK.captureError(error)
 }
 
-public fun captureException(exception: NSException) {
+@Suppress("unused")
+public fun Sentry.captureException(exception: NSException) {
     SentrySDK.captureException(exception)
 }
