@@ -12,6 +12,8 @@ dependencyResolutionManagement {
         mavenCentral()
         mavenLocal()
         google()
+        maven("https://androidx.dev/storage/compose-compiler/repository/")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
 }
 
@@ -20,11 +22,29 @@ rootProject.name = "sentry-kotlin-multiplatform-sdk"
 include(":sentry-kotlin-multiplatform")
 
 /*
-KMP App with targets:
+Simple KMP App with targets:
     - Android
-    - iOS with SwiftUI
+    - iOS with SwiftUI and SPM
     - JVM Desktop with Jetpack Compose
  */
-include("sentry-samples:kmp-app:shared")
-include("sentry-samples:kmp-app:androidApp")
-include("sentry-samples:kmp-app:desktopApp")
+include("sentry-samples:kmp-app-spm:shared")
+include("sentry-samples:kmp-app-spm:androidApp")
+include("sentry-samples:kmp-app-spm:desktopApp")
+
+/*
+Simple KMP App with targets:
+    - Android
+    - iOS with SwiftUI and Cocoapods
+    - JVM Desktop with Jetpack Compose
+ */
+include("sentry-samples:kmp-app-cocoapods:shared")
+include("sentry-samples:kmp-app-cocoapods:androidApp")
+include("sentry-samples:kmp-app-cocoapods:desktopApp")
+
+/*
+KMP App with MVVM and Dependency Injection with Koin:
+    - Android with Jetpack Compose
+    - iOS with SwiftUI and SPM
+ */
+include("sentry-samples:kmp-app-mvvm-di:shared")
+include("sentry-samples:kmp-app-mvvm-di:androidApp")

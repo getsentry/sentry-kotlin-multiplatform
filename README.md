@@ -70,6 +70,31 @@ cocoapods {
 }
 ```
 
+### Swift Package Manager
+
+Alternatively you can use the Swift Package Manager to include the Sentry Cocoa SDK into this SDK.
+Open your iOS app in Xcode and open File > Add Packages. Then add the SDK by entering the git repo url in the top right search field:
+`https://github.com/getsentry/sentry-cocoa.git`
+
+After adding the package, you need to add the following to your shared `build.gradle.kts`:
+
+```gradle
+listOf(
+    iosX64(),
+    iosArm64(),
+    iosSimulatorArm64(),
+    // ... other Apple targets
+).forEach {
+    it.binaries.framework {
+        baseName = "shared"
+        isStatic = true
+        
+        // Export the SDK in order to be able to access it directly in the iOS project
+        export("io.sentry:sentry-kotlin-multiplatform:<version>")
+    }
+}
+```
+
 ## Initialization
 
 There are two main strategies for initializing the SDK:

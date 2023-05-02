@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Message
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -12,13 +13,16 @@ class BeforeSendIntegrationTest {
 
     @Test
     fun `event is not null if KMP beforeSend option is null`() {
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
     }
 
     @Test
     fun `event is null if KMP beforeSend callback config returns null`() {
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = {
                 null
             }
@@ -29,6 +33,7 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event is not null if KMP beforeSend callback config returns not null`() {
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event
             }
@@ -40,6 +45,7 @@ class BeforeSendIntegrationTest {
     fun `event logger is modified if KMP beforeSend callback config modifies it`() {
         val expected = "test"
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.logger = expected
                 event
@@ -53,6 +59,7 @@ class BeforeSendIntegrationTest {
     fun `event level is modified if KMP beforeSend callback config modifies it`() {
         val expected = SentryLevel.DEBUG
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.level = expected
                 event
@@ -66,6 +73,7 @@ class BeforeSendIntegrationTest {
     fun `event message is modified if KMP beforeSend callback config modifies it`() {
         val expected = Message("test")
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.message = expected
                 event
@@ -79,6 +87,7 @@ class BeforeSendIntegrationTest {
     fun `event release is modified if KMP beforeSend callback config modifies it`() {
         val expected = "test"
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.release = expected
                 event
@@ -92,6 +101,7 @@ class BeforeSendIntegrationTest {
     fun `event environment is modified if KMP beforeSend callback config modifies it`() {
         val expected = "test"
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.environment = expected
                 event
@@ -105,6 +115,7 @@ class BeforeSendIntegrationTest {
     fun `event serverName is modified if KMP beforeSend callback config modifies it`() {
         val expected = "test"
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.serverName = expected
                 event
@@ -118,6 +129,7 @@ class BeforeSendIntegrationTest {
     fun `event dist is modified if KMP beforeSend callback config modifies it`() {
         val expected = "test"
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.dist = expected
                 event
@@ -131,6 +143,7 @@ class BeforeSendIntegrationTest {
     fun `event fingerprint is modified if KMP beforeSend callback config modifies it`() {
         val expected = mutableListOf("test")
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.fingerprint = expected
                 event
@@ -144,6 +157,7 @@ class BeforeSendIntegrationTest {
     fun `event tags are modified if KMP beforeSend callback config modifies it`() {
         val expected = mutableMapOf("test" to "test")
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.tags = expected
                 event
@@ -157,6 +171,7 @@ class BeforeSendIntegrationTest {
     fun `event breadcrumbs are modified if KMP beforeSend callback config modifies it`() {
         val expected = mutableListOf(Breadcrumb.debug("test"))
         val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
             it.beforeSend = { event ->
                 event.breadcrumbs = expected
                 event
@@ -171,7 +186,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event logger is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.logger, event.logger)
     }
@@ -187,7 +204,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event message is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.message, event.message)
     }
@@ -195,7 +214,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event release is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.release, event.release)
     }
@@ -203,7 +224,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event environment is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.environment, event.environment)
     }
@@ -211,7 +234,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event serverName is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.serverName, event.serverName)
     }
@@ -219,7 +244,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event dist is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.dist, event.dist)
     }
@@ -227,7 +254,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event fingerprint is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.fingerprint, event.fingerprint)
     }
@@ -235,7 +264,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event tags are not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.tags, event.tags)
     }
@@ -243,7 +274,9 @@ class BeforeSendIntegrationTest {
     @Test
     fun `event breadcrumbs are not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
-        val event = sentryEventConfigurator.applyOptions()
+        val event = sentryEventConfigurator.applyOptions {
+            it.dsn = fakeDsn
+        }
         assertNotNull(event)
         assertEquals(originalEvent.breadcrumbs, event.breadcrumbs)
     }
