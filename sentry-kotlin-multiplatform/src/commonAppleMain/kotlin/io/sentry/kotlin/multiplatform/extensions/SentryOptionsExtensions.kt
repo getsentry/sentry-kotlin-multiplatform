@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentryHttpStatusCodeRange
+import cocoapods.Sentry.SentrySampleDecision
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
@@ -71,6 +72,11 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     beforeBreadcrumb = { cocoaBreadcrumb ->
         cocoaBreadcrumb?.toKmpBreadcrumb()
             ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+    }
+
+    tracesSampler = {
+        it?.transactionContext?.nameSource
+        1.convert()
     }
 
     enableCaptureFailedRequests = options.enableCaptureFailedRequests

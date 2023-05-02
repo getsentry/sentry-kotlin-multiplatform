@@ -5,6 +5,7 @@ import io.sentry.kotlin.multiplatform.Context
 import io.sentry.kotlin.multiplatform.HttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SpanStatus
 
 /** Configure scope applicable to all platforms */
 fun configureSentryScope() {

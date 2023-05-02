@@ -1,9 +1,13 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.BuildKonfig
+import io.sentry.kotlin.multiplatform.CustomSamplingContext
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
+import io.sentry.kotlin.multiplatform.JvmTransactionContextProvider
+import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
+import io.sentry.kotlin.multiplatform.TransactionContextProv
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
@@ -23,7 +27,6 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
         )
     }
 }
-
 
 
 /**
@@ -54,5 +57,16 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
                 jvmSentryEvent.applyKmpEvent(it)
             }
         }
+    }
+    setTracesSampler {
+        val jvmTransactionContext = JvmTransactionContextProvider(it.transactionContext)
+        val transactionContext = TransactionContextProv(jvmTransactionContext)
+        val customSamplingContext: CustomSamplingContext? =
+            it.customSamplingContext?.data?.let { customSamplingContext ->
+                CustomSamplingContext(customSamplingContext)
+            }
+        val samplingContext = SamplingContext(transactionContext, customSamplingContext)
+        // returns null if KMP tracesSampler is null
+        options.tracesSampler?.invoke(samplingContext)
     }
 }

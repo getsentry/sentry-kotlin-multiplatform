@@ -48,6 +48,11 @@ public open class SentryOptions {
      */
     public var tracesSampleRate: Double? = null
 
+    /**
+     * This function is called by TracesSampler to determine if transaction is sampled - meant to be sent to Sentry.
+     */
+    public var tracesSampler: ((SamplingContext) -> Double)? = null
+
     /** Whether to enable or disable automatic session tracking.  */
     public var enableAutoSessionTracking: Boolean = true
 
