@@ -26,6 +26,12 @@ fun configureSentryScope() {
  */
 fun initializeSentry(context: Context) {
     Sentry.init(context, optionsConfiguration())
+    val trace = Sentry.startTransaction("App Startup", "App Startup")
+    var i = 0
+    while(i <= 1000000000) {
+        i += 1
+    }
+    trace.finish()
 }
 
 /**
@@ -35,6 +41,12 @@ fun initializeSentry(context: Context) {
  */
 fun initializeSentry() {
     Sentry.init(optionsConfiguration())
+    val trace = Sentry.startTransaction("App Startup", "App Startup")
+    var i = 0
+    while(i <= 1000000) {
+        i += 1
+    }
+    trace.finish()
 }
 
 /** Returns a shared options configuration */
@@ -47,6 +59,7 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachViewHierarchy = true
         it.release = "kmp-release@0.0.1"
         it.debug = true
+        it.tracesSampleRate = 1.0
         it.failedRequestStatusCodes = listOf(HttpStatusCodeRange(400, 599))
         it.failedRequestTargets = listOf("httpbin.org")
         it.beforeBreadcrumb = { breadcrumb ->
@@ -57,6 +70,7 @@ private fun optionsConfiguration(): OptionsConfiguration {
             if (event.environment == "test") {
                 null
             } else {
+                println("HAHA: ${event.exceptions}")
                 event
             }
         }

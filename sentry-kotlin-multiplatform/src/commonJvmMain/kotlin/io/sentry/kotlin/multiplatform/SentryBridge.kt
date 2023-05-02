@@ -1,9 +1,12 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.ITransaction
 import io.sentry.Sentry
 import io.sentry.SentryDateProvider
 import io.sentry.SentryInstantDate
 import io.sentry.SentryLongDate
+import io.sentry.SpanStatus
+import io.sentry.TransactionContext
 import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
@@ -60,8 +63,9 @@ internal actual object SentryBridge {
         Sentry.setUser(user?.toJvmUser())
     }
 
-    actual fun startTransaction(operation: String, description: String): Transaction {
-        TODO("Not yet implemented")
+    actual fun startTransaction(operation: String, description: String): Span {
+        val jvmTransaction = Sentry.startTransaction(operation, description)
+        return JvmSpanProvider(jvmTransaction)
     }
 
     actual fun close() {

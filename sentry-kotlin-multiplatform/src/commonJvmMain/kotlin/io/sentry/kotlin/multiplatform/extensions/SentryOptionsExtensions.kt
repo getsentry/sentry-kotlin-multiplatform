@@ -24,6 +24,8 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
     }
 }
 
+
+
 /**
  * Applies the given base SentryOptions to this JvmSentryOption
  * This avoids code duplication during init on Android
@@ -45,6 +47,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
         options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
     }
     setBeforeSend { jvmSentryEvent, hint ->
+        println("beforeSend: ${jvmSentryEvent.throwable}")
         if (options.beforeSend == null) {
             jvmSentryEvent
         } else {

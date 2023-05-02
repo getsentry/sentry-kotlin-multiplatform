@@ -7,12 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import io.sentry.kotlin.multiplatform.withSpan
+import io.sentry.kotlin.multiplatform.withTrace
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import sample.kmp.app.LoginImpl
 import sample.kmp.app.Platform
 import sample.kmp.app.configureSentryScope
 import sample.kmp.app.initializeSentry
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Thread.sleep
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +38,25 @@ class MainActivity : AppCompatActivity() {
 
         captureHardCrashBtn.setOnClickListener {
             LoginImpl.login()
+        }
+
+        GlobalScope.launch {
+            println(getData())
+        }
+        val trace = Sentry.startTransaction("myTransaction", "myOp")
+
+    }
+
+    private suspend fun getData(): String {
+        return withTrace("getData", "custom") {
+            withSpan("getDataSpan") {
+                sleep(1000)
+            }
+            withSpan("getDataSpan2") {
+                sleep(1000)
+            }
+            sleep(5000)
+            "foo"
         }
     }
 }

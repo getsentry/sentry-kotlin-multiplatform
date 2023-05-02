@@ -43,6 +43,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Config.Libs.kotlinStd)
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC")
             }
         }
         val commonTest by getting {

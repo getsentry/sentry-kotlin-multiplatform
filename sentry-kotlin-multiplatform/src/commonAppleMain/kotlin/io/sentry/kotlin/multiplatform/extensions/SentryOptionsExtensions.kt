@@ -52,7 +52,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         sdk?.set("packages", packages)
 
         event?.sdk = sdk
-
+        
         if (options.beforeSend == null) {
             dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as CocoaSentryEvent?
         } else {

@@ -10,7 +10,6 @@ internal actual fun initSentry(context: Context?, configuration: OptionsConfigur
     context?.let {
         SentryAndroid.init(it, options.toAndroidSentryOptionsCallback())
     }
-    io.sentry.Sentry.startTransaction(", ", "")
 }
 
 public actual typealias Context = Context
