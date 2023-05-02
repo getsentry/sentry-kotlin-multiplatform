@@ -65,7 +65,6 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(operation: String, description: String): Span {
         val cocoaSpan = SentrySDK.startTransactionWithName(operation, description)
-
         return CocoaSpanProvider(cocoaSpan)
     }
 

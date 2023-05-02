@@ -46,8 +46,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
     }
-    setBeforeSend { jvmSentryEvent, hint ->
-        println("beforeSend: ${jvmSentryEvent.throwable}")
+    setBeforeSend { jvmSentryEvent, _ ->
         if (options.beforeSend == null) {
             jvmSentryEvent
         } else {
