@@ -2,12 +2,15 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentryHttpStatusCodeRange
-import cocoapods.Sentry.SentrySampleDecision
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
+import io.sentry.kotlin.multiplatform.CocoaTransactionContextProvider
+import io.sentry.kotlin.multiplatform.CustomSamplingContext
+import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
+import io.sentry.kotlin.multiplatform.TransactionContextProv
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
@@ -53,7 +56,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         sdk?.set("packages", packages)
 
         event?.sdk = sdk
-        
+
         if (options.beforeSend == null) {
             dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as CocoaSentryEvent?
         } else {
@@ -70,21 +73,33 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
 
     beforeBreadcrumb = { cocoaBreadcrumb ->
-        cocoaBreadcrumb?.toKmpBreadcrumb()
-            ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+        cocoaBreadcrumb?.toKmpBreadcrumb()?.let { options.beforeBreadcrumb?.invoke(it) }
+            ?.toCocoaBreadcrumb()
     }
 
     tracesSampler = {
-        it?.transactionContext?.nameSource
-        1.convert()
+        it?.let {
+            val cocoaTransactionContext = CocoaTransactionContextProvider(it.transactionContext)
+            val transactionContext = TransactionContextProv(cocoaTransactionContext)
+            val customSamplingContext: CustomSamplingContext? =
+                it.customSamplingContext?.values?.let { customSamplingContext ->
+                    val data = customSamplingContext as? MutableMap<String, Any?>
+                    data?.let { unwrappedData -> CustomSamplingContext(unwrappedData) }
+                }
+            val samplingContext = SamplingContext(transactionContext, customSamplingContext)
+            // returns null if KMP tracesSampler is null
+            val sampleRate = options.tracesSampler?.invoke(samplingContext)
+            sampleRate?.let { unwrappedSampleRate ->
+                NSNumber(unwrappedSampleRate)
+            }
+        }
     }
 
     enableCaptureFailedRequests = options.enableCaptureFailedRequests
     failedRequestTargets = options.failedRequestTargets
     failedRequestStatusCodes = options.failedRequestStatusCodes.map {
         SentryHttpStatusCodeRange(
-            min = it.min.convert(),
-            max = it.max.convert()
+            min = it.min.convert(), max = it.max.convert()
         )
     }
 }

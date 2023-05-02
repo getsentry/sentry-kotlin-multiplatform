@@ -67,6 +67,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
             }
         val samplingContext = SamplingContext(transactionContext, customSamplingContext)
         // returns null if KMP tracesSampler is null
-        options.tracesSampler?.invoke(samplingContext)
+        val sampleRate = options.tracesSampler?.invoke(samplingContext)
+        sampleRate
     }
 }
