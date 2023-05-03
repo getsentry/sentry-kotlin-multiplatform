@@ -18,12 +18,27 @@ typedef NS_ENUM(NSInteger, SentryTransactionNameSource) {
  */
 
 @OptIn(UnsafeNumber::class)
-internal fun NSInteger.toKmpTransactionNameSource() = when (this) {
-    0 -> TransactionNameSource.CUSTOM
-    1 -> TransactionNameSource.URL
-    2 -> TransactionNameSource.ROUTE
-    3 -> TransactionNameSource.VIEW
-    4 -> TransactionNameSource.COMPONENT
-    5 -> TransactionNameSource.TASK
-    else -> TransactionNameSource.CUSTOM
+internal fun NSInteger.toKmpTransactionNameSource(): TransactionNameSource {
+    val transactionNameSource = when (this.toInt()) {
+        0 -> TransactionNameSource.CUSTOM
+        1 -> TransactionNameSource.URL
+        2 -> TransactionNameSource.ROUTE
+        3 -> TransactionNameSource.VIEW
+        4 -> TransactionNameSource.COMPONENT
+        5 -> TransactionNameSource.TASK
+        else -> TransactionNameSource.CUSTOM
+    }
+    return transactionNameSource
+}
+
+internal fun TransactionNameSource.toNSInteger(): NSInteger {
+    val transactionNameSource = when (this) {
+        TransactionNameSource.CUSTOM -> 0
+        TransactionNameSource.URL -> 1
+        TransactionNameSource.ROUTE -> 2
+        TransactionNameSource.VIEW -> 3
+        TransactionNameSource.COMPONENT -> 4
+        TransactionNameSource.TASK -> 5
+    }
+    return transactionNameSource
 }

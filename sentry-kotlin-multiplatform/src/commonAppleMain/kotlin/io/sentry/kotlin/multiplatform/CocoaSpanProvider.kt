@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import cocoapods.Sentry.SentrySpanProtocol
 import io.sentry.kotlin.multiplatform.extensions.toCocoa
 import io.sentry.kotlin.multiplatform.extensions.toKmp
+import io.sentry.kotlin.multiplatform.protocol.SpanId
 
 internal class CocoaSpanProvider(private val cocoaSpan: SentrySpanProtocol) : Span {
     override fun startChild(operation: String): Span {
@@ -11,7 +12,8 @@ internal class CocoaSpanProvider(private val cocoaSpan: SentrySpanProtocol) : Sp
     }
 
     override fun startChild(operation: String, description: String?): Span {
-        val cocoaSpan = cocoaSpan.startChildWithOperation(operation = operation, description = description)
+        val cocoaSpan =
+            cocoaSpan.startChildWithOperation(operation = operation, description = description)
         return CocoaSpanProvider(cocoaSpan)
     }
 
@@ -28,11 +30,13 @@ internal class CocoaSpanProvider(private val cocoaSpan: SentrySpanProtocol) : Sp
         set(value) {
             cocoaSpan.operation = value
         }
+
     override var description: String?
         get() = cocoaSpan.spanDescription
         set(value) {
             cocoaSpan.setSpanDescription(value)
         }
+
     override var status: SpanStatus?
         get() = cocoaSpan.status.toKmp()
         set(value) {
@@ -40,6 +44,11 @@ internal class CocoaSpanProvider(private val cocoaSpan: SentrySpanProtocol) : Sp
                 cocoaSpan.status = it.toCocoa()
             }
         }
+
+    override val spanId: SpanId = SpanId(cocoaSpan.spanId.toString())
+
+    override val parentSpanId: SpanId? = cocoaSpan.parentSpanId?.let { SpanId(it.toString()) }
+
     override fun setTag(key: String, value: String) {
         cocoaSpan.setTagValue(value = value, forKey = key)
     }

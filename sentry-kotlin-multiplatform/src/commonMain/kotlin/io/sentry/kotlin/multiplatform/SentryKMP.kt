@@ -121,6 +121,11 @@ public object Sentry {
         return SentryBridge.startTransaction(name, operation)
     }
 
+    public fun startTransaction(name: String, operation: String, description: String): Span {
+        return SentryBridge.startTransaction(name, operation)
+    }
+
+
     /**
      * Throws a RuntimeException, useful for testing.
      */

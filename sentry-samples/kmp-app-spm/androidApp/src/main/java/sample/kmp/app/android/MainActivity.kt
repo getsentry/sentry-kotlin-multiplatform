@@ -13,6 +13,7 @@ import sample.kmp.app.configureSentryScope
 import sample.kmp.app.initializeSentry
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Thread.sleep
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +35,10 @@ class MainActivity : AppCompatActivity() {
         captureHardCrashBtn.setOnClickListener {
             LoginImpl.login()
         }
+
+        val transaction = Sentry.startTransaction("adsaa", "activity")
+        sleep(5000)
+        transaction.finish()
     }
 }
 

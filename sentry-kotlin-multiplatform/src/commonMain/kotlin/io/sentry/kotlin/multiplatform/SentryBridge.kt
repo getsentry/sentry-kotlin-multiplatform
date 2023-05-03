@@ -27,7 +27,11 @@ internal expect object SentryBridge {
 
     fun setUser(user: User?)
 
-    fun startTransaction(operation: String, description: String): Span
+    fun startTransaction(name: String, operation: String): Span
+
+    fun startTransaction(transactionContext: TransactionContext): Span
+
+    fun startTransaction(transactionContext: TransactionContext, customSamplingContext: CustomSamplingContext): Span
 
     fun close()
 }

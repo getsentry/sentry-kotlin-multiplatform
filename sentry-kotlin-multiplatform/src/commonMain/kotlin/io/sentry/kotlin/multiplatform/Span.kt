@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.protocol.SpanId
+
 public interface Span {
     /**
      * Starts a child Span.
@@ -36,6 +38,12 @@ public interface Span {
 
     /** The span status. */
     public var status: SpanStatus?
+
+    /** The span spanId. */
+    public val spanId: SpanId
+
+    /** The span parentSpanId. */
+    public val parentSpanId: SpanId?
 
     /**
      * Sets the tag on span or transaction.

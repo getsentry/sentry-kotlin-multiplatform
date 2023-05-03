@@ -83,7 +83,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
             val transactionContext = TransactionContextProv(cocoaTransactionContext)
             val customSamplingContext: CustomSamplingContext? =
                 it.customSamplingContext?.values?.let { customSamplingContext ->
-                    val data = customSamplingContext as? MutableMap<String, Any?>
+                    val data = customSamplingContext as? Map<String, Any?>
                     data?.let { unwrappedData -> CustomSamplingContext(unwrappedData) }
                 }
             val samplingContext = SamplingContext(transactionContext, customSamplingContext)

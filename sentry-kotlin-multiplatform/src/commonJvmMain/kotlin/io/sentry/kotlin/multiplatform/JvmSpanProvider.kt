@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.ISpan
 import io.sentry.kotlin.multiplatform.extensions.toJvm
 import io.sentry.kotlin.multiplatform.extensions.toKmp
+import io.sentry.kotlin.multiplatform.protocol.SpanId
 
 internal class JvmSpanProvider(private val jvmSpan: ISpan) : Span {
     override fun startChild(operation: String): Span {
@@ -38,6 +39,12 @@ internal class JvmSpanProvider(private val jvmSpan: ISpan) : Span {
         set(value) {
             jvmSpan.status = value?.toJvm()
         }
+
+    override val spanId: SpanId = SpanId(jvmSpan.spanContext.spanId.toString())
+
+    override val parentSpanId: SpanId? =
+        jvmSpan.spanContext.parentSpanId?.let { SpanId(it.toString()) }
+
     override fun setTag(key: String, value: String) {
         jvmSpan.setTag(key, value)
     }

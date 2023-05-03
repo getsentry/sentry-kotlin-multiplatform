@@ -8,6 +8,7 @@ import cocoapods.Sentry.SentryId
 import cocoapods.Sentry.SentryLevel
 import cocoapods.Sentry.SentryMessage
 import cocoapods.Sentry.SentryOptions
+import cocoapods.Sentry.SentrySampleDecision
 import cocoapods.Sentry.SentryScope
 import cocoapods.Sentry.SentrySpanId
 import cocoapods.Sentry.SentrySpanStatus
@@ -29,3 +30,4 @@ internal typealias CocoaSentryException = SentryException
 internal typealias CocoaSpanStatus = SentrySpanStatus
 internal typealias CocoaSpanId = SentrySpanId
 internal typealias CocoaTransactionContext = SentryTransactionContext
+internal typealias CocoaSampleDecision = SentrySampleDecision
