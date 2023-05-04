@@ -60,18 +60,6 @@ private fun optionsConfiguration(): OptionsConfiguration {
                 event
             }
         }
-        it.tracesSampler = { context ->
-            println("TEST: ${context.transactionContext.transactionNameSource}")
-            println("TEST: ${context.transactionContext.operation}")
-            println("TEST: ${context.transactionContext.name}")
-            println("TEST: ${context.transactionContext.parentSpanId}")
-            println("TEST: ${context.transactionContext.spanId}")
-            println("TEST: ${context.transactionContext.traceId}")
-            println("TEST: ${context.transactionContext.sampled}")
-            println("TEST: ${context.transactionContext.parentSampled}")
-            println("TEST: ${context.transactionContext.description}")
-            println("TEST: ${context.transactionContext.parentSpanId}")
-            1.0
-        }
+        it.tracesSampleRate = 1.0
     }
 }

@@ -35,10 +35,6 @@ class MainActivity : AppCompatActivity() {
         captureHardCrashBtn.setOnClickListener {
             LoginImpl.login()
         }
-
-        val transaction = Sentry.startTransaction("adsaa", "activity")
-        sleep(5000)
-        transaction.finish()
     }
 }
 

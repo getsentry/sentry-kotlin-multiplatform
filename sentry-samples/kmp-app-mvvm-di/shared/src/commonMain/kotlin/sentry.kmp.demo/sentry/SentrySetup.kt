@@ -25,6 +25,7 @@ private val optionsConfiguration: OptionsConfiguration = {
         breadcrumb.message = "Add message before every breadcrumb"
         breadcrumb
     }
+    it.tracesSampleRate = 1.0
 }
 
 /**

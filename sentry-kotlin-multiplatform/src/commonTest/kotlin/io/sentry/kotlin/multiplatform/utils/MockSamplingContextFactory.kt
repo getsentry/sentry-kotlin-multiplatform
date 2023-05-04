@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform.utils
 
-import io.sentry.kotlin.multiplatform.CustomSamplingContext
 import io.sentry.kotlin.multiplatform.MockTransactionContext
 import io.sentry.kotlin.multiplatform.TransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
@@ -13,10 +12,10 @@ fun createMockTransactionContext(
     spanId: SpanId = SpanId.EMPTY_ID,
     parentSpanId: SpanId? = SpanId("123"),
     description: String? = "test description",
-    sampled: Boolean? = null,
+    sampled: Boolean = false,
     name: String = "test",
     transactionNameSource: TransactionNameSource = TransactionNameSource.TASK,
-    parentSampled: Boolean? = null
+    parentSampled: Boolean = false
 ): TransactionContext {
     return MockTransactionContext(
         operation = operation,
@@ -29,8 +28,4 @@ fun createMockTransactionContext(
         transactionNameSource = transactionNameSource,
         parentSampled = parentSampled
     )
-}
-
-fun createMockCustomSamplingContext(data: Map<String, String> = mapOf("test" to "test")): CustomSamplingContext {
-    return CustomSamplingContext(data)
 }

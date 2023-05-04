@@ -10,6 +10,7 @@ class AuthenticationViewModel : ViewModel() {
 
     fun login(withError: Boolean): Boolean {
         return if (withError) {
+            val transaction = Sentry.startTransaction("Authentication", "login", bindToScope = true)
             try {
                 throw LoginException("Error logging in")
             } catch (exception: Exception) {
@@ -23,6 +24,8 @@ class AuthenticationViewModel : ViewModel() {
                     it.level = SentryLevel.ERROR
                 }
                 false
+            } finally {
+                transaction.finish()
             }
         } else {
             true

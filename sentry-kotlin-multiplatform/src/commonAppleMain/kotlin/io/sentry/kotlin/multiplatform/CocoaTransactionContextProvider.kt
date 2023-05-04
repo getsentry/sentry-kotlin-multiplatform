@@ -18,5 +18,5 @@ internal class CocoaTransactionContextProvider(cocoaTransactionContext: CocoaTra
     override val spanId: SpanId = SpanId(cocoaTransactionContext.spanId.toString())
     override val parentSpanId: SpanId? =
         cocoaTransactionContext.parentSpanId?.let { SpanId(it.toString()) }
-    override val description: String? = cocoaTransactionContext.description
+    override val description: String? = cocoaTransactionContext.spanDescription
 }

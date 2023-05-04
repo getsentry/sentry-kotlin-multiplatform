@@ -15,6 +15,7 @@ object LoginImpl {
      *
      */
     fun login(username: String? = null) {
+        val transaction = Sentry.startTransaction("Authentication", "login", bindToScope = true)
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
@@ -39,6 +40,8 @@ object LoginImpl {
             Sentry.captureUserFeedback(userFeedback)
         } catch (exception: IllegalArgumentException) {
             throw exception
+        } finally {
+            transaction.finish()
         }
     }
 

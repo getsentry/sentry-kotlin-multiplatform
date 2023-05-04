@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TracesSamplerRateIntegrationTest: BaseSentryTest() {
+class TransactionIntegrationTest: BaseSentryTest() {
 
     @Test
     fun `tracesSampler can receive correct TransactionContext name`() {
@@ -38,35 +38,54 @@ class TracesSamplerRateIntegrationTest: BaseSentryTest() {
     }
 
     @Test
-    fun `tracesSampler can receive correct TransactionContext parentSpanId`() {
-        var actualParentSpanId = ""
+    fun `parentSpanId is correct after starting child span`() {
         sentryInit {
             it.dsn = fakeDsn
-            it.tracesSampler = { context ->
-                actualParentSpanId = context.transactionContext.parentSpanId.toString()
-                null
-            }
         }
         val transaction = Sentry.startTransaction("test", "testOperation")
+        val child = transaction.startChild("child")
+        child.finish()
         transaction.finish()
-        assertEquals(transaction.parentSpanId?.toString(), actualParentSpanId)
+        assertEquals(child.parentSpanId?.toString(), transaction.spanId.toString())
     }
 
     @Test
-    fun `tracesSampler can receive correct TransactionContext description`() {
-        val expectedDescription = "test"
-        var actualDescription: String? = ""
+    fun `getSpan returns the current active span with bindToScope enabled`() {
         sentryInit {
             it.dsn = fakeDsn
-            it.tracesSampler = { context ->
-                actualDescription = context.transactionContext.description
-                null
-            }
         }
-        val transaction = Sentry.startTransaction("test", "testOperation")
-        transaction.description = expectedDescription
+        val transaction = Sentry.startTransaction("test", "testOperation", bindToScope = true)
+        val activeTransactionSpanId = Sentry.getSpan()?.spanId
         transaction.finish()
-        assertEquals(expectedDescription, actualDescription)
+        assertEquals(activeTransactionSpanId, transaction.spanId, "activeTransactionSpanId should be equal to transaction.spanId")
+    }
+
+    @Test
+    fun `getSpan returns null when bindToScope is disabled`() {
+        sentryInit {
+            it.dsn = fakeDsn
+        }
+        val transaction = Sentry.startTransaction("test", "testOperation", bindToScope = false)
+        val activeTransactionSpanId = Sentry.getSpan()?.spanId
+        val child = transaction.startChild("child")
+        val activeChildSpanId = Sentry.getSpan()?.spanId
+        child.finish()
+        transaction.finish()
+        assertEquals(activeTransactionSpanId, null)
+        assertEquals(activeChildSpanId, null)
+    }
+
+    @Test
+    fun `getSpan returns null when Transaction has finished`() {
+        sentryInit {
+            it.dsn = fakeDsn
+        }
+        val transaction = Sentry.startTransaction("test", "testOperation", bindToScope = true)
+        val activeTransactionSpanId = Sentry.getSpan()?.spanId
+        transaction.finish()
+        val activeTransactionSpanIdAfterFinish = Sentry.getSpan()?.spanId
+        assertEquals(activeTransactionSpanId, transaction.spanId)
+        assertEquals(activeTransactionSpanIdAfterFinish, null)
     }
 
     @Test
@@ -87,8 +106,8 @@ class TracesSamplerRateIntegrationTest: BaseSentryTest() {
 
     @Test
     fun `tracesSampler can receive correct TransactionContext sampled`() {
-        val expectedSampled = null
-        var actualSampled: Boolean? = false
+        val expectedSampled = false
+        var actualSampled: Boolean? = null
         sentryInit {
             it.dsn = fakeDsn
             it.tracesSampler = { context ->
@@ -103,8 +122,8 @@ class TracesSamplerRateIntegrationTest: BaseSentryTest() {
 
     @Test
     fun `tracesSampler can receive correct TransactionContext parentSampled`() {
-        val expectedSampled = null
-        var actualSampled: Boolean? = false
+        val expectedSampled = false
+        var actualSampled: Boolean? = null
         sentryInit {
             it.dsn = fakeDsn
             it.tracesSampler = { context ->

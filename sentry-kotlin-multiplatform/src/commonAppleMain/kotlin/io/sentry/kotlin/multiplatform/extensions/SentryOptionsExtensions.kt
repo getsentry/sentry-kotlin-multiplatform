@@ -6,11 +6,10 @@ import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.CocoaTransactionContextProvider
-import io.sentry.kotlin.multiplatform.CustomSamplingContext
 import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.TransactionContextProv
+import io.sentry.kotlin.multiplatform.TransactionContextAdapter
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
@@ -78,15 +77,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     }
 
     tracesSampler = {
-        it?.let {
-            val cocoaTransactionContext = CocoaTransactionContextProvider(it.transactionContext)
-            val transactionContext = TransactionContextProv(cocoaTransactionContext)
-            val customSamplingContext: CustomSamplingContext? =
-                it.customSamplingContext?.values?.let { customSamplingContext ->
-                    val data = customSamplingContext as? Map<String, Any?>
-                    data?.let { unwrappedData -> CustomSamplingContext(unwrappedData) }
-                }
-            val samplingContext = SamplingContext(transactionContext, customSamplingContext)
+        it?.let { context ->
+            val cocoaTransactionContext = CocoaTransactionContextProvider(context.transactionContext)
+            val transactionContext = TransactionContextAdapter(cocoaTransactionContext)
+            val samplingContext = SamplingContext(transactionContext)
             // returns null if KMP tracesSampler is null
             val sampleRate = options.tracesSampler?.invoke(samplingContext)
             sampleRate?.let { unwrappedSampleRate ->

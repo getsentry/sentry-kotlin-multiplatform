@@ -29,9 +29,9 @@ internal expect object SentryBridge {
 
     fun startTransaction(name: String, operation: String): Span
 
-    fun startTransaction(transactionContext: TransactionContext): Span
+    fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span
 
-    fun startTransaction(transactionContext: TransactionContext, customSamplingContext: CustomSamplingContext): Span
+    fun getSpan(): Span?
 
     fun close()
 }

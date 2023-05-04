@@ -69,14 +69,14 @@ internal actual object SentryBridge {
         return CocoaSpanProvider(cocoaSpan)
     }
 
-    actual fun startTransaction(transactionContext: TransactionContext): Span {
-        val cocoaTransaction = SentrySDK.startTransactionWithContext(transactionContext.toCocoa())
-        return CocoaSpanProvider(cocoaTransaction)
+    actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithName(name, operation, bindToScope)
+        return CocoaSpanProvider(cocoaSpan)
     }
 
-    actual fun startTransaction(transactionContext: TransactionContext, customSamplingContext: CustomSamplingContext): Span {
-        val cocoaTransaction = SentrySDK.startTransactionWithContext(transactionContext.toCocoa(), customSamplingContext.data as Map<Any?, *>)
-        return CocoaSpanProvider(cocoaTransaction)
+    actual fun getSpan(): Span? {
+        val cocoaSpan = SentrySDK.span
+        return cocoaSpan?.let { CocoaSpanProvider(it) }
     }
 
     actual fun close() {

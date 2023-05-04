@@ -10,8 +10,8 @@ internal class JvmTransactionContextProvider(jvmTransactionContext: JvmTransacti
     override val name: String = jvmTransactionContext.name
     override val transactionNameSource: TransactionNameSource =
         jvmTransactionContext.transactionNameSource.toKmp()
-    override val sampled: Boolean? = jvmTransactionContext.sampled
-    override val parentSampled: Boolean? = jvmTransactionContext.parentSampled
+    override val sampled: Boolean = jvmTransactionContext.sampled ?: false
+    override val parentSampled: Boolean = jvmTransactionContext.parentSampled ?: false
     override val operation: String = jvmTransactionContext.operation
     override val traceId: SentryId = SentryId(jvmTransactionContext.traceId.toString())
     override val spanId: SpanId = SpanId(jvmTransactionContext.spanId.toString())

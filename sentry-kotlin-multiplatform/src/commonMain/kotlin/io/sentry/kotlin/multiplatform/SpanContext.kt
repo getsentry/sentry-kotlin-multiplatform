@@ -20,5 +20,5 @@ public interface SpanContext {
     public val spanId: SpanId
     public val parentSpanId: SpanId?
     public val description: String?
-    public val sampled: Boolean?
+    public val sampled: Boolean
 }

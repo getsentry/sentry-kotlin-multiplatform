@@ -30,15 +30,3 @@ internal fun NSInteger.toKmpTransactionNameSource(): TransactionNameSource {
     }
     return transactionNameSource
 }
-
-internal fun TransactionNameSource.toNSInteger(): NSInteger {
-    val transactionNameSource = when (this) {
-        TransactionNameSource.CUSTOM -> 0
-        TransactionNameSource.URL -> 1
-        TransactionNameSource.ROUTE -> 2
-        TransactionNameSource.VIEW -> 3
-        TransactionNameSource.COMPONENT -> 4
-        TransactionNameSource.TASK -> 5
-    }
-    return transactionNameSource
-}

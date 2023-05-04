@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
-import io.sentry.kotlin.multiplatform.utils.createMockCustomSamplingContext
 import io.sentry.kotlin.multiplatform.utils.createMockTransactionContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -15,20 +14,18 @@ class MockTransactionContext(
     override val spanId: SpanId,
     override val parentSpanId: SpanId?,
     override val description: String?,
-    override val sampled: Boolean?,
+    override val sampled: Boolean,
     override val name: String,
     override val transactionNameSource: TransactionNameSource,
-    override val parentSampled: Boolean?
+    override val parentSampled: Boolean
 ) : TransactionContext
 
 class TracesSamplerRateTest {
     private lateinit var mockTransactionContext: TransactionContext
-    private lateinit var mockCustomSamplingContext: CustomSamplingContext
 
     @BeforeTest
     fun setup() {
         mockTransactionContext = createMockTransactionContext()
-        mockCustomSamplingContext = createMockCustomSamplingContext()
     }
 
     @Test
@@ -39,7 +36,6 @@ class TracesSamplerRateTest {
         }
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         assertEquals(null, sampleRate)
@@ -53,7 +49,6 @@ class TracesSamplerRateTest {
         }
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         assertEquals(0.5, sampleRate)
@@ -73,7 +68,6 @@ class TracesSamplerRateTest {
         // Assert that the sample rate is 0.5
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         assertEquals(0.5, sampleRate)
@@ -81,7 +75,6 @@ class TracesSamplerRateTest {
         // Assert that the sample rate is 0.1
         val differentSamplingContext = SamplingContext(
             transactionContext = createMockTransactionContext(name = "different"),
-            customSamplingContext = mockCustomSamplingContext
         )
         val differentSampleRate = options.tracesSampler?.invoke(differentSamplingContext)
         assertEquals(0.1, differentSampleRate)
@@ -99,7 +92,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedName, actualName)
@@ -117,7 +109,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedSpanId, actualSpanId)
@@ -135,7 +126,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedParentSpanId, actualParentSpanId)
@@ -153,7 +143,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedDescription, actualDescription)
@@ -171,7 +160,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedSampled, actualSampled)
@@ -189,7 +177,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedParentSampled, actualParentSampled)
@@ -207,7 +194,6 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedOperation, actualOperation)
@@ -225,27 +211,8 @@ class TracesSamplerRateTest {
 
         val samplingContext = SamplingContext(
             transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedTransactionNameSource, actualTransactionNameSource)
-    }
-
-    @Test
-    fun `tracerSampler returns correct CustomSamplingContext`() {
-        val options = SentryOptions()
-        val expectedData = mockCustomSamplingContext.data
-        var actualData: Map<String, Any?>? = null
-        options.tracesSampler = {
-            actualData = it.customSamplingContext?.data
-            null
-        }
-
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
-            customSamplingContext = mockCustomSamplingContext,
-        )
-        options.tracesSampler?.invoke(samplingContext)
-        assertEquals(expectedData, actualData)
     }
 }

@@ -117,14 +117,39 @@ public object Sentry {
         SentryBridge.setUser(user)
     }
 
+    /**
+     * Starts a new transaction and returns a new `Span` representing it. The `Span` can be
+     * used to record additional information about the transaction or add child spans.
+     *
+     * @param name The name of the transaction.
+     * @param operation The operation of the transaction, typically the name of the function or endpoint.
+     * @return A new `Span` representing the transaction.
+     */
     public fun startTransaction(name: String, operation: String): Span {
         return SentryBridge.startTransaction(name, operation)
     }
 
-    public fun startTransaction(name: String, operation: String, description: String): Span {
-        return SentryBridge.startTransaction(name, operation)
+    /**
+     * Starts a new transaction and returns a new `Span` representing it. The `Span` can be
+     * used to record additional information about the transaction or add child spans.
+     *
+     * @param name The name of the transaction.
+     * @param operation The operation of the transaction, typically the name of the function or endpoint.
+     * @param bindToScope Whether to bind the transaction to the current scope.
+     * @return A new `Span` representing the transaction.
+     */
+    public fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
+        return SentryBridge.startTransaction(name, operation, bindToScope)
     }
 
+    /**
+     * Apple: returns the active root transaction
+     *
+     * JVM: returns the active transaction or the latest active child span
+     */
+    public fun getSpan(): Span? {
+        return SentryBridge.getSpan()
+    }
 
     /**
      * Throws a RuntimeException, useful for testing.
