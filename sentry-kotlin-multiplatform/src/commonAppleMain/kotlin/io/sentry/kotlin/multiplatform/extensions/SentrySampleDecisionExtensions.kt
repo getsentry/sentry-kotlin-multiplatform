@@ -7,7 +7,7 @@ internal fun SentrySampleDecision.toBoolean(): Boolean = when (this) {
     SentrySampleDecision.kSentrySampleDecisionUndecided -> false
     SentrySampleDecision.kSentrySampleDecisionYes -> true
     else -> {
-        true
+        false
     }
 }
 
