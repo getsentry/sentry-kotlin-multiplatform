@@ -7,6 +7,7 @@ plugins {
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
+    id(Config.QualityPlugins.binaryCompatibility)
     `maven-publish`
 }
 

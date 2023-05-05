@@ -19,6 +19,8 @@ object Config {
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
         val spotlessVersion = "6.11.0"
+        val binaryCompatibility = "org.jetbrains.kotlinx.binary-compatibility-validator"
+        val binaryCompatibilityVersion = "0.13.1"
     }
 
     object Libs {

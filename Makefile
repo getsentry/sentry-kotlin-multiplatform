@@ -11,6 +11,10 @@ clean:
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
 
+# Check API
+checkApi:
+	./gradlew checkApi
+
 # Spotless check's code
 checkFormat:
 	./gradlew spotlessKotlinCheck
