@@ -25,6 +25,7 @@ format:
 
 # build and run tests
 compile:
+	make checkApi
 	./gradlew build
 	make buildAppleSamples
 
