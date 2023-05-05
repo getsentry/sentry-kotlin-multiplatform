@@ -4,6 +4,7 @@
 
 ### Improvements
 
+- chore: add api checks with binary compatibility plugin ([#85](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/85))
 - ref: improve samples & add SPM docs ([#82](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/82))
 
 ## 0.1.1
