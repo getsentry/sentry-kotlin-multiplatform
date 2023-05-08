@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi format stop
+.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples format stop
 
 all: stop clean compile
 
