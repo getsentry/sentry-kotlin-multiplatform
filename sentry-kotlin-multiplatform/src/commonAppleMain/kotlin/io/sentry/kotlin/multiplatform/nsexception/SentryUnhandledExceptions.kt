@@ -75,8 +75,9 @@ internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
         hub.getClient()?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isCrashEvent = true)
     } ?: event
     val item = SentryEnvelopeItem(preparedEvent)
-    @Suppress("ForbiddenComment")
+
     // TODO: pass traceState when enabling performance monitoring for KMP SDK
+    @Suppress("ForbiddenComment")
     val header = SentryEnvelopeHeader(preparedEvent.eventId, null)
     return SentryEnvelope(header, listOf(item))
 }

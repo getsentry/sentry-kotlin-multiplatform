@@ -20,6 +20,7 @@ public data class HttpStatusCodeRange(val min: Int = DEFAULT_MIN, val max: Int =
     public companion object {
         /** The default min status code of the range. */
         public const val DEFAULT_MIN: Int = 500
+
         /** The default max status code of the range. */
         public const val DEFAULT_MAX: Int = 599
     }
