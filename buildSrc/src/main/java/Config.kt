@@ -19,6 +19,8 @@ object Config {
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
         val spotlessVersion = "6.11.0"
+        val detekt = "io.gitlab.arturbosch.detekt"
+        val detektVersion = "1.22.0"
     }
 
     object Libs {

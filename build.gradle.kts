@@ -1,10 +1,12 @@
 import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
+import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
     id(Config.gradleMavenPublishPlugin).version(Config.gradleMavenPublishPluginVersion)
     id(Config.QualityPlugins.spotless).version(Config.QualityPlugins.spotlessVersion)
+    id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion).apply(false)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
