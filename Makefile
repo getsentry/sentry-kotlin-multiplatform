@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat format stop
+.PHONY: all clean compile dryRelease checkFormat checkApi format stop
 
 all: stop clean compile
 
@@ -23,12 +23,14 @@ checkFormat:
 format:
 	./gradlew spotlessApply
 
-# build and run tests
-compile:
-	make checkApi
+# Builds the project and run tests
+buildProject:
 	./gradlew build
-	make buildAppleSamples
 
+# Build all targets and check api
+compile: checkApi buildProject buildAppleSamples
+
+# Build Apple Samples
 buildAppleSamples:
 	cd ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp && touch iosApp.xcconfig
 	cd ./sentry-samples/kmp-app-spm/iosApp && touch iosApp.xcconfig
