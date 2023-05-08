@@ -6,6 +6,8 @@ import io.sentry.kotlin.multiplatform.protocol.User
 /**
  * Scope decorator that holds the Scope's data.
  *
+ * This decorator allows to modify the native Scope directly without having to create a new object.
+ *
  * Different platforms have specific providers.
  *  - For JVM: use [io.sentry.kotlin.multiplatform.JvmScopeProvider]
  *  - For Cocoa: use [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
@@ -18,8 +20,8 @@ import io.sentry.kotlin.multiplatform.protocol.User
  */
 internal class ScopeDecorator(
     /** [Scope] that holds the Scope's data */
-    private val scope: Scope
-) : Scope by scope
+    private val scopeProvider: Scope
+) : Scope by scopeProvider
 
 /** ScopeProvider that holds the Scope's data */
 public interface Scope {
