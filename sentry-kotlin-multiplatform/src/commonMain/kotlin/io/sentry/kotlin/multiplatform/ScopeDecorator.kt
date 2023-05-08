@@ -6,9 +6,11 @@ import io.sentry.kotlin.multiplatform.protocol.User
 /**
  * Scope decorator that holds the Scope's data.
  *
- * This decorator allows to modify the native Scope directly without having to create a new object.
+ * This decorator allows to modify the native platform's Scope directly and it removes the need to
+ * copy the native Scope data as a Kotlin Multiplatform Scope.
  *
- * Different platforms have specific providers.
+ * However, this is only possible if the correct providers are used -
+ * different platforms have specific providers.
  *  - For JVM: use [io.sentry.kotlin.multiplatform.JvmScopeProvider]
  *  - For Cocoa: use [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
  *
