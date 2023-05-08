@@ -1,0 +1,395 @@
+public final class io/sentry/kotlin/multiplatform/Attachment {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/Attachment$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> ([BLjava/lang/String;)V
+	public fun <init> ([BLjava/lang/String;Ljava/lang/String;)V
+	public final fun getBytes ()[B
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getFilename ()Ljava/lang/String;
+	public final fun getPathname ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/Attachment$Companion {
+	public final fun fromScreenshot ([B)Lio/sentry/kotlin/multiplatform/Attachment;
+}
+
+public abstract class io/sentry/kotlin/multiplatform/Context {
+	public fun <init> ()V
+}
+
+public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/HttpStatusCodeRange$Companion;
+	public static final field DEFAULT_MAX I
+	public static final field DEFAULT_MIN I
+	public fun <init> ()V
+	public fun <init> (I)V
+	public fun <init> (II)V
+	public synthetic fun <init> (IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun copy (II)Lio/sentry/kotlin/multiplatform/HttpStatusCodeRange;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/HttpStatusCodeRange;IIILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/HttpStatusCodeRange;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMax ()I
+	public final fun getMin ()I
+	public fun hashCode ()I
+	public final fun isInRange (I)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange$Companion {
+}
+
+public final class io/sentry/kotlin/multiplatform/Scope : io/sentry/kotlin/multiplatform/ScopeProvider {
+	public fun <init> (Lio/sentry/kotlin/multiplatform/ScopeProvider;)V
+	public fun addAttachment (Lio/sentry/kotlin/multiplatform/Attachment;)V
+	public fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
+	public fun clear ()V
+	public fun clearAttachments ()V
+	public fun clearBreadcrumbs ()V
+	public fun getContexts ()Ljava/util/Map;
+	public fun getLevel ()Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public fun getTags ()Ljava/util/Map;
+	public fun getUser ()Lio/sentry/kotlin/multiplatform/protocol/User;
+	public fun removeContext (Ljava/lang/String;)V
+	public fun removeExtra (Ljava/lang/String;)V
+	public fun removeTag (Ljava/lang/String;)V
+	public fun setContext (Ljava/lang/String;C)V
+	public fun setContext (Ljava/lang/String;Ljava/lang/Number;)V
+	public fun setContext (Ljava/lang/String;Ljava/lang/Object;)V
+	public fun setContext (Ljava/lang/String;Ljava/lang/String;)V
+	public fun setContext (Ljava/lang/String;Ljava/util/Collection;)V
+	public fun setContext (Ljava/lang/String;Z)V
+	public fun setContext (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun setExtra (Ljava/lang/String;Ljava/lang/String;)V
+	public fun setLevel (Lio/sentry/kotlin/multiplatform/SentryLevel;)V
+	public fun setTag (Ljava/lang/String;Ljava/lang/String;)V
+	public fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/ScopeProvider {
+	public abstract fun addAttachment (Lio/sentry/kotlin/multiplatform/Attachment;)V
+	public abstract fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
+	public abstract fun clear ()V
+	public abstract fun clearAttachments ()V
+	public abstract fun clearBreadcrumbs ()V
+	public abstract fun getContexts ()Ljava/util/Map;
+	public abstract fun getLevel ()Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public abstract fun getTags ()Ljava/util/Map;
+	public abstract fun getUser ()Lio/sentry/kotlin/multiplatform/protocol/User;
+	public abstract fun removeContext (Ljava/lang/String;)V
+	public abstract fun removeExtra (Ljava/lang/String;)V
+	public abstract fun removeTag (Ljava/lang/String;)V
+	public abstract fun setContext (Ljava/lang/String;C)V
+	public abstract fun setContext (Ljava/lang/String;Ljava/lang/Number;)V
+	public abstract fun setContext (Ljava/lang/String;Ljava/lang/Object;)V
+	public abstract fun setContext (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun setContext (Ljava/lang/String;Ljava/util/Collection;)V
+	public abstract fun setContext (Ljava/lang/String;Z)V
+	public abstract fun setContext (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun setExtra (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun setLevel (Lio/sentry/kotlin/multiplatform/SentryLevel;)V
+	public abstract fun setTag (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/Sentry {
+	public static final field INSTANCE Lio/sentry/kotlin/multiplatform/Sentry;
+	public final fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
+	public final fun captureException (Ljava/lang/Throwable;)Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public final fun captureException (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;)Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public final fun captureMessage (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public final fun captureMessage (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public final fun captureUserFeedback (Lio/sentry/kotlin/multiplatform/protocol/UserFeedback;)V
+	public final fun close ()V
+	public final fun configureScope (Lkotlin/jvm/functions/Function1;)V
+	public final fun crash ()V
+	public final fun init (Lio/sentry/kotlin/multiplatform/Context;Lkotlin/jvm/functions/Function1;)V
+	public final fun init (Lkotlin/jvm/functions/Function1;)V
+	public final fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+}
+
+public abstract class io/sentry/kotlin/multiplatform/SentryBaseEvent {
+	public fun <init> ()V
+	public fun <init> (Lio/sentry/kotlin/multiplatform/protocol/SentryId;)V
+	public synthetic fun <init> (Lio/sentry/kotlin/multiplatform/protocol/SentryId;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
+	public final fun addBreadcrumb (Ljava/lang/String;)V
+	public fun getBreadcrumbs ()Ljava/util/List;
+	public final fun getContexts ()Ljava/util/Map;
+	public fun getDist ()Ljava/lang/String;
+	public fun getEnvironment ()Ljava/lang/String;
+	public fun getEventId ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public fun getPlatform ()Ljava/lang/String;
+	public fun getRelease ()Ljava/lang/String;
+	public fun getServerName ()Ljava/lang/String;
+	public final fun getTag (Ljava/lang/String;)Ljava/lang/String;
+	public fun getTags ()Ljava/util/Map;
+	public fun getUser ()Lio/sentry/kotlin/multiplatform/protocol/User;
+	public final fun removeTag (Ljava/lang/String;)V
+	public fun setBreadcrumbs (Ljava/util/List;)V
+	public fun setDist (Ljava/lang/String;)V
+	public fun setEnvironment (Ljava/lang/String;)V
+	public fun setEventId (Lio/sentry/kotlin/multiplatform/protocol/SentryId;)V
+	public fun setPlatform (Ljava/lang/String;)V
+	public fun setRelease (Ljava/lang/String;)V
+	public fun setServerName (Ljava/lang/String;)V
+	public final fun setTag (Ljava/lang/String;Ljava/lang/String;)V
+	public fun setTags (Ljava/util/Map;)V
+	public fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryEvent : io/sentry/kotlin/multiplatform/SentryBaseEvent {
+	public fun <init> ()V
+	public fun <init> (Lio/sentry/SentryEvent;)V
+	public fun getDist ()Ljava/lang/String;
+	public fun getEnvironment ()Ljava/lang/String;
+	public final fun getExceptions ()Ljava/util/List;
+	public final fun getFingerprint ()Ljava/util/List;
+	public final fun getLevel ()Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public final fun getLogger ()Ljava/lang/String;
+	public final fun getMessage ()Lio/sentry/kotlin/multiplatform/protocol/Message;
+	public fun getPlatform ()Ljava/lang/String;
+	public fun getRelease ()Ljava/lang/String;
+	public fun getServerName ()Ljava/lang/String;
+	public fun getUser ()Lio/sentry/kotlin/multiplatform/protocol/User;
+	public fun setDist (Ljava/lang/String;)V
+	public fun setEnvironment (Ljava/lang/String;)V
+	public final fun setExceptions (Ljava/util/List;)V
+	public final fun setFingerprint (Ljava/util/List;)V
+	public final fun setLevel (Lio/sentry/kotlin/multiplatform/SentryLevel;)V
+	public final fun setLogger (Ljava/lang/String;)V
+	public final fun setMessage (Lio/sentry/kotlin/multiplatform/protocol/Message;)V
+	public fun setPlatform (Ljava/lang/String;)V
+	public fun setRelease (Ljava/lang/String;)V
+	public fun setServerName (Ljava/lang/String;)V
+	public fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryLevel : java/lang/Enum {
+	public static final field DEBUG Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public static final field ERROR Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public static final field FATAL Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public static final field INFO Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public static final field WARNING Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public static fun values ()[Lio/sentry/kotlin/multiplatform/SentryLevel;
+}
+
+public class io/sentry/kotlin/multiplatform/SentryOptions {
+	public fun <init> ()V
+	public final fun getAttachScreenshot ()Z
+	public final fun getAttachStackTrace ()Z
+	public final fun getAttachThreads ()Z
+	public final fun getAttachViewHierarchy ()Z
+	public final fun getBeforeBreadcrumb ()Lkotlin/jvm/functions/Function1;
+	public final fun getBeforeSend ()Lkotlin/jvm/functions/Function1;
+	public final fun getDebug ()Z
+	public final fun getDist ()Ljava/lang/String;
+	public final fun getDsn ()Ljava/lang/String;
+	public final fun getEnableAutoSessionTracking ()Z
+	public final fun getEnableCaptureFailedRequests ()Z
+	public final fun getEnvironment ()Ljava/lang/String;
+	public final fun getFailedRequestStatusCodes ()Ljava/util/List;
+	public final fun getFailedRequestTargets ()Ljava/util/List;
+	public final fun getMaxAttachmentSize ()J
+	public final fun getMaxBreadcrumbs ()I
+	public final fun getRelease ()Ljava/lang/String;
+	public final fun getSdk ()Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
+	public final fun getSessionTrackingIntervalMillis ()J
+	public final fun setAttachScreenshot (Z)V
+	public final fun setAttachStackTrace (Z)V
+	public final fun setAttachThreads (Z)V
+	public final fun setAttachViewHierarchy (Z)V
+	public final fun setBeforeBreadcrumb (Lkotlin/jvm/functions/Function1;)V
+	public final fun setBeforeSend (Lkotlin/jvm/functions/Function1;)V
+	public final fun setDebug (Z)V
+	public final fun setDist (Ljava/lang/String;)V
+	public final fun setDsn (Ljava/lang/String;)V
+	public final fun setEnableAutoSessionTracking (Z)V
+	public final fun setEnableCaptureFailedRequests (Z)V
+	public final fun setEnvironment (Ljava/lang/String;)V
+	public final fun setFailedRequestStatusCodes (Ljava/util/List;)V
+	public final fun setFailedRequestTargets (Ljava/util/List;)V
+	public final fun setMaxAttachmentSize (J)V
+	public final fun setMaxBreadcrumbs (I)V
+	public final fun setRelease (Ljava/lang/String;)V
+	public final fun setSdk (Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;)V
+	public final fun setSessionTrackingIntervalMillis (J)V
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb$Companion;
+	public fun <init> ()V
+	public fun <init> (Lio/sentry/kotlin/multiplatform/SentryLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public synthetic fun <init> (Lio/sentry/kotlin/multiplatform/SentryLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun clear ()V
+	public final fun component1 ()Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Lio/sentry/kotlin/multiplatform/SentryLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;Lio/sentry/kotlin/multiplatform/SentryLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCategory ()Ljava/lang/String;
+	public final fun getData ()Ljava/util/Map;
+	public final fun getLevel ()Lio/sentry/kotlin/multiplatform/SentryLevel;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun setCategory (Ljava/lang/String;)V
+	public final fun setData (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun setData (Ljava/util/Map;)V
+	public final fun setLevel (Lio/sentry/kotlin/multiplatform/SentryLevel;)V
+	public final fun setMessage (Ljava/lang/String;)V
+	public final fun setType (Ljava/lang/String;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb$Companion {
+	public final fun debug (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun error (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun http (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun http (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun info (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun navigation (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun query (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun transaction (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun ui (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun user (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun userInteraction (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+	public final fun userInteraction (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/Message {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Message;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/Message;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/Message;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFormatted ()Ljava/lang/String;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getParams ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun setFormatted (Ljava/lang/String;)V
+	public final fun setMessage (Ljava/lang/String;)V
+	public final fun setParams (Ljava/util/List;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/Package {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/Package;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/Package;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/Package;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/SdkVersion {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun addPackage (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPackages ()Ljava/util/List;
+	public final fun getVersion ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/SentryException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/Long;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;)Lio/sentry/kotlin/multiplatform/protocol/SentryException;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/SentryException;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/SentryException;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getModule ()Ljava/lang/String;
+	public final fun getThreadId ()Ljava/lang/Long;
+	public final fun getType ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/SentryId {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/protocol/SentryId$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/SentryId;Ljava/lang/String;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSentryIdString ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/SentryId$Companion {
+	public final fun getEMPTY_ID ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/User {
+	public fun <init> ()V
+	public fun <init> (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Map;
+	public final fun component6 ()Ljava/util/Map;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/protocol/User;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/User;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/User;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getIpAddress ()Ljava/lang/String;
+	public final fun getOther ()Ljava/util/Map;
+	public final fun getUnknown ()Ljava/util/Map;
+	public final fun getUsername ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun setEmail (Ljava/lang/String;)V
+	public final fun setId (Ljava/lang/String;)V
+	public final fun setIpAddress (Ljava/lang/String;)V
+	public final fun setOther (Ljava/util/Map;)V
+	public final fun setUnknown (Ljava/util/Map;)V
+	public final fun setUsername (Ljava/lang/String;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/UserFeedback {
+	public fun <init> (Lio/sentry/kotlin/multiplatform/protocol/SentryId;)V
+	public final fun component1 ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public final fun copy (Lio/sentry/kotlin/multiplatform/protocol/SentryId;)Lio/sentry/kotlin/multiplatform/protocol/UserFeedback;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/UserFeedback;Lio/sentry/kotlin/multiplatform/protocol/SentryId;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/UserFeedback;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComments ()Ljava/lang/String;
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSentryId ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+	public fun hashCode ()I
+	public final fun setComments (Ljava/lang/String;)V
+	public final fun setEmail (Ljava/lang/String;)V
+	public final fun setName (Ljava/lang/String;)V
+	public fun toString ()Ljava/lang/String;
+}
+
