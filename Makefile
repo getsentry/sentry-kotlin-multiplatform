@@ -11,6 +11,10 @@ clean:
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
 
+# Run detekt
+detekt:
+	./gradlew detekt
+
 # Generate Dokka
 generateDokka:
 	./gradlew dokkaHtmlMultiModule
@@ -44,7 +48,7 @@ buildAppleSamples:
 
 
 # Build all targets, run tests and checks api
-compile: checkApi buildProject buildAppleSamples
+compile: checkApi detekt buildProject buildAppleSamples
 
 # We stop gradle at the end to make sure the cache folders
 # don't contain any lock files and are free to be cached.
