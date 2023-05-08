@@ -4,18 +4,25 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
 /**
- * Scope data to be sent with the event
+ * Scope decorator that holds the Scope's data.
  *
  * Different platforms have specific providers.
- *  - JVM: [JvmScopeProvider](io.sentry.kotlin.multiplatform.JvmScopeProvider)
- *  - Cocoa: [CocoaScopeProvider](io.sentry.kotlin.multiplatform.CocoaScopeProvider)
+ *  - For JVM: use [io.sentry.kotlin.multiplatform.JvmScopeProvider]
+ *  - For Cocoa: use [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
  *
- * @constructor ScopeProvider that holds the Scope's data
+ * Usage example in JVM:
+ * ```
+ * val jvmScopeProvider = JvmScopeProvider(nativeJvmScope)
+ * val scope: Scope = ScopeDecorator(jvmScopeProvider)
+ * ```
  */
-public class Scope constructor(private val scope: ScopeProvider) : ScopeProvider by scope
+internal class ScopeDecorator(
+    /** [Scope] that holds the Scope's data */
+    private val scope: Scope
+) : Scope by scope
 
 /** ScopeProvider that holds the Scope's data */
-public interface ScopeProvider {
+public interface Scope {
 
     /**
      * Returns the scope's tags

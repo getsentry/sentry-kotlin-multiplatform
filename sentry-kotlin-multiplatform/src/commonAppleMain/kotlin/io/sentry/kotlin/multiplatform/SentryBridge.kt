@@ -75,8 +75,8 @@ internal actual object SentryBridge {
                 CocoaScopeProvider(it)
             }
             cocoaScopeProvider?.let {
-                val scope = Scope(it)
-                scopeCallback.invoke(scope)
+                val scopeDecorator = ScopeDecorator(it)
+                scopeCallback.invoke(scopeDecorator)
             }
         }
     }

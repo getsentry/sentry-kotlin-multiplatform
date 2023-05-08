@@ -6,6 +6,6 @@ actual abstract class BaseSentryScopeTest {
     actual fun initializeScope(): Scope {
         val cocoaScope = CocoaScope()
         val cocoaScopeProvider = CocoaScopeProvider(cocoaScope)
-        return Scope(cocoaScopeProvider)
+        return ScopeDecorator(cocoaScopeProvider)
     }
 }
