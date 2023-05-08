@@ -3,6 +3,9 @@
 
 echo '[git hook] executing gradle spotless check before commit'
 
+# run binary compatibility api check
+make checkApi
+
 # run the spotlessCheck with the gradle wrapper
 make checkFormat
 

@@ -13,7 +13,7 @@ dryRelease:
 
 # Check API
 checkApi:
-	./gradlew checkApi
+	./gradlew apiCheck
 
 # Spotless check's code
 checkFormat:
