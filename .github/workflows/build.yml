@@ -55,3 +55,18 @@ jobs:
           if-no-files-found: error
           path: |
             ./*/build/distributions/*.zip
+
+      # Generate Dokka documentation
+      - name: Generate docs with dokka
+        run: make generateDokka
+
+      # Upload Dokka documentation
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ${{ github.workspace }}/build/dokka/htmlMultiModule
+
+      # Publish to GitHub Pages
+      - name: Release to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

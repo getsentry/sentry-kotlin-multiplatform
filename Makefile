@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat format stop
+.PHONY: all clean compile dryRelease checkFormat format generateDokka stop
 
 all: stop clean compile
 
@@ -10,6 +10,10 @@ clean:
 # local deploy
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
+
+# Generate Dokka
+generateDokka:
+	./gradlew dokkaHtmlMultiModule
 
 # Spotless check's code
 checkFormat:

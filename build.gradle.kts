@@ -7,6 +7,7 @@ plugins {
     id(Config.gradleMavenPublishPlugin).version(Config.gradleMavenPublishPluginVersion)
     id(Config.QualityPlugins.spotless).version(Config.QualityPlugins.spotlessVersion)
     id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
+    id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
@@ -50,6 +51,12 @@ subprojects {
                 releaseSigningEnabled = false
             }
         }
+    }
+}
+
+subprojects {
+    if (project.name.contains("sentry-kotlin-multiplatform")) {
+        apply(plugin = Config.dokka)
     }
 }
 

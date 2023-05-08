@@ -10,6 +10,8 @@ object Config {
     val gradleMavenPublishPlugin = "com.vanniktech.maven.publish"
     val androidGradle = "com.android.library"
     val kotlinSerializationPlugin = "plugin.serialization"
+    val dokka = "org.jetbrains.dokka"
+    val dokkaVersion = "1.8.10"
 
     object BuildPlugins {
         val buildConfig = "com.codingfeline.buildkonfig"
