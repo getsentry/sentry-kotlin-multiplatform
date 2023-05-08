@@ -4,28 +4,14 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
 /**
- * Scope decorator that holds the Scope's data.
+ * The Scope holds useful information that should be sent along with the event.
+ * For instance contexts or breadcrumbs are stored on the scope.
  *
- * This decorator allows to modify the native platform's Scope directly and it removes the need to
- * copy the native Scope data as a Kotlin Multiplatform Scope.
- *
- * However, this is only possible if the correct providers are used -
- * different platforms have specific providers.
- *  - For JVM: use [io.sentry.kotlin.multiplatform.JvmScopeProvider]
- *  - For Cocoa: use [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
- *
- * Usage example in JVM:
- * ```
- * val jvmScopeProvider = JvmScopeProvider(nativeJvmScope)
- * val scope: Scope = ScopeDecorator(jvmScopeProvider)
- * ```
+ * Users should not need to implement this interface instead the Scope should be provided by the SDK.
+ * Different platforms have specific scope providers that are used internally:
+ *  - For JVM: [io.sentry.kotlin.multiplatform.JvmScopeProvider]
+ *  - For Cocoa: [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
  */
-internal class ScopeDecorator(
-    /** [Scope] that holds the Scope's data */
-    private val scopeProvider: Scope
-) : Scope by scopeProvider
-
-/** ScopeProvider that holds the Scope's data */
 public interface Scope {
 
     /**
