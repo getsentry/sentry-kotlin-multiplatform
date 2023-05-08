@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples generateDokka format stop
+.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples generateDokka detekt format stop
 
 all: stop clean compile
 
