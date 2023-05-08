@@ -5,6 +5,7 @@
 ### Improvements
 
 - ref: improve samples & add SPM docs ([#82](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/82))
+- ref: add documentation, detekt and dokka ([#86](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/86))
 
 ## 0.1.1
 
