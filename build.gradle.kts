@@ -11,6 +11,7 @@ plugins {
     id(Config.androidGradle).version(Config.agpVersion).apply(false)
     id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
     kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
+    id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion).apply(false)
 }
 
 allprojects {

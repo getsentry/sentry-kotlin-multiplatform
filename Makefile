@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat format stop
+.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples format stop
 
 all: stop clean compile
 
@@ -11,6 +11,10 @@ clean:
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
 
+# Check API
+checkApi:
+	./gradlew apiCheck
+
 # Spotless check's code
 checkFormat:
 	./gradlew spotlessKotlinCheck
@@ -19,11 +23,11 @@ checkFormat:
 format:
 	./gradlew spotlessApply
 
-# build and run tests
-compile:
+# Builds the project and run tests
+buildProject:
 	./gradlew build
-	make buildAppleSamples
 
+# Build Apple Samples
 buildAppleSamples:
 	cd ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp && touch iosApp.xcconfig
 	cd ./sentry-samples/kmp-app-spm/iosApp && touch iosApp.xcconfig
@@ -33,6 +37,10 @@ buildAppleSamples:
 	xcodebuild -workspace ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp.xcworkspace -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
 	xcodebuild -project ./sentry-samples/kmp-app-spm/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
 	xcodebuild -project ./sentry-samples/kmp-app-mvvm-di/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
+
+
+# Build all targets, run tests and checks api
+compile: checkApi buildProject buildAppleSamples
 
 # We stop gradle at the end to make sure the cache folders
 # don't contain any lock files and are free to be cached.
