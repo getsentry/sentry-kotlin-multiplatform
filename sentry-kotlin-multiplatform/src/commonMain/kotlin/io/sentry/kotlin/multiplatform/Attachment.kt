@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
+@Suppress("UnusedPrivateMember")
+/** An attachment to be sent along with the event. */
 public expect class Attachment {
 
     /** The bytes of the attachment. */

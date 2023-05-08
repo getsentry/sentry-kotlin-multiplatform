@@ -42,7 +42,10 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
-        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true), configureScopeCallback(scopeCallback))
+        val cocoaSentryId = SentrySDK.captureException(
+            throwable.asNSException(true),
+            configureScopeCallback(scopeCallback)
+        )
         return SentryId(cocoaSentryId.toString())
     }
 

@@ -68,6 +68,7 @@ internal class CocoaScopeProvider(private val scope: CocoaScope) : ScopeProvider
         scope.setContextValue(mapOf("value" to value), key)
     }
 
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     override fun setContext(key: String, value: Any) {
         try {
             (value as? Map<Any?, Any>)?.let {

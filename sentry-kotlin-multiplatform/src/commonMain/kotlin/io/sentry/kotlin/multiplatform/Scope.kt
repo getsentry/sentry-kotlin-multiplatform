@@ -14,6 +14,7 @@ import io.sentry.kotlin.multiplatform.protocol.User
  */
 public class Scope constructor(private val scope: ScopeProvider) : ScopeProvider by scope
 
+/** ScopeProvider that holds the Scope's data */
 public interface ScopeProvider {
 
     /**

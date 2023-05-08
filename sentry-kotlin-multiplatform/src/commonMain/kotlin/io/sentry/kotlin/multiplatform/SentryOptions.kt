@@ -3,6 +3,11 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 
+private const val DEFAULT_MAX_BREADCRUMBS = 100
+private const val DEFAULT_MAX_ATTACHMENT_SIZE = 20 * 1024 * 1024L
+private const val DEFAULT_SESSION_INTERVAL_MILLIS = 30000L
+
+/** Sentry options that can be used to configure the SDK. */
 public open class SentryOptions {
 
     /**
@@ -47,7 +52,7 @@ public open class SentryOptions {
      * The session tracking interval in millis. This is the interval to end a session if the App goes
      * to the background.
      */
-    public var sessionTrackingIntervalMillis: Long = 30000
+    public var sessionTrackingIntervalMillis: Long = DEFAULT_SESSION_INTERVAL_MILLIS
 
     /**
      * Enables/Disables capturing screenshots before an error.
@@ -65,10 +70,10 @@ public open class SentryOptions {
     public var sdk: SdkVersion? = null
 
     /** This variable controls the total amount of breadcrumbs that should be captured. Default is 100. */
-    public var maxBreadcrumbs: Int = 100
+    public var maxBreadcrumbs: Int = DEFAULT_MAX_BREADCRUMBS
 
     /** This variable controls the max attachment size in bytes */
-    public var maxAttachmentSize: Long = 20 * 1024 * 1024
+    public var maxAttachmentSize: Long = DEFAULT_MAX_ATTACHMENT_SIZE
 
     /**
      * Enables or disables the attach view hierarchy feature when an error happened.
@@ -86,6 +91,7 @@ public open class SentryOptions {
 
     /**
      * A list of HTTP status code ranges indicating which client errors should be captured as errors.
+     *
      * By default, only HTTP client errors with a response code between 500 and 599 are captured as errors.
      *
      * Available on Apple.
@@ -93,7 +99,9 @@ public open class SentryOptions {
     public var failedRequestStatusCodes: List<HttpStatusCodeRange> = listOf(HttpStatusCodeRange())
 
     /**
-     * A list of HTTP request targets indicating which client errors should be captured as errors with either regex or a plain string.
+     * A list of HTTP request targets indicating which client errors should be captured as errors with
+     * either regex or a plain string.
+     *
      * By default, HTTP client errors from every target (.* regular expression) are automatically captured.
      *
      * Available on Apple.

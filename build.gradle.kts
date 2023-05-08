@@ -6,7 +6,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 plugins {
     id(Config.gradleMavenPublishPlugin).version(Config.gradleMavenPublishPluginVersion)
     id(Config.QualityPlugins.spotless).version(Config.QualityPlugins.spotlessVersion)
-    id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion).apply(false)
+    id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
@@ -64,4 +64,28 @@ spotless {
         target("**/*.kts")
         ktlint()
     }
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$projectDir/detekt.yml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html.required.set(true)
+    }
+    setSource(files(project.projectDir))
+    exclude("**/build/**")
+    exclude("**/*.kts")
+    exclude("**/buildSrc/**")
+    exclude("**/*Test*/**")
+    exclude("**/resources/**")
+    exclude("**/sentry-samples/**")
+    exclude {
+        it.file.relativeTo(projectDir).startsWith(project.buildDir.relativeTo(projectDir))
+    }
+}
+tasks.register("detektAll") {
+    dependsOn(tasks.withType<Detekt>())
 }

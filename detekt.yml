@@ -1,0 +1,15 @@
+comments:
+  UndocumentedPublicClass:
+    active: true
+    includes: "**/commonMain/**"
+  UndocumentedPublicProperty:
+    active: true
+    includes: "**/commonMain/**"
+style:
+  UnnecessaryAbstractClass:
+    active: false
+complexity:
+  TooManyFunctions:
+    thresholdInObjects: 21
+    thresholdInClasses: 21
+    thresholdInInterfaces: 21

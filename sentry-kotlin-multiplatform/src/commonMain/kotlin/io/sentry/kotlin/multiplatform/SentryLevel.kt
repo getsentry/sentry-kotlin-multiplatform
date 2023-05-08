@@ -8,6 +8,8 @@ internal object SentryLevelNumConstants {
     const val FATAL_LEVEL = 5
 }
 
+@Suppress("SwallowedException", "TooGenericExceptionCaught")
+/** The level of the event similar to logging levels. */
 public enum class SentryLevel(private val value: Int) {
     DEBUG(SentryLevelNumConstants.DEBUG_LEVEL),
     INFO(SentryLevelNumConstants.INFO_LEVEL),
