@@ -8,3 +8,5 @@ comments:
 style:
   UnnecessaryAbstractClass:
     active: false
+  ForbiddenComment:
+    active: false
