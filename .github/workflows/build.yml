@@ -55,27 +55,3 @@ jobs:
           if-no-files-found: error
           path: |
             ./*/build/distributions/*.zip
-
-  generate-dokka:
-    if: ${{ github.event_name != 'pull_request' }}
-    runs-on: macos-latest
-    needs:
-      - build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-
-      - name: Generate docs with dokka
-        run: make generateDokka
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ${{ github.workspace }}/build/dokka/htmlMultiModule
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
