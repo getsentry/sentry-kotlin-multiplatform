@@ -115,7 +115,6 @@ public object Sentry {
     /**
      * Throws a RuntimeException, useful for testing.
      */
-    @Suppress("TooGenericExceptionThrown")
     public fun crash() {
         throw RuntimeException("Uncaught Exception from Kotlin Multiplatform.")
     }

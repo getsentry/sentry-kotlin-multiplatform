@@ -94,6 +94,4 @@ tasks.withType<Detekt>().configureEach {
         it.file.relativeTo(projectDir).startsWith(project.buildDir.relativeTo(projectDir))
     }
 }
-tasks.register("detektAll") {
-    dependsOn(tasks.withType<Detekt>())
-}
+
