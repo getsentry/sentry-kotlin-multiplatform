@@ -10,3 +10,6 @@ style:
     active: false
   ForbiddenComment:
     active: false
+  UnusedPrivateMember:
+    excludes:
+      - "**/Attachment.kt"
