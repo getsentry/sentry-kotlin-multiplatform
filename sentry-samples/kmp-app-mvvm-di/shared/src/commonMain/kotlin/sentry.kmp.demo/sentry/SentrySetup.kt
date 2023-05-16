@@ -15,7 +15,11 @@ private val optionsConfiguration: OptionsConfiguration = {
     it.attachScreenshot = true
     it.release = "kmp-release@0.0.1"
     it.beforeSend = { event ->
-        event
+        if (event.environment == "test") {
+            null
+        } else {
+            event
+        }
     }
     it.beforeBreadcrumb = { breadcrumb ->
         breadcrumb.message = "Add message before every breadcrumb"
