@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.sentry.kotlin.multiplatform">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <application>
         <provider
             android:name="io.sentry.android.core.SentryInitProvider"
