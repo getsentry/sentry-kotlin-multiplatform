@@ -13,3 +13,13 @@ style:
   UnusedPrivateMember:
     excludes:
       - "**/Attachment.kt"
+complexity:
+  TooManyFunctions:
+    excludes: [
+      "**/SentryKMP.kt",
+      "**/SentryBridge.kt",
+      "**/CocoaScopeProvider.kt",
+      "**/Scope.kt",
+      "**/JvmScopeProvider.kt",
+      "**/Breadcrumb.kt",
+    ]

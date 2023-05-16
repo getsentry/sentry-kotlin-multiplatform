@@ -74,9 +74,22 @@ spotless {
     }
 }
 
+val detektConfigFilePath = "$rootDir/config/detekt/detekt.yml"
+val detektBaselineFilePath = "$rootDir/config/detekt/baseline.xml"
+
 detekt {
     buildUponDefaultConfig = true
-    config = files("$projectDir/detekt.yml")
+    config = files(detektConfigFilePath)
+    baseline = file(detektBaselineFilePath)
+}
+
+fun SourceTask.detektExcludes() {
+    exclude("**/build/**")
+    exclude("**/*.kts")
+    exclude("**/buildSrc/**")
+    exclude("**/*Test*/**")
+    exclude("**/resources/**")
+    exclude("**/sentry-samples/**")
 }
 
 tasks.withType<Detekt>().configureEach {
@@ -84,14 +97,15 @@ tasks.withType<Detekt>().configureEach {
         html.required.set(true)
     }
     setSource(files(project.projectDir))
-    exclude("**/build/**")
-    exclude("**/*.kts")
-    exclude("**/buildSrc/**")
-    exclude("**/*Test*/**")
-    exclude("**/resources/**")
-    exclude("**/sentry-samples/**")
-    exclude {
-        it.file.relativeTo(projectDir).startsWith(project.buildDir.relativeTo(projectDir))
-    }
+    detektExcludes()
 }
 
+/** Task for generating a Detekt baseline.xml */
+val detektProjectBaseline by tasks.registering(io.gitlab.arturbosch.detekt.DetektCreateBaselineTask::class) {
+    buildUponDefaultConfig.set(true)
+    setSource(files(rootDir))
+    config.setFrom(files(detektConfigFilePath))
+    baseline.set(file(detektBaselineFilePath))
+    include("**/*.kt")
+    detektExcludes()
+}
