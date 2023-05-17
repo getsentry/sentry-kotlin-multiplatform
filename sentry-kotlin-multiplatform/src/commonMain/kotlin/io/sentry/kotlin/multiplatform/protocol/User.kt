@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.protocol
 
+/** Information about the user who triggered an event. */
 public data class User(
     /** The user's email */
     var email: String? = null,

@@ -45,34 +45,7 @@ public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange {
 public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange$Companion {
 }
 
-public final class io/sentry/kotlin/multiplatform/Scope : io/sentry/kotlin/multiplatform/ScopeProvider {
-	public fun <init> (Lio/sentry/kotlin/multiplatform/ScopeProvider;)V
-	public fun addAttachment (Lio/sentry/kotlin/multiplatform/Attachment;)V
-	public fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
-	public fun clear ()V
-	public fun clearAttachments ()V
-	public fun clearBreadcrumbs ()V
-	public fun getContexts ()Ljava/util/Map;
-	public fun getLevel ()Lio/sentry/kotlin/multiplatform/SentryLevel;
-	public fun getTags ()Ljava/util/Map;
-	public fun getUser ()Lio/sentry/kotlin/multiplatform/protocol/User;
-	public fun removeContext (Ljava/lang/String;)V
-	public fun removeExtra (Ljava/lang/String;)V
-	public fun removeTag (Ljava/lang/String;)V
-	public fun setContext (Ljava/lang/String;C)V
-	public fun setContext (Ljava/lang/String;Ljava/lang/Number;)V
-	public fun setContext (Ljava/lang/String;Ljava/lang/Object;)V
-	public fun setContext (Ljava/lang/String;Ljava/lang/String;)V
-	public fun setContext (Ljava/lang/String;Ljava/util/Collection;)V
-	public fun setContext (Ljava/lang/String;Z)V
-	public fun setContext (Ljava/lang/String;[Ljava/lang/Object;)V
-	public fun setExtra (Ljava/lang/String;Ljava/lang/String;)V
-	public fun setLevel (Lio/sentry/kotlin/multiplatform/SentryLevel;)V
-	public fun setTag (Ljava/lang/String;Ljava/lang/String;)V
-	public fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
-}
-
-public abstract interface class io/sentry/kotlin/multiplatform/ScopeProvider {
+public abstract interface class io/sentry/kotlin/multiplatform/Scope {
 	public abstract fun addAttachment (Lio/sentry/kotlin/multiplatform/Attachment;)V
 	public abstract fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
 	public abstract fun clear ()V
