@@ -13,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="DataExtractionRules">
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
         <activity
             android:name="sentry.kmp.demo.android.MainActivity"
             android:exported="true">
