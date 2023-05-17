@@ -10,6 +10,8 @@ object Config {
     val gradleMavenPublishPlugin = "com.vanniktech.maven.publish"
     val androidGradle = "com.android.library"
     val kotlinSerializationPlugin = "plugin.serialization"
+    val dokka = "org.jetbrains.dokka"
+    val dokkaVersion = "1.8.10"
 
     object BuildPlugins {
         val buildConfig = "com.codingfeline.buildkonfig"
@@ -19,6 +21,8 @@ object Config {
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
         val spotlessVersion = "6.11.0"
+        val detekt = "io.gitlab.arturbosch.detekt"
+        val detektVersion = "1.22.0"
         val binaryCompatibility = "org.jetbrains.kotlinx.binary-compatibility-validator"
         val binaryCompatibilityVersion = "0.13.1"
     }

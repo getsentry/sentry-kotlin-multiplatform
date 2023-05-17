@@ -2,9 +2,13 @@
 
 ## Unreleased
 
+### Features
+
+- feat: automatically disable `io.sentry.auto-init` ([#93](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/93))
+
 ### Fixes
 
-- fix: NSNumber to Long crash during SentryException conversion ([#92](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/92))
+- fix: NSNumber to Kotlin Long crash during SentryException conversion ([#92](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/92))
 
 ### Improvements
 

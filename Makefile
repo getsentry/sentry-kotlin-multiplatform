@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples format stop
+.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples generateDokka detekt format stop
 
 all: stop clean compile
 
@@ -10,6 +10,14 @@ clean:
 # local deploy
 dryRelease:
 	./gradlew publishToMavenLocal --no-daemon --no-parallel
+
+# Run detekt
+detekt:
+	./gradlew detekt
+
+# Generate Dokka
+generateDokka:
+	./gradlew dokkaHtmlMultiModule
 
 # Check API
 checkApi:
@@ -40,7 +48,7 @@ buildAppleSamples:
 
 
 # Build all targets, run tests and checks api
-compile: checkApi buildProject buildAppleSamples
+compile: checkApi detekt buildProject buildAppleSamples
 
 # We stop gradle at the end to make sure the cache folders
 # don't contain any lock files and are free to be cached.

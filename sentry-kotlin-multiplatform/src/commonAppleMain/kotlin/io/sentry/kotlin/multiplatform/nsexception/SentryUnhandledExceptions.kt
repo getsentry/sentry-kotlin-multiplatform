@@ -42,7 +42,7 @@ import platform.Foundation.NSNumber
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
  */
 internal fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
-    return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(kotlinCrashedTag) ?: false) }
+    return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(KOTLIN_CRASH_TAG) ?: false) }
 }
 
 /**
@@ -57,14 +57,14 @@ internal fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHoo
     // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409
     SentrySDK.storeEnvelope(envelope)
     SentrySDK.configureScope { scope ->
-        scope?.setTagValue(kotlinCrashedTag, kotlinCrashedTag)
+        scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
     }
 }
 
 /**
  * Tag used to mark the Kotlin termination crash.
  */
-internal const val kotlinCrashedTag = "nsexceptionkt.kotlin_crashed"
+internal const val KOTLIN_CRASH_TAG = "nsexceptionkt.kotlin_crashed"
 
 /**
  * Converts `this` [Throwable] to a [SentryEnvelope].

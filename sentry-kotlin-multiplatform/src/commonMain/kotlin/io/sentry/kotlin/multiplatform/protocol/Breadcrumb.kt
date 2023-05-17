@@ -2,7 +2,12 @@ package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.SentryLevel
 
-public data class Breadcrumb constructor(
+/**
+ * A single breadcrumb.
+ *
+ * Breadcrumbs are used to create a trail of events that happened prior to an issue.
+ */
+public data class Breadcrumb(
     /** The breadcrumb's level */
     var level: SentryLevel? = null,
 
