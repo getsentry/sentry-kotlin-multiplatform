@@ -34,7 +34,7 @@ that can be used on Kotlin Multiplatform.
 
 ## Usage
 
-For detailed usage, check out the Resources section below.
+For detailed usage, check out the [Kotlin Multiplatform Documentation](https://docs.sentry.io/platforms/kotlin-multiplatform/).
 
 ## Samples
 
