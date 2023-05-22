@@ -16,6 +16,7 @@ This SDK is a wrapper around different platforms such as JVM, Android, iOS, macO
 that can be used on Kotlin Multiplatform.
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.8.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![KDoc link](https://img.shields.io/badge/API_Reference-KDoc-blue)](https://getsentry.github.io/sentry-kotlin-multiplatform/)
 
 | Packages                    | Maven Central                                                                                                                                                                                                
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
