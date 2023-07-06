@@ -40,6 +40,18 @@ class BeforeBreadcrumbIntegrationTest {
     }
 
     @Test
+    fun `breadcrumb level is not modified if KMP beforeBreadcrumb callback config does not modify it`() {
+        val originalBreadcrumb = breadcrumbConfigurator.originalBreadcrumb
+        val modifiedBreadcrumb = breadcrumbConfigurator.applyOptions {
+            it.dsn = fakeDsn
+            it.beforeBreadcrumb = { breadcrumb ->
+                breadcrumb
+            }
+        }
+        assertEquals(originalBreadcrumb.level, modifiedBreadcrumb?.level)
+    }
+
+    @Test
     fun `breadcrumb level is modified if KMP beforeBreadcrumb callback config modifies it`() {
         val modifiedBreadcrumb = breadcrumbConfigurator.applyOptions {
             it.dsn = fakeDsn
@@ -49,6 +61,18 @@ class BeforeBreadcrumbIntegrationTest {
             }
         }
         assertEquals(SentryLevel.WARNING, modifiedBreadcrumb?.level)
+    }
+
+    @Test
+    fun `breadcrumb category is not modified if KMP beforeBreadcrumb callback config does not modify it`() {
+        val originalBreadcrumb = breadcrumbConfigurator.originalBreadcrumb
+        val modifiedBreadcrumb = breadcrumbConfigurator.applyOptions {
+            it.dsn = fakeDsn
+            it.beforeBreadcrumb = { breadcrumb ->
+                breadcrumb
+            }
+        }
+        assertEquals(originalBreadcrumb.category, modifiedBreadcrumb?.category)
     }
 
     @Test
@@ -64,6 +88,18 @@ class BeforeBreadcrumbIntegrationTest {
     }
 
     @Test
+    fun `breadcrumb type is not modified if KMP beforeBreadcrumb callback config does not modify it`() {
+        val originalBreadcrumb = breadcrumbConfigurator.originalBreadcrumb
+        val modifiedBreadcrumb = breadcrumbConfigurator.applyOptions {
+            it.dsn = fakeDsn
+            it.beforeBreadcrumb = { breadcrumb ->
+                breadcrumb
+            }
+        }
+        assertEquals(originalBreadcrumb.type, modifiedBreadcrumb?.type)
+    }
+
+    @Test
     fun `breadcrumb type is modified if KMP beforeBreadcrumb callback config modifies it`() {
         val modifiedBreadcrumb = breadcrumbConfigurator.applyOptions {
             it.dsn = fakeDsn
@@ -73,6 +109,18 @@ class BeforeBreadcrumbIntegrationTest {
             }
         }
         assertEquals("type", modifiedBreadcrumb?.type)
+    }
+
+    @Test
+    fun `breadcrumb message is not modified if KMP beforeBreadcrumb callback config does not modify it`() {
+        val originalBreadcrumb = breadcrumbConfigurator.originalBreadcrumb
+        val modifiedBreadcrumb = breadcrumbConfigurator.applyOptions {
+            it.dsn = fakeDsn
+            it.beforeBreadcrumb = { breadcrumb ->
+                breadcrumb
+            }
+        }
+        assertEquals(originalBreadcrumb.level, modifiedBreadcrumb?.level)
     }
 
     @Test
