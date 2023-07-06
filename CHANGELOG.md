@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- fix: beforeBreadcrumb discarding breadcrumbs on Apple platforms ([#101](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/101))
+
 ## 0.2.0
 
 ### Features
