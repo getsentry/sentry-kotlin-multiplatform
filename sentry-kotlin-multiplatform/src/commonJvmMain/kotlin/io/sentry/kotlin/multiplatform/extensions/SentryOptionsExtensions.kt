@@ -41,7 +41,11 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     maxAttachmentSize = options.maxAttachmentSize
     maxBreadcrumbs = options.maxBreadcrumbs
     setBeforeBreadcrumb { jvmBreadcrumb, _ ->
-        options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
+        if (options.beforeBreadcrumb == null) {
+            jvmBreadcrumb
+        } else {
+            options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
+        }
     }
     setBeforeSend { jvmSentryEvent, hint ->
         if (options.beforeSend == null) {
