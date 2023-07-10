@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- fix: beforeBreadcrumb discarding breadcrumbs ([#101](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/105))
+- fix: beforeBreadcrumb discarding if hook is not set ([#105](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/105))
 
 ## 0.2.0
 
