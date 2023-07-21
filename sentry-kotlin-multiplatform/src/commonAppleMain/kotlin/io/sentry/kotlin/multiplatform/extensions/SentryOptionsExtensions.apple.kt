@@ -67,8 +67,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
 
     beforeBreadcrumb = { cocoaBreadcrumb ->
-        cocoaBreadcrumb?.toKmpBreadcrumb()
-            ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+        if (options.beforeBreadcrumb == null) {
+            cocoaBreadcrumb
+        } else {
+            cocoaBreadcrumb?.toKmpBreadcrumb()
+                ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+        }
     }
 
     enableCaptureFailedRequests = options.enableCaptureFailedRequests
