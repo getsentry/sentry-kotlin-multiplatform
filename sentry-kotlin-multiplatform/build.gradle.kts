@@ -8,6 +8,7 @@ plugins {
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
     id(Config.QualityPlugins.kover)
+    id(Config.QualityPlugins.binaryCompatibility)
     `maven-publish`
 }
 
