@@ -7,7 +7,15 @@ plugins {
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
+    id(Config.QualityPlugins.kover)
     `maven-publish`
+}
+
+koverReport {
+    defaults {
+        // adds the contents of the reports of `release` Android build variant to default reports
+        mergeWith("release")
+    }
 }
 
 android {

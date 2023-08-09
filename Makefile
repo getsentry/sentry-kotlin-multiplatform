@@ -1,6 +1,6 @@
-.PHONY: all clean compile dryRelease checkFormat format stop
+.PHONY: all clean compile dryRelease checkFormat format stop createCoverageReports
 
-all: stop clean compile
+all: stop clean compile createCoverageReports
 
 # deep clean
 clean:
@@ -30,3 +30,7 @@ compile:
 # don't contain any lock files and are free to be cached.
 stop:
 	./gradlew --stop
+
+# Create coverage reports
+createCoverageReports:
+	./gradlew koverXmlReport

@@ -19,6 +19,8 @@ object Config {
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
         val spotlessVersion = "6.11.0"
+        val kover = "org.jetbrains.kotlinx.kover"
+        val koverVersion = "0.7.3"
     }
 
     object Libs {
