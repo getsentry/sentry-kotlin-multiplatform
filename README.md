@@ -5,7 +5,7 @@
       <img alt="Shows a black logo in light color mode and a white one in dark color mode." width="280">
     </picture>
 <br/>
-    <h1>Experimental Sentry SDK for Kotlin Multiplatform</h1>
+    <h1>Sentry SDK for Kotlin Multiplatform</h1>
 </p>
 
 _Bad software is everywhere, and we're tired of it. Sentry is on a mission to help developers write
