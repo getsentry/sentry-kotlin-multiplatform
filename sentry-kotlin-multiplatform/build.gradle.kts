@@ -67,6 +67,7 @@ kotlin {
             dependencies {
                 implementation(Config.TestLibs.roboelectric)
                 implementation(Config.TestLibs.junitKtx)
+                implementation(Config.TestLibs.mockitoCore)
             }
         }
         val jvmMain by getting

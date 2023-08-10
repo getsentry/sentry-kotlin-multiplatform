@@ -4,14 +4,14 @@ import android.app.Application
 import android.content.Context
 import org.koin.dsl.module
 import sentry.kmp.demo.initKoin
-import sentry.kmp.demo.sentry.initSentry
+import sentry.kmp.demo.sentry.initializeSentry
 
 class MainApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        initSentry(this)
+        initializeSentry()
 
         initKoin(
             module {

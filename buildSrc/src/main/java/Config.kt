@@ -53,6 +53,7 @@ object Config {
 
         val roboelectric = "org.robolectric:robolectric:4.9"
         val junitKtx = "androidx.test.ext:junit-ktx:1.1.5"
+        val mockitoCore = "org.mockito:mockito-core:5.4.0"
     }
 
     object Android {
