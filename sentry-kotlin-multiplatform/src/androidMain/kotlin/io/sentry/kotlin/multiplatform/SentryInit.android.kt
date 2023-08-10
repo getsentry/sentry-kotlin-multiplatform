@@ -22,8 +22,8 @@ public actual typealias Context = Context
 /**
  * A ContentProvider that does NOT store or provide any data for read or write operations.
  *
- * It's only purpose is to retrieve and store the application context in an internal top-level variable [applicationContext].
- * The context is used for [SentryAndroid.init].
+ * It's only purpose is to retrieve and store the application context in an internal top-level
+ * variable [applicationContext]. The context is used for [SentryAndroid.init].
  *
  * This does not allow for overriding the abstract query, insert, update, and delete operations
  * of the [ContentProvider].
