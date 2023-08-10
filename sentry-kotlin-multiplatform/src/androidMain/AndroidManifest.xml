@@ -12,7 +12,7 @@
         </provider>
         <provider
             android:name="io.sentry.kotlin.multiplatform.ContextProvider"
-            android:authorities="${applicationId}.KmpInitProvider"
+            android:authorities="${applicationId}.ContextProvider"
             android:exported="false"
             tools:node="merge">
         </provider>
