@@ -25,8 +25,8 @@ public actual typealias Context = Context
  * It's only purpose is to retrieve and store the application context in an internal top-level variable.
  * The context is used for [SentryAndroid.init].
  *
- * <p>This does not allow for overriding the abstract query, insert, update, and delete operations
- * of the {@link ContentProvider}.
+ * This does not allow for overriding the abstract query, insert, update, and delete operations
+ * of the [ContentProvider].
  */
 internal class ContextProvider : ContentProvider() {
     override fun onCreate(): Boolean {
