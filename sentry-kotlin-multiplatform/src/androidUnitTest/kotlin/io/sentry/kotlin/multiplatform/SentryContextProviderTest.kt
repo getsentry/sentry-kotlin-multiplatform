@@ -22,7 +22,7 @@ class SentryContextProviderTest : BaseSentryTest() {
     class SentryContextOnCreateTest : BaseSentryTest() {
         @Test
         fun `onCreate initializes applicationContext`() {
-            // Simple call to the applicationContext to make sure it's initialized
+            // Simple call to the lateinit applicationContext to make sure it's initialized
             applicationContext
         }
     }
