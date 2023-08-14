@@ -16,7 +16,7 @@ actual abstract class BaseSentryTest {
     @BeforeTest
     open fun setUp() {
         // Set up the provider needed for Sentry.init on Android
-        val provider = Robolectric.buildContentProvider(ContextProvider::class.java)
+        val provider = Robolectric.buildContentProvider(SentryContextProvider::class.java)
         provider.create()
     }
 }

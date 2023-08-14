@@ -28,7 +28,7 @@ public actual typealias Context = Context
  * This does not allow for overriding the abstract query, insert, update, and delete operations
  * of the [ContentProvider].
  */
-internal class ContextProvider : ContentProvider() {
+internal class SentryContextProvider : ContentProvider() {
     override fun onCreate(): Boolean {
         val context = context
         if (context != null) {

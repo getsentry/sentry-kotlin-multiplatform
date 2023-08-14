@@ -9,12 +9,27 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 
 @RunWith(AndroidJUnit4::class)
-class ContextProviderTest : BaseSentryTest() {
-    private lateinit var provider: ContextProvider
+class SentryContextProviderTest : BaseSentryTest() {
+    private lateinit var provider: SentryContextProvider
 
     @Before
     override fun setUp() {
-        provider = ContextProvider()
+        provider = SentryContextProvider()
+    }
+
+    // We create a nested class so this test is executed with the BeforeEach method that initializes
+    // the actual content provider and not just a mock.
+    class SentryContextOnCreateTest : BaseSentryTest() {
+        @Test
+        fun `onCreate initializes applicationContext`() {
+            // Simple call to the applicationContext to make sure it's initialized
+            applicationContext
+        }
+    }
+
+
+    fun `create does not throw Exception`() {
+        provider.onCreate()
     }
 
     @Test(expected = IllegalStateException::class)
