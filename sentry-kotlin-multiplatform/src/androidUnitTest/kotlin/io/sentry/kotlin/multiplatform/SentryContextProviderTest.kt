@@ -27,7 +27,6 @@ class SentryContextProviderTest : BaseSentryTest() {
         }
     }
 
-
     fun `create does not throw Exception`() {
         provider.onCreate()
     }
