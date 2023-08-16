@@ -1,6 +1,6 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples generateDokka detekt format stop
+.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples generateDokka detekt format stop createCoverageReports
 
-all: stop clean compile
+all: stop clean compile createCoverageReports
 
 # deep clean
 clean:
@@ -54,3 +54,7 @@ compile: checkApi detekt buildProject buildAppleSamples
 # don't contain any lock files and are free to be cached.
 stop:
 	./gradlew --stop
+
+# Create coverage reports
+createCoverageReports:
+	./gradlew koverXmlReport
