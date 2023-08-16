@@ -9,12 +9,12 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
-internal expect fun initSentry(context: Context? = null, configuration: OptionsConfiguration)
+internal expect fun initSentry(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
 
     actual fun init(context: Context, configuration: OptionsConfiguration) {
-        initSentry(context, configuration)
+        initSentry(configuration)
     }
 
     actual fun init(configuration: OptionsConfiguration) {

@@ -1,11 +1,8 @@
 package sentry.kmp.demo.sentry
 
 import io.sentry.kotlin.multiplatform.Attachment
-import io.sentry.kotlin.multiplatform.Context
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
-import kotlin.experimental.ExperimentalObjCRefinement
-import kotlin.native.HiddenFromObjC
 
 /** Shared options configuration */
 private val optionsConfiguration: OptionsConfiguration = {
@@ -31,18 +28,7 @@ private val optionsConfiguration: OptionsConfiguration = {
  * Initializes Sentry with given options.
  * Make sure to hook this into your native platforms as early as possible
  */
-@OptIn(ExperimentalObjCRefinement::class)
-@HiddenFromObjC
-fun initSentry(context: Context) {
-    Sentry.init(context, optionsConfiguration)
-    configureSentryScope()
-}
-
-/**
- * Convenience initializer for Cocoa targets.
- * Kotlin -> ObjC doesn't support default parameters (yet).
- */
-fun start() {
+fun initializeSentry() {
     Sentry.init(optionsConfiguration)
     configureSentryScope()
 }

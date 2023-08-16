@@ -11,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         startKoin()
         
-        SentrySetupKt.start()
+        SentrySetupKt.initializeSentry()
         
         let viewController = UIHostingController(rootView: HomeScreen())
 

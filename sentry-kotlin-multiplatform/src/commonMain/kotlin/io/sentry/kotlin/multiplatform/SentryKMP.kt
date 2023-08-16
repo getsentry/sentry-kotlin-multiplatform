@@ -11,6 +11,7 @@ public typealias ScopeCallback = (Scope) -> Unit
 public typealias OptionsConfiguration = (SentryOptions) -> Unit
 
 /** The context used for Android initialization. */
+@Deprecated("No longer necessary to initialize Sentry on Android.")
 public expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point. */
@@ -24,6 +25,10 @@ public object Sentry {
      */
     @OptIn(ExperimentalObjCRefinement::class)
     @HiddenFromObjC
+    @Deprecated(
+        "Use init(OptionsConfiguration) instead.",
+        ReplaceWith("Sentry.init(configuration)")
+    )
     public fun init(context: Context, configuration: OptionsConfiguration) {
         SentryBridge.init(context, configuration)
     }
