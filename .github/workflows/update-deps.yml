@@ -4,10 +4,13 @@ on:
   # Run every day.
   schedule:
     - cron: '0 3 * * *'
-  # And on every PR merge so we get the updated dependencies ASAP, and to make sure the changelog doesn't conflict.
+  # And on on every PR merge so we get the updated dependencies ASAP, and to make sure the changelog doesn't conflict.gi
   push:
     branches:
       - '*'
+  pull_request:
+    types:
+      - synchronize
 
 jobs:
   cli:
