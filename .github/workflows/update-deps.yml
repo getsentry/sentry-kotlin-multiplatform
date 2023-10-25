@@ -5,7 +5,6 @@ on:
   schedule:
     - cron: '0 3 * * *'
   # And on every PR merge so we get the updated dependencies ASAP, and to make sure the changelog doesn't conflict.
-  # Temporary (don't merge)
   push:
     branches:
       - '*'
