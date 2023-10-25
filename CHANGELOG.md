@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-### Feature git
+### Features
 
 - Remove need for context in Sentry.init for Android ([#117](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/117))
 
