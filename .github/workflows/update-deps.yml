@@ -9,6 +9,9 @@ on:
     branches:
       # for test only
       - '*'
+  pull_request:
+    types:
+      - synchronize
 
 jobs:
   cocoa:
