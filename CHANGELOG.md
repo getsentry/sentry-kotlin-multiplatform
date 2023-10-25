@@ -3,6 +3,9 @@
 ## Unreleased
 
 - Remove need for context in Sentry.init for Android ([#117](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/117))
+- Bump Cocoa SDK from   to v8.14.2 ([#132](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/132))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8142)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/ ...8.14.2)
 
 ## 0.2.1
 
