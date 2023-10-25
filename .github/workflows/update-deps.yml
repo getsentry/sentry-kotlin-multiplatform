@@ -10,10 +10,9 @@ on:
       - main
 
   # Temporary (don't merge)
-  workflow_run:
-    workflows: [ "Update Dependencies" ]
+  pull_request:
     types:
-      - requested
+      - synchronize
 
 jobs:
   cli:
