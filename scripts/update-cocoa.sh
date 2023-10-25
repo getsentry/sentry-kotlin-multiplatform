@@ -29,7 +29,7 @@ set-version)
 esac
 
 # Change podspec version
-file='sentry_kotlin_multiplatform/sentry_kotlin_multiplatform.podspec'
+file='sentry-kotlin-multiplatform/sentry_kotlin_multiplatform.podspec'
 content=$(cat $file)
 regex="('Sentry', *)'([0-9\.]+)'"
 if ! [[ $content =~ $regex ]]; then
