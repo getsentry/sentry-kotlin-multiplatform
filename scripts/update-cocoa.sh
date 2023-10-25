@@ -17,6 +17,7 @@ if ! [[ $config_content =~ $config_regex ]]; then
 fi
 
 config_bash_rematch=$BASH_REMATCH
+podspec_bash_rematch=$BASH_REMATCH
 
 if ! [[ $podspec_content =~ $podspec_regex ]]; then
     echo "Failed to find the Cocoa version in $podspec_file"
