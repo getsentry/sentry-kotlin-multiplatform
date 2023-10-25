@@ -7,19 +7,10 @@ on:
   # And on on every PR merge so we get the updated dependencies ASAP, and to make sure the changelog doesn't conflict.gi
   push:
     branches:
-      - main
+      # for test only
+      - '*'
 
 jobs:
-  cli:
-    uses: getsentry/github-workflows/.github/workflows/updater.yml@v1
-    with:
-      path: sentry-cli.properties
-      name: CLI
-    secrets:
-      # If a custom token is used instead, a CI would be triggered on a created PR.
-      # api_token: ${{ secrets.CI_DEPLOY_KEY }}
-      api_token: ${{ github.token }}
-
   cocoa:
     uses: getsentry/github-workflows/.github/workflows/updater.yml@v1
     with:
@@ -27,8 +18,7 @@ jobs:
       name: Cocoa SDK
     secrets:
       # If a custom token is used instead, a CI would be triggered on a created PR.
-      # api_token: ${{ secrets.CI_DEPLOY_KEY }}
-      api_token: ${{ github.token }}
+      api_token: ${{ secrets.CI_DEPLOY_KEY }}
 
   java:
     uses: getsentry/github-workflows/.github/workflows/updater.yml@v1
@@ -37,5 +27,4 @@ jobs:
       name: Java SDK
     secrets:
       # If a custom token is used instead, a CI would be triggered on a created PR.
-      # api_token: ${{ secrets.CI_DEPLOY_KEY }}
-      api_token: ${{ github.token }}
+      api_token: ${{ secrets.CI_DEPLOY_KEY }}
