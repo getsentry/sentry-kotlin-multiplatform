@@ -9,6 +9,12 @@ on:
     branches:
       - main
 
+  # Temporary (don't merge)
+  workflow_run:
+    workflows: [ "Update Dependencies" ]
+    types:
+      - requested
+
 jobs:
   cli:
     uses: getsentry/github-workflows/.github/workflows/updater.yml@v1
