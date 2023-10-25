@@ -27,7 +27,6 @@ podspec_bash_rematch=$BASH_REMATCH
 
 case $1 in
 get-version)
-    echo ${config_bash_rematch[2]}
     echo ${podspec_bash_rematch[2]}
     ;;
 get-repo)
