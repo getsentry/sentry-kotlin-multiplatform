@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - '*'
-
   # Temporary (don't merge)
   pull_request:
     types:
