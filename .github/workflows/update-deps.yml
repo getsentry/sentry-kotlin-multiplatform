@@ -11,6 +11,10 @@ on:
   pull_request:
     types:
       - synchronize
+      - converted_to_draft
+      - opened
+      - synchronize
+      - closed
 
 jobs:
   cocoa:
