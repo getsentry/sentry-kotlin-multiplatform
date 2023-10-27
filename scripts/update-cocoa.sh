@@ -27,7 +27,7 @@ podspec_bash_rematch=$BASH_REMATCH
 
 case $1 in
 get-version)
-    echo ${podspec_bash_rematch[2]}
+    echo ${BASH_REMATCH[2]}
     ;;
 get-repo)
     echo "https://github.com/getsentry/sentry-cocoa.git"
