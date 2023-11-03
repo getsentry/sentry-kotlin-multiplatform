@@ -5,6 +5,9 @@
 ### Features
 
 - Remove need for context in Sentry.init for Android ([#117](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/117))
+- Bump Java SDK from v6.32.0 to v6.33.0 ([#136](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/136))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#6330)
+  - [diff](https://github.com/getsentry/sentry-java/compare/6.32.0...6.33.0)
 
 ### Dependencies
 
