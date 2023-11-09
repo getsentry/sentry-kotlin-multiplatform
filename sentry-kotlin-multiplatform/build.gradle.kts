@@ -15,7 +15,7 @@ plugins {
 koverReport {
     defaults {
         // adds the contents of the reports of `release` Android build variant to default reports
-//        mergeWith("release")
+        mergeWith("release")
     }
 }
 
