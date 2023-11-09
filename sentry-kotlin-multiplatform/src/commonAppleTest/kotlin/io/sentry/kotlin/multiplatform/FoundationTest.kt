@@ -11,7 +11,6 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class FoundationTest {
-
     @Test
     fun `convert string to NSData and ByteArray is correct`() {
         val text = "$!()I!(DKDASKDKSD(#(ldkiadjk91jd"

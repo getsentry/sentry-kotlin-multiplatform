@@ -9,7 +9,6 @@ private const val DEFAULT_SESSION_INTERVAL_MILLIS = 30000L
 
 /** Sentry options that can be used to configure the SDK. */
 public open class SentryOptions {
-
     /**
      * The DSN tells the SDK where to send the events to. If this value is not provided, the SDK will
      * just not send any events.
@@ -107,4 +106,18 @@ public open class SentryOptions {
      * Available on Apple.
      */
     public var failedRequestTargets: List<String> = listOf(".*")
+
+    /**
+     * Configures the sample rate as a percentage of events to be sent in the range of 0.0 to 1.0. if
+     * 1.0 is set it means that 100% of events are sent. If set to 0.1 only 10% of events will be
+     * sent. Events are picked randomly. Default is null (disabled)
+     */
+    public var sampleRate: Double? = null
+
+    /**
+     * Configures the sample rate as a percentage of transactions to be sent in the range of 0.0 to
+     * 1.0. if 1.0 is set it means that 100% of transactions are sent. If set to 0.1 only 10% of
+     * transactions will be sent. Transactions are picked randomly. Default is null (disabled)
+     */
+    public var tracesSampleRate: Double? = null
 }

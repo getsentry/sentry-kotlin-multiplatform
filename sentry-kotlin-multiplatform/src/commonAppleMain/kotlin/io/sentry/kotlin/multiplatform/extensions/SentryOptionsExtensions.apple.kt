@@ -9,6 +9,7 @@ import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
+import platform.Foundation.NSNumber
 import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
 internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit = {
@@ -32,6 +33,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     enableAutoSessionTracking = options.enableAutoSessionTracking
     maxAttachmentSize = options.maxAttachmentSize.convert()
     maxBreadcrumbs = options.maxBreadcrumbs.convert()
+    options.sampleRate?.let {
+        sampleRate = NSNumber(double = it)
+    }
+    options.tracesSampleRate?.let {
+        tracesSampleRate = NSNumber(double = it)
+    }
     beforeSend = { event ->
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
