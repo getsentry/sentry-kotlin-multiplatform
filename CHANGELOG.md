@@ -6,6 +6,9 @@
 
 - Add sample & trace rate configuration ([#144](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/144))
 - Remove need for context in Sentry.init for Android ([#117](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/117))
+- Bump Java SDK from v6.32.0 to v6.33.1 ([#139](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/139))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#6331)
+  - [diff](https://github.com/getsentry/sentry-java/compare/6.32.0...6.33.1)
 
 ### Dependencies
 
