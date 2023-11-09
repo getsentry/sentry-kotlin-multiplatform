@@ -40,6 +40,8 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     isEnableAutoSessionTracking = options.enableAutoSessionTracking
     maxAttachmentSize = options.maxAttachmentSize
     maxBreadcrumbs = options.maxBreadcrumbs
+    sampleRate = options.sampleRate
+    tracesSampleRate = options.tracesSampleRate
     setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         if (options.beforeBreadcrumb == null) {
             jvmBreadcrumb
