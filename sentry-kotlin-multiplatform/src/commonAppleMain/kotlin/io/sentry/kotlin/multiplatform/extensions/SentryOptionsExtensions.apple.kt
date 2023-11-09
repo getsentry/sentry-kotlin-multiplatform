@@ -33,8 +33,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     enableAutoSessionTracking = options.enableAutoSessionTracking
     maxAttachmentSize = options.maxAttachmentSize.convert()
     maxBreadcrumbs = options.maxBreadcrumbs.convert()
-    sampleRate = options.sampleRate as? NSNumber
-    tracesSampleRate = options.tracesSampleRate as? NSNumber
+    options.sampleRate?.let {
+        sampleRate = NSNumber(it)
+    }
+    options.tracesSampleRate?.let {
+        tracesSampleRate = NSNumber(it)
+    }
     beforeSend = { event ->
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION

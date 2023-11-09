@@ -1,10 +1,25 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SentryOptionsTest {
+class SentryOptionsTest : BaseSentryTest() {
+    @Test
+    fun `GIVEN sample rate WHEN set in Sentry init THEN does not crash`() {
+        // GIVEN
+        val sampleRate = 0.5
+
+        // WHEN
+        sentryInit {
+            it.dsn = fakeDsn
+            it.sampleRate = sampleRate
+        }
+
+        // THEN
+        // does not crash
+    }
 
     @Test
     fun `Breadcrumb can be modified via callback in init and should return the modified Breadcrumb`() {
