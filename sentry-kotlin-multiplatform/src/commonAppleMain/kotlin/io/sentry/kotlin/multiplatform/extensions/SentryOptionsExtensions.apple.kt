@@ -34,10 +34,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     maxAttachmentSize = options.maxAttachmentSize.convert()
     maxBreadcrumbs = options.maxBreadcrumbs.convert()
     options.sampleRate?.let {
-        sampleRate = NSNumber(it)
+        sampleRate = NSNumber(double = it)
     }
     options.tracesSampleRate?.let {
-        tracesSampleRate = NSNumber(it)
+        tracesSampleRate = NSNumber(double = it)
     }
     beforeSend = { event ->
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
