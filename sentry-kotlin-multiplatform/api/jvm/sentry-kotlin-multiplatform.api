@@ -170,8 +170,10 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getMaxAttachmentSize ()J
 	public final fun getMaxBreadcrumbs ()I
 	public final fun getRelease ()Ljava/lang/String;
+	public final fun getSampleRate ()Ljava/lang/Double;
 	public final fun getSdk ()Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
 	public final fun getSessionTrackingIntervalMillis ()J
+	public final fun getTracesSampleRate ()Ljava/lang/Double;
 	public final fun setAttachScreenshot (Z)V
 	public final fun setAttachStackTrace (Z)V
 	public final fun setAttachThreads (Z)V
@@ -189,8 +191,10 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setMaxAttachmentSize (J)V
 	public final fun setMaxBreadcrumbs (I)V
 	public final fun setRelease (Ljava/lang/String;)V
+	public final fun setSampleRate (Ljava/lang/Double;)V
 	public final fun setSdk (Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;)V
 	public final fun setSessionTrackingIntervalMillis (J)V
+	public final fun setTracesSampleRate (Ljava/lang/Double;)V
 }
 
 public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb {
