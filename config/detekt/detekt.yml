@@ -26,4 +26,7 @@ complexity:
       "**/JvmScopeProvider.kt",
       "**/Breadcrumb.kt",
     ]
+  LongMethod:
+    excludes:
+      - "**/SentryOptionsExtensions.*"
     
