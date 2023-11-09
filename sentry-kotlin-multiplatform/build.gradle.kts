@@ -15,7 +15,7 @@ plugins {
 koverReport {
     defaults {
         // adds the contents of the reports of `release` Android build variant to default reports
-        mergeWith("release")
+//        mergeWith("release")
     }
 }
 
@@ -31,46 +31,55 @@ android {
         }
     }
 }
+dependencies {
+    implementation("androidx.core:core-ktx:+")
+}
 
 kotlin {
     explicitApi()
+    applyDefaultHierarchyTemplate()
 
-    android {
+    androidTarget {
         publishLibraryVariants("release")
     }
     jvm()
-    ios()
+    iosArm64()
     iosSimulatorArm64()
-    watchos()
+    iosX64()
     watchosSimulatorArm64()
-    tvos()
+    watchosArm32()
+    watchosArm64()
+    watchosX64()
     tvosSimulatorArm64()
+    tvosArm64()
+    tvosX64()
     macosX64()
     macosArm64()
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(Config.Libs.kotlinStd)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(Config.TestLibs.kotlinCoroutinesCore)
-                implementation(Config.TestLibs.kotlinCoroutinesTest)
-                implementation(Config.TestLibs.ktorClientCore)
-                implementation(Config.TestLibs.ktorClientSerialization)
-                implementation(Config.TestLibs.kotlinxSerializationJson)
-                implementation(Config.TestLibs.kotlinCommon)
-                implementation(Config.TestLibs.kotlinCommonAnnotation)
-            }
+        commonMain.dependencies {
+            implementation(Config.Libs.kotlinStd)
         }
 
-        val androidMain by getting {
-            dependencies {
-                implementation(Config.Libs.sentryAndroid)
-            }
+        commonTest.dependencies {
+            implementation(Config.TestLibs.kotlinCoroutinesCore)
+            implementation(Config.TestLibs.kotlinCoroutinesTest)
+            implementation(Config.TestLibs.ktorClientCore)
+            implementation(Config.TestLibs.ktorClientSerialization)
+            implementation(Config.TestLibs.kotlinxSerializationJson)
+            implementation(Config.TestLibs.kotlinCommon)
+            implementation(Config.TestLibs.kotlinCommonAnnotation)
         }
+
+        commonTest.languageSettings {
+            optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+
+        androidMain.dependencies {
+            implementation(Config.Libs.sentryAndroid)
+        }
+
+        // androidUnitTest.dependencies doesn't exist
         val androidUnitTest by getting {
             dependencies {
                 implementation(Config.TestLibs.roboelectric)
@@ -78,26 +87,42 @@ kotlin {
                 implementation(Config.TestLibs.mockitoCore)
             }
         }
-        val jvmMain by getting
-        val jvmTest by getting
 
         val commonJvmMain by creating {
-            dependsOn(commonMain)
-            jvmMain.dependsOn(this)
-            androidMain.dependsOn(this)
+            dependsOn(commonMain.get())
             dependencies {
                 implementation(Config.Libs.sentryJava)
             }
         }
+
+        androidMain.get().dependsOn(commonJvmMain)
+        jvmMain.get().dependsOn(commonJvmMain)
+
         val commonJvmTest by creating {
-            dependsOn(commonTest)
-            jvmTest.dependsOn(this)
-            androidUnitTest.dependsOn(this)
+            dependsOn(commonTest.get())
             dependencies {
                 implementation(Config.TestLibs.kotlinJunit)
                 implementation(Config.TestLibs.ktorClientOkHttp)
             }
         }
+
+        androidUnitTest.dependsOn(commonJvmTest)
+        jvmTest.get().dependsOn(commonJvmTest)
+
+        appleTest.languageSettings {
+            optIn("kotlinx.cinterop.ExperimentalForeignApi::class")
+        }
+        appleTest.dependencies {
+            implementation(Config.TestLibs.ktorClientDarwin)
+        }
+
+        val commonTvWatchMacOsMain by creating {
+            dependsOn(appleMain.get())
+        }
+
+        tvosMain.get().dependsOn(commonTvWatchMacOsMain)
+        macosMain.get().dependsOn(commonTvWatchMacOsMain)
+        watchosMain.get().dependsOn(commonTvWatchMacOsMain)
 
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"
@@ -112,101 +137,41 @@ kotlin {
             watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
         }
 
-        val iosMain by getting
-        val iosSimulatorArm64Main by getting
-        val iosTest by getting
-        val iosSimulatorArm64Test by getting
-
-        val commonIosMain by creating {
-            iosMain.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
-        val commonIosTest by creating {
-            iosTest.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
-        }
-
-        val tvosMain by getting
-        val tvosSimulatorArm64Main by getting
-        val tvosTest by getting
-        val tvosSimulatorArm64Test by getting
-
-        val watchosMain by getting
-        val watchosSimulatorArm64Main by getting
-        val watchosTest by getting
-        val watchosSimulatorArm64Test by getting
-
-        val macosX64Main by getting
-        val macosArm64Main by getting
-        val macosX64Test by getting
-        val macosArm64Test by getting
-
-        val commonTvWatchMacOsMain by creating {
-            tvosMain.dependsOn(this)
-            tvosSimulatorArm64Main.dependsOn(this)
-            watchosMain.dependsOn(this)
-            watchosSimulatorArm64Main.dependsOn(this)
-            macosArm64Main.dependsOn(this)
-            macosX64Main.dependsOn(this)
-        }
-        val commonTvWatchMacOsTest by creating {
-            tvosTest.dependsOn(this)
-            tvosSimulatorArm64Test.dependsOn(this)
-            watchosTest.dependsOn(this)
-            watchosSimulatorArm64Test.dependsOn(this)
-            macosX64Test.dependsOn(this)
-            macosArm64Test.dependsOn(this)
-        }
-
-        val commonAppleMain by creating {
-            dependsOn(commonMain)
-            commonIosMain.dependsOn(this)
-            commonTvWatchMacOsMain.dependsOn(this)
-        }
-        val commonAppleTest by creating {
-            dependsOn(commonTest)
-            commonIosTest.dependsOn(this)
-            commonTvWatchMacOsTest.dependsOn(this)
-            dependencies {
-                implementation(Config.TestLibs.ktorClientDarwin)
+        listOf(
+            iosArm64(),
+            iosX64(),
+            iosSimulatorArm64(),
+            watchosArm32(),
+            watchosArm64(),
+            watchosX64(),
+            watchosSimulatorArm64(),
+            tvosArm64(),
+            tvosX64(),
+            tvosSimulatorArm64(),
+            macosX64(),
+            macosArm64()
+        ).forEach {
+            it.compilations.getByName("main") {
+                cinterops.create("Sentry.NSException") {
+                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryNSException")
+                }
+                cinterops.create("Sentry.Scope") {
+                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
+                }
+                cinterops.create("Sentry.PrivateSentrySDKOnly") {
+                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryPrivateSentrySDKOnly")
+                }
             }
         }
-    }
 
-    listOf(
-        iosArm64(),
-        iosX64(),
-        iosSimulatorArm64(),
-        watchosArm32(),
-        watchosArm64(),
-        watchosX64(),
-        watchosSimulatorArm64(),
-        tvosArm64(),
-        tvosX64(),
-        tvosSimulatorArm64(),
-        macosX64(),
-        macosArm64()
-    ).forEach {
-        it.compilations.getByName("main") {
-            cinterops.create("Sentry.NSException") {
-                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryNSException")
-            }
-            cinterops.create("Sentry.Scope") {
-                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
-            }
-            cinterops.create("Sentry.PrivateSentrySDKOnly") {
-                includeDirs("$projectDir/src/nativeInterop/cinterop/SentryPrivateSentrySDKOnly")
-            }
+        // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
+        // if we need to use this class, we'd need to find a better way to work it out
+        targets.withType<KotlinNativeTarget>().all {
+            compilations["main"].cinterops["Sentry"].extraOpts(
+                "-compiler-option",
+                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
+            )
         }
-    }
-
-    // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
-    // if we need to use this class, we'd need to find a better way to work it out
-    targets.withType<KotlinNativeTarget>().all {
-        compilations["main"].cinterops["Sentry"].extraOpts(
-            "-compiler-option",
-            "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
-        )
     }
 }
 

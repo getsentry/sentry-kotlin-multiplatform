@@ -16,6 +16,7 @@ plugins {
     kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
     id(Config.QualityPlugins.kover).version(Config.QualityPlugins.koverVersion).apply(false)
     id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion).apply(false)
+    id("org.jetbrains.kotlin.android") version "1.9.20" apply false
 }
 
 allprojects {
@@ -30,7 +31,7 @@ subprojects {
         val sep = File.separator
 
         configure<DistributionContainer> {
-            this.configureForMultiplatform(this@subprojects)
+//            this.configureForMultiplatform(this@subprojects)
         }
 
         tasks.named("distZip").configure {
