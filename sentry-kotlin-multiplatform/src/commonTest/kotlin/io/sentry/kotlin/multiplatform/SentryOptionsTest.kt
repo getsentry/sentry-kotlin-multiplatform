@@ -22,6 +22,21 @@ class SentryOptionsTest : BaseSentryTest() {
     }
 
     @Test
+    fun `GIVEN traces sample rate WHEN set in Sentry init THEN does not crash`() {
+        // GIVEN
+        val traceSampleRate = 0.5
+
+        // WHEN
+        sentryInit {
+            it.dsn = fakeDsn
+            it.tracesSampleRate = traceSampleRate
+        }
+
+        // THEN
+        // does not crash
+    }
+
+    @Test
     fun `Breadcrumb can be modified via callback in init and should return the modified Breadcrumb`() {
         val options = SentryOptions()
 
