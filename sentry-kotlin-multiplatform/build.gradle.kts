@@ -68,10 +68,6 @@ kotlin {
             implementation(Config.TestLibs.kotlinCommonAnnotation)
         }
 
-        commonTest.languageSettings {
-            optIn("kotlinx.cinterop.ExperimentalForeignApi")
-        }
-
         androidMain.dependencies {
             implementation(Config.Libs.sentryAndroid)
         }
