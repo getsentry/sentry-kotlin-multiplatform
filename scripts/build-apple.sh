@@ -7,21 +7,21 @@ fi
 
 PROJECT_NAME="$1"
 
-./gradlew ":${PROJECT_NAME}:macosX64Test" \
-          ":${PROJECT_NAME}:iosX64Test" \
-          ":${PROJECT_NAME}:watchosX64Test" \
-          ":${PROJECT_NAME}:tvosX64Test" \
-          ":${PROJECT_NAME}:publishKotlinMultiplatformPublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishIosArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishIosSimulatorArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishIosX64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishMacosX64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishMacosArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishWatchosArm32PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishWatchosArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishWatchosSimulatorArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishWatchosX64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishTvosArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishTvosSimulatorArm64PublicationToMavenLocal" \
-          ":${PROJECT_NAME}:publishTvosX64PublicationToMavenLocal" \
-          --no-daemon --stacktrace
+./gradlew "macosX64Test" \
+          "iosX64Test" \
+          "watchosX64Test" \
+          "tvosX64Test" \
+          "publishKotlinMultiplatformPublicationToMavenLocal" \
+          "publishIosArm64PublicationToMavenLocal" \
+          "publishIosSimulatorArm64PublicationToMavenLocal" \
+          "publishIosX64PublicationToMavenLocal" \
+          "publishMacosX64PublicationToMavenLocal" \
+          "publishMacosArm64PublicationToMavenLocal" \
+          "publishWatchosArm32PublicationToMavenLocal" \
+          "publishWatchosArm64PublicationToMavenLocal" \
+          "publishWatchosSimulatorArm64PublicationToMavenLocal" \
+          "publishWatchosX64PublicationToMavenLocal" \
+          "publishTvosArm64PublicationToMavenLocal" \
+          "publishTvosSimulatorArm64PublicationToMavenLocal" \
+          "publishTvosX64PublicationToMavenLocal" \
+          -p "${PROJECT_NAME}" --no-daemon --stacktrace
