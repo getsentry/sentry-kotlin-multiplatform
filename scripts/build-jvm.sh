@@ -12,4 +12,4 @@ PROJECT_NAME="$1"
           "publishAndroidReleasePublicationToMavenLocal" \
           "publishJvmPublicationToMavenLocal" \
           "publishKotlinMultiplatformPublicationToMavenLocal" \
-          -p "${PROJECT_NAME}" --no-daemon --stacktrace
+          -p "${PROJECT_NAME}"

@@ -6,4 +6,4 @@ if [ -z "$1" ]; then
 fi
 
 PROJECT_NAME="$1"
-./gradlew "distzip" -p "${PROJECT_NAME}" --no-daemon --stacktrace
+./gradlew "distzip" -p "${PROJECT_NAME}"

@@ -24,4 +24,4 @@ PROJECT_NAME="$1"
           "publishTvosArm64PublicationToMavenLocal" \
           "publishTvosSimulatorArm64PublicationToMavenLocal" \
           "publishTvosX64PublicationToMavenLocal" \
-          -p "${PROJECT_NAME}" --no-daemon --stacktrace
+          -p "${PROJECT_NAME}"
