@@ -65,12 +65,10 @@ jobs:
       - name: JVM build
         run: |
           ./scripts/build-jvm.sh sentry-kotlin-multiplatform
+          make createCoverageReports
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
-
-      - name: Create coverage
-        run: make createCoverageReports
 
       # Kover coverage currently only works for JVM
       - name: Upload coverage to Codecov
