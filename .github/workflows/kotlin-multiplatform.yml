@@ -82,8 +82,8 @@ jobs:
 
       - name: JVM build
         run: |
-          ./gradlew :sentry-kotlin-multiplatform:testDebugUnitTest \ 
-          :sentry-kotlin-multiplatform:testReleaseUnitTest
+          ./gradlew :sentry-kotlin-multiplatform:testDebugUnitTest \
+          :sentry-kotlin-multiplatform:testReleaseUnitTest \
           :sentry-kotlin-multiplatform:publishToMavenLocal \ 
           --no-daemon --stacktrace
         env:
