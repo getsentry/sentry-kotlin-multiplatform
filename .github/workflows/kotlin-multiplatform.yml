@@ -31,25 +31,7 @@ jobs:
 
       - name: Apple build
         run: |
-          ./gradlew :sentry-kotlin-multiplatform:macosX64Test \ 
-          :sentry-kotlin-multiplatform:iosX64Test \ 
-          :sentry-kotlin-multiplatform:watchosX64Test \ 
-          :sentry-kotlin-multiplatform:tvosX64Test \
-          :sentry-kotlin-multiplatform:publishKotlinMultiplatformPublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishIosArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishIosSimulatorArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishIosX64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishMacosX64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishMacosArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishWatchosArm32PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishWatchosArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishWatchosDeviceArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishWatchosSimulatorArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishWatchosX64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishTvosArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishTvosSimulatorArm64PublicationToMavenLocal \
-          :sentry-kotlin-multiplatform:publishTvosX64PublicationToMavenLocal \
-          --no-daemon --stacktrace
+          ./scripts/build-apple.sh sentry-kotlin-multiplatform
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
@@ -82,10 +64,7 @@ jobs:
 
       - name: JVM build
         run: |
-          ./gradlew :sentry-kotlin-multiplatform:testDebugUnitTest \
-          :sentry-kotlin-multiplatform:testReleaseUnitTest \
-          :sentry-kotlin-multiplatform:publishToMavenLocal \ 
-          --no-daemon --stacktrace
+          ./scripts/build-jvm.sh sentry-kotlin-multiplatform
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
@@ -113,7 +92,7 @@ jobs:
 
       - name: DistZip
         run: |
-          ./gradlew :sentry-kotlin-multiplatform:distZip --no-daemon --stacktrace
+          ./scripts/build-distribution.sh sentry-kotlin-multiplatform
 
       - name: Archive packages
         uses: actions/upload-artifact@v3
