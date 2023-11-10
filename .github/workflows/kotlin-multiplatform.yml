@@ -27,8 +27,10 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: corretto
-          cache: gradle
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Apple build
         run: |
@@ -47,8 +49,10 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: corretto
-          cache: gradle
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: JVM build
         run: |
@@ -74,8 +78,10 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: corretto
-          cache: gradle
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: DistZip
         run: |
