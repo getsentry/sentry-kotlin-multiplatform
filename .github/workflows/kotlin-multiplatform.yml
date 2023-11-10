@@ -1,4 +1,4 @@
-name: "sentry-kotlin-multiplatform"
+name: "Lib: sentry-kotlin-multiplatform"
 on:
   push:
     branches:
