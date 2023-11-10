@@ -55,25 +55,25 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
-#
-#  archive-distribution:
-#    runs-on: macos-latest
-#       - uses: actions/checkout@v3
-#
-#       - name: JDK setup
-#         uses: actions/setup-java@v3
-#         with:
-#           java-version: 17
-#           distribution: corretto
-#
-#      - name: DistZip
-#        run: |
-#          ./gradlew distZip --no-daemon --stacktrace
-#
-#      - name: Archive packages
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ${{ github.sha }}
-#          if-no-files-found: error
-#          path: |
-#            ./*/build/distributions/*.zip
+
+  archive-distribution:
+    runs-on: macos-latest
+       - uses: actions/checkout@v3
+
+       - name: JDK setup
+         uses: actions/setup-java@v3
+         with:
+           java-version: 17
+           distribution: corretto
+
+      - name: DistZip
+        run: |
+          ./gradlew distZip --no-daemon --stacktrace
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            ./*/build/distributions/*.zip
