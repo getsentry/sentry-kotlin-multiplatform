@@ -10,6 +10,6 @@ PROJECT_NAME="$1"
 ./gradlew "testDebugUnitTest" \
           "testReleaseUnitTest" \
           "publishAndroidReleasePublicationToMavenLocal" \
-          "publishJvmPublicationToMavenLocal " \
+          "publishJvmPublicationToMavenLocal" \
           "publishKotlinMultiplatformPublicationToMavenLocal" \
           -p "${PROJECT_NAME}" --no-daemon --stacktrace
