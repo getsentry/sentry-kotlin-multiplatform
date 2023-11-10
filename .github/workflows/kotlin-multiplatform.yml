@@ -32,23 +32,9 @@ jobs:
       - name: Apple build
         run: |
           ./scripts/build-apple.sh sentry-kotlin-multiplatform
+          make buildAppleSamples
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
-  build-apple-samples:
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: JDK setup
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: corretto
-
-      - name: Xcode simulator build
-        run: make buildAppleSamples
 
   build-jvm:
     runs-on: ubuntu-latest
