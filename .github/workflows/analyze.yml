@@ -1,0 +1,33 @@
+name: "analyze"
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+
+jobs:
+  cancel-previous-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@01ce38bf961b4e243a6342cbade0dbc8ba3f0432 # pin@0.12.0
+        with:
+          access_token: ${{ github.token }}
+
+  analyze:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: corretto
+
+      - name: Analyze
+        run: ./gradlew analyze detekt

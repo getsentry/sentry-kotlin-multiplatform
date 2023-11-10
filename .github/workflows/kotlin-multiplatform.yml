@@ -21,7 +21,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: JDK setup
         uses: actions/setup-java@v3
@@ -31,17 +31,48 @@ jobs:
 
       - name: Apple build
         run: |
-          ./gradlew macosX64Test iosX64Test watchosX64Test tvosX64Test \
-          publishToMavenLocal \
+          ./gradlew :sentry-kotlin-multiplatform:macosX64Test \ 
+          :sentry-kotlin-multiplatform:iosX64Test \ 
+          :sentry-kotlin-multiplatform:watchosX64Test \ 
+          :sentry-kotlin-multiplatform:tvosX64Test \
+          :sentry-kotlin-multiplatform:publishKotlinMultiplatformPublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishIosArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishIosSimulatorArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishIosX64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishMacosX64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishMacosArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishWatchosArm32PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishWatchosArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishWatchosDeviceArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishWatchosSimulatorArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishWatchosX64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishTvosArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishTvosSimulatorArm64PublicationToMavenLocal \
+          :sentry-kotlin-multiplatform:publishTvosX64PublicationToMavenLocal \
           --no-daemon --stacktrace
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  build-apple-samples:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: corretto
+
+      - name: Xcode simulator build
+        run: make buildAppleSamples
 
   build-jvm:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: JDK setup
         uses: actions/setup-java@v3
@@ -51,10 +82,16 @@ jobs:
 
       - name: JVM build
         run: |
-          ./gradlew build publishToMavenLocal --no-daemon --stacktrace
+          ./gradlew :sentry-kotlin-multiplatform:testDebugUnitTest \ 
+          :sentry-kotlin-multiplatform:testReleaseUnitTest
+          :sentry-kotlin-multiplatform:publishToMavenLocal \ 
+          --no-daemon --stacktrace
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
+
+      - name: Create coverage
+        run: make createCoverageReports
 
       # Kover coverage currently only works for JVM
       - name: Upload coverage to Codecov
@@ -66,7 +103,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: JDK setup
         uses: actions/setup-java@v3
@@ -76,7 +113,7 @@ jobs:
 
       - name: DistZip
         run: |
-          ./gradlew distZip --no-daemon --stacktrace
+          ./gradlew :sentry-kotlin-multiplatform:distZip --no-daemon --stacktrace
 
       - name: Archive packages
         uses: actions/upload-artifact@v3
