@@ -9,6 +9,8 @@
 
 ### Dependencies
 
+- Bump Kotlin version from v1.8.0 to v1.9.20 ([#146](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/146))
+  - v1.9.20 is the first stable version of KMP
 - Bump Java SDK from v6.14.0 to v6.32.0 ([#131](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/131))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#6320)
   - [diff](https://github.com/getsentry/sentry-java/compare/6.14.0...6.32.0)
