@@ -37,6 +37,7 @@ buildProject:
 
 # Build Apple Samples
 buildAppleSamples:
+	./gradlew build -p sentry-samples
 	cd ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp && touch iosApp.xcconfig
 	cd ./sentry-samples/kmp-app-spm/iosApp && touch iosApp.xcconfig
 	cd ./sentry-samples/kmp-app-mvvm-di/iosApp && touch iosApp.xcconfig
