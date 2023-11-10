@@ -102,9 +102,6 @@ kotlin {
         androidUnitTest.dependsOn(commonJvmTest)
         jvmTest.get().dependsOn(commonJvmTest)
 
-        appleTest.languageSettings {
-            optIn("kotlinx.cinterop.ExperimentalForeignApi::class")
-        }
         appleTest.dependencies {
             implementation(Config.TestLibs.ktorClientDarwin)
         }
