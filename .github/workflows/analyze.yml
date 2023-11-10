@@ -30,4 +30,4 @@ jobs:
           distribution: corretto
 
       - name: Analyze
-        run: ./gradlew analyze detekt
+        run: ./gradlew apiCheck detekt
