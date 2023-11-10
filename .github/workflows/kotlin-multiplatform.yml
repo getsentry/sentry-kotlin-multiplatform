@@ -28,6 +28,7 @@ jobs:
         with:
           java-version: 17
           distribution: corretto
+          cache: gradle
 
       - name: Apple build
         run: |
@@ -47,6 +48,7 @@ jobs:
         with:
           java-version: 17
           distribution: corretto
+          cache: gradle
 
       - name: JVM build
         run: |
@@ -73,6 +75,7 @@ jobs:
         with:
           java-version: 17
           distribution: corretto
+          cache: gradle
 
       - name: DistZip
         run: |
