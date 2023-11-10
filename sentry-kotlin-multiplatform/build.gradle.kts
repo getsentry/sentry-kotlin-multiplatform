@@ -31,9 +31,6 @@ android {
         }
     }
 }
-dependencies {
-    implementation("androidx.core:core-ktx:+")
-}
 
 kotlin {
     explicitApi()
