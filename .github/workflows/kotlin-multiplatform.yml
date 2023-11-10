@@ -17,8 +17,40 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-  build-macos:
+  build-apple:
     runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: corretto
+
+      - name: Apple build
+        run: |
+          ./gradlew macosX64Test iosX64Test watchosX64Test tvosX64Test \
+          publishKotlinMultiplatformPublicationToMavenLocal \
+          publishIosArm64PublicationToMavenLocal \
+          publishIosSimulatorArm64PublicationToMavenLocal \
+          publishIosX64PublicationToMavenLocal \
+          publishMacosX64PublicationToMavenLocal \
+          publishMacosArm64PublicationToMavenLocal \
+          publishWatchosArm32PublicationToMavenLocal \
+          publishWatchosArm64PublicationToMavenLocal \
+          publishWatchosSimulatorArm64PublicationToMavenLocal \
+          publishWatchosX64PublicationToMavenLocal \
+          publishTvosArm64PublicationToMavenLocal \
+          publishTvosSimulatorArm64PublicationToMavenLocal \
+          publishTvosX64PublicationToMavenLocal \
+          --no-daemon --stacktrace
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  build-jvm:
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -31,24 +63,32 @@ jobs:
 
       - name: Mac build
         run: |
-          ./gradlew macosX64Test iosX64Test watchosX64Test tvosX64Test \
-          publishKotlinMultiplatformPublicationToMavenLocal \
-          publishIosArm64PublicationToMavenLocal \
-          publishIosSimulatorArm64PublicationToMavenLocal \
-          publishIosX64PublicationToMavenLocal \
-          publishMacosX64PublicationToMavenLocal \
-          publishMacosArm64PublicationToMavenLocal \
-          publishWatchosArm32PublicationToMavenLocal \
-          publishWatchosArm64PublicationToMavenLocal \
-          publishWatchosDeviceArm64PublicationToMavenLocal \
-          publishWatchosSimulatorArm64PublicationToMavenLocal \
-          publishWatchosX64PublicationToMavenLocal \
-          publishTvosArm64PublicationToMavenLocal \
-          publishTvosSimulatorArm64PublicationToMavenLocal \
-          publishTvosX64PublicationToMavenLocal \
-          --no-daemon --stacktrace
+          ./gradlew build publishToMavenLocal --no-daemon --stacktrace
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
+
+  archive-distribution:
+    runs-on: macos-latest
+       - uses: actions/checkout@v3
+
+       - name: JDK setup
+         uses: actions/setup-java@v3
+         with:
+           java-version: 17
+           distribution: corretto
+
+      - name: DistZip
+        run: |
+          ./gradlew distZip --no-daemon --stacktrace
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            ./*/build/distributions/*.zip
 
 #  build:
 #    name: Build Job ${{ matrix.os }}
