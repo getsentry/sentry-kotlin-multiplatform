@@ -49,87 +49,38 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-  build-jvm:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: JDK setup
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: corretto
-
-      - name: Mac build
-        run: |
-          ./gradlew build publishToMavenLocal --no-daemon --stacktrace
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
-
-  archive-distribution:
-    runs-on: macos-latest
-       - uses: actions/checkout@v3
-
-       - name: JDK setup
-         uses: actions/setup-java@v3
-         with:
-           java-version: 17
-           distribution: corretto
-
-      - name: DistZip
-        run: |
-          ./gradlew distZip --no-daemon --stacktrace
-
-      - name: Archive packages
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.sha }}
-          if-no-files-found: error
-          path: |
-            ./*/build/distributions/*.zip
-
-#  build:
-#    name: Build Job ${{ matrix.os }}
-#    runs-on: ${{ matrix.os }}
-#
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        os: [ macos-latest ]
-#        java: [ "11" ]
+#  build-jvm:
+#    runs-on: ubuntu-latest
 #
 #    steps:
-#      - name: Git checkout
-#        uses: actions/checkout@v3
+#      - uses: actions/checkout@v3
 #
-#      - name: "Set up Java: ${{ matrix.java }}"
+#      - name: JDK setup
 #        uses: actions/setup-java@v3
 #        with:
-#          java-version: ${{ matrix.java }}
-#          distribution: "adopt"
+#          java-version: 17
+#          distribution: corretto
 #
-#      - name: Cache Gradle packages
-#        uses: actions/cache@v2
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
-#
-#      # Clean, build
-#      - name: Make all
-#        run: make all
+#      - name: Mac build
+#        run: |
+#          ./gradlew build publishToMavenLocal --no-daemon --stacktrace
 #        env:
 #          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
 #
-#      # We stop gradle at the end to make sure the cache folders
-#      # don't contain any lock files and are free to be cached.
-#      - name: Make stop
-#        run: make stop
+#  archive-distribution:
+#    runs-on: macos-latest
+#       - uses: actions/checkout@v3
+#
+#       - name: JDK setup
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: 17
+#           distribution: corretto
+#
+#      - name: DistZip
+#        run: |
+#          ./gradlew distZip --no-daemon --stacktrace
 #
 #      - name: Archive packages
 #        uses: actions/upload-artifact@v3
@@ -138,8 +89,3 @@ jobs:
 #          if-no-files-found: error
 #          path: |
 #            ./*/build/distributions/*.zip
-#
-#      - name: Upload coverage to Codecov
-#        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # pin@v3
-#        with:
-#          name: sentry-kotlin-multiplatform
