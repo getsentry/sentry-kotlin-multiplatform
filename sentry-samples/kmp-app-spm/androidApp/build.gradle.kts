@@ -47,5 +47,5 @@ configurations {
 }
 
 sentry {
-    autoUploadProguardMapping.set(true)
+    autoUploadProguardMapping.set(false)
 }
