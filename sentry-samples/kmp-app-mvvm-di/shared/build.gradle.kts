@@ -22,8 +22,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":sentry-kotlin-multiplatform"))
-            implementation("io.insert-koin:koin-core:3.4.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+            implementation("io.insert-koin:koin-core:3.5.2-RC1")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
         }
 
         commonTest.dependencies {
@@ -31,7 +31,7 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
         }
     }
 }
@@ -41,20 +41,5 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
-    }
-}
-
-// Workaround for KotlinMetadata tasks failing when using ./gradlew build.
-// However, running this sample on iOS and Android simulators remains unaffected.
-afterEvaluate {
-    afterEvaluate {
-        tasks.configureEach {
-            if (
-                name.startsWith("compile") &&
-                name.endsWith("KotlinMetadata")
-            ) {
-                enabled = false
-            }
-        }
     }
 }
