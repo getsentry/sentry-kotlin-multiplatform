@@ -1,0 +1,32 @@
+comments:
+  UndocumentedPublicClass:
+    active: true
+    includes: "**/commonMain/**"
+  UndocumentedPublicProperty:
+    active: true
+    includes: "**/commonMain/**"
+style:
+  UnnecessaryAbstractClass:
+    active: false
+  ForbiddenComment:
+    active: false
+  UnusedPrivateMember:
+    excludes:
+      - "**/Attachment.kt"
+naming:
+  MatchingDeclarationName:
+    active: false
+complexity:
+  TooManyFunctions:
+    excludes: [
+      "**/SentryKMP.kt",
+      "**/SentryBridge.*",
+      "**/CocoaScopeProvider.kt",
+      "**/Scope.kt",
+      "**/JvmScopeProvider.kt",
+      "**/Breadcrumb.kt",
+    ]
+  LongMethod:
+    excludes:
+      - "**/SentryOptionsExtensions.*"
+    

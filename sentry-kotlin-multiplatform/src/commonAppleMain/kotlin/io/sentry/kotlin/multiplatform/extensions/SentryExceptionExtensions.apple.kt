@@ -7,5 +7,5 @@ internal fun CocoaSentryException.toKmpSentryException() = SentryException(
     type = type,
     value = value,
     module = module,
-    threadId = threadId as Long?
+    threadId = threadId?.longLongValue // longLong represents a 64-bit integer like Kotlin Long
 )

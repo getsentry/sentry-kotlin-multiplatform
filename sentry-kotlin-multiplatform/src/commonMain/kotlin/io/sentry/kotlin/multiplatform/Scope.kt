@@ -4,17 +4,15 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
 /**
- * Scope data to be sent with the event
+ * The Scope holds useful information that should be sent along with the event.
+ * For instance contexts or breadcrumbs are stored on the scope.
  *
- * Different platforms have specific providers.
- *  - JVM: [JvmScopeProvider](io.sentry.kotlin.multiplatform.JvmScopeProvider)
- *  - Cocoa: [CocoaScopeProvider](io.sentry.kotlin.multiplatform.CocoaScopeProvider)
- *
- * @constructor ScopeProvider that holds the Scope's data
+ * Users should not need to implement this interface instead the Scope should be provided by the SDK.
+ * Different platforms have specific scope providers that are used internally:
+ *  - For JVM: [io.sentry.kotlin.multiplatform.JvmScopeProvider]
+ *  - For Cocoa: [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
  */
-public class Scope constructor(private val scope: ScopeProvider) : ScopeProvider by scope
-
-public interface ScopeProvider {
+public interface Scope {
 
     /**
      * Returns the scope's tags

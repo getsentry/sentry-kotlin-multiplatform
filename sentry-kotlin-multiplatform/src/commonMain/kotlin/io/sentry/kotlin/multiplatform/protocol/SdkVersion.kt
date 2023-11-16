@@ -19,7 +19,10 @@ public data class SdkVersion(
     }
 }
 
+/** Describes which native SDK packages are used. */
 public data class Package(
+    /** The name of the package. */
     val name: String,
+    /** The version of the package. */
     val version: String
 )

@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
  * If [appendCausedBy] is `true` then the name, message and stack trace
  * of the [causes][Throwable.cause] will be appended, else causes are ignored.
  */
-public fun Throwable.asNSException(appendCausedBy: Boolean = false): NSException {
+internal fun Throwable.asNSException(appendCausedBy: Boolean = false): NSException {
     val returnAddresses = getFilteredStackTraceAddresses().let { addresses ->
         if (!appendCausedBy) return@let addresses
         addresses.toMutableList().apply {

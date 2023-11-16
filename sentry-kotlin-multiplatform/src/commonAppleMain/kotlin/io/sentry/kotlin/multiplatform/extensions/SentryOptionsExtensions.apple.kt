@@ -37,6 +37,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     enableAutoSessionTracking = options.enableAutoSessionTracking
     maxAttachmentSize = options.maxAttachmentSize.convert()
     maxBreadcrumbs = options.maxBreadcrumbs.convert()
+    options.sampleRate?.let {
+        sampleRate = NSNumber(double = it)
+    }
+    options.tracesSampleRate?.let {
+        tracesSampleRate = NSNumber(double = it)
+    }
     beforeSend = { event ->
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
@@ -72,8 +78,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
 
     beforeBreadcrumb = { cocoaBreadcrumb ->
-        cocoaBreadcrumb?.toKmpBreadcrumb()?.let { options.beforeBreadcrumb?.invoke(it) }
-            ?.toCocoaBreadcrumb()
+        if (options.beforeBreadcrumb == null) {
+            cocoaBreadcrumb
+        } else {
+            cocoaBreadcrumb?.toKmpBreadcrumb()
+                ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+        }
     }
 
     tracesSampler = {
