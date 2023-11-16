@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,9 @@
 		1DBB948028897D4700E79663 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 1DBB947F28897D4700E79663 /* Sentry */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		243652EF29F34FF500FD902A /* sentry.png in Resources */ = {isa = PBXBuildFile; fileRef = 243652EE29F34FF500FD902A /* sentry.png */; };
+		246F167C2B06D9980014B670 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 246F167B2B06D9980014B670 /* Sentry */; };
+		246F167E2B06D9980014B670 /* Sentry-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 246F167D2B06D9980014B670 /* Sentry-Dynamic */; };
+		246F16802B06D9980014B670 /* SentrySwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 246F167F2B06D9980014B670 /* SentrySwiftUI */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +47,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				246F167E2B06D9980014B670 /* Sentry-Dynamic in Frameworks */,
+				246F16802B06D9980014B670 /* SentrySwiftUI in Frameworks */,
 				1DBB948028897D4700E79663 /* Sentry in Frameworks */,
+				246F167C2B06D9980014B670 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +124,9 @@
 			name = iosApp;
 			packageProductDependencies = (
 				1DBB947F28897D4700E79663 /* Sentry */,
+				246F167B2B06D9980014B670 /* Sentry */,
+				246F167D2B06D9980014B670 /* Sentry-Dynamic */,
+				246F167F2B06D9980014B670 /* SentrySwiftUI */,
 			);
 			productName = NSExceptionKtSample;
 			productReference = 7555FF7B242A565900829871 /* iosApp.app */;
@@ -421,7 +430,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
 				kind = exactVersion;
-				version = 8.4.0;
+				version = 8.15.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -431,6 +440,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1DBB947E28897D4700E79663 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
+		};
+		246F167B2B06D9980014B670 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1DBB947E28897D4700E79663 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+		246F167D2B06D9980014B670 /* Sentry-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1DBB947E28897D4700E79663 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = "Sentry-Dynamic";
+		};
+		246F167F2B06D9980014B670 /* SentrySwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1DBB947E28897D4700E79663 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = SentrySwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

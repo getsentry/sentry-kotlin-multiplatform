@@ -14,7 +14,6 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import NSException.Sentry.NSExceptionKt_SentryCrashStackCursorCleanup
 import NSException.Sentry.NSExceptionKt_SentryCrashStackCursorFromNSException
 import NSException.Sentry.NSExceptionKt_SentryMechanismSetNotHandled
 import NSException.Sentry.NSExceptionKt_SentryThreadSetCrashed
@@ -116,9 +115,7 @@ private fun NSException.asSentryException(
     }
     stacktrace = threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
         val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)
-        val stacktrace = stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
-        NSExceptionKt_SentryCrashStackCursorCleanup(cursor)
-        stacktrace
+        stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
     }
 }
 
