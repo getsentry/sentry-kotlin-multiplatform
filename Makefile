@@ -40,13 +40,12 @@ buildAppleSamples:
 	cd ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp && touch iosApp.xcconfig
 	cd ./sentry-samples/kmp-app-spm/iosApp && touch iosApp.xcconfig
 	cd ./sentry-samples/kmp-app-mvvm-di/iosApp && touch iosApp.xcconfig
-	sudo xcode-select --switch /Applications/Xcode.app && /usr/bin/xcodebuild -version
+	sudo xcode-select --switch /Applications/Xcode_15.0.1.app && /usr/bin/xcodebuild -version
 	./gradlew ":sentry-samples:kmp-app-cocoapods:shared:podInstall"
 	cd ./sentry-samples/kmp-app-cocoapods/iosApp; pod install
 	xcodebuild -workspace ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp.xcworkspace -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
 	xcodebuild -project ./sentry-samples/kmp-app-spm/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
 	xcodebuild -project ./sentry-samples/kmp-app-mvvm-di/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
-
 
 # Build all targets, run tests and checks api
 compile: checkApi detekt buildProject buildAppleSamples
