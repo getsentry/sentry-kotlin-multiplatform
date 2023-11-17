@@ -173,12 +173,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         fromKlib(project.name, "tvosSimulatorArm64", version)
     }
-
-    // make other distZip tasks run together with the main distZip
-    val platformDists = project.tasks.filter { task ->
-        task.name.matches(Consts.taskRegex)
-    }.toTypedArray()
-    project.tasks.getByName("distZip").finalizedBy(*platformDists)
 }
 
 private fun CopySpec.fromKlib(projectName: String, target: String, version: String) {

@@ -14,6 +14,17 @@ Pod::Spec.new do |spec|
     spec.watchos.deployment_target = '4.0'
     spec.dependency 'Sentry', '8.15.2'
                 
+    if !Dir.exist?('build/cocoapods/framework/sentry_kotlin_multiplatform.framework') || Dir.empty?('build/cocoapods/framework/sentry_kotlin_multiplatform.framework')
+        raise "
+
+        Kotlin framework 'sentry_kotlin_multiplatform' doesn't exist yet, so a proper Xcode project can't be generated.
+        'pod install' should be executed after running ':generateDummyFramework' Gradle task:
+
+            ./gradlew :sentry-kotlin-multiplatform:generateDummyFramework
+
+        Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
+    end
+                
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sentry-kotlin-multiplatform',
         'PRODUCT_MODULE_NAME' => 'sentry_kotlin_multiplatform',

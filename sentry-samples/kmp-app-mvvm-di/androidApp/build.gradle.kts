@@ -41,7 +41,7 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0-dev-k1.8.0-33c0ad36f83"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
 }
 
@@ -57,7 +57,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.navigation:navigation-runtime:2.5.3")
     implementation("io.insert-koin:koin-android:3.4.0")
-    implementation("androidx.compose.compiler:compiler:1.4.0-dev-k1.8.0-33c0ad36f83")
+    implementation("androidx.compose.compiler:compiler:1.5.4")
     implementation("androidx.compose.ui:ui:1.5.0-alpha02")
     implementation("androidx.compose.ui:ui-tooling:1.5.0-alpha02")
     implementation("androidx.compose.foundation:foundation:1.5.0-alpha02")
