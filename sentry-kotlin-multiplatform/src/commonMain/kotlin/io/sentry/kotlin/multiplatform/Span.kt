@@ -76,3 +76,30 @@ public interface Span {
      */
     public fun getData(key: String): Any?
 }
+
+public expect interface TestSpan {
+    /**
+     * Starts a child Span.
+     *
+     * @param operation - new span operation name
+     * @return a new transaction span
+     */
+    public fun startChild(operation: String): TestSpan
+
+    /**
+     * Starts a child Span.
+     *
+     * @param operation - new span operation name
+     * @param description - new span description name
+     * @return a new transaction span
+     */
+    public fun startChild(operation: String, description: String?): TestSpan
+
+    public fun finish()
+}
+
+public expect class SpanImpl() : TestSpan {
+    override fun startChild(operation: String): TestSpan
+    override fun startChild(operation: String, description: String?): TestSpan
+    override fun finish()
+}
