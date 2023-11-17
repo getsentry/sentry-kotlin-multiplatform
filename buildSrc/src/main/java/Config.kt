@@ -1,7 +1,7 @@
 object Config {
     val agpVersion = "7.4.2"
-    val kotlinVersion = "1.8.0"
-    val composeVersion = "1.3.1-rc01"
+    val kotlinVersion = "1.9.20"
+    val composeVersion = "1.5.10"
     val gradleMavenPublishPluginVersion = "0.18.0"
 
     val multiplatform = "multiplatform"
@@ -48,10 +48,10 @@ object Config {
         val kotlinCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0-RC"
         val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
 
-        val ktorClientCore = "io.ktor:ktor-client-core:2.3.0"
-        val ktorClientSerialization = "io.ktor:ktor-client-serialization:2.3.0"
-        val ktorClientOkHttp = "io.ktor:ktor-client-okhttp:2.3.0"
-        val ktorClientDarwin = "io.ktor:ktor-client-darwin:2.3.0"
+        val ktorClientCore = "io.ktor:ktor-client-core:2.3.6"
+        val ktorClientSerialization = "io.ktor:ktor-client-serialization:2.3.6"
+        val ktorClientOkHttp = "io.ktor:ktor-client-okhttp:2.3.6"
+        val ktorClientDarwin = "io.ktor:ktor-client-darwin:2.3.6"
 
         val roboelectric = "org.robolectric:robolectric:4.9"
         val junitKtx = "androidx.test.ext:junit-ktx:1.1.5"

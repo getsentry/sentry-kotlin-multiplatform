@@ -45,6 +45,11 @@ subprojects {
         }
 
         afterEvaluate {
+            val platformDists = project.tasks.filter { task ->
+                task.name.matches(Regex("(.*)DistZip"))
+            }.toTypedArray()
+            project.tasks.getByName("distZip").finalizedBy(*platformDists)
+
             apply<MavenPublishPlugin>()
 
             configure<MavenPublishPluginExtension> {
