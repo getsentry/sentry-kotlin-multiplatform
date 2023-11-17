@@ -27,11 +27,11 @@ internal expect object SentryBridge {
 
     fun setUser(user: User?)
 
-    fun startTransaction(name: String, operation: String): Span
+    fun startTransaction(name: String, operation: String): ISpan
 
-    fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span
+    fun startTransaction(name: String, operation: String, bindToScope: Boolean): ISpan
 
-    fun getSpan(): Span?
+    fun getSpan(): ISpan?
 
     fun close()
 }

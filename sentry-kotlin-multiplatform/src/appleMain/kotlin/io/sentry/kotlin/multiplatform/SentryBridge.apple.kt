@@ -69,19 +69,19 @@ internal actual object SentryBridge {
         SentrySDK.setUser(user?.toCocoaUser())
     }
 
-    actual fun startTransaction(name: String, operation: String): Span {
+    actual fun startTransaction(name: String, operation: String): ISpan {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation)
-        return CocoaSpanProvider(cocoaSpan)
+        return Span(cocoaSpan)
     }
 
-    actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
+    actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): ISpan {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation, bindToScope)
-        return CocoaSpanProvider(cocoaSpan)
+        return Span(cocoaSpan)
     }
 
-    actual fun getSpan(): Span? {
+    actual fun getSpan(): ISpan? {
         val cocoaSpan = SentrySDK.span
-        return cocoaSpan?.let { CocoaSpanProvider(it) }
+        return Span(cocoaSpan)
     }
 
     actual fun close() {

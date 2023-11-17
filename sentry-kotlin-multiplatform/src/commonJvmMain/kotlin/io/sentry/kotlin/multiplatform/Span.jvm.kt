@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-public actual typealias TestSpan = io.sentry.ISpan
+public actual typealias ISpan = io.sentry.ISpan
 
-public actual typealias SpanImpl = io.sentry.Span
-d
+@Suppress("NO_ACTUAL_CLASS_MEMBER_FOR_EXPECTED_CLASS")
+public actual typealias Span = io.sentry.Span

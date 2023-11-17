@@ -1,15 +1,13 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.protocol.SpanId
-
-public interface Span {
+public expect interface ISpan {
     /**
      * Starts a child Span.
      *
      * @param operation - new span operation name
      * @return a new transaction span
      */
-    public fun startChild(operation: String): Span
+    public fun startChild(operation: String): ISpan
 
     /**
      * Starts a child Span.
@@ -18,7 +16,7 @@ public interface Span {
      * @param description - new span description name
      * @return a new transaction span
      */
-    public fun startChild(operation: String, description: String?): Span
+    public fun startChild(operation: String, description: String?): ISpan
 
     /** Sets span timestamp marking this span as finished.  */
     public fun finish()
@@ -28,38 +26,57 @@ public interface Span {
      *
      * @param status - the status
      */
-    public fun finish(status: SpanStatus)
-
-    /** The span operation. */
-    public var operation: String
-
-    /** The span description. */
-    public var description: String?
-
-    /** The span status. */
-    public var status: SpanStatus?
-
-    /** The span spanId. */
-    public val spanId: SpanId
-
-    /** The span parentSpanId. */
-    public val parentSpanId: SpanId?
+    public fun finish(status: SpanStatus2?)
 
     /**
-     * Sets the tag on span or transaction.
+     * Sets span timestamp marking this span as finished.
      *
-     * @param key the tag key
-     * @param value the tag value
+     * @param status - the status
+     * @param timestamp - the end timestamp
      */
-    public fun setTag(key: String, value: String)
-    public fun getTag(key: String): String?
+    public fun finish(status: SpanStatus2?, timestamp: SentryDate?)
 
     /**
-     * Returns if span has finished.
+     * Sets span operation.
      *
-     * @return if span has finished.
+     * @param operation - the operation
      */
-    public val isFinished: Boolean
+    public fun setOperation(operation: String)
+
+    /**
+     * Returns the span operation.
+     *
+     * @return the operation
+     */
+    public fun getOperation(): String
+
+    /**
+     * Sets span description.
+     *
+     * @param description - the description.
+     */
+    public fun setDescription(description: String?)
+
+    /**
+     * Returns the span description.
+     *
+     * @return the description
+     */
+    public fun getDescription(): String?
+
+    /**
+     * Sets span status.
+     *
+     * @param status - the status.
+     */
+    public fun setStatus(status: SpanStatus2?)
+
+    /**
+     * Returns the span status
+     *
+     * @return the status
+     */
+    public fun getStatus(): SpanStatus2?
 
     /**
      * Sets extra data on span or transaction.
@@ -75,16 +92,23 @@ public interface Span {
      * @return the data
      */
     public fun getData(key: String): Any?
+
+    /**
+     * Returns if span has finished.
+     *
+     * @return if span has finished.
+     */
+    public fun isFinished(): Boolean
 }
 
-public expect interface TestSpan {
+public expect class Span internal constructor() : ISpan {
     /**
      * Starts a child Span.
      *
      * @param operation - new span operation name
      * @return a new transaction span
      */
-    public fun startChild(operation: String): TestSpan
+    public override fun startChild(operation: String): ISpan
 
     /**
      * Starts a child Span.
@@ -93,13 +117,87 @@ public expect interface TestSpan {
      * @param description - new span description name
      * @return a new transaction span
      */
-    public fun startChild(operation: String, description: String?): TestSpan
+    public override fun startChild(operation: String, description: String?): ISpan
 
-    public fun finish()
-}
+    /** Sets span timestamp marking this span as finished.  */
+    public override fun finish()
 
-public expect class SpanImpl() : TestSpan {
-    override fun startChild(operation: String): TestSpan
-    override fun startChild(operation: String, description: String?): TestSpan
-    override fun finish()
+    /**
+     * Sets span timestamp marking this span as finished.
+     *
+     * @param status - the status
+     */
+    public override fun finish(status: SpanStatus2?)
+
+    /**
+     * Sets span timestamp marking this span as finished.
+     *
+     * @param status - the status
+     * @param timestamp - the end timestamp
+     */
+    public override fun finish(status: SpanStatus2?, timestamp: SentryDate?)
+
+    /**
+     * Sets span operation.
+     *
+     * @param operation - the operation
+     */
+    public override fun setOperation(operation: String)
+
+    /**
+     * Returns the span operation.
+     *
+     * @return the operation
+     */
+    public override fun getOperation(): String
+
+    /**
+     * Sets span description.
+     *
+     * @param description - the description.
+     */
+    public override fun setDescription(description: String?)
+
+    /**
+     * Returns the span description.
+     *
+     * @return the description
+     */
+    public override fun getDescription(): String?
+
+    /**
+     * Sets span status.
+     *
+     * @param status - the status.
+     */
+    public override fun setStatus(status: SpanStatus2?)
+
+    /**
+     * Returns the span status
+     *
+     * @return the status
+     */
+    public override fun getStatus(): SpanStatus2?
+
+    /**
+     * Sets extra data on span or transaction.
+     *
+     * @param key the data key
+     * @param value the data value
+     */
+    public override fun setData(key: String, value: Any)
+
+    /**
+     * Returns extra data from span or transaction.
+     *
+     * @return the data
+     */
+    public override fun getData(key: String): Any?
+
+    /**
+     * Returns if span has finished.
+     *
+     * @return if span has finished.
+     */
+    public override fun isFinished(): Boolean
 }
