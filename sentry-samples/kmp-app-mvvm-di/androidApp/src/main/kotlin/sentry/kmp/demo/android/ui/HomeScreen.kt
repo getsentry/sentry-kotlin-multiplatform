@@ -23,61 +23,43 @@ import sentry.kmp.demo.models.HomeViewModel
 
 @Composable
 fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
-    var showDialog by remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
+  var showDialog by remember { mutableStateOf(false) }
+  var dialogMessage by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Center
-    ) {
+  Column(
+      modifier = Modifier.fillMaxSize().padding(16.dp),
+      horizontalAlignment = Alignment.Start,
+      verticalArrangement = Arrangement.Center) {
         Text(
             text = "Welcome!",
             style = MaterialTheme.typography.h4,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+            modifier = Modifier.padding(bottom = 16.dp))
         Text(
             text = homeViewModel.homeText,
             style = MaterialTheme.typography.body1,
             fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+            modifier = Modifier.padding(bottom = 16.dp))
         Button(
             onClick = {
-                homeViewModel.updateProfileWithErr()
-                dialogMessage = "An error occurred during profile update"
-                showDialog = true
+              homeViewModel.updateProfileWithErr()
+              dialogMessage = "An error occurred during profile update"
+              showDialog = true
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Update Profile (error)")
-        }
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+              Text("Update Profile (error)")
+            }
         Button(
             onClick = { navController.popBackStack() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Log Out")
-        }
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+              Text("Log Out")
+            }
         if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("Error") },
-                text = { Text(dialogMessage) },
-                confirmButton = {
-                    Button(
-                        onClick = { showDialog = false }
-                    ) {
-                        Text("OK")
-                    }
-                }
-            )
+          AlertDialog(
+              onDismissRequest = { showDialog = false },
+              title = { Text("Error") },
+              text = { Text(dialogMessage) },
+              confirmButton = { Button(onClick = { showDialog = false }) { Text("OK") } })
         }
-    }
+      }
 }

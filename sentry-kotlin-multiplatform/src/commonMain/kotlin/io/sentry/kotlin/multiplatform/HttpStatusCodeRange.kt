@@ -11,17 +11,17 @@ package io.sentry.kotlin.multiplatform
  */
 public data class HttpStatusCodeRange(val min: Int = DEFAULT_MIN, val max: Int = DEFAULT_MAX) {
 
-    public constructor(statusCode: Int) : this(statusCode, statusCode)
+  public constructor(statusCode: Int) : this(statusCode, statusCode)
 
-    public fun isInRange(statusCode: Int): Boolean {
-        return statusCode in min..max
-    }
+  public fun isInRange(statusCode: Int): Boolean {
+    return statusCode in min..max
+  }
 
-    public companion object {
-        /** The default min status code of the range. */
-        public const val DEFAULT_MIN: Int = 500
+  public companion object {
+    /** The default min status code of the range. */
+    public const val DEFAULT_MIN: Int = 500
 
-        /** The default max status code of the range. */
-        public const val DEFAULT_MAX: Int = 599
-    }
+    /** The default max status code of the range. */
+    public const val DEFAULT_MAX: Int = 599
+  }
 }

@@ -9,17 +9,10 @@ import sentry.kmp.demo.models.HomeViewModel
 
 @Composable
 fun MyApp(authenticationViewModel: AuthenticationViewModel, homeViewModel: HomeViewModel) {
-    val navController = rememberNavController()
+  val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-        composable("login") {
-            LoginScreen(navController, authenticationViewModel)
-        }
-        composable("home") {
-            HomeScreen(navController, homeViewModel)
-        }
-    }
+  NavHost(navController = navController, startDestination = "login") {
+    composable("login") { LoginScreen(navController, authenticationViewModel) }
+    composable("home") { HomeScreen(navController, homeViewModel) }
+  }
 }

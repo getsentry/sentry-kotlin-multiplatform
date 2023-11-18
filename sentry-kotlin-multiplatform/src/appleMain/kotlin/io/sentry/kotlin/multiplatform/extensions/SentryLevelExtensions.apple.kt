@@ -2,11 +2,9 @@
 
 package io.sentry.kotlin.multiplatform.extensions
 
-import io.sentry.kotlin.multiplatform.SentryLevel
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
-import kotlinx.cinterop.convert
 import cocoapods.Sentry.SentryLevel as CocoaSentryLevel
+import io.sentry.kotlin.multiplatform.SentryLevel
+import kotlinx.cinterop.convert
 
 internal fun SentryLevel.toCocoaSentryLevel() = this.toInt().convert<CocoaSentryLevel>()
 

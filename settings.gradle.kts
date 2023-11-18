@@ -1,20 +1,20 @@
 pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+  repositories {
+    google()
+    gradlePluginPortal()
+    mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+  }
 }
 
 dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        google()
-        maven("https://androidx.dev/storage/compose-compiler/repository/")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
-    }
+  repositories {
+    mavenCentral()
+    mavenLocal()
+    google()
+    maven("https://androidx.dev/storage/compose-compiler/repository/")
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+  }
 }
 
 rootProject.name = "sentry-kotlin-multiplatform-sdk"
@@ -28,7 +28,9 @@ Simple KMP App with targets:
    - JVM Desktop with Jetpack Compose
 */
 include("sentry-samples:kmp-app-spm:shared")
+
 include("sentry-samples:kmp-app-spm:androidApp")
+
 include("sentry-samples:kmp-app-spm:desktopApp")
 
 /*
@@ -38,7 +40,9 @@ Simple KMP App with targets:
    - JVM Desktop with Jetpack Compose
 */
 include("sentry-samples:kmp-app-cocoapods:shared")
+
 include("sentry-samples:kmp-app-cocoapods:androidApp")
+
 include("sentry-samples:kmp-app-cocoapods:desktopApp")
 
 /*
@@ -47,4 +51,5 @@ KMP App with MVVM and Dependency Injection with Koin:
    - iOS with SwiftUI and SPM
 */
 include("sentry-samples:kmp-app-mvvm-di:shared")
+
 include("sentry-samples:kmp-app-mvvm-di:androidApp")

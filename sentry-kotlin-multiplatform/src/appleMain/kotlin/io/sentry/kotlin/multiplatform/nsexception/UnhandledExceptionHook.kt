@@ -18,19 +18,20 @@ import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.concurrent.freeze
 
 /**
- * Wraps the unhandled exception hook such that the provided [hook] is invoked
- * before the currently set unhandled exception hook is invoked.
- * Note: once the unhandled exception hook returns the program will be terminated.
+ * Wraps the unhandled exception hook such that the provided [hook] is invoked before the currently
+ * set unhandled exception hook is invoked. Note: once the unhandled exception hook returns the
+ * program will be terminated.
+ *
  * @see setUnhandledExceptionHook
  * @see terminateWithUnhandledException
  */
 @OptIn(ExperimentalNativeApi::class)
 internal fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
-    val prevHook = kotlin.concurrent.AtomicReference<ReportUnhandledExceptionHook?>(null)
-    val wrappedHook: ReportUnhandledExceptionHook = {
-        hook(it)
-        prevHook.value?.invoke(it)
-        terminateWithUnhandledException(it)
-    }
-    prevHook.value = setUnhandledExceptionHook(wrappedHook.freeze())
+  val prevHook = kotlin.concurrent.AtomicReference<ReportUnhandledExceptionHook?>(null)
+  val wrappedHook: ReportUnhandledExceptionHook = {
+    hook(it)
+    prevHook.value?.invoke(it)
+    terminateWithUnhandledException(it)
+  }
+  prevHook.value = setUnhandledExceptionHook(wrappedHook.freeze())
 }

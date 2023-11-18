@@ -7,31 +7,31 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect object SentryBridge {
 
-    fun init(context: Context, configuration: OptionsConfiguration)
+  fun init(context: Context, configuration: OptionsConfiguration)
 
-    fun init(configuration: OptionsConfiguration)
+  fun init(configuration: OptionsConfiguration)
 
-    fun captureMessage(message: String): SentryId
+  fun captureMessage(message: String): SentryId
 
-    fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId
+  fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId
 
-    fun captureException(throwable: Throwable): SentryId
+  fun captureException(throwable: Throwable): SentryId
 
-    fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId
+  fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId
 
-    fun configureScope(scopeCallback: ScopeCallback)
+  fun configureScope(scopeCallback: ScopeCallback)
 
-    fun captureUserFeedback(userFeedback: UserFeedback)
+  fun captureUserFeedback(userFeedback: UserFeedback)
 
-    fun addBreadcrumb(breadcrumb: Breadcrumb)
+  fun addBreadcrumb(breadcrumb: Breadcrumb)
 
-    fun setUser(user: User?)
+  fun setUser(user: User?)
 
-    fun startTransaction(name: String, operation: String): ISpan
+  fun startTransaction(name: String, operation: String): ISpan
 
-    fun startTransaction(name: String, operation: String, bindToScope: Boolean): ISpan
+  fun startTransaction(name: String, operation: String, bindToScope: Boolean): ISpan
 
-    fun getSpan(): ISpan?
+  fun getSpan(): ISpan?
 
-    fun close()
+  fun close()
 }

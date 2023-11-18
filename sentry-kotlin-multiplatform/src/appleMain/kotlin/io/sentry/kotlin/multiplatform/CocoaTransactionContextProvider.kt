@@ -8,15 +8,15 @@ import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
 
 internal class CocoaTransactionContextProvider(cocoaTransactionContext: CocoaTransactionContext) :
     TransactionContext {
-    override val name: String = cocoaTransactionContext.name
-    override val transactionNameSource: TransactionNameSource =
-        cocoaTransactionContext.nameSource.toKmpTransactionNameSource()
-    override val sampled: Boolean = cocoaTransactionContext.sampled().toBoolean()
-    override val parentSampled: Boolean = cocoaTransactionContext.parentSampled().toBoolean()
-    override val operation: String = cocoaTransactionContext.operation
-    override val traceId: SentryId = SentryId(cocoaTransactionContext.traceId.toString())
-    override val spanId: SpanId = SpanId(cocoaTransactionContext.spanId.toString())
-    override val parentSpanId: SpanId? =
-        cocoaTransactionContext.parentSpanId?.let { SpanId(it.toString()) }
-    override val description: String? = cocoaTransactionContext.spanDescription
+  override val name: String = cocoaTransactionContext.name
+  override val transactionNameSource: TransactionNameSource =
+      cocoaTransactionContext.nameSource.toKmpTransactionNameSource()
+  override val sampled: Boolean = cocoaTransactionContext.sampled().toBoolean()
+  override val parentSampled: Boolean = cocoaTransactionContext.parentSampled().toBoolean()
+  override val operation: String = cocoaTransactionContext.operation
+  override val traceId: SentryId = SentryId(cocoaTransactionContext.traceId.toString())
+  override val spanId: SpanId = SpanId(cocoaTransactionContext.spanId.toString())
+  override val parentSpanId: SpanId? =
+      cocoaTransactionContext.parentSpanId?.let { SpanId(it.toString()) }
+  override val description: String? = cocoaTransactionContext.spanDescription
 }

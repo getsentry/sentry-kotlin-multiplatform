@@ -6,47 +6,47 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BreadcrumbConversionTest {
-    private lateinit var converter: BreadcrumbTestConverter
-    private lateinit var breadcrumb: Breadcrumb
+  private lateinit var converter: BreadcrumbTestConverter
+  private lateinit var breadcrumb: Breadcrumb
 
-    @BeforeTest
-    fun setup() {
-        breadcrumb = Breadcrumb()
-        converter = BreadcrumbTestConverter(breadcrumb)
-    }
+  @BeforeTest
+  fun setup() {
+    breadcrumb = Breadcrumb()
+    converter = BreadcrumbTestConverter(breadcrumb)
+  }
 
-    @Test
-    fun `setData and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.setData("key", "value")
+  @Test
+  fun `setData and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
+    breadcrumb.setData("key", "value")
 
-        assertEquals(mapOf("key" to "value"), converter.getData() as Map<String, Any>)
-    }
+    assertEquals(mapOf("key" to "value"), converter.getData() as Map<String, Any>)
+  }
 
-    @Test
-    fun `setLevel and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.level = SentryLevel.ERROR
+  @Test
+  fun `setLevel and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
+    breadcrumb.level = SentryLevel.ERROR
 
-        assertEquals(SentryLevel.ERROR, converter.getLevel())
-    }
+    assertEquals(SentryLevel.ERROR, converter.getLevel())
+  }
 
-    @Test
-    fun `setMessage and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.message = "TestMessage"
+  @Test
+  fun `setMessage and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
+    breadcrumb.message = "TestMessage"
 
-        assertEquals("TestMessage", converter.getMessage())
-    }
+    assertEquals("TestMessage", converter.getMessage())
+  }
 
-    @Test
-    fun `setType and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.type = "TestType"
+  @Test
+  fun `setType and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
+    breadcrumb.type = "TestType"
 
-        assertEquals("TestType", converter.getType())
-    }
+    assertEquals("TestType", converter.getType())
+  }
 
-    @Test
-    fun `setCategory and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
-        breadcrumb.category = "TestCategory"
+  @Test
+  fun `setCategory and convert SentryBreadcrumb to Platform Breadcrumb has proper values`() {
+    breadcrumb.category = "TestCategory"
 
-        assertEquals("TestCategory", converter.getCategory())
-    }
+    assertEquals("TestCategory", converter.getCategory())
+  }
 }

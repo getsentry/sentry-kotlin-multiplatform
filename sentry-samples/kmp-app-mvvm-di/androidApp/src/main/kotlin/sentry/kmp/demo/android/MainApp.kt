@@ -8,15 +8,11 @@ import sentry.kmp.demo.sentry.initializeSentry
 
 class MainApp : Application() {
 
-    override fun onCreate() {
-        super.onCreate()
+  override fun onCreate() {
+    super.onCreate()
 
-        initializeSentry()
+    initializeSentry()
 
-        initKoin(
-            module {
-                single<Context> { this@MainApp }
-            }
-        )
-    }
+    initKoin(module { single<Context> { this@MainApp } })
+  }
 }

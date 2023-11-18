@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
-import kotlinx.cinterop.UnsafeNumber
 import platform.darwin.NSInteger
 
 /*
@@ -17,9 +16,10 @@ typedef NS_ENUM(NSInteger, SentryTransactionNameSource) {
 };
  */
 
-@OptIn(UnsafeNumber::class)
+
 internal fun NSInteger.toKmpTransactionNameSource(): TransactionNameSource {
-    val transactionNameSource = when (this.toInt()) {
+  val transactionNameSource =
+      when (this) {
         0 -> TransactionNameSource.CUSTOM
         1 -> TransactionNameSource.URL
         2 -> TransactionNameSource.ROUTE
@@ -27,6 +27,6 @@ internal fun NSInteger.toKmpTransactionNameSource(): TransactionNameSource {
         4 -> TransactionNameSource.COMPONENT
         5 -> TransactionNameSource.TASK
         else -> TransactionNameSource.CUSTOM
-    }
-    return transactionNameSource
+      }
+  return transactionNameSource
 }

@@ -11,237 +11,231 @@ import kotlin.test.assertTrue
 /** Tests that verify if the beforeSend hook correctly modifies events */
 class BeforeSendTest {
 
-    @Test
-    fun `beforeSend drops event`() {
-        val options = SentryOptions()
-        options.beforeSend = {
-            null
-        }
+  @Test
+  fun `beforeSend drops event`() {
+    val options = SentryOptions()
+    options.beforeSend = { null }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        assertEquals(null, event)
+    assertEquals(null, event)
+  }
+
+  @Test
+  fun `beforeSend modifies message`() {
+    val expected = Message("test")
+
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.message = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies message`() {
-        val expected = Message("test")
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.message = expected
-            it
-        }
+    assertEquals(expected, event?.message)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies logger`() {
+    val expected = "test"
 
-        assertEquals(expected, event?.message)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.logger = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies logger`() {
-        val expected = "test"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.logger = expected
-            it
-        }
+    assertEquals(expected, event?.logger)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies level`() {
+    val expected = SentryLevel.DEBUG
 
-        assertEquals(expected, event?.logger)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.level = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies level`() {
-        val expected = SentryLevel.DEBUG
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.level = expected
-            it
-        }
+    assertEquals(expected, event?.level)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies fingerprint`() {
+    val expected = mutableListOf("test")
 
-        assertEquals(expected, event?.level)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.fingerprint = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies fingerprint`() {
-        val expected = mutableListOf("test")
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.fingerprint = expected
-            it
-        }
+    assertEquals(expected, event?.fingerprint)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies release`() {
+    val expected = "test"
 
-        assertEquals(expected, event?.fingerprint)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.release = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies release`() {
-        val expected = "test"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.release = expected
-            it
-        }
+    assertEquals(expected, event?.release)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies environment`() {
+    val expected = "test"
 
-        assertEquals(expected, event?.release)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.environment = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies environment`() {
-        val expected = "test"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.environment = expected
-            it
-        }
+    assertEquals(expected, event?.environment)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies platform`() {
+    val expected = "test"
 
-        assertEquals(expected, event?.environment)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.platform = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies platform`() {
-        val expected = "test"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.platform = expected
-            it
+    assertEquals(expected, event?.platform)
+  }
+
+  @Test
+  fun `beforeSend modifies user`() {
+    val expected =
+        User().apply {
+          id = "test"
+          username = "username"
+          email = "email"
         }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
-
-        assertEquals(expected, event?.platform)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.user = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies user`() {
-        val expected = User().apply {
-            id = "test"
-            username = "username"
-            email = "email"
-        }
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.user = expected
-            it
-        }
+    assertEquals(expected, event?.user)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies serverName`() {
+    val expected = "test"
 
-        assertEquals(expected, event?.user)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.serverName = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies serverName`() {
-        val expected = "test"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.serverName = expected
-            it
-        }
+    assertEquals(expected, event?.serverName)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies dist`() {
+    val expected = "test"
 
-        assertEquals(expected, event?.serverName)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.dist = expected
+      it
     }
 
-    @Test
-    fun `beforeSend modifies dist`() {
-        val expected = "test"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.dist = expected
-            it
-        }
+    assertEquals(expected, event?.dist)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies breadcrumbs`() {
+    val expected = Breadcrumb.debug("test breadcrumb")
 
-        assertEquals(expected, event?.dist)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.addBreadcrumb(expected)
+      it
     }
 
-    @Test
-    fun `beforeSend modifies breadcrumbs`() {
-        val expected = Breadcrumb.debug("test breadcrumb")
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.addBreadcrumb(expected)
-            it
-        }
+    assertTrue(event?.breadcrumbs?.contains(expected) ?: false)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
+  @Test
+  fun `beforeSend modifies tags`() {
+    val expectedKey = "key"
+    val expectedValue = "value"
 
-        assertTrue(event?.breadcrumbs?.contains(expected) ?: false)
+    val options = SentryOptions()
+    options.beforeSend = {
+      it.setTag(expectedKey, expectedValue)
+      it
     }
 
-    @Test
-    fun `beforeSend modifies tags`() {
-        val expectedKey = "key"
-        val expectedValue = "value"
+    val event = options.beforeSend?.invoke(SentryEvent())
 
-        val options = SentryOptions()
-        options.beforeSend = {
-            it.setTag(expectedKey, expectedValue)
-            it
-        }
+    assertTrue(event?.tags?.containsKey(expectedKey) ?: false)
+    assertEquals(event?.tags?.get(expectedKey), expectedValue)
+  }
 
-        val event = options.beforeSend?.invoke(SentryEvent())
-
-        assertTrue(event?.tags?.containsKey(expectedKey) ?: false)
-        assertEquals(event?.tags?.get(expectedKey), expectedValue)
+  @Test
+  fun `beforeSend receives contexts`() {
+    var contexts: Map<String, Any>? = mapOf()
+    val options = SentryOptions()
+    options.beforeSend = {
+      contexts = it.contexts
+      it
     }
 
-    @Test
-    fun `beforeSend receives contexts`() {
-        var contexts: Map<String, Any>? = mapOf()
-        val options = SentryOptions()
-        options.beforeSend = {
-            contexts = it.contexts
-            it
-        }
+    val event =
+        options.beforeSend?.invoke(SentryEvent().apply { contexts = mapOf("test" to "test") })
 
-        val event = options.beforeSend?.invoke(
-            SentryEvent().apply {
-                contexts = mapOf("test" to "test")
-            }
-        )
+    assertEquals(contexts, event?.contexts)
+  }
 
-        assertEquals(contexts, event?.contexts)
+  @Test
+  fun `beforeSend modifies exceptions`() {
+    var exceptions: List<SentryException>? = listOf()
+    val options = SentryOptions()
+    options.beforeSend = {
+      exceptions = it.exceptions
+      it
     }
 
-    @Test
-    fun `beforeSend modifies exceptions`() {
-        var exceptions: List<SentryException>? = listOf()
-        val options = SentryOptions()
-        options.beforeSend = {
-            exceptions = it.exceptions
-            it
-        }
+    val event =
+        options.beforeSend?.invoke(
+            SentryEvent().apply { exceptions = listOf(SentryException("test")) })
 
-        val event = options.beforeSend?.invoke(
-            SentryEvent().apply {
-                exceptions = listOf(SentryException("test"))
-            }
-        )
-
-        assertEquals(exceptions, event?.exceptions)
-    }
+    assertEquals(exceptions, event?.exceptions)
+  }
 }

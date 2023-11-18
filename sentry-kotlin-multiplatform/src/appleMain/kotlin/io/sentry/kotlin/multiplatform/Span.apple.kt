@@ -1,243 +1,145 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform
 
+import cocoapods.Sentry.SentrySDK
 import cocoapods.Sentry.SentrySpanProtocol
 import io.sentry.kotlin.multiplatform.extensions.toCocoa
 import io.sentry.kotlin.multiplatform.extensions.toKmp
-import kotlinx.cinterop.ExperimentalForeignApi
+import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.protocol.SpanId
 
-public actual interface ISpan {
-    /**
-     * Starts a child Span.
-     *
-     * @param operation - new span operation name
-     * @return a new transaction span
-     */
-    public actual fun startChild(operation: String): ISpan
+public actual class Span private actual constructor() : ISpan {
+  private lateinit var cocoaSpan: SentrySpanProtocol
 
-    /**
-     * Starts a child Span.
-     *
-     * @param operation - new span operation name
-     * @param description - new span description name
-     * @return a new transaction span
-     */
-    public actual fun startChild(
-        operation: String,
-        description: String?
-    ): ISpan
+  public constructor(cocoaSpan: SentrySpanProtocol) : this() {
+    this.cocoaSpan = cocoaSpan
+  }
 
-    /** Sets span timestamp marking this span as finished.  */
-    public actual fun finish()
+  public actual override fun startChild(operation: String): ISpan {
+    val span = cocoaSpan.startChildWithOperation(operation)
+    return Span(cocoaSpan = span)
+  }
 
-    /**
-     * Sets span timestamp marking this span as finished.
-     *
-     * @param status - the status
-     */
-    public actual fun finish(status: SpanStatus2?)
+  public actual override fun startChild(operation: String, description: String?): ISpan {
+    val span = cocoaSpan.startChildWithOperation(operation, description)
+    return Span(cocoaSpan = span)
+  }
 
-    /**
-     * Sets span timestamp marking this span as finished.
-     *
-     * @param status - the status
-     * @param timestamp - the end timestamp
-     */
-    public actual fun finish(
-        status: SpanStatus2?,
-        timestamp: SentryDate?
-    )
+  public actual override fun finish() {
+    cocoaSpan.finish()
+  }
 
-    /**
-     * Sets span operation.
-     *
-     * @param operation - the operation
-     */
-    public actual fun setOperation(operation: String)
+  /**
+   * Sets span timestamp marking this span as finished.
+   *
+   * @param status - the status
+   */
+  public actual override fun finish(status: SpanStatus?) {
+    status?.toCocoa()?.let { cocoaSpan.finishWithStatus(it) }
+  }
 
-    /**
-     * Returns the span operation.
-     *
-     * @return the operation
-     */
-    public actual fun getOperation(): String
+  /**
+   * Sets span timestamp marking this span as finished.
+   *
+   * @param status - the status
+   * @param timestamp - the end timestamp
+   */
+  public actual override fun finish(status: SpanStatus?, timestamp: SentryDate?) {}
 
-    /**
-     * Sets span description.
-     *
-     * @param description - the description.
-     */
-    public actual fun setDescription(description: String?)
+  /**
+   * Sets span operation.
+   *
+   * @param operation - the operation
+   */
+  public actual override fun setOperation(operation: String) {
+    cocoaSpan.setOperation(operation)
+  }
 
-    /**
-     * Returns the span description.
-     *
-     * @return the description
-     */
-    public actual fun getDescription(): String?
+  /**
+   * Returns the span operation.
+   *
+   * @return the operation
+   */
+  public actual override fun getOperation(): String {
+    return cocoaSpan.operation
+  }
 
-    /**
-     * Sets span status.
-     *
-     * @param status - the status.
-     */
-    public actual fun setStatus(status: SpanStatus2?)
+  /**
+   * Sets span description.
+   *
+   * @param description - the description.
+   */
+  public actual override fun setDescription(description: String?) {
+    cocoaSpan.setSpanDescription(description)
+  }
 
-    /**
-     * Returns the span status
-     *
-     * @return the status
-     */
-    public actual fun getStatus(): SpanStatus2?
+  /**
+   * Returns the span description.
+   *
+   * @return the description
+   */
+  public actual override fun getDescription(): String? {
+    return cocoaSpan.spanDescription
+  }
 
-    /**
-     * Sets extra data on span or transaction.
-     *
-     * @param key the data key
-     * @param value the data value
-     */
-    public actual fun setData(key: String, value: Any)
+  /**
+   * Sets span status.
+   *
+   * @param status - the status.
+   */
+  public actual override fun setStatus(status: SpanStatus?) {
+    status?.toCocoa()?.let { cocoaSpan.setStatus(it) }
+  }
 
-    /**
-     * Returns extra data from span or transaction.
-     *
-     * @return the data
-     */
-    public actual fun getData(key: String): Any?
+  /**
+   * Returns the span status
+   *
+   * @return the status
+   */
+  public actual override fun getStatus(): SpanStatus? {
+    return cocoaSpan.status.toKmp()
+  }
 
-    /**
-     * Returns if span has finished.
-     *
-     * @return if span has finished.
-     */
-    public actual fun isFinished(): Boolean
-}
+  /**
+   * Sets extra data on span or transaction.
+   *
+   * @param key the data key
+   * @param value the data value
+   */
+  public actual override fun setData(key: String, value: Any) {
+    cocoaSpan.setDataValue(value, forKey = key)
+  }
 
-public actual class Span actual constructor() : ISpan {
-    private var cocoaSpan: SentrySpanProtocol? = null
+  /**
+   * Returns extra data from span or transaction.
+   *
+   * @return the data
+   */
+  public actual override fun getData(key: String): Any? {
+    return cocoaSpan.data?.get(key)
+  }
 
-    public constructor(cocoaSpan: SentrySpanProtocol?) : this() {
-        this.cocoaSpan = cocoaSpan
-    }
+  /**
+   * Returns if span has finished.
+   *
+   * @return if span has finished.
+   */
+  public actual override fun isFinished(): Boolean {
+    return cocoaSpan.isFinished
+  }
 
-    public actual override fun startChild(operation: String): ISpan {
-        val span = cocoaSpan?.startChildWithOperation(operation)
-        return Span(cocoaSpan = span)
-    }
+  override fun toSentryTrace(): SentryTraceHeader {
+    return SentryTraceHeader(cocoaSpan.toTraceHeader())
+  }
 
-    public actual override fun startChild(
-        operation: String,
-        description: String?
-    ): ISpan {
-        val span = cocoaSpan?.startChildWithOperation(operation, description)
-        return Span(cocoaSpan = span)
-    }
+  public actual fun getTraceId(): SentryId {
+    return SentryId(cocoaSpan.traceId.sentryIdString)
+  }
 
-    public actual override fun finish() {
-        cocoaSpan?.finish()
-    }
+  public actual fun getSpanId(): SpanId {
+    return SpanId(cocoaSpan.spanId.sentrySpanIdString)
+  }
 
-    /**
-     * Sets span timestamp marking this span as finished.
-     *
-     * @param status - the status
-     */
-    public actual override fun finish(status: SpanStatus2?) {
-        status?.toCocoa()?.let { cocoaSpan?.finishWithStatus(it) }
-    }
-
-    /**
-     * Sets span timestamp marking this span as finished.
-     *
-     * @param status - the status
-     * @param timestamp - the end timestamp
-     */
-    public actual override fun finish(
-        status: SpanStatus2?,
-        timestamp: SentryDate?
-    ) {
-    }
-
-    /**
-     * Sets span operation.
-     *
-     * @param operation - the operation
-     */
-    public actual override fun setOperation(operation: String) {
-        cocoaSpan?.setOperation(operation)
-    }
-
-    /**
-     * Returns the span operation.
-     *
-     * @return the operation
-     */
-    public actual override fun getOperation(): String {
-        return cocoaSpan?.operation ?: ""
-    }
-
-    /**
-     * Sets span description.
-     *
-     * @param description - the description.
-     */
-    public actual override fun setDescription(description: String?) {
-        cocoaSpan?.setSpanDescription(description)
-    }
-
-    /**
-     * Returns the span description.
-     *
-     * @return the description
-     */
-    public actual override fun getDescription(): String? {
-        return cocoaSpan?.spanDescription
-    }
-
-    /**
-     * Sets span status.
-     *
-     * @param status - the status.
-     */
-    public actual override fun setStatus(status: SpanStatus2?) {
-        status?.toCocoa()?.let { cocoaSpan?.setStatus(it) }
-    }
-
-    /**
-     * Returns the span status
-     *
-     * @return the status
-     */
-    public actual override fun getStatus(): SpanStatus2? {
-        return cocoaSpan?.status?.toKmp()
-    }
-
-    /**
-     * Sets extra data on span or transaction.
-     *
-     * @param key the data key
-     * @param value the data value
-     */
-    public actual override fun setData(key: String, value: Any) {
-        cocoaSpan?.setDataValue(value, forKey = key)
-    }
-
-    /**
-     * Returns extra data from span or transaction.
-     *
-     * @return the data
-     */
-    public actual override fun getData(key: String): Any? {
-        return cocoaSpan?.data?.get(key)
-    }
-
-    /**
-     * Returns if span has finished.
-     *
-     * @return if span has finished.
-     */
-    public actual override fun isFinished(): Boolean {
-        return cocoaSpan?.isFinished ?: false
-    }
+  public actual fun getParentSpanId(): SpanId? {
+    return cocoaSpan.parentSpanId?.let { SpanId(it.sentrySpanIdString) }
+  }
 }

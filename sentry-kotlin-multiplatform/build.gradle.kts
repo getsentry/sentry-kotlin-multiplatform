@@ -2,132 +2,124 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    kotlin(Config.multiplatform)
-    kotlin(Config.cocoapods)
-    id(Config.androidGradle)
-    id(Config.BuildPlugins.buildConfig)
-    kotlin(Config.kotlinSerializationPlugin)
-    id(Config.QualityPlugins.kover)
-    id(Config.QualityPlugins.binaryCompatibility)
-    `maven-publish`
+  kotlin(Config.multiplatform)
+  kotlin(Config.cocoapods)
+  id(Config.androidGradle)
+  id(Config.BuildPlugins.buildConfig)
+  kotlin(Config.kotlinSerializationPlugin)
+  id(Config.QualityPlugins.kover)
+  id(Config.QualityPlugins.binaryCompatibility)
+  `maven-publish`
 }
 
 koverReport {
-    defaults {
-        // adds the contents of the reports of `release` Android build variant to default reports
-        mergeWith("release")
-    }
+  defaults {
+    // adds the contents of the reports of `release` Android build variant to default reports
+    mergeWith("release")
+  }
 }
 
 android {
-    compileSdk = Config.Android.compileSdkVersion
-    defaultConfig {
-        minSdk = Config.Android.minSdkVersion
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
+  compileSdk = Config.Android.compileSdkVersion
+  defaultConfig {
+    minSdk = Config.Android.minSdkVersion
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes { getByName("release") { isMinifyEnabled = false } }
 }
 
 kotlin {
-    explicitApi()
-    applyDefaultHierarchyTemplate()
+  explicitApi()
+  applyDefaultHierarchyTemplate()
 
-    androidTarget {
-        publishLibraryVariants("release")
+  androidTarget { publishLibraryVariants("release") }
+  jvm()
+  iosArm64()
+  iosSimulatorArm64()
+  iosX64()
+  watchosSimulatorArm64()
+  watchosArm32()
+  watchosArm64()
+  watchosX64()
+  tvosSimulatorArm64()
+  tvosArm64()
+  tvosX64()
+  macosX64()
+  macosArm64()
+
+  sourceSets {
+    all {
+      languageSettings.apply {
+        optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        optIn("kotlinx.cinterop.UnsafeNumber")
+        optIn("kotlin.experimental.ExperimentalNativeApi")
+      }
     }
-    jvm()
-    iosArm64()
-    iosSimulatorArm64()
-    iosX64()
-    watchosSimulatorArm64()
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    tvosSimulatorArm64()
-    tvosArm64()
-    tvosX64()
-    macosX64()
-    macosArm64()
 
-    sourceSets {
-        commonMain.dependencies {
-            implementation(Config.Libs.kotlinStd)
-        }
+    commonMain.dependencies { implementation(Config.Libs.kotlinStd) }
 
-        commonTest.dependencies {
-            implementation(Config.TestLibs.kotlinCoroutinesCore)
-            implementation(Config.TestLibs.kotlinCoroutinesTest)
-            implementation(Config.TestLibs.ktorClientCore)
-            implementation(Config.TestLibs.ktorClientSerialization)
-            implementation(Config.TestLibs.kotlinxSerializationJson)
-            implementation(Config.TestLibs.kotlinCommon)
-            implementation(Config.TestLibs.kotlinCommonAnnotation)
-        }
+    commonTest.dependencies {
+      implementation(Config.TestLibs.kotlinCoroutinesCore)
+      implementation(Config.TestLibs.kotlinCoroutinesTest)
+      implementation(Config.TestLibs.ktorClientCore)
+      implementation(Config.TestLibs.ktorClientSerialization)
+      implementation(Config.TestLibs.kotlinxSerializationJson)
+      implementation(Config.TestLibs.kotlinCommon)
+      implementation(Config.TestLibs.kotlinCommonAnnotation)
+    }
 
-        androidMain.dependencies {
-            implementation(Config.Libs.sentryAndroid)
-        }
+    androidMain.dependencies { implementation(Config.Libs.sentryAndroid) }
 
-        // androidUnitTest.dependencies doesn't exist
-        val androidUnitTest by getting {
-            dependencies {
-                implementation(Config.TestLibs.roboelectric)
-                implementation(Config.TestLibs.junitKtx)
-                implementation(Config.TestLibs.mockitoCore)
-            }
-        }
+    // androidUnitTest.dependencies doesn't exist
+    val androidUnitTest by getting {
+      dependencies {
+        implementation(Config.TestLibs.roboelectric)
+        implementation(Config.TestLibs.junitKtx)
+        implementation(Config.TestLibs.mockitoCore)
+      }
+    }
 
-        val commonJvmMain by creating {
-            dependsOn(commonMain.get())
-            dependencies {
-                implementation(Config.Libs.sentryJava)
-            }
-        }
+    val commonJvmMain by creating {
+      dependsOn(commonMain.get())
+      dependencies { implementation(Config.Libs.sentryJava) }
+    }
 
-        androidMain.get().dependsOn(commonJvmMain)
-        jvmMain.get().dependsOn(commonJvmMain)
+    androidMain.get().dependsOn(commonJvmMain)
+    jvmMain.get().dependsOn(commonJvmMain)
 
-        val commonJvmTest by creating {
-            dependsOn(commonTest.get())
-            dependencies {
-                implementation(Config.TestLibs.kotlinJunit)
-                implementation(Config.TestLibs.ktorClientOkHttp)
-            }
-        }
+    val commonJvmTest by creating {
+      dependsOn(commonTest.get())
+      dependencies {
+        implementation(Config.TestLibs.kotlinJunit)
+        implementation(Config.TestLibs.ktorClientOkHttp)
+      }
+    }
 
-        androidUnitTest.dependsOn(commonJvmTest)
-        jvmTest.get().dependsOn(commonJvmTest)
+    androidUnitTest.dependsOn(commonJvmTest)
+    jvmTest.get().dependsOn(commonJvmTest)
 
-        appleTest.dependencies {
-            implementation(Config.TestLibs.ktorClientDarwin)
-        }
+    appleTest.dependencies { implementation(Config.TestLibs.ktorClientDarwin) }
 
-        val commonTvWatchMacOsMain by creating {
-            dependsOn(appleMain.get())
-        }
+    val commonTvWatchMacOsMain by creating { dependsOn(appleMain.get()) }
 
-        tvosMain.get().dependsOn(commonTvWatchMacOsMain)
-        macosMain.get().dependsOn(commonTvWatchMacOsMain)
-        watchosMain.get().dependsOn(commonTvWatchMacOsMain)
+    tvosMain.get().dependsOn(commonTvWatchMacOsMain)
+    macosMain.get().dependsOn(commonTvWatchMacOsMain)
+    watchosMain.get().dependsOn(commonTvWatchMacOsMain)
 
-        cocoapods {
-            summary = "Official Sentry SDK Kotlin Multiplatform"
-            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
-            version = "0.0.1"
+    cocoapods {
+      summary = "Official Sentry SDK Kotlin Multiplatform"
+      homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
+      version = "0.0.1"
 
-            pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
+      pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
 
-            ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
-            osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
-            tvos.deploymentTarget = Config.Cocoa.tvosDeploymentTarget
-            watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
-        }
+      ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
+      osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
+      tvos.deploymentTarget = Config.Cocoa.tvosDeploymentTarget
+      watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
+    }
 
-        listOf(
+    listOf(
             iosArm64(),
             iosX64(),
             iosSimulatorArm64(),
@@ -139,46 +131,46 @@ kotlin {
             tvosX64(),
             tvosSimulatorArm64(),
             macosX64(),
-            macosArm64()
-        ).forEach {
-            it.compilations.getByName("main") {
-                cinterops.create("Sentry.NSException") {
-                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryNSException")
-                }
-                cinterops.create("Sentry.Scope") {
-                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
-                }
-                cinterops.create("Sentry.PrivateSentrySDKOnly") {
-                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryPrivateSentrySDKOnly")
-                }
+            macosArm64())
+        .forEach {
+          it.compilations.getByName("main") {
+            cinterops.create("Sentry.NSException") {
+              includeDirs("$projectDir/src/nativeInterop/cinterop/SentryNSException")
             }
+            cinterops.create("Sentry.Scope") {
+              includeDirs("$projectDir/src/nativeInterop/cinterop/SentryScope")
+            }
+            cinterops.create("Sentry.PrivateSentrySDKOnly") {
+              includeDirs("$projectDir/src/nativeInterop/cinterop/SentryPrivateSentrySDKOnly")
+            }
+          }
         }
 
-        // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
-        // if we need to use this class, we'd need to find a better way to work it out
-        targets.withType<KotlinNativeTarget>().all {
-            compilations["main"].cinterops["Sentry"].extraOpts(
-                "-compiler-option",
-                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
-            )
-        }
+    // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the
+    // class name
+    // if we need to use this class, we'd need to find a better way to work it out
+    targets.withType<KotlinNativeTarget>().all {
+      compilations["main"]
+          .cinterops["Sentry"]
+          .extraOpts("-compiler-option", "-DSentryMechanismMeta=SentryMechanismMetaUnavailable")
     }
+  }
 }
 
 buildkonfig {
-    packageName = "io.sentry.kotlin.multiplatform"
-    defaultConfigs {
-        buildConfigField(STRING, "SENTRY_KMP_COCOA_SDK_NAME", Config.Sentry.kmpCocoaSdkName)
-        buildConfigField(STRING, "SENTRY_KMP_JAVA_SDK_NAME", Config.Sentry.kmpJavaSdkName)
-        buildConfigField(STRING, "SENTRY_KMP_ANDROID_SDK_NAME", Config.Sentry.kmpAndroidSdkName)
+  packageName = "io.sentry.kotlin.multiplatform"
+  defaultConfigs {
+    buildConfigField(STRING, "SENTRY_KMP_COCOA_SDK_NAME", Config.Sentry.kmpCocoaSdkName)
+    buildConfigField(STRING, "SENTRY_KMP_JAVA_SDK_NAME", Config.Sentry.kmpJavaSdkName)
+    buildConfigField(STRING, "SENTRY_KMP_ANDROID_SDK_NAME", Config.Sentry.kmpAndroidSdkName)
 
-        buildConfigField(STRING, "VERSION_NAME", project.version.toString())
-        buildConfigField(STRING, "SENTRY_JAVA_PACKAGE_NAME", Config.Sentry.javaPackageName)
-        buildConfigField(STRING, "SENTRY_ANDROID_PACKAGE_NAME", Config.Sentry.androidPackageName)
-        buildConfigField(STRING, "SENTRY_COCOA_PACKAGE_NAME", Config.Sentry.cocoaPackageName)
+    buildConfigField(STRING, "VERSION_NAME", project.version.toString())
+    buildConfigField(STRING, "SENTRY_JAVA_PACKAGE_NAME", Config.Sentry.javaPackageName)
+    buildConfigField(STRING, "SENTRY_ANDROID_PACKAGE_NAME", Config.Sentry.androidPackageName)
+    buildConfigField(STRING, "SENTRY_COCOA_PACKAGE_NAME", Config.Sentry.cocoaPackageName)
 
-        buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
-        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
-        buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
-    }
+    buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
+    buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
+    buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+  }
 }

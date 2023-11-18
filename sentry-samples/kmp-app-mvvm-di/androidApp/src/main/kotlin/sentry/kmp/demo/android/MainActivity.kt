@@ -12,15 +12,11 @@ import sentry.kmp.demo.models.HomeViewModel
 
 class MainActivity : ComponentActivity(), KoinComponent {
 
-    private val authenticationViewModel: AuthenticationViewModel by viewModel()
-    private val homeViewModel: HomeViewModel by viewModel()
+  private val authenticationViewModel: AuthenticationViewModel by viewModel()
+  private val homeViewModel: HomeViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            Theme {
-                MyApp(authenticationViewModel, homeViewModel)
-            }
-        }
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent { Theme { MyApp(authenticationViewModel, homeViewModel) } }
+  }
 }

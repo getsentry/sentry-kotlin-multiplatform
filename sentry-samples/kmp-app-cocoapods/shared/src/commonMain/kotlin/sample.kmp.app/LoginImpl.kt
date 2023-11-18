@@ -9,46 +9,48 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 class InvalidUsernameException(message: String) : Exception(message)
 
 object LoginImpl {
-    /**
-     * login() throws a either checked InvalidUsernameException
-     * or an IllegalArgumentException that crashes the app.
-     *
-     */
-    fun login(username: String? = null) {
-        val transaction = Sentry.startTransaction("Authentication", "login", bindToScope = true)
-        try {
-            validateUsername(username)
-        } catch (exception: InvalidUsernameException) {
-            val sentryId = Sentry.captureException(exception) {
-                val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
-                breadcrumb.setData("touch event", "on login")
-                it.addBreadcrumb(breadcrumb)
-                it.setContext("Login", "Failed with Invalid Username")
-                it.setTag("login", "failed auth")
-                it.level = SentryLevel.WARNING
-                val user = User().apply {
-                    this.username = "John Doe"
-                    this.email = "john@doe.com"
+  /**
+   * login() throws a either checked InvalidUsernameException or an IllegalArgumentException that
+   * crashes the app.
+   */
+  fun login(username: String? = null) {
+    val transaction = Sentry.startTransaction("Authentication", "login", bindToScope = true)
+    try {
+      validateUsername(username)
+    } catch (exception: InvalidUsernameException) {
+      val sentryId =
+          Sentry.captureException(exception) {
+            val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
+            breadcrumb.setData("touch event", "on login")
+            it.addBreadcrumb(breadcrumb)
+            it.setContext("Login", "Failed with Invalid Username")
+            it.setTag("login", "failed auth")
+            it.level = SentryLevel.WARNING
+            val user =
+                User().apply {
+                  this.username = "John Doe"
+                  this.email = "john@doe.com"
                 }
-                it.user = user
-            }
-            val userFeedback = UserFeedback(sentryId).apply {
-                name = "John Doe"
-                email = "john@doe.com"
-                comments = "I had an error during login on ${Platform().platform}"
-            }
-            Sentry.captureUserFeedback(userFeedback)
-        } catch (exception: IllegalArgumentException) {
-            throw exception
-        } finally {
-            transaction.finish()
-        }
+            it.user = user
+          }
+      val userFeedback =
+          UserFeedback(sentryId).apply {
+            name = "John Doe"
+            email = "john@doe.com"
+            comments = "I had an error during login on ${Platform().platform}"
+          }
+      Sentry.captureUserFeedback(userFeedback)
+    } catch (exception: IllegalArgumentException) {
+      throw exception
+    } finally {
+      transaction.finish()
     }
+  }
 
-    private fun validateUsername(username: String?) {
-        if (username == null) {
-            throw IllegalArgumentException("Username cannot be null")
-        }
-        throw InvalidUsernameException("Username does not exist")
+  private fun validateUsername(username: String?) {
+    if (username == null) {
+      throw IllegalArgumentException("Username cannot be null")
     }
+    throw InvalidUsernameException("Username does not exist")
+  }
 }

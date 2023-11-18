@@ -29,97 +29,68 @@ import sentry.kmp.demo.models.AuthenticationViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, authenticationViewModel: AuthenticationViewModel) {
-    val email = remember { mutableStateOf("user@sentrydemo.com") }
-    val password = remember { mutableStateOf("randompassword") }
-    val enableLoginError = remember { mutableStateOf(true) }
-    var showDialog by remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
+  val email = remember { mutableStateOf("user@sentrydemo.com") }
+  val password = remember { mutableStateOf("randompassword") }
+  val enableLoginError = remember { mutableStateOf(true) }
+  var showDialog by remember { mutableStateOf(false) }
+  var dialogMessage by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+  Column(
+      modifier = Modifier.fillMaxSize().padding(16.dp),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center) {
         Text(
             text = "Sentry Demo",
             style = MaterialTheme.typography.h4,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+            modifier = Modifier.padding(bottom = 16.dp))
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it },
             label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             value = password.value,
             onValueChange = { password.value = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        )
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp))
         Button(
             onClick = {
-                val succeeded = authenticationViewModel.login(enableLoginError.value)
-                if (succeeded) {
-                    navController.navigate("home")
-                } else {
-                    dialogMessage = "An error occurred during login"
-                    showDialog = true
-                }
+              val succeeded = authenticationViewModel.login(enableLoginError.value)
+              if (succeeded) {
+                navController.navigate("home")
+              } else {
+                dialogMessage = "An error occurred during login"
+                showDialog = true
+              }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Log In ${if (enableLoginError.value) "(error)" else ""}")
-        }
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+              Text("Log In ${if (enableLoginError.value) "(error)" else ""}")
+            }
         Button(
-            onClick = {
-                authenticationViewModel.signUp()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Sign up (crash)")
-        }
+            onClick = { authenticationViewModel.signUp() },
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+              Text("Sign up (crash)")
+            }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text("Enable login error")
-            Checkbox(
-                checked = enableLoginError.value,
-                onCheckedChange = { enableLoginError.value = it },
-                modifier = Modifier.padding(end = 8.dp)
-            )
-        }
+            horizontalArrangement = Arrangement.Start) {
+              Text("Enable login error")
+              Checkbox(
+                  checked = enableLoginError.value,
+                  onCheckedChange = { enableLoginError.value = it },
+                  modifier = Modifier.padding(end = 8.dp))
+            }
         if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("Error") },
-                text = { Text(dialogMessage) },
-                confirmButton = {
-                    Button(
-                        onClick = { showDialog = false }
-                    ) {
-                        Text("OK")
-                    }
-                }
-            )
+          AlertDialog(
+              onDismissRequest = { showDialog = false },
+              title = { Text("Error") },
+              text = { Text(dialogMessage) },
+              confirmButton = { Button(onClick = { showDialog = false }) { Text("OK") } })
         }
-    }
+      }
 }

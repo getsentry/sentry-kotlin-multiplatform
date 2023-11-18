@@ -34,8 +34,6 @@ import NSException.Sentry.kSentryLevelFatal
 import NSException.Sentry.prepareEvent
 import NSException.Sentry.storeEnvelope
 import NSException.Sentry.threadInspector
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
@@ -44,89 +42,90 @@ import platform.Foundation.NSNumber
  */
 @OptIn(ExperimentalForeignApi::class)
 internal fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
-    return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(KOTLIN_CRASH_TAG) ?: false) }
+  return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(KOTLIN_CRASH_TAG) ?: false) }
 }
 
 /**
- * Sets the unhandled exception hook such that all unhandled exceptions are logged to Sentry as fatal exceptions.
- * If an unhandled exception hook was already set, that hook will be invoked after the exception is logged.
- * Note: once the exception is logged the program will be terminated.
+ * Sets the unhandled exception hook such that all unhandled exceptions are logged to Sentry as
+ * fatal exceptions. If an unhandled exception hook was already set, that hook will be invoked after
+ * the exception is logged. Note: once the exception is logged the program will be terminated.
+ *
  * @see wrapUnhandledExceptionHook
  */
 @OptIn(ExperimentalForeignApi::class)
 internal fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
-    val envelope = throwable.asSentryEnvelope()
-    // The envelope will be persisted, so we can safely terminate afterwards.
-    // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409
-    SentrySDK.storeEnvelope(envelope)
-    SentrySDK.configureScope { scope ->
-        scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
-    }
+  val envelope = throwable.asSentryEnvelope()
+  // The envelope will be persisted, so we can safely terminate afterwards.
+  // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409
+  SentrySDK.storeEnvelope(envelope)
+  SentrySDK.configureScope { scope -> scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG) }
 }
 
-/**
- * Tag used to mark the Kotlin termination crash.
- */
+/** Tag used to mark the Kotlin termination crash. */
 internal const val KOTLIN_CRASH_TAG = "nsexceptionkt.kotlin_crashed"
 
-/**
- * Converts `this` [Throwable] to a [SentryEnvelope].
- */
+/** Converts `this` [Throwable] to a [SentryEnvelope]. */
 @OptIn(ExperimentalForeignApi::class)
 internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
-    val event = asSentryEvent()
-    val preparedEvent = SentrySDK.currentHub().let { hub ->
-        hub.getClient()?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isCrashEvent = true)
-    } ?: event
-    val item = SentryEnvelopeItem(preparedEvent)
-    // TODO: pass traceState when enabling performance monitoring for KMP SDK
-    val header = SentryEnvelopeHeader(preparedEvent.eventId, null)
-    return SentryEnvelope(header, listOf(item))
+  val event = asSentryEvent()
+  val preparedEvent =
+      SentrySDK.currentHub().let { hub ->
+        hub.getClient()
+            ?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isCrashEvent = true)
+      }
+          ?: event
+  val item = SentryEnvelopeItem(preparedEvent)
+  // TODO: pass traceState when enabling performance monitoring for KMP SDK
+  val header = SentryEnvelopeHeader(preparedEvent.eventId, null)
+  return SentryEnvelope(header, listOf(item))
 }
 
-/**
- * Converts `this` [Throwable] to a [SentryEvent].
- */
+/** Converts `this` [Throwable] to a [SentryEvent]. */
 @Suppress("UnnecessaryOptInAnnotation")
 @OptIn(UnsafeNumber::class, ExperimentalForeignApi::class)
-private fun Throwable.asSentryEvent(): SentryEvent = SentryEvent(kSentryLevelFatal).apply {
-    isCrashEvent = true
-    @Suppress("UNCHECKED_CAST")
-    val threads = threadInspector?.getCurrentThreadsWithStackTrace() as List<SentryThread>?
-    this.threads = threads
-    val currentThread = threads?.firstOrNull { it.current?.boolValue ?: false }?.apply {
-        NSExceptionKt_SentryThreadSetCrashed(this)
-        // Crashed threats shouldn't have a stacktrace, the thread_id should be set on the exception instead
-        // https://develop.sentry.dev/sdk/event-payloads/threads/
-        stacktrace = null
+private fun Throwable.asSentryEvent(): SentryEvent =
+    SentryEvent(kSentryLevelFatal).apply {
+      isCrashEvent = true
+      @Suppress("UNCHECKED_CAST")
+      val threads = threadInspector?.getCurrentThreadsWithStackTrace() as List<SentryThread>?
+      this.threads = threads
+      val currentThread =
+          threads
+              ?.firstOrNull { it.current?.boolValue ?: false }
+              ?.apply {
+                NSExceptionKt_SentryThreadSetCrashed(this)
+                // Crashed threats shouldn't have a stacktrace, the thread_id should be set on the
+                // exception instead
+                // https://develop.sentry.dev/sdk/event-payloads/threads/
+                stacktrace = null
+              }
+      debugMeta =
+          threads?.let {
+            SentryDependencyContainer.sharedInstance()
+                .debugImageProvider
+                .getDebugImagesForThreads(it)
+          }
+      exceptions =
+          this@asSentryEvent.let { throwable -> throwable.causes.asReversed() + throwable }
+              .map { it.asNSException().asSentryException(currentThread?.threadId) }
     }
-    debugMeta = threads?.let {
-        SentryDependencyContainer.sharedInstance().debugImageProvider.getDebugImagesForThreads(it)
-    }
-    exceptions = this@asSentryEvent
-        .let { throwable -> throwable.causes.asReversed() + throwable }
-        .map { it.asNSException().asSentryException(currentThread?.threadId) }
-}
 
-/**
- * Converts `this` [NSException] to a [SentryException].
- */
+/** Converts `this` [NSException] to a [SentryException]. */
 @OptIn(ExperimentalForeignApi::class)
-private fun NSException.asSentryException(
-    threadId: NSNumber?
-): SentryException = SentryException(reason ?: "", name ?: "Throwable").apply {
-    this.threadId = threadId
-    mechanism = SentryMechanism("generic").apply {
-        NSExceptionKt_SentryMechanismSetNotHandled(this)
+private fun NSException.asSentryException(threadId: NSNumber?): SentryException =
+    SentryException(reason ?: "", name ?: "Throwable").apply {
+      this.threadId = threadId
+      mechanism =
+          SentryMechanism("generic").apply { NSExceptionKt_SentryMechanismSetNotHandled(this) }
+      stacktrace =
+          threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
+            val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)
+            val stacktrace = stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
+            NSExceptionKt_SentryCrashStackCursorCleanup(cursor)
+            stacktrace
+          }
     }
-    stacktrace = threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
-        val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)
-        val stacktrace = stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
-        NSExceptionKt_SentryCrashStackCursorCleanup(cursor)
-        stacktrace
-    }
-}
 
 @OptIn(ExperimentalForeignApi::class)
 private val threadInspector: SentryThreadInspector?
-    get() = SentrySDK.currentHub().getClient()?.threadInspector
+  get() = SentrySDK.currentHub().getClient()?.threadInspector

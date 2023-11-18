@@ -5,6 +5,6 @@ import sentry.kmp.demo.models.AuthenticationViewModel
 import sentry.kmp.demo.models.HomeViewModel
 
 actual val platformModule = module {
-    single { AuthenticationViewModel() }
-    single { HomeViewModel() }
+  single { AuthenticationViewModel() }
+  single { HomeViewModel() }
 }

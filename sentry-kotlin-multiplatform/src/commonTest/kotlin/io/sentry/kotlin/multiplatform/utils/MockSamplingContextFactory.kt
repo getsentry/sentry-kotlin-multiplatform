@@ -17,15 +17,14 @@ fun createMockTransactionContext(
     transactionNameSource: TransactionNameSource = TransactionNameSource.TASK,
     parentSampled: Boolean = false
 ): TransactionContext {
-    return MockTransactionContext(
-        operation = operation,
-        traceId = traceId,
-        spanId = spanId,
-        parentSpanId = parentSpanId,
-        description = description,
-        sampled = sampled,
-        name = name,
-        transactionNameSource = transactionNameSource,
-        parentSampled = parentSampled
-    )
+  return MockTransactionContext(
+      operation = operation,
+      traceId = traceId,
+      spanId = spanId,
+      parentSpanId = parentSpanId,
+      description = description,
+      sampled = sampled,
+      name = name,
+      transactionNameSource = transactionNameSource,
+      parentSampled = parentSampled)
 }

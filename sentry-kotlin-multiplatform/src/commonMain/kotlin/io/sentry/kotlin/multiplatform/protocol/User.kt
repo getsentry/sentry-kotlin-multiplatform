@@ -11,12 +11,12 @@ public data class User(
     /** The user's username */
     var username: String? = null,
 
-    /** The user's ip address*/
+    /** The user's ip address */
     var ipAddress: String? = null,
 
     /**
-     * Additional arbitrary fields, as stored in the database (and sometimes as sent by clients). All
-     * data from `self.other` should end up here after store normalization.
+     * Additional arbitrary fields, as stored in the database (and sometimes as sent by clients).
+     * All data from `self.other` should end up here after store normalization.
      */
     var other: MutableMap<String, String>? = null,
 
@@ -24,16 +24,11 @@ public data class User(
     var unknown: MutableMap<String, Any>? = null
 ) {
 
-    public constructor(user: User) : this(
-        user.email,
-        user.id,
-        user.username,
-        user.ipAddress,
-        user.other,
-        user.unknown
-    )
+  public constructor(
+      user: User
+  ) : this(user.email, user.id, user.username, user.ipAddress, user.other, user.unknown)
 
-    // This secondary constructor allows Swift also to init without specifying nil explicitly
-    // example: User.init() instead of User.init(user: nil)
-    public constructor() : this(null, null, null, null, null, null)
+  // This secondary constructor allows Swift also to init without specifying nil explicitly
+  // example: User.init() instead of User.init(user: nil)
+  public constructor() : this(null, null, null, null, null, null)
 }

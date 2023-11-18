@@ -1,4 +1,5 @@
-// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the
+// Apache 2.0 license that can be found in the LICENSE file.
 package sample.kmp.app.desktop
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -24,32 +25,33 @@ import sample.kmp.app.initializeSentry
 @Composable
 @Preview
 fun App() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+  Column(
+      modifier = Modifier.fillMaxSize(),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally) {
         val btnBackgroundColor = Color(56, 31, 67)
-        Button({
-            Sentry.captureMessage("From KMP Sample App: " + Platform().platform)
-        }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
-            Text("Capture Message", color = Color.White)
-        }
-        Button({
-            LoginImpl.login("MyUsername")
-        }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
-            Text("Capture Exception", color = Color.White)
-        }
-        Button({
-            LoginImpl.login()
-        }, colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
-            Text("Crash", color = Color.White)
-        }
-    }
+        Button(
+            { Sentry.captureMessage("From KMP Sample App: " + Platform().platform) },
+            colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
+              Text("Capture Message", color = Color.White)
+            }
+        Button(
+            { LoginImpl.login("MyUsername") },
+            colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
+              Text("Capture Exception", color = Color.White)
+            }
+        Button(
+            { LoginImpl.login() },
+            colors = ButtonDefaults.buttonColors(backgroundColor = btnBackgroundColor)) {
+              Text("Crash", color = Color.White)
+            }
+      }
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "Jetpack Compose Desktop App (Cocoapods Sample Version)") {
+  Window(
+      onCloseRequest = ::exitApplication,
+      title = "Jetpack Compose Desktop App (Cocoapods Sample Version)") {
         // Initialize Sentry using shared code
         initializeSentry()
 
@@ -58,10 +60,10 @@ fun main() = application {
 
         // Add platform specific scope in addition to the shared scope
         Sentry.configureScope {
-            it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
-            it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
+          it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
+          it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
         }
 
         App()
-    }
+      }
 }

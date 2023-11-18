@@ -6,17 +6,16 @@ import org.koin.dsl.module
 import sentry.kmp.demo.models.AuthenticationViewModel
 import sentry.kmp.demo.models.HomeViewModel
 
-fun initKoinIos(): KoinApplication = initKoin(
-    module { }
-)
+fun initKoinIos(): KoinApplication = initKoin(module {})
 
 actual val platformModule = module {
-    single { AuthenticationViewModel() }
-    single { HomeViewModel() }
+  single { AuthenticationViewModel() }
+  single { HomeViewModel() }
 }
 
 @Suppress("unused") // Called from Swift
 object KotlinDependencies : KoinComponent {
-    fun getAuthenticationViewModel() = getKoin().get<AuthenticationViewModel>()
-    fun getHomeViewModel() = getKoin().get<HomeViewModel>()
+  fun getAuthenticationViewModel() = getKoin().get<AuthenticationViewModel>()
+
+  fun getHomeViewModel() = getKoin().get<HomeViewModel>()
 }

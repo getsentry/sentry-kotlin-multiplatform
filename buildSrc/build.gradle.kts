@@ -1,15 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    `kotlin-dsl`
-}
+plugins { `kotlin-dsl` }
 
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
 tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = properties["jvm.version"].toString()
-    }
+  kotlinOptions { jvmTarget = properties["jvm.version"].toString() }
 }

@@ -5,8 +5,8 @@ package io.sentry.kotlin.multiplatform
  * transactions and spans.
  */
 public enum class Instrumenter {
-    SENTRY,
+  SENTRY,
 
-    /** OpenTelemetry  */
-    OTEL
+  /** OpenTelemetry */
+  OTEL
 }
