@@ -15,7 +15,6 @@ import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 
-@OptIn(ExperimentalForeignApi::class)
 internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit = {
   it?.applyCocoaBaseOptions(this)
 }
@@ -24,7 +23,6 @@ internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) 
  * Applies the given options to this CocoaSentryOptions. This avoids code duplication for init on
  * iOS.
  */
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
   dsn = options.dsn
   attachStacktrace = options.attachStackTrace
