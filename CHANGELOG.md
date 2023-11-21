@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Bump Java SDK from v6.33.1 to v6.34.0 ([#152](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/152))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#6340)
+  - [diff](https://github.com/getsentry/sentry-java/compare/6.33.1...6.34.0)
+
 ## 0.3.0
 
 ### Features
