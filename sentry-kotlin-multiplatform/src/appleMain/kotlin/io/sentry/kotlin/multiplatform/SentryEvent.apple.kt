@@ -1,5 +1,3 @@
-@file:OptIn(UnsafeNumber::class, ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb

@@ -14,7 +14,6 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.concurrent.freeze
 
 /**
@@ -25,7 +24,6 @@ import kotlin.native.concurrent.freeze
  * @see setUnhandledExceptionHook
  * @see terminateWithUnhandledException
  */
-@OptIn(ExperimentalNativeApi::class)
 internal fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
   val prevHook = kotlin.concurrent.AtomicReference<ReportUnhandledExceptionHook?>(null)
   val wrappedHook: ReportUnhandledExceptionHook = {

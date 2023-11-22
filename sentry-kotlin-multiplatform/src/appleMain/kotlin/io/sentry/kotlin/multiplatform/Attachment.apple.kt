@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.toByteArray
 import io.sentry.kotlin.multiplatform.extensions.toNSData
 
-@OptIn(ExperimentalForeignApi::class)
 public actual class Attachment {
 
   internal lateinit var cocoaAttachment: CocoaAttachment

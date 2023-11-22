@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform
 
-import cocoapods.Sentry.SentrySDK
 import Scope.Sentry.SentryScope as PrivateCocoaScope
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLevel

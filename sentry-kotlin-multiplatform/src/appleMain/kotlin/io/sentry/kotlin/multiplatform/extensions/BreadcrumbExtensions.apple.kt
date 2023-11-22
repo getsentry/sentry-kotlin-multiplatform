@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun Breadcrumb.toCocoaBreadcrumb() =
     CocoaBreadcrumb().apply {
       val scope = this@toCocoaBreadcrumb
@@ -14,7 +13,6 @@ internal fun Breadcrumb.toCocoaBreadcrumb() =
       setData(scope.getData()?.toMap())
     }
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun CocoaBreadcrumb.toKmpBreadcrumb() =
     Breadcrumb().apply {
       val scope = this@toKmpBreadcrumb

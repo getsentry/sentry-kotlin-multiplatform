@@ -16,7 +16,6 @@ public actual abstract class Context
 
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
-@OptIn(ExperimentalForeignApi::class)
 internal actual object SentryBridge {
 
   actual fun init(context: Context, configuration: OptionsConfiguration) {
@@ -92,13 +91,11 @@ internal actual object SentryBridge {
   }
 }
 
-@OptIn(ExperimentalForeignApi::class)
 @Suppress("unused")
 public fun Sentry.captureError(error: NSError) {
   SentrySDK.captureError(error)
 }
 
-@OptIn(ExperimentalForeignApi::class)
 @Suppress("unused")
 public fun Sentry.captureException(exception: NSException) {
   SentrySDK.captureException(exception)
