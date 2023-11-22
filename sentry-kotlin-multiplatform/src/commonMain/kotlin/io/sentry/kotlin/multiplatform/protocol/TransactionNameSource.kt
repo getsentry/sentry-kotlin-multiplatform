@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.protocol
 
+/** The source of the transaction name. */
 public enum class TransactionNameSource {
   /**
    * User-defined name

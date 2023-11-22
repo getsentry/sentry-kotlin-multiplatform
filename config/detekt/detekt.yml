@@ -13,6 +13,12 @@ style:
   UnusedPrivateMember:
     excludes:
       - "**/Attachment.kt"
+  UnusedPrivateProperty:
+    excludes:
+      - "**/Attachment.kt"
+  MagicNumber:
+    excludes:
+      - "**/TransactionNameSourceExtensions.kt"
 naming:
   MatchingDeclarationName:
     active: false
@@ -25,8 +31,14 @@ complexity:
       "**/Scope.kt",
       "**/JvmScopeProvider.kt",
       "**/Breadcrumb.kt",
+      "**/ISpan.*",
+      "**/Span.*",
     ]
   LongMethod:
     excludes:
+      - "**/SentryOptionsExtensions.*"
+  CyclomaticComplexMethod:
+    excludes:
+      - "**/SpanStatusExtensions.*"
       - "**/SentryOptionsExtensions.*"
     

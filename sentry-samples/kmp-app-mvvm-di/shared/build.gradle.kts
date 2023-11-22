@@ -17,7 +17,7 @@ kotlin {
 
   sourceSets {
     commonMain.dependencies {
-      api(project(":sentry-kotlin-multiplatform"))
+      implementation(project(":sentry-kotlin-multiplatform"))
       implementation("io.insert-koin:koin-core:3.5.2-RC1")
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     }

@@ -15,10 +15,9 @@ typedef NS_ENUM(NSInteger, SentryTransactionNameSource) {
     kSentryTransactionNameSourceTask
 };
  */
-
 internal fun NSInteger.toKmpTransactionNameSource(): TransactionNameSource {
   val transactionNameSource =
-      when (this) {
+      when (this.toInt()) {
         0 -> TransactionNameSource.CUSTOM
         1 -> TransactionNameSource.URL
         2 -> TransactionNameSource.ROUTE

@@ -68,7 +68,7 @@ kotlin {
       implementation(Config.TestLibs.kotlinCommonAnnotation)
     }
 
-    androidMain.dependencies { implementation(Config.Libs.sentryAndroid) }
+    androidMain.dependencies { api(Config.Libs.sentryAndroid) }
 
     // androidUnitTest.dependencies doesn't exist
     val androidUnitTest by getting {
@@ -81,7 +81,7 @@ kotlin {
 
     val commonJvmMain by creating {
       dependsOn(commonMain.get())
-      dependencies { implementation(Config.Libs.sentryJava) }
+      dependencies { api(Config.Libs.sentryJava) }
     }
 
     androidMain.get().dependsOn(commonJvmMain)

@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
+/** The Span interface - represents a span of timed activity within the application. */
 public expect class Span private constructor() : ISpan {
   public fun getTraceId(): SentryId
 
@@ -36,14 +37,6 @@ public expect class Span private constructor() : ISpan {
    * @param status - the status
    */
   public override fun finish(status: SpanStatus?)
-
-  /**
-   * Sets span timestamp marking this span as finished.
-   *
-   * @param status - the status
-   * @param timestamp - the end timestamp
-   */
-  public override fun finish(status: SpanStatus?, timestamp: SentryDate?)
 
   /**
    * Sets span operation.

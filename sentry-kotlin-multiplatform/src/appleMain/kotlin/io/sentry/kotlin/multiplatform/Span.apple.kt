@@ -37,14 +37,6 @@ public actual class Span private actual constructor() : ISpan {
   }
 
   /**
-   * Sets span timestamp marking this span as finished.
-   *
-   * @param status - the status
-   * @param timestamp - the end timestamp
-   */
-  public actual override fun finish(status: SpanStatus?, timestamp: SentryDate?) {}
-
-  /**
    * Sets span operation.
    *
    * @param operation - the operation

@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
+/** Represents HTTP header "sentry-trace". */
 public expect class SentryTraceHeader {
   public fun getTraceId(): SentryId
 

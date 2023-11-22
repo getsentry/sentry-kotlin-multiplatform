@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+/** Represents a performance monitoring Span. */
 public expect interface ISpan {
   /**
    * Starts a child Span.
@@ -34,14 +35,6 @@ public expect interface ISpan {
    * @param status - the status
    */
   public fun finish(status: SpanStatus?)
-
-  /**
-   * Sets span timestamp marking this span as finished.
-   *
-   * @param status - the status
-   * @param timestamp - the end timestamp
-   */
-  public fun finish(status: SpanStatus?, timestamp: SentryDate?)
 
   /**
    * Sets span operation.

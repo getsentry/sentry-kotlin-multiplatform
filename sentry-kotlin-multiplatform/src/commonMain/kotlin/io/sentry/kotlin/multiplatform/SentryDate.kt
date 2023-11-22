@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+/** Abstract SentryDate class that describes a date. */
 public expect abstract class SentryDate : Comparable<SentryDate> {
   /** Returns the date in nanoseconds as long. */
   public abstract fun nanoTimestamp(): Long
@@ -24,9 +25,12 @@ public expect abstract class SentryDate : Comparable<SentryDate> {
    */
   public open fun diff(otherDate: SentryDate): Long
 
+  /** Returns true if this date is before the other date. */
   public fun isBefore(otherDate: SentryDate): Boolean
 
+  /** Returns true if this date is after the other date. */
   public fun isAfter(otherDate: SentryDate): Boolean
 
+  /** Returns 1 if this date is after the other date, -1 if it's before, 0 if it's the same. */
   public override fun compareTo(other: SentryDate): Int
 }

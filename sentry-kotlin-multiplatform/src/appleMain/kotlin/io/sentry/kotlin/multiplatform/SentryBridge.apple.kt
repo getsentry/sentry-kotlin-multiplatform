@@ -76,7 +76,7 @@ internal actual object SentryBridge {
 
   actual fun getSpan(): ISpan? {
     val cocoaSpan = SentrySDK.span
-    return Span(cocoaSpan)
+    return cocoaSpan?.let { Span(it) }
   }
 
   actual fun close() {

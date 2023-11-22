@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.CocoaSpanId
