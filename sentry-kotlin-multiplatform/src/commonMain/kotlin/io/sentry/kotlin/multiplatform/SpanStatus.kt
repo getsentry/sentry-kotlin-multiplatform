@@ -1,8 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-/**
- * SpanStatus is an enumeration of possible values for the status of a Span.
- */
+/** SpanStatus is an enumeration of possible values for the status of a Span. */
 public expect enum class SpanStatus {
   /** Not an error, returned on success. */
   OK,

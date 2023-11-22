@@ -43,8 +43,8 @@ class TransactionIntegrationTest : BaseSentryTest() {
     val child = transaction.startChild("child")
     child.finish()
     transaction.finish()
-    //TODO
-//    assertEquals(child.getParentSpanId()?.toString(), transaction.getSpanId().toString())
+    // TODO
+    //    assertEquals(child.getParentSpanId()?.toString(), transaction.getSpanId().toString())
   }
 
   @Test

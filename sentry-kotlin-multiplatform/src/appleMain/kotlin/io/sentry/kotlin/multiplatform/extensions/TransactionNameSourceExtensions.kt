@@ -16,7 +16,6 @@ typedef NS_ENUM(NSInteger, SentryTransactionNameSource) {
 };
  */
 
-
 internal fun NSInteger.toKmpTransactionNameSource(): TransactionNameSource {
   val transactionNameSource =
       when (this) {

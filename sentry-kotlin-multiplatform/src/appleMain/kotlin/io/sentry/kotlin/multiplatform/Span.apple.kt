@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform
 
-import cocoapods.Sentry.SentrySDK
 import cocoapods.Sentry.SentrySpanProtocol
 import io.sentry.kotlin.multiplatform.extensions.toCocoa
 import io.sentry.kotlin.multiplatform.extensions.toKmp

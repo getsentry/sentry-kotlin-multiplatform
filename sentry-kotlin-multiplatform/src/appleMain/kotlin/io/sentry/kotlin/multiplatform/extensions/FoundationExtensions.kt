@@ -20,11 +20,10 @@ internal fun <K, V> NSMutableDictionary.toMutableMap(): MutableMap<K, V> {
   return map
 }
 
-internal fun NSData.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toInt()).apply {
-    usePinned {
-        memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
+internal fun NSData.toByteArray(): ByteArray =
+    ByteArray(this@toByteArray.length.toInt()).apply {
+      usePinned { memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length) }
     }
-}
 
 internal fun ByteArray.toNSData(): NSData = memScoped {
   NSData.create(

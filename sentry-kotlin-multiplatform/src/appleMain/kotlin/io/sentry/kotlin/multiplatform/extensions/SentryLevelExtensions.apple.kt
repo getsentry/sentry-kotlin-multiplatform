@@ -1,8 +1,8 @@
 package io.sentry.kotlin.multiplatform.extensions
 
+import cocoapods.Sentry.SentryLevel as CocoaSentryLevel
 import io.sentry.kotlin.multiplatform.SentryLevel
 import kotlinx.cinterop.convert
-import cocoapods.Sentry.SentryLevel as CocoaSentryLevel
 
 internal fun SentryLevel.toCocoaSentryLevel() = this.toInt().convert<CocoaSentryLevel>()
 

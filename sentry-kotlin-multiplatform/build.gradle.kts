@@ -57,7 +57,7 @@ kotlin {
     }
 
     commonMain.dependencies { implementation(Config.Libs.kotlinStd) }
-      
+
     commonTest.dependencies {
       implementation(Config.TestLibs.kotlinCoroutinesCore)
       implementation(Config.TestLibs.kotlinCoroutinesTest)
