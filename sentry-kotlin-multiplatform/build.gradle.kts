@@ -1,14 +1,15 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin(Config.multiplatform)
-    kotlin(Config.cocoapods)
-    id(Config.androidGradle)
-    id(Config.BuildPlugins.buildConfig)
-    kotlin(Config.kotlinSerializationPlugin)
-    id(Config.QualityPlugins.kover)
-    id(Config.QualityPlugins.binaryCompatibility)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.cocoapods)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.agp)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.binary.compatibility)
+    alias(libs.plugins.build.konfig)
     `maven-publish`
 }
 
@@ -222,8 +223,12 @@ buildkonfig {
         buildConfigField(STRING, "SENTRY_ANDROID_PACKAGE_NAME", Config.Sentry.androidPackageName)
         buildConfigField(STRING, "SENTRY_COCOA_PACKAGE_NAME", Config.Sentry.cocoaPackageName)
 
-        buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
-        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
-        buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+        buildConfigField(STRING, "SENTRY_JAVA_VERSION", libs.versions.sentry.java.get())
+        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", libs.versions.sentry.java.get())
+        buildConfigField(STRING, "SENTRY_COCOA_VERSION", libs.versions.sentry.cocoa.get())
     }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }

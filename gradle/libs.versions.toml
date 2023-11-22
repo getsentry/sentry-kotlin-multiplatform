@@ -1,0 +1,56 @@
+[metadata]
+kmpCocoaSdk = "sentry.cocoa.kmp"
+kmpJavaSdk = "sentry.java.kmp"
+kmpAndroidSdk = "sentry.android.kmp"
+nativeJavaPackage = "maven:io.sentry:sentry"
+nativeAndroidPackage = "maven:io.sentry:sentry-android"
+nativeCocoaPackage = "cocoapods:sentry-cocoa"
+
+[versions]
+## Android SDK versions
+androidMinSdk = "16"
+androidCompileSdk = "33"
+
+## Cocoa deployment targets
+iosDeploymentTarget = "11.0"
+osxDeploymentTarget = "10.13"
+tvosDeploymentTarget = "11.0"
+watchosDeploymentTarget = "4.0"
+
+## Sentry SDK versions
+sentry_java = "6.33.1"
+sentry_cocoa = "8.4.0"
+
+agp = "7.4.2"
+kotlin = "1.8.0"
+compose = "1.3.1-rc01"
+kotlin-coroutines = "1.7.3"
+maven-publish = "0.18.0"
+dokka = "1.8.10"
+build-konfig = "0.13.3"
+spotless = "6.11.0"
+kover = "0.7.3"
+detekt = "1.22.0"
+binary-compatibility = "0.13.1"
+ktor = "2.3.0"
+robolectric = "4.9"
+junit-ktx = "1.1.5"
+mockito-core = "5.4.0"
+
+[libraries]
+
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+jetpack-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+agp = { id = "com.android.library", version.ref = "agp" }
+
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
+build-konfig = { id = "com.codingfeline.buildkonfig", version.ref = "build-konfig" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
