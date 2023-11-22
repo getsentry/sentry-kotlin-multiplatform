@@ -12,12 +12,8 @@
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
 
-@file:OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
-
 package io.sentry.kotlin.multiplatform.nsexception
 
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.convert
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber

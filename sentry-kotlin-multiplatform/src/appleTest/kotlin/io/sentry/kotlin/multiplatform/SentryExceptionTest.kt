@@ -1,14 +1,9 @@
-@file:OptIn(ExperimentalForeignApi::class, ExperimentalNativeApi::class, UnsafeNumber::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryException
 import io.sentry.kotlin.multiplatform.protocol.SentryException
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
-import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.Test
 
 class SentryExceptionTest {

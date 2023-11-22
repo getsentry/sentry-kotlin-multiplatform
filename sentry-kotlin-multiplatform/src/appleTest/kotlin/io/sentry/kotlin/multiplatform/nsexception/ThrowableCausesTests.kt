@@ -12,11 +12,8 @@
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
 
-@file:OptIn(ExperimentalNativeApi::class)
-
 package io.sentry.kotlin.multiplatform.nsexception
 
-import kotlin.experimental.ExperimentalNativeApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

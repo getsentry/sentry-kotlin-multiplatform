@@ -14,8 +14,6 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import kotlin.experimental.ExperimentalNativeApi
-
 /**
  * Returns a list with all the [causes][Throwable.cause].
  * The first element will be the cause, the second the cause of the cause, etc.
@@ -37,7 +35,6 @@ internal val Throwable.causes: List<Throwable> get() = buildList {
  * @param commonAddresses a list of addresses used to drop the last common addresses.
  * @see getStackTraceAddresses
  */
-@OptIn(ExperimentalNativeApi::class)
 internal fun Throwable.getFilteredStackTraceAddresses(
     keepLastInit: Boolean = false,
     commonAddresses: List<Long> = emptyList()

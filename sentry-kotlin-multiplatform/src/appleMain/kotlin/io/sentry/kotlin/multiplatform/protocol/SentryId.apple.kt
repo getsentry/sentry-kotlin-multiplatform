@@ -1,9 +1,7 @@
 package io.sentry.kotlin.multiplatform.protocol
 
 import io.sentry.kotlin.multiplatform.CocoaSentryId
-import kotlinx.cinterop.ExperimentalForeignApi
 
-@OptIn(ExperimentalForeignApi::class)
 public actual data class SentryId actual constructor(val sentryIdString: String) {
 
     public actual companion object {

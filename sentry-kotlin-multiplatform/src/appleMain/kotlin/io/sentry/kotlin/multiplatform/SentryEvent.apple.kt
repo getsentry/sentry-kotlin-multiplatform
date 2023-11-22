@@ -1,5 +1,3 @@
-@file:OptIn(UnsafeNumber::class, ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
@@ -11,8 +9,6 @@ import io.sentry.kotlin.multiplatform.protocol.Message
 import io.sentry.kotlin.multiplatform.protocol.SentryException
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 
 public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public actual var level: SentryLevel? = null

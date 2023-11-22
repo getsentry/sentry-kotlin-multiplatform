@@ -1,7 +1,5 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.convert
@@ -22,14 +20,12 @@ internal fun <K, V> NSMutableDictionary.toMutableMap(): MutableMap<K, V> {
     return map
 }
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun NSData.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toInt()).apply {
     usePinned {
         memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
     }
 }
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun ByteArray.toNSData(): NSData = memScoped {
     NSData.create(
         bytes = allocArrayOf(this@toNSData),

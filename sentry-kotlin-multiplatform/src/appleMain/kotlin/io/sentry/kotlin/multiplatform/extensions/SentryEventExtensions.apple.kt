@@ -3,10 +3,7 @@ package io.sentry.kotlin.multiplatform.extensions
 import cocoapods.Sentry.SentryId
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.SentryEvent
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun CocoaSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): CocoaSentryEvent {
     kmpEvent.level?.let { level = it.toCocoaSentryLevel() }
     kmpEvent.platform?.let { platform = it }

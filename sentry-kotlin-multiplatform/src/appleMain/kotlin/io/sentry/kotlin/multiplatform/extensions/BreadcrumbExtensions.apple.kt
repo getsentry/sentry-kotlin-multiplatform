@@ -2,10 +2,7 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.CocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun Breadcrumb.toCocoaBreadcrumb() = CocoaBreadcrumb().apply {
     val scope = this@toCocoaBreadcrumb
     setMessage(scope.message)
@@ -15,7 +12,6 @@ internal fun Breadcrumb.toCocoaBreadcrumb() = CocoaBreadcrumb().apply {
     setData(scope.getData()?.toMap())
 }
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal fun CocoaBreadcrumb.toKmpBreadcrumb() = Breadcrumb().apply {
     val scope = this@toKmpBreadcrumb
     message = scope.message

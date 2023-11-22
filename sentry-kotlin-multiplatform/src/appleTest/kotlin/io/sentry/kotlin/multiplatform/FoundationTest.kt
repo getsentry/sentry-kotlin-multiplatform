@@ -1,10 +1,7 @@
-@file:OptIn(UnsafeNumber::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toByteArray
 import io.sentry.kotlin.multiplatform.extensions.toNSData
-import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSNumber
 import platform.Foundation.NSString
 import platform.Foundation.NSUTF8StringEncoding

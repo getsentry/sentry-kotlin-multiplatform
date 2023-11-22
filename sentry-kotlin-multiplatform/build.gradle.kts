@@ -54,6 +54,14 @@ kotlin {
     macosArm64()
 
     sourceSets {
+        all {
+            languageSettings.apply {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                optIn("kotlinx.cinterop.UnsafeNumber")
+                optIn("kotlin.experimental.ExperimentalNativeApi")
+            }
+        }
+
         commonMain.dependencies {
             implementation(Config.Libs.kotlinStd)
         }

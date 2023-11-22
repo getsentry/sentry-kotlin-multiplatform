@@ -1,9 +1,6 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.applyCocoaBaseOptions
-import kotlinx.cinterop.ExperimentalForeignApi
 
 actual class SentryEventConfigurator {
     private val cocoaSentryEvent = CocoaSentryEvent()

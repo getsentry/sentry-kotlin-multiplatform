@@ -1,12 +1,8 @@
-@file:OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 
 actual data class BreadcrumbTestConverter actual constructor(val breadcrumb: Breadcrumb) {
 

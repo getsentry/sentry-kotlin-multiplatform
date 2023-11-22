@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
-
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentryAttachment
@@ -13,8 +11,6 @@ import cocoapods.Sentry.SentryOptions
 import cocoapods.Sentry.SentryScope
 import cocoapods.Sentry.SentryUser
 import cocoapods.Sentry.SentryUserFeedback
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 
 internal typealias CocoaUser = SentryUser
 internal typealias CocoaBreadcrumb = SentryBreadcrumb

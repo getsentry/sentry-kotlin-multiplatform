@@ -1,10 +1,7 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.CocoaMessage
 import io.sentry.kotlin.multiplatform.protocol.Message
-import kotlinx.cinterop.ExperimentalForeignApi
 
 internal fun CocoaMessage.toKmpMessage() = Message(
     message = message,

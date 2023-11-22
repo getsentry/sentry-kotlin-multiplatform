@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalForeignApi::class)
-
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.applyCocoaBaseOptions
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
-import kotlinx.cinterop.ExperimentalForeignApi
 
 actual class BreadcrumbConfigurator {
     private val cocoaBreadcrumb = CocoaBreadcrumb()

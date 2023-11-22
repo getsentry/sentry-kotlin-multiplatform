@@ -34,15 +34,12 @@ import NSException.Sentry.kSentryLevelFatal
 import NSException.Sentry.prepareEvent
 import NSException.Sentry.storeEnvelope
 import NSException.Sentry.threadInspector
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
  */
-@OptIn(ExperimentalForeignApi::class)
 internal fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
     return event?.takeUnless { it.isCrashEvent && (it.tags?.containsKey(KOTLIN_CRASH_TAG) ?: false) }
 }
@@ -53,7 +50,6 @@ internal fun dropKotlinCrashEvent(event: SentryEvent?): SentryEvent? {
  * Note: once the exception is logged the program will be terminated.
  * @see wrapUnhandledExceptionHook
  */
-@OptIn(ExperimentalForeignApi::class)
 internal fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
     val envelope = throwable.asSentryEnvelope()
     // The envelope will be persisted, so we can safely terminate afterwards.
@@ -72,7 +68,6 @@ internal const val KOTLIN_CRASH_TAG = "nsexceptionkt.kotlin_crashed"
 /**
  * Converts `this` [Throwable] to a [SentryEnvelope].
  */
-@OptIn(ExperimentalForeignApi::class)
 internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
     val event = asSentryEvent()
     val preparedEvent = SentrySDK.currentHub().let { hub ->
@@ -88,7 +83,6 @@ internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
  * Converts `this` [Throwable] to a [SentryEvent].
  */
 @Suppress("UnnecessaryOptInAnnotation")
-@OptIn(UnsafeNumber::class, ExperimentalForeignApi::class)
 private fun Throwable.asSentryEvent(): SentryEvent = SentryEvent(kSentryLevelFatal).apply {
     isCrashEvent = true
     @Suppress("UNCHECKED_CAST")
@@ -111,7 +105,6 @@ private fun Throwable.asSentryEvent(): SentryEvent = SentryEvent(kSentryLevelFat
 /**
  * Converts `this` [NSException] to a [SentryException].
  */
-@OptIn(ExperimentalForeignApi::class)
 private fun NSException.asSentryException(
     threadId: NSNumber?
 ): SentryException = SentryException(reason ?: "", name ?: "Throwable").apply {
@@ -127,6 +120,5 @@ private fun NSException.asSentryException(
     }
 }
 
-@OptIn(ExperimentalForeignApi::class)
 private val threadInspector: SentryThreadInspector?
     get() = SentrySDK.currentHub().getClient()?.threadInspector

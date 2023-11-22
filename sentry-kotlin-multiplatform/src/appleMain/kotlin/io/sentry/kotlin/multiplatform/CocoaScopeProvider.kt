@@ -8,11 +8,8 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.extensions.toMutableMap
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.UnsafeNumber
 import Scope.Sentry.SentryScope as PrivateCocoaScope
 
-@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
 
     /*
