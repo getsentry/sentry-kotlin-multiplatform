@@ -3,13 +3,14 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.fakes.createFakeTransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
+import io.sentry.kotlin.multiplatform.utils.fakeSentryIdString
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TracesSamplerRateTest {
     class Fixture {
-        var sampler: ((SamplingContext) -> Double?)? = null
+        val options = SentryOptions()
 
         private fun getSamplingContext(transactionContext: TransactionContext): SamplingContext {
             return SamplingContext(transactionContext)
@@ -19,13 +20,13 @@ class TracesSamplerRateTest {
             transactionContext: TransactionContext = createFakeTransactionContext(),
             sampler: (SamplingContext) -> Double?,
         ): SamplingContext {
-            this.sampler = sampler
+            this.options.tracesSampler = sampler
             return getSamplingContext(transactionContext)
         }
     }
 
     private fun SamplingContext.getSampleRate(): Double? {
-        return fixture.sampler?.invoke(this)
+        return fixture.options.tracesSampler?.invoke(this)
     }
 
     private lateinit var fixture: Fixture
@@ -99,7 +100,7 @@ class TracesSamplerRateTest {
     @Test
     fun `GIVEN transactionContext spanId WHEN tracerSampler set AND sampled THEN returns correct TransactionContext spanId`() {
         // GIVEN
-        val expectedSpanId = SpanId("123")
+        val expectedSpanId = SpanId(fakeSentryIdString)
         val transactionContext = createFakeTransactionContext(spanId = expectedSpanId)
 
         // WHEN
@@ -207,7 +208,7 @@ class TracesSamplerRateTest {
     @Test
     fun `GIVEN transactionContext traceId WHEN tracerSampler set AND sampled THEN returns correct TransactionContext traceId`() {
         // GIVEN
-        val expectedTraceId = SentryId("123")
+        val expectedTraceId = SentryId(fakeSentryIdString)
         val transactionContext = createFakeTransactionContext(traceId = expectedTraceId)
 
         // WHEN
