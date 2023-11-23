@@ -9,12 +9,12 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
-internal expect fun initSentry(context: Context? = null, configuration: OptionsConfiguration)
+internal expect fun initSentry(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
 
     actual fun init(context: Context, configuration: OptionsConfiguration) {
-        initSentry(context, configuration)
+        initSentry(configuration)
     }
 
     actual fun init(configuration: OptionsConfiguration) {
@@ -79,8 +79,7 @@ internal actual object SentryBridge {
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmScope) -> Unit {
         return {
             val jvmScopeProvider = JvmScopeProvider(it)
-            val scope = Scope(jvmScopeProvider)
-            scopeCallback.invoke(scope)
+            scopeCallback.invoke(jvmScopeProvider)
         }
     }
 }

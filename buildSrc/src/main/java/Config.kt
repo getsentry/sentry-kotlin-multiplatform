@@ -10,6 +10,8 @@ object Config {
     val gradleMavenPublishPlugin = "com.vanniktech.maven.publish"
     val androidGradle = "com.android.library"
     val kotlinSerializationPlugin = "plugin.serialization"
+    val dokka = "org.jetbrains.dokka"
+    val dokkaVersion = "1.8.10"
 
     object BuildPlugins {
         val buildConfig = "com.codingfeline.buildkonfig"
@@ -19,12 +21,18 @@ object Config {
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
         val spotlessVersion = "6.11.0"
+        val kover = "org.jetbrains.kotlinx.kover"
+        val koverVersion = "0.7.3"
+        val detekt = "io.gitlab.arturbosch.detekt"
+        val detektVersion = "1.22.0"
+        val binaryCompatibility = "org.jetbrains.kotlinx.binary-compatibility-validator"
+        val binaryCompatibilityVersion = "0.13.1"
     }
 
     object Libs {
         val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib"
 
-        val sentryJavaVersion = "6.14.0"
+        val sentryJavaVersion = "6.33.1"
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
@@ -47,6 +55,7 @@ object Config {
 
         val roboelectric = "org.robolectric:robolectric:4.9"
         val junitKtx = "androidx.test.ext:junit-ktx:1.1.5"
+        val mockitoCore = "org.mockito:mockito-core:5.4.0"
     }
 
     object Android {

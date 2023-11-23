@@ -1,7 +1,6 @@
 package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Attachment
-import io.sentry.kotlin.multiplatform.Context
 import io.sentry.kotlin.multiplatform.HttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
@@ -24,15 +23,6 @@ fun configureSentryScope() {
 /**
  * Initializes Sentry with given options.
  * Make sure to hook this into your native platforms as early as possible
- */
-fun initializeSentry(context: Context) {
-    Sentry.init(context, optionsConfiguration())
-}
-
-/**
- * Convenience initializer for Cocoa targets.
- * Kotlin -> ObjC doesn't support default parameters (yet).
- * Otherwise, you would need to do this: AppSetupKt.initializeSentry(context: nil) in Swift.
  */
 fun initializeSentry() {
     Sentry.init(optionsConfiguration())

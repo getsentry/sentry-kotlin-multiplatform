@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>SwallowedException:CocoaScopeProvider.kt$CocoaScopeProvider$e: Throwable</ID>
+    <ID>SwallowedException:SentryLevel.kt$SentryLevel.Companion$throwable: Throwable</ID>
+    <ID>TooGenericExceptionCaught:CocoaScopeProvider.kt$CocoaScopeProvider$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:SentryLevel.kt$SentryLevel.Companion$throwable: Throwable</ID>
+    <ID>TooGenericExceptionThrown:SentryKMP.kt$Sentry$throw RuntimeException("Uncaught Exception from Kotlin Multiplatform.")</ID>
+  </CurrentIssues>
+</SmellBaseline>

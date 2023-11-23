@@ -1,16 +1,21 @@
 import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
+import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
     id(Config.gradleMavenPublishPlugin).version(Config.gradleMavenPublishPluginVersion)
     id(Config.QualityPlugins.spotless).version(Config.QualityPlugins.spotlessVersion)
+    id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
+    id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
     id(Config.androidGradle).version(Config.agpVersion).apply(false)
     id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
     kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
+    id(Config.QualityPlugins.kover).version(Config.QualityPlugins.koverVersion).apply(false)
+    id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion).apply(false)
 }
 
 allprojects {
@@ -51,6 +56,12 @@ subprojects {
     }
 }
 
+subprojects {
+    if (project.name.contains("sentry-kotlin-multiplatform")) {
+        apply(plugin = Config.dokka)
+    }
+}
+
 spotless {
     lineEndings = LineEnding.UNIX
 
@@ -62,4 +73,40 @@ spotless {
         target("**/*.kts")
         ktlint()
     }
+}
+
+val detektConfigFilePath = "$rootDir/config/detekt/detekt.yml"
+val detektBaselineFilePath = "$rootDir/config/detekt/baseline.xml"
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files(detektConfigFilePath)
+    baseline = file(detektBaselineFilePath)
+}
+
+fun SourceTask.detektExcludes() {
+    exclude("**/build/**")
+    exclude("**/*.kts")
+    exclude("**/buildSrc/**")
+    exclude("**/*Test*/**")
+    exclude("**/resources/**")
+    exclude("**/sentry-samples/**")
+}
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html.required.set(true)
+    }
+    setSource(files(project.projectDir))
+    detektExcludes()
+}
+
+/** Task for generating a Detekt baseline.xml */
+val detektProjectBaseline by tasks.registering(io.gitlab.arturbosch.detekt.DetektCreateBaselineTask::class) {
+    buildUponDefaultConfig.set(true)
+    setSource(files(rootDir))
+    config.setFrom(files(detektConfigFilePath))
+    baseline.set(file(detektBaselineFilePath))
+    include("**/*.kt")
+    detektExcludes()
 }

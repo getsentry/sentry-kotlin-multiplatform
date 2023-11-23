@@ -15,8 +15,8 @@ internal fun CocoaSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): CocoaSentryE
     user = kmpEvent.user?.toCocoaUser()
     serverName = kmpEvent.serverName
     dist = kmpEvent.dist
-    breadcrumbs = kmpEvent.breadcrumbs?.map { it.toCocoaBreadcrumb() }?.toMutableList()
-    tags = kmpEvent.tags?.toMutableMap()
+    breadcrumbs = kmpEvent.breadcrumbs.map { it.toCocoaBreadcrumb() }.toMutableList()
+    tags = kmpEvent.tags.toMutableMap()
     eventId = SentryId(kmpEvent.eventId.toString())
     return this
 }
