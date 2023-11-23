@@ -18,7 +18,7 @@ class TracesSamplerRateTest {
 
         internal fun getSut(
             transactionContext: TransactionContext = createFakeTransactionContext(),
-            sampler: (SamplingContext) -> Double?,
+            sampler: (SamplingContext) -> Double?
         ): SamplingContext {
             this.options.tracesSampler = sampler
             return getSamplingContext(transactionContext)
