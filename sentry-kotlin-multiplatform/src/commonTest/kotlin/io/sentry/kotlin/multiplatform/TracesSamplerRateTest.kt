@@ -1,9 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.fakes.FakeTransactionContext
+import io.sentry.kotlin.multiplatform.fakes.createFakeTransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
-import io.sentry.kotlin.multiplatform.utils.createFakeTransactionContext
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,198 +23,238 @@ class FakeTransactionContext(
 ) : TransactionContext
 
 class TracesSamplerRateTest {
-    private lateinit var mockTransactionContext: TransactionContext
+    class Fixture {
+        var sampler: ((SamplingContext) -> Double?)? = null
+
+        private fun getSamplingContext(transactionContext: TransactionContext): SamplingContext {
+            return SamplingContext(transactionContext)
+        }
+
+        internal fun getSut(
+            transactionContext: TransactionContext = createFakeTransactionContext(),
+            sampler: (SamplingContext) -> Double?,
+        ): SamplingContext {
+            this.sampler = sampler
+            return getSamplingContext(transactionContext)
+        }
+    }
+
+    private fun SamplingContext.getSampleRate(): Double? {
+        return fixture.sampler?.invoke(this)
+    }
+
+    private lateinit var fixture: Fixture
 
     @BeforeTest
     fun setup() {
-        mockTransactionContext = createFakeTransactionContext()
+        fixture = Fixture()
     }
 
     @Test
-    fun `tracesSampler can return null sample rate`() {
-        val options = SentryOptions()
-        options.tracesSampler = {
-            null
-        }
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        val sampleRate = options.tracesSampler?.invoke(samplingContext)
-        assertEquals(null, sampleRate)
+    fun `GIVEN null sampleRate WHEN tracesSampler callback set to sampleRate THEN return null sample rate`() {
+        // GIVEN
+        val sampleRate = null
+
+        // WHEN
+        val sut = fixture.getSut { sampleRate }
+
+        // THEM
+        assertEquals(sampleRate, sut.getSampleRate())
     }
 
     @Test
-    fun `tracesSampler can return sample rate`() {
-        val options = SentryOptions()
-        options.tracesSampler = {
-            0.5
-        }
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        val sampleRate = options.tracesSampler?.invoke(samplingContext)
-        assertEquals(0.5, sampleRate)
+    fun `GIVEN sampleRate WHEN traceSampler callback set to sampleRate THEN return correct sample rate`() {
+        // GIVEN
+        val sampleRate = 0.5
+
+        // WHEN
+        val sut = fixture.getSut { sampleRate }
+
+        // THEN
+        assertEquals(sampleRate, sut.getSampleRate())
     }
 
     @Test
-    fun `tracesSampler can return different sample rate`() {
-        val options = SentryOptions()
-        options.tracesSampler = {
-            if (it.transactionContext.name == "test") {
-                0.5
+    fun `GIVEN different sampleRates WHEN traceSampler callback set to sampleRates THEN can return different sample rates`() {
+        // GIVEN
+        val sampleRate1 = 0.5
+        val sampleRate2 = 0.1
+
+        // WHEN
+        val sut = fixture.getSut {
+            if (it.transactionContext.name == "random") {
+                sampleRate1
             } else {
-                0.1
+                sampleRate2
             }
         }
 
-        // Assert that the sample rate is 0.5
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        val sampleRate = options.tracesSampler?.invoke(samplingContext)
-        assertEquals(0.5, sampleRate)
-
-        // Assert that the sample rate is 0.1
-        val differentSamplingContext = SamplingContext(
-            transactionContext = createFakeTransactionContext(name = "different")
-        )
-        val differentSampleRate = options.tracesSampler?.invoke(differentSamplingContext)
-        assertEquals(0.1, differentSampleRate)
+        // THEN
+        assertEquals(sampleRate2, sut.getSampleRate())
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext name`() {
-        val options = SentryOptions()
-        val expectedName = "test"
+    fun `GIVEN transactionContext name WHEN tracerSampler set AND sampled THEN returns correct TransactionContext name`() {
+        // GIVEN
+        val expectedName = "testName"
+        val transactionContext = createFakeTransactionContext(name = expectedName)
+
+        // WHEN
         var actualName = ""
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualName = it.transactionContext.name
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedName, actualName)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext spanId`() {
-        val options = SentryOptions()
-        val expectedSpanId = mockTransactionContext.spanId
+    fun `GIVEN transactionContext spanId WHEN tracerSampler set AND sampled THEN returns correct TransactionContext spanId`() {
+        // GIVEN
+        val expectedSpanId = SpanId("123")
+        val transactionContext = createFakeTransactionContext(spanId = expectedSpanId)
+
+        // WHEN
         var actualSpanId: SpanId? = null
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualSpanId = it.transactionContext.spanId
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedSpanId, actualSpanId)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext parentSpanId`() {
-        val options = SentryOptions()
-        val expectedParentSpanId = mockTransactionContext.parentSpanId
+    fun `GIVEN transactionContext parentSpanId WHEN tracerSampler set AND sampled THEN returns correct TransactionContext parentSpanId`() {
+        // GIVEN
+        val expectedParentSpanId = SpanId("123")
+        val transactionContext = createFakeTransactionContext(parentSpanId = expectedParentSpanId)
+
+        // WHEN
         var actualParentSpanId: SpanId? = null
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualParentSpanId = it.transactionContext.parentSpanId
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedParentSpanId, actualParentSpanId)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext description`() {
-        val options = SentryOptions()
-        val expectedDescription = mockTransactionContext.description
+    fun `GIVEN transactionContext description WHEN tracerSampler set AND sampled THEN returns correct TransactionContext description`() {
+        // GIVEN
+        val expectedDescription = "testDescription"
+        val transactionContext = createFakeTransactionContext(description = expectedDescription)
+
+        // WHEN
         var actualDescription: String? = null
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualDescription = it.transactionContext.description
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedDescription, actualDescription)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext sampled`() {
-        val options = SentryOptions()
-        val expectedSampled = mockTransactionContext.sampled
+    fun `GIVEN transactionContext sampled WHEN tracerSampler set AND sampled THEN returns correct TransactionContext sampled`() {
+        // GIVEN
+        val expectedSampled = false
+        val transactionContext = createFakeTransactionContext(sampled = expectedSampled)
+
+        // WHEN
         var actualSampled: Boolean? = null
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualSampled = it.transactionContext.sampled
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedSampled, actualSampled)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext parentSampled`() {
-        val options = SentryOptions()
-        val expectedParentSampled = mockTransactionContext.parentSampled
+    fun `GIVEN transactionContext parentSampled WHEN tracerSampler set AND sampled THEN returns correct TransactionContext parentSampled`() {
+        // GIVEN
+        val expectedParentSampled = false
+        val transactionContext = createFakeTransactionContext(parentSampled = expectedParentSampled)
+
+        // WHEN
         var actualParentSampled: Boolean? = null
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualParentSampled = it.transactionContext.parentSampled
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedParentSampled, actualParentSampled)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext operation`() {
-        val options = SentryOptions()
-        val expectedOperation = mockTransactionContext.operation
+    fun `GIVEN transactionContext operation WHEN tracerSampler set AND sampled THEN returns correct TransactionContext operation`() {
+        // GIVEN
+        val expectedOperation = "testOperation"
+        val transactionContext = createFakeTransactionContext(operation = expectedOperation)
+
+        // WHEN
         var actualOperation: String? = null
-        options.tracesSampler = {
+        val sut = fixture.getSut(transactionContext = transactionContext) {
             actualOperation = it.transactionContext.operation
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
+        // THEN
         assertEquals(expectedOperation, actualOperation)
     }
 
     @Test
-    fun `tracerSampler returns correct TransactionContext transactionNameSource`() {
-        val options = SentryOptions()
-        val expectedTransactionNameSource = mockTransactionContext.transactionNameSource
-        var actualTransactionNameSource: TransactionNameSource? = null
-        options.tracesSampler = {
-            actualTransactionNameSource = it.transactionContext.transactionNameSource
+    fun `GIVEN transactionContext traceId WHEN tracerSampler set AND sampled THEN returns correct TransactionContext traceId`() {
+        // GIVEN
+        val expectedTraceId = SentryId("123")
+        val transactionContext = createFakeTransactionContext(traceId = expectedTraceId)
+
+        // WHEN
+        var actualTraceId: SentryId? = null
+        val sut = fixture.getSut(transactionContext = transactionContext) {
+            actualTraceId = it.transactionContext.traceId
             null
         }
+        sut.getSampleRate()
 
-        val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext
-        )
-        options.tracesSampler?.invoke(samplingContext)
-        assertEquals(expectedTransactionNameSource, actualTransactionNameSource)
+        // THEN
+        assertEquals(expectedTraceId, actualTraceId)
+    }
+
+    @Test
+    fun `GIVEN tracesSampler set WHEN transaction finishes THEN tracesSampler receives correct TransactionContext operation`() {
+        // GIVEN
+        val expectedOperation = "testOperation"
+        var actualOperation = ""
+        Sentry.init {
+            it.dsn = fakeDsn
+            it.tracesSampler = { context ->
+                actualOperation = context.transactionContext.operation
+                null
+            }
+        }
+        val transaction = Sentry.startTransaction("test", "testOperation")
+
+        // WHEN
+        transaction.finish()
+
+        // THEN
+        assertEquals(expectedOperation, actualOperation)
     }
 }
