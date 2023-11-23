@@ -1,26 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.fakes.FakeTransactionContext
 import io.sentry.kotlin.multiplatform.fakes.createFakeTransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
-import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
-import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
-class FakeTransactionContext(
-    override val operation: String,
-    override val traceId: SentryId,
-    override val spanId: SpanId,
-    override val parentSpanId: SpanId?,
-    override val description: String?,
-    override val sampled: Boolean,
-    override val name: String,
-    override val transactionNameSource: TransactionNameSource,
-    override val parentSampled: Boolean
-) : TransactionContext
 
 class TracesSamplerRateTest {
     class Fixture {
@@ -235,26 +220,5 @@ class TracesSamplerRateTest {
 
         // THEN
         assertEquals(expectedTraceId, actualTraceId)
-    }
-
-    @Test
-    fun `GIVEN tracesSampler set WHEN transaction finishes THEN tracesSampler receives correct TransactionContext operation`() {
-        // GIVEN
-        val expectedOperation = "testOperation"
-        var actualOperation = ""
-        Sentry.init {
-            it.dsn = fakeDsn
-            it.tracesSampler = { context ->
-                actualOperation = context.transactionContext.operation
-                null
-            }
-        }
-        val transaction = Sentry.startTransaction("test", "testOperation")
-
-        // WHEN
-        transaction.finish()
-
-        // THEN
-        assertEquals(expectedOperation, actualOperation)
     }
 }

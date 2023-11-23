@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform.fakes
 
-import io.sentry.kotlin.multiplatform.FakeTransactionContext
 import io.sentry.kotlin.multiplatform.TransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
