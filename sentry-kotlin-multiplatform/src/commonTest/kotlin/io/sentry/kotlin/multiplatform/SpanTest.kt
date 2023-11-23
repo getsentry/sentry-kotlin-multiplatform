@@ -6,7 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class SpanTest {
+class SpanTest : BaseSentryTest() {
     class Fixture {
         private val operation = "test"
         private val description = "test description"
