@@ -1,8 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
-import cocoapods.Sentry.SentrySpanProtocol
-import io.sentry.kotlin.multiplatform.extensions.toCocoa
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
@@ -19,7 +17,6 @@ public actual abstract class Context
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
-
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         initSentry(configuration)
     }
@@ -69,17 +66,17 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(name: String, operation: String): Span {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation)
-        return CocoaSpanProvider(cocoaSpan)
+        return SpanProvider(cocoaSpan)
     }
 
     actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation, bindToScope)
-        return CocoaSpanProvider(cocoaSpan)
+        return SpanProvider(cocoaSpan)
     }
 
     actual fun getSpan(): Span? {
         val cocoaSpan = SentrySDK.span
-        return cocoaSpan?.let { CocoaSpanProvider(it) }
+        return cocoaSpan?.let { SpanProvider(it) }
     }
 
     actual fun close() {
@@ -89,7 +86,7 @@ internal actual object SentryBridge {
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit {
         return { cocoaScope ->
             val cocoaScopeProvider = cocoaScope?.let {
-                CocoaScopeProvider(it)
+                ScopeProvider(it)
             }
             cocoaScopeProvider?.let {
                 scopeCallback.invoke(it)

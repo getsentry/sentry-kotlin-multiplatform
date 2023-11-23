@@ -3,12 +3,12 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
-import io.sentry.kotlin.multiplatform.utils.createMockTransactionContext
+import io.sentry.kotlin.multiplatform.utils.createFakeTransactionContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MockTransactionContext(
+class FakeTransactionContext(
     override val operation: String,
     override val traceId: SentryId,
     override val spanId: SpanId,
@@ -25,7 +25,7 @@ class TracesSamplerRateTest {
 
     @BeforeTest
     fun setup() {
-        mockTransactionContext = createMockTransactionContext()
+        mockTransactionContext = createFakeTransactionContext()
     }
 
     @Test
@@ -74,7 +74,7 @@ class TracesSamplerRateTest {
 
         // Assert that the sample rate is 0.1
         val differentSamplingContext = SamplingContext(
-            transactionContext = createMockTransactionContext(name = "different"),
+            transactionContext = createFakeTransactionContext(name = "different"),
         )
         val differentSampleRate = options.tracesSampler?.invoke(differentSamplingContext)
         assertEquals(0.1, differentSampleRate)

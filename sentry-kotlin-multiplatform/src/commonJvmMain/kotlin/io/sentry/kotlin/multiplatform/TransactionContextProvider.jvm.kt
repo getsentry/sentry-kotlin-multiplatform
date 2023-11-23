@@ -5,7 +5,7 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
 
-internal class JvmTransactionContextProvider(jvmTransactionContext: JvmTransactionContext) :
+internal class TransactionContextProvider(jvmTransactionContext: JvmTransactionContext) :
     TransactionContext {
     override val name: String = jvmTransactionContext.name
     override val transactionNameSource: TransactionNameSource =

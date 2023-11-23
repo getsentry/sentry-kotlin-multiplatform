@@ -59,17 +59,17 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(name: String, operation: String): Span {
         val jvmTransaction = Sentry.startTransaction(name, operation)
-        return JvmSpanProvider(jvmTransaction)
+        return SpanProvider(jvmTransaction)
     }
 
     actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
         val jvmTransaction = Sentry.startTransaction(name, operation, bindToScope)
-        return JvmSpanProvider(jvmTransaction)
+        return SpanProvider(jvmTransaction)
     }
 
     actual fun getSpan(): Span? {
         val jvmSpan = Sentry.getSpan()
-        return jvmSpan?.let { JvmSpanProvider(it) }
+        return jvmSpan?.let { SpanProvider(it) }
     }
 
     actual fun close() {
@@ -78,7 +78,7 @@ internal actual object SentryBridge {
 
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmScope) -> Unit {
         return {
-            val jvmScopeProvider = JvmScopeProvider(it)
+            val jvmScopeProvider = ScopeProvider(it)
             scopeCallback.invoke(jvmScopeProvider)
         }
     }

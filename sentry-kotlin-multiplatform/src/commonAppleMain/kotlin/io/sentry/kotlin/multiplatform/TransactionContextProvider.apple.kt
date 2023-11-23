@@ -6,7 +6,7 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
 
-internal class CocoaTransactionContextProvider(cocoaTransactionContext: CocoaTransactionContext) :
+internal class TransactionContextProvider(cocoaTransactionContext: CocoaTransactionContext) :
     TransactionContext {
     override val name: String = cocoaTransactionContext.name
     override val transactionNameSource: TransactionNameSource =

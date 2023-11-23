@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import cocoapods.Sentry.SentrySpanStatus
 import io.sentry.kotlin.multiplatform.CocoaSpanStatus
 import io.sentry.kotlin.multiplatform.SpanStatus
 

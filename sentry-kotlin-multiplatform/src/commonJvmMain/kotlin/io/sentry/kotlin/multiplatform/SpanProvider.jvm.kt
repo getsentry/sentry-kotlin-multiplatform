@@ -5,15 +5,15 @@ import io.sentry.kotlin.multiplatform.extensions.toJvm
 import io.sentry.kotlin.multiplatform.extensions.toKmp
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
-internal class JvmSpanProvider(private val jvmSpan: ISpan) : Span {
+internal class SpanProvider(private val jvmSpan: ISpan) : Span {
     override fun startChild(operation: String): Span {
         val jvmSpan = jvmSpan.startChild(operation)
-        return JvmSpanProvider(jvmSpan)
+        return SpanProvider(jvmSpan)
     }
 
     override fun startChild(operation: String, description: String?): Span {
         val jvmSpan = jvmSpan.startChild(operation, description)
-        return JvmSpanProvider(jvmSpan)
+        return SpanProvider(jvmSpan)
     }
 
     override fun finish() {
