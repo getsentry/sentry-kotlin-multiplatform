@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class TransactionIntegrationTest: BaseSentryTest() {
+class TransactionIntegrationTest : BaseSentryTest() {
     @Test
     fun `tracesSampler can receive correct TransactionContext name`() {
         val expectedName = "test"

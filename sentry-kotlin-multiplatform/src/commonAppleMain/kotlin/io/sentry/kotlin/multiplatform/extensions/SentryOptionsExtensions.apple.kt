@@ -5,11 +5,11 @@ import cocoapods.Sentry.SentryHttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
-import io.sentry.kotlin.multiplatform.TransactionContextProvider
 import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.TransactionContextAdapter
+import io.sentry.kotlin.multiplatform.TransactionContextProvider
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
@@ -104,7 +104,8 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     failedRequestTargets = options.failedRequestTargets
     failedRequestStatusCodes = options.failedRequestStatusCodes.map {
         SentryHttpStatusCodeRange(
-            min = it.min.convert(), max = it.max.convert()
+            min = it.min.convert(),
+            max = it.max.convert()
         )
     }
 }

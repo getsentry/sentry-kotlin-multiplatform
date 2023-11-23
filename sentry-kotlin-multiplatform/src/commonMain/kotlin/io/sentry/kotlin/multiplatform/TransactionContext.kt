@@ -2,7 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource
 
-/** An interface representing the context of a transaction. */
+/** The Transaction Context defines the metadata for a Performance Monitoring Transaction. */
 public interface TransactionContext : SpanContext {
     /** The name of the transaction. */
     public val name: String

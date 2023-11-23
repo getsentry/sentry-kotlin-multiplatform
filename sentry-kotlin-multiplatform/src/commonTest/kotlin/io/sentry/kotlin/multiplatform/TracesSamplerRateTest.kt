@@ -35,7 +35,7 @@ class TracesSamplerRateTest {
             null
         }
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         assertEquals(null, sampleRate)
@@ -48,7 +48,7 @@ class TracesSamplerRateTest {
             0.5
         }
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         assertEquals(0.5, sampleRate)
@@ -67,14 +67,14 @@ class TracesSamplerRateTest {
 
         // Assert that the sample rate is 0.5
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         assertEquals(0.5, sampleRate)
 
         // Assert that the sample rate is 0.1
         val differentSamplingContext = SamplingContext(
-            transactionContext = createFakeTransactionContext(name = "different"),
+            transactionContext = createFakeTransactionContext(name = "different")
         )
         val differentSampleRate = options.tracesSampler?.invoke(differentSamplingContext)
         assertEquals(0.1, differentSampleRate)
@@ -91,7 +91,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedName, actualName)
@@ -108,7 +108,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedSpanId, actualSpanId)
@@ -125,7 +125,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedParentSpanId, actualParentSpanId)
@@ -142,7 +142,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedDescription, actualDescription)
@@ -159,7 +159,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedSampled, actualSampled)
@@ -176,7 +176,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedParentSampled, actualParentSampled)
@@ -193,7 +193,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedOperation, actualOperation)
@@ -210,7 +210,7 @@ class TracesSamplerRateTest {
         }
 
         val samplingContext = SamplingContext(
-            transactionContext = mockTransactionContext,
+            transactionContext = mockTransactionContext
         )
         options.tracesSampler?.invoke(samplingContext)
         assertEquals(expectedTransactionNameSource, actualTransactionNameSource)

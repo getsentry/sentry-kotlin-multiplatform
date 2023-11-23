@@ -13,7 +13,6 @@ import sample.kmp.app.configureSentryScope
 import sample.kmp.app.initializeSentry
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Thread.sleep
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

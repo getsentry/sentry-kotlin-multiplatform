@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+/** An interface representing a date. */
 public abstract class SentryDate : Comparable<SentryDate?> {
     /** Returns the date in nanoseconds as long.  */
     public abstract fun nanoTimestamp(): Long
@@ -8,7 +9,8 @@ public abstract class SentryDate : Comparable<SentryDate?> {
      * Calculates a date by using another date.
      *
      *
-     * This is a workaround for limited precision offered in some cases (e.g. when using [ ]). This makes it possible to have high precision duration by using
+     * This is a workaround for limited precision offered in some cases (e.g. when using [ ]).
+     * This makes it possible to have high precision duration by using
      * nanoseconds for the finish timestamp where normally the start and finish timestamps would only
      * offer millisecond precision.
      *

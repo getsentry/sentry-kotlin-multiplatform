@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform.protocol
 
-import io.sentry.kotlin.multiplatform.CocoaSentryId
 import io.sentry.kotlin.multiplatform.CocoaSpanId
 
 public actual data class SpanId actual constructor(val spanIdString: String) {

@@ -2,11 +2,11 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
-import io.sentry.kotlin.multiplatform.TransactionContextProvider
 import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.TransactionContextAdapter
+import io.sentry.kotlin.multiplatform.TransactionContextProvider
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
@@ -26,7 +26,6 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
         )
     }
 }
-
 
 /**
  * Applies the given base SentryOptions to this JvmSentryOption
