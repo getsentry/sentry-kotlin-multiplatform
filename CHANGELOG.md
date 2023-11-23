@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add APM ([#155](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/155))
+
 ## 0.3.0
 
 ### Features
