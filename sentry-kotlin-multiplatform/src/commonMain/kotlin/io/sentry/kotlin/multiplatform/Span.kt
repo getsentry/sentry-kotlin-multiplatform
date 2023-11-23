@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
+/** Represents a performance monitoring Span. */
 public interface Span {
     /**
      * Starts a child Span.
@@ -46,12 +47,18 @@ public interface Span {
     public val parentSpanId: SpanId?
 
     /**
-     * Sets the tag on span or transaction.
+     * Sets the tag on span.
      *
      * @param key the tag key
      * @param value the tag value
      */
     public fun setTag(key: String, value: String)
+
+    /**
+     * Returns the tag value from span.
+     *
+     * @return the tag value
+     */
     public fun getTag(key: String): String?
 
     /**
@@ -62,7 +69,7 @@ public interface Span {
     public val isFinished: Boolean
 
     /**
-     * Sets extra data on span or transaction.
+     * Sets extra data on span.
      *
      * @param key the data key
      * @param value the data value
@@ -70,7 +77,7 @@ public interface Span {
     public fun setData(key: String, value: Any)
 
     /**
-     * Returns extra data from span or transaction.
+     * Returns extra data from span.
      *
      * @return the data
      */
