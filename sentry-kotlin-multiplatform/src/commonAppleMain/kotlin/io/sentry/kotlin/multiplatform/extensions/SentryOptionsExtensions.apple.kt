@@ -8,7 +8,6 @@ import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.TransactionContextAdapter
 import io.sentry.kotlin.multiplatform.TransactionContextProvider
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
@@ -86,12 +85,14 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         }
     }
 
-    tracesSampler = {
-        it?.let { context ->
+    tracesSampler = { cocoaSamplingContext ->
+        cocoaSamplingContext?.let { context ->
+            val customSamplingContext: Map<String, Any?>? = context.customSamplingContext?.mapKeys { entry ->
+                entry.key.toString()
+            }
             val cocoaTransactionContext =
                 TransactionContextProvider(context.transactionContext)
-            val transactionContext = TransactionContextAdapter(cocoaTransactionContext)
-            val samplingContext = SamplingContext(transactionContext)
+            val samplingContext = SamplingContext(cocoaTransactionContext, customSamplingContext)
             // returns null if KMP tracesSampler is null
             val sampleRate = options.tracesSampler?.invoke(samplingContext)
             sampleRate?.let { unwrappedSampleRate ->

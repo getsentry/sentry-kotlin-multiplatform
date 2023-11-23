@@ -5,7 +5,6 @@ import io.sentry.kotlin.multiplatform.JvmSentryOptions
 import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.TransactionContextAdapter
 import io.sentry.kotlin.multiplatform.TransactionContextProvider
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
@@ -64,8 +63,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     }
     setTracesSampler { jvmSamplingContext ->
         val jvmTransactionContext = TransactionContextProvider(jvmSamplingContext.transactionContext)
-        val transactionContext = TransactionContextAdapter(jvmTransactionContext)
-        val samplingContext = SamplingContext(transactionContext)
+        val samplingContext = SamplingContext(jvmTransactionContext, jvmSamplingContext.customSamplingContext?.data)
         // returns null if KMP tracesSampler is null
         val sampleRate = options.tracesSampler?.invoke(samplingContext)
         sampleRate

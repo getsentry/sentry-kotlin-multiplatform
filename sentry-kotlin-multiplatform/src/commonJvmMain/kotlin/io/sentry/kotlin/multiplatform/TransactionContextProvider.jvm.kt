@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.extensions.toKmp
+import io.sentry.kotlin.multiplatform.converters.toKmp
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource

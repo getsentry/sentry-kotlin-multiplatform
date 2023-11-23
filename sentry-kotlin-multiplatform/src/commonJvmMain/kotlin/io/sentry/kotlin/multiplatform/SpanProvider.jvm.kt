@@ -1,8 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.ISpan
-import io.sentry.kotlin.multiplatform.extensions.toJvm
-import io.sentry.kotlin.multiplatform.extensions.toKmp
+import io.sentry.kotlin.multiplatform.converters.toJvm
+import io.sentry.kotlin.multiplatform.converters.toKmp
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
 internal class SpanProvider(private val jvmSpan: ISpan) : Span {

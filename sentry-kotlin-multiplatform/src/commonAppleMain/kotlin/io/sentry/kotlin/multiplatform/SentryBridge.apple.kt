@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.converters.toCocoa
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
@@ -71,6 +72,30 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation, bindToScope)
+        return SpanProvider(cocoaSpan)
+    }
+
+    actual fun startTransaction(
+        transactionContext: TransactionContext,
+        customSamplingContext: Map<String, Any>?
+    ): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithContext(
+            transactionContext.toCocoa(),
+            customSamplingContext?.toCocoa() ?: mapOf<Any?, Any?>()
+        )
+        return SpanProvider(cocoaSpan)
+    }
+
+    actual fun startTransaction(
+        transactionContext: TransactionContext,
+        customSamplingContext: Map<String, Any>?,
+        bindToScope: Boolean
+    ): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithContext(
+            transactionContext.toCocoa(),
+            bindToScope,
+            customSamplingContext?.toCocoa() ?: mapOf<Any?, Any?>()
+        )
         return SpanProvider(cocoaSpan)
     }
 

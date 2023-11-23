@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.Attachment
 import io.sentry.Breadcrumb
+import io.sentry.CustomSamplingContext
 import io.sentry.Scope
 import io.sentry.SentryEvent
 import io.sentry.SentryLevel
@@ -33,3 +34,4 @@ internal typealias JvmSpanStatus = SpanStatus
 internal typealias JvmSpanId = SpanId
 internal typealias JvmTransactionContext = TransactionContext
 internal typealias JvmTransactionNameSource = TransactionNameSource
+internal typealias JvmCustomSamplingContext = CustomSamplingContext

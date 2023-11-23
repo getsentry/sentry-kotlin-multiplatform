@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.converters.toKmpTransactionNameSource
 import io.sentry.kotlin.multiplatform.extensions.toBoolean
-import io.sentry.kotlin.multiplatform.extensions.toKmpTransactionNameSource
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 import io.sentry.kotlin.multiplatform.protocol.TransactionNameSource

@@ -31,3 +31,4 @@ internal typealias CocoaSpanStatus = SentrySpanStatus
 internal typealias CocoaSpanId = SentrySpanId
 internal typealias CocoaTransactionContext = SentryTransactionContext
 internal typealias CocoaSampleDecision = SentrySampleDecision
+internal typealias CocoaCustomSamplingContext = Map<Any?, *>

@@ -22,5 +22,5 @@ public interface SpanContext {
     public val description: String?
 
     /** Indicates if the span is sampled.*/
-    public val sampled: Boolean
+    public val sampled: Boolean?
 }
