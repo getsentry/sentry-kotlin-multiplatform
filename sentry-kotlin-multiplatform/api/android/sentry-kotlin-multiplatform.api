@@ -45,13 +45,6 @@ public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange {
 public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange$Companion {
 }
 
-public final class io/sentry/kotlin/multiplatform/Instrumenter : java/lang/Enum {
-	public static final field OTEL Lio/sentry/kotlin/multiplatform/Instrumenter;
-	public static final field SENTRY Lio/sentry/kotlin/multiplatform/Instrumenter;
-	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/Instrumenter;
-	public static fun values ()[Lio/sentry/kotlin/multiplatform/Instrumenter;
-}
-
 public final class io/sentry/kotlin/multiplatform/SamplingContext {
 	public fun <init> (Lio/sentry/kotlin/multiplatform/TransactionContext;)V
 	public final fun component1 ()Lio/sentry/kotlin/multiplatform/TransactionContext;
