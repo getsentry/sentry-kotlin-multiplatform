@@ -46,11 +46,13 @@ public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange$Companion 
 }
 
 public final class io/sentry/kotlin/multiplatform/SamplingContext {
-	public fun <init> (Lio/sentry/kotlin/multiplatform/TransactionContext;)V
+	public fun <init> (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;)V
 	public final fun component1 ()Lio/sentry/kotlin/multiplatform/TransactionContext;
-	public final fun copy (Lio/sentry/kotlin/multiplatform/TransactionContext;)Lio/sentry/kotlin/multiplatform/SamplingContext;
-	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/SamplingContext;Lio/sentry/kotlin/multiplatform/TransactionContext;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/SamplingContext;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/SamplingContext;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/SamplingContext;Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/SamplingContext;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCustomSamplingContext ()Ljava/util/Map;
 	public final fun getTransactionContext ()Lio/sentry/kotlin/multiplatform/TransactionContext;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -97,6 +99,8 @@ public final class io/sentry/kotlin/multiplatform/Sentry {
 	public final fun init (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)V
 	public final fun init (Lkotlin/jvm/functions/Function1;)V
 	public final fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+	public final fun startTransaction (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/Span;
+	public final fun startTransaction (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;Z)Lio/sentry/kotlin/multiplatform/Span;
 	public final fun startTransaction (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/Span;
 	public final fun startTransaction (Ljava/lang/String;Ljava/lang/String;Z)Lio/sentry/kotlin/multiplatform/Span;
 }
@@ -240,7 +244,7 @@ public abstract interface class io/sentry/kotlin/multiplatform/SpanContext {
 	public abstract fun getDescription ()Ljava/lang/String;
 	public abstract fun getOperation ()Ljava/lang/String;
 	public abstract fun getParentSpanId ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
-	public abstract fun getSampled ()Z
+	public abstract fun getSampled ()Ljava/lang/Boolean;
 	public abstract fun getSpanId ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
 	public abstract fun getTraceId ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
 }
@@ -276,8 +280,14 @@ public final class io/sentry/kotlin/multiplatform/SpanStatus$Companion {
 
 public abstract interface class io/sentry/kotlin/multiplatform/TransactionContext : io/sentry/kotlin/multiplatform/SpanContext {
 	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun getParentSampled ()Z
+	public abstract fun getParentSampled ()Ljava/lang/Boolean;
 	public abstract fun getTransactionNameSource ()Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+}
+
+public final class io/sentry/kotlin/multiplatform/TransactionContextKt {
+	public static final fun TransactionContext (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/TransactionContext;
+	public static final fun TransactionContext (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/TransactionContext;
+	public static final fun TransactionContext (Ljava/lang/String;Ljava/lang/String;Z)Lio/sentry/kotlin/multiplatform/TransactionContext;
 }
 
 public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb {
