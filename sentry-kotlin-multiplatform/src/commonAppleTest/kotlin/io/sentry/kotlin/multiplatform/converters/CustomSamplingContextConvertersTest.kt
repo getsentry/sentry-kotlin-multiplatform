@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class CustomSamplingContextConvertersTest {
-    // Test that toCocoa doesn't crash
     @Test
     fun `GIVEN customSamplingContext WHEN toCocoa called THEN value is CocoaCustomSamplingContext`() {
         // GIVEN
