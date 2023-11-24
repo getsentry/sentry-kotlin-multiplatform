@@ -16,7 +16,7 @@ style:
   MagicNumber:
     excludes:
       - "**/SpanStatus.*"
-      - "**/TransactionNameSourceExtensions.*"
+      - "**/TransactionNameSource*"
 naming:
   MatchingDeclarationName:
     active: false

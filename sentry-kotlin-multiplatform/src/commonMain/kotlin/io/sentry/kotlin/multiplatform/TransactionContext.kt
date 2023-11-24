@@ -16,12 +16,7 @@ public interface TransactionContext : SpanContext {
     public val parentSampled: Boolean
 }
 
-public fun TransactionContext(operation: String): TransactionContext = TransactionContextImpl(operation)
-public fun TransactionContext(operation: String, name: String): TransactionContext =
-    TransactionContextImpl(operation, name)
-public fun TransactionContext(operation: String, name: String, sampled: Boolean): TransactionContext =
-    TransactionContextImpl(operation, name, sampled)
-
+/** The default Transaction Context implementation. */
 public class TransactionContextImpl(override val operation: String) : TransactionContext {
     override var name: String = "<unlabeled transaction>"
     override var sampled: Boolean? = null
@@ -41,3 +36,9 @@ public class TransactionContextImpl(override val operation: String) : Transactio
         this.sampled = sampled
     }
 }
+
+public fun TransactionContext(operation: String): TransactionContext = TransactionContextImpl(operation)
+public fun TransactionContext(operation: String, name: String): TransactionContext =
+    TransactionContextImpl(operation, name)
+public fun TransactionContext(operation: String, name: String, sampled: Boolean): TransactionContext =
+    TransactionContextImpl(operation, name, sampled)
