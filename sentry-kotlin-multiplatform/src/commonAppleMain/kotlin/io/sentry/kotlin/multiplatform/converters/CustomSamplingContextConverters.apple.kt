@@ -1,7 +1,8 @@
 package io.sentry.kotlin.multiplatform.converters
 
 import io.sentry.kotlin.multiplatform.CocoaCustomSamplingContext
+import io.sentry.kotlin.multiplatform.CustomSamplingContext
 
-internal fun Map<String, Any>.toCocoa(): CocoaCustomSamplingContext {
+internal fun CustomSamplingContext.toCocoa(): CocoaCustomSamplingContext {
     return this as CocoaCustomSamplingContext
 }

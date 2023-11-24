@@ -33,12 +33,12 @@ internal expect object SentryBridge {
 
     fun startTransaction(
         transactionContext: TransactionContext,
-        customSamplingContext: Map<String, Any>?
+        customSamplingContext: CustomSamplingContext
     ): Span
 
     fun startTransaction(
         transactionContext: TransactionContext,
-        customSamplingContext: Map<String, Any>?,
+        customSamplingContext: CustomSamplingContext,
         bindToScope: Boolean
     ): Span
 

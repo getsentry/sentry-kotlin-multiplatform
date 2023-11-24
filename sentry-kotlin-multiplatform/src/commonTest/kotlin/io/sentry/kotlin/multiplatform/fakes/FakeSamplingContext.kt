@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.fakes
 
+import io.sentry.kotlin.multiplatform.CustomSamplingContext
 import io.sentry.kotlin.multiplatform.TransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
@@ -11,10 +12,10 @@ class FakeTransactionContext(
     override val spanId: SpanId,
     override val parentSpanId: SpanId?,
     override val description: String?,
-    override val sampled: Boolean,
+    override val sampled: Boolean?,
     override val name: String,
     override val transactionNameSource: TransactionNameSource,
-    override val parentSampled: Boolean
+    override val parentSampled: Boolean?
 ) : TransactionContext
 
 fun createFakeTransactionContext(
@@ -23,10 +24,10 @@ fun createFakeTransactionContext(
     spanId: SpanId = SpanId.EMPTY_ID,
     parentSpanId: SpanId? = SpanId("123"),
     description: String? = "test description",
-    sampled: Boolean = false,
+    sampled: Boolean? = null,
     name: String = "test",
     transactionNameSource: TransactionNameSource = TransactionNameSource.TASK,
-    parentSampled: Boolean = false
+    parentSampled: Boolean? = null
 ): TransactionContext {
     return FakeTransactionContext(
         operation = operation,
@@ -39,4 +40,8 @@ fun createFakeTransactionContext(
         transactionNameSource = transactionNameSource,
         parentSampled = parentSampled
     )
+}
+
+fun createFakeCustomSamplingContext(): CustomSamplingContext {
+    return mapOf("user_id" to 12345, "search_results" to "search results")
 }

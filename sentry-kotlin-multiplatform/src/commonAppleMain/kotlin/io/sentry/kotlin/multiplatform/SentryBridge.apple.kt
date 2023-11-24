@@ -77,7 +77,7 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(
         transactionContext: TransactionContext,
-        customSamplingContext: Map<String, Any>?
+        customSamplingContext: CustomSamplingContext
     ): Span {
         val cocoaSpan = SentrySDK.startTransactionWithContext(
             transactionContext.toCocoa(),
@@ -88,7 +88,7 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(
         transactionContext: TransactionContext,
-        customSamplingContext: Map<String, Any>?,
+        customSamplingContext: CustomSamplingContext,
         bindToScope: Boolean
     ): Span {
         val cocoaSpan = SentrySDK.startTransactionWithContext(

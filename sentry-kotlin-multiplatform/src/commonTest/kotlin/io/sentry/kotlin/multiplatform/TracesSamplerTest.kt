@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.fakes.createFakeCustomSamplingContext
 import io.sentry.kotlin.multiplatform.fakes.createFakeTransactionContext
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
@@ -7,24 +8,30 @@ import io.sentry.kotlin.multiplatform.utils.fakeSentryIdString
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-class TracesSamplerRateTest {
+class TracesSamplerTest {
     class Fixture {
         val options = SentryOptions()
 
-        private fun getSamplingContext(transactionContext: TransactionContext): SamplingContext {
-            return SamplingContext(transactionContext)
+        private fun getSamplingContext(
+            transactionContext: TransactionContext,
+            customSamplingContext: CustomSamplingContext
+        ): SamplingContext {
+            return SamplingContext(transactionContext, customSamplingContext)
         }
 
         internal fun getSut(
             transactionContext: TransactionContext = createFakeTransactionContext(),
+            customSamplingContext: CustomSamplingContext = createFakeCustomSamplingContext(),
             sampler: (SamplingContext) -> Double?
         ): SamplingContext {
             this.options.tracesSampler = sampler
-            return getSamplingContext(transactionContext)
+            return getSamplingContext(transactionContext, customSamplingContext)
         }
     }
 
+    /** Returns the sample rate or null if not sampled. */
     private fun SamplingContext.getSampleRate(): Double? {
         return fixture.options.tracesSampler?.invoke(this)
     }
@@ -77,6 +84,18 @@ class TracesSamplerRateTest {
 
         // THEN
         assertEquals(sampleRate2, sut.getSampleRate())
+    }
+
+    @Test
+    fun `GIVEN null sampleRate WHEN traceSampler callback set to sampleRate THEN return null`() {
+        // GIVEN
+        val sampleRate = null
+
+        // WHEN
+        val sut = fixture.getSut { sampleRate }
+
+        // THEN
+        assertNull(sut.getSampleRate())
     }
 
     @Test
@@ -221,5 +240,22 @@ class TracesSamplerRateTest {
 
         // THEN
         assertEquals(expectedTraceId, actualTraceId)
+    }
+
+    @Test
+    fun `GIVEN customSamplingContext WHEN tracerSampler set AND sampled THEN returns correct customSamplingContext`() {
+        // GIVEN
+        val expectedCustomSamplingContext = mapOf("user_id" to 12345)
+
+        // WHEN
+        var actualCustomSamplingContext: CustomSamplingContext = null
+        val sut = fixture.getSut(customSamplingContext = expectedCustomSamplingContext) {
+            actualCustomSamplingContext = it.customSamplingContext
+            null
+        }
+        sut.getSampleRate()
+
+        // THEN
+        assertEquals(expectedCustomSamplingContext, actualCustomSamplingContext)
     }
 }

@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.extensions
+package io.sentry.kotlin.multiplatform.converters
 
 import io.sentry.kotlin.multiplatform.CocoaSpanStatus
 import io.sentry.kotlin.multiplatform.SpanStatus

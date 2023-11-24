@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform.converters
 import io.sentry.kotlin.multiplatform.CocoaSampleDecision
 import io.sentry.kotlin.multiplatform.CocoaTransactionContext
 import io.sentry.kotlin.multiplatform.TransactionContext
-import io.sentry.kotlin.multiplatform.extensions.toSampleDecision
 
 /**
  * Converts a [CocoaTransactionContext] to a [TransactionContext].

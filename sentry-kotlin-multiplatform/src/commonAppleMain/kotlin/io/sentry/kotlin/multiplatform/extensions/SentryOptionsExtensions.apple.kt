@@ -5,6 +5,7 @@ import cocoapods.Sentry.SentryHttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
+import io.sentry.kotlin.multiplatform.CustomSamplingContext
 import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
@@ -87,9 +88,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
     tracesSampler = { cocoaSamplingContext ->
         cocoaSamplingContext?.let { context ->
-            val customSamplingContext: Map<String, Any?>? = context.customSamplingContext?.mapKeys { entry ->
-                entry.key.toString()
-            }
+            val customSamplingContext: CustomSamplingContext =
+                context.customSamplingContext?.mapKeys { entry ->
+                    entry.key.toString()
+                }
             val cocoaTransactionContext =
                 TransactionContextProvider(context.transactionContext)
             val samplingContext = SamplingContext(cocoaTransactionContext, customSamplingContext)

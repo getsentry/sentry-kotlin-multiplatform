@@ -15,7 +15,7 @@ style:
       - "**/Attachment.kt"
   MagicNumber:
     excludes:
-      - "**/SpanStatus.*"
+      - "**/SpanStatus*"
       - "**/TransactionNameSource*"
 naming:
   MatchingDeclarationName:
@@ -31,9 +31,9 @@ complexity:
     ]
   LongMethod:
     excludes:
-      - "**/SentryOptionsExtensions.*"
+      - "**/SentryOptions*"
   CyclomaticComplexMethod:
     excludes:
-      - "**/SpanStatusExtensions.*"
-      - "**/SentryOptionsExtensions.*"
+      - "**/SpanStatus*"
+      - "**/SentryOptions*"
     

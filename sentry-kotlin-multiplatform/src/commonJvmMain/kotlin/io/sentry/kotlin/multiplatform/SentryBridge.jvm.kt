@@ -10,11 +10,11 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import io.sentry.kotlin.multiplatform.CustomSamplingContext as KmpCustomSamplingContext
 
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
-
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         initSentry(configuration)
     }
@@ -71,7 +71,7 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(
         transactionContext: TransactionContext,
-        customSamplingContext: Map<String, Any>?
+        customSamplingContext: KmpCustomSamplingContext
     ): Span {
         val jvmCustomSamplingContext = customSamplingContext?.toJvm() ?: CustomSamplingContext()
         val jvmTransactionContext = transactionContext.toJvm()
@@ -82,7 +82,7 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(
         transactionContext: TransactionContext,
-        customSamplingContext: Map<String, Any>?,
+        customSamplingContext: KmpCustomSamplingContext,
         bindToScope: Boolean
     ): Span {
         val jvmCustomSamplingContext = customSamplingContext?.toJvm()

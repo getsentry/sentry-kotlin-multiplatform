@@ -143,6 +143,38 @@ public object Sentry {
     }
 
     /**
+     * Starts a new transaction and returns a new `Span` representing it. The `Span` can be
+     * used to record additional information about the transaction or add child spans.
+     *
+     * @param transactionContext The transaction context.
+     * @param customSamplingContext The custom sampling context.
+     * @return A new `Span` representing the transaction.
+     */
+    public fun startTransaction(
+        transactionContext: TransactionContext,
+        customSamplingContext: CustomSamplingContext
+    ): Span {
+        return SentryBridge.startTransaction(transactionContext, customSamplingContext)
+    }
+
+    /**
+     * Starts a new transaction and returns a new `Span` representing it. The `Span` can be
+     * used to record additional information about the transaction or add child spans.
+     *
+     * @param transactionContext The transaction context.
+     * @param customSamplingContext The custom sampling context.
+     * @param bindToScope Whether to bind the transaction to the current scope.
+     * @return A new `Span` representing the transaction.
+     */
+    public fun startTransaction(
+        transactionContext: TransactionContext,
+        customSamplingContext: CustomSamplingContext,
+        bindToScope: Boolean
+    ): Span {
+        return SentryBridge.startTransaction(transactionContext, customSamplingContext, bindToScope)
+    }
+
+    /**
      * Apple: returns the active root transaction
      *
      * JVM: returns the active transaction or the latest active child span

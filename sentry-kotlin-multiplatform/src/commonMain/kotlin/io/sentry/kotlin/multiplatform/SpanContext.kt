@@ -3,6 +3,8 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
+public typealias SamplingDecision = Boolean?
+
 /** An interface representing the context of a span. */
 public interface SpanContext {
     /** The name of the operation associated with the span.*/
@@ -22,5 +24,5 @@ public interface SpanContext {
     public val description: String?
 
     /** Indicates if the span is sampled.*/
-    public val sampled: Boolean?
+    public val sampled: SamplingDecision
 }

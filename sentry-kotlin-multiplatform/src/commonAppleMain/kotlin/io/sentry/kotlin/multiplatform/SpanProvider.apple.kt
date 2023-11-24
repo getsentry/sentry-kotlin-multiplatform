@@ -1,8 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySpanProtocol
-import io.sentry.kotlin.multiplatform.extensions.toCocoa
-import io.sentry.kotlin.multiplatform.extensions.toKmp
+import io.sentry.kotlin.multiplatform.converters.toCocoa
+import io.sentry.kotlin.multiplatform.converters.toKmp
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
 internal class SpanProvider(private val cocoaSpan: SentrySpanProtocol) : Span {

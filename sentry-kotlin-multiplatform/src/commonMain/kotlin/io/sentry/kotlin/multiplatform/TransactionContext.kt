@@ -13,32 +13,33 @@ public interface TransactionContext : SpanContext {
     public val transactionNameSource: TransactionNameSource
 
     /** Indicates if the parent transaction is sampled. */
-    public val parentSampled: Boolean
+    public val parentSampled: Boolean?
 }
 
 /** The default Transaction Context implementation. */
-public class TransactionContextImpl(override val operation: String) : TransactionContext {
+internal class TransactionContextImpl(override val operation: String) : TransactionContext {
     override var name: String = "<unlabeled transaction>"
     override var sampled: Boolean? = null
-    override var parentSampled: Boolean = false
+    override var parentSampled: Boolean? = null
     override var traceId: SentryId = SentryId.EMPTY_ID
     override var spanId: SpanId = SpanId.EMPTY_ID
     override var parentSpanId: SpanId? = null
     override var description: String? = null
     override var transactionNameSource: TransactionNameSource = TransactionNameSource.CUSTOM
 
-    public constructor(operation: String, name: String) : this(operation) {
+    constructor(operation: String, name: String) : this(operation) {
         this.name = name
     }
 
-    public constructor(operation: String, name: String, sampled: Boolean?) : this(operation, name) {
-        this.name = name
+    constructor(operation: String, name: String, sampled: Boolean?) : this(operation, name) {
         this.sampled = sampled
     }
 }
 
 public fun TransactionContext(operation: String): TransactionContext = TransactionContextImpl(operation)
-public fun TransactionContext(operation: String, name: String): TransactionContext =
-    TransactionContextImpl(operation, name)
-public fun TransactionContext(operation: String, name: String, sampled: Boolean): TransactionContext =
-    TransactionContextImpl(operation, name, sampled)
+
+public fun TransactionContext(name: String, operation: String): TransactionContext =
+    TransactionContextImpl(name = name, operation = operation)
+
+public fun TransactionContext(name: String, operation: String, sampled: Boolean): TransactionContext =
+    TransactionContextImpl(name = name, operation = operation, sampled = sampled)
