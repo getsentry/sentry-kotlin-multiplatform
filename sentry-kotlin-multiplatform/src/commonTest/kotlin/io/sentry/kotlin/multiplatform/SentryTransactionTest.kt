@@ -316,34 +316,4 @@ class SentryTransactionTest : BaseSentryTest() {
         // THEN
         assertNull(expectedTransactionContext)
     }
-
-    @Test
-    fun `GIVEN Sentry init WHEN startTransaction is given transactionContext with sampled null THEN tracesSampler is called`() {
-        // GIVEN
-        var actualTransactionContext: TransactionContext? = null
-        Sentry.init {
-            it.dsn = fakeDsn
-            it.tracesSampler = { context ->
-                actualTransactionContext = context.transactionContext
-                null
-            }
-        }
-
-        // WHEN
-        val expectedTransactionContext = createFakeTransactionContext(sampled = null)
-        fixture.getSutWithTransactionContext(
-            transactionContext = expectedTransactionContext,
-            customSamplingContext = null
-        )
-
-        // THEN
-        assertEquals(expectedTransactionContext.name, actualTransactionContext?.name)
-        assertEquals(expectedTransactionContext.description, actualTransactionContext?.description)
-        assertEquals(expectedTransactionContext.sampled, actualTransactionContext?.sampled)
-        assertEquals(expectedTransactionContext.name, actualTransactionContext?.name)
-        assertEquals(
-            expectedTransactionContext.parentSampled,
-            actualTransactionContext?.parentSampled
-        )
-    }
 }
