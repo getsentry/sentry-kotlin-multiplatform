@@ -8,15 +8,11 @@ on:
     paths-ignore:
       - "**/*.md"
 
-jobs:
-  cancel-previous-workflow:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@01ce38bf961b4e243a6342cbade0dbc8ba3f0432 # pin@0.12.0
-        with:
-          access_token: ${{ github.token }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
   build-apple:
     runs-on: macos-latest-large
 

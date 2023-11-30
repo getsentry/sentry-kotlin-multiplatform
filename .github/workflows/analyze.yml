@@ -7,18 +7,14 @@ on:
   pull_request:
     paths-ignore:
       - "**/*.md"
+      -
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  cancel-previous-workflow:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@01ce38bf961b4e243a6342cbade0dbc8ba3f0432 # pin@0.12.0
-        with:
-          access_token: ${{ github.token }}
-
   analyze:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: corretto
+          distribution: temurin
 
       - name: Analyze
         run: ./gradlew apiCheck detekt
