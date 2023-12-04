@@ -1,0 +1,29 @@
+name: "Analyze"
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      -
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Analyze
+        run: ./gradlew apiCheck detekt
