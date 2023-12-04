@@ -38,6 +38,12 @@ object Config {
 
         val sentryCocoaVersion = "8.4.0"
         val sentryCocoa = "Sentry"
+
+        object Samples {
+            val koinVersion = "3.5.2-RC1"
+            val koinCore = "io.insert-koin:koin-core:$koinVersion"
+            val koinAndroid = "io.insert-koin:koin-android:$koinVersion"
+        }
     }
 
     object TestLibs {

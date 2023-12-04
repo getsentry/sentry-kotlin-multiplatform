@@ -11,7 +11,6 @@ import sentry.kmp.demo.models.AuthenticationViewModel
 import sentry.kmp.demo.models.HomeViewModel
 
 class MainActivity : ComponentActivity(), KoinComponent {
-
     private val authenticationViewModel: AuthenticationViewModel by viewModel()
     private val homeViewModel: HomeViewModel by viewModel()
 
