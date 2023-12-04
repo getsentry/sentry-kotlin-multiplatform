@@ -15,6 +15,7 @@
 package io.sentry.kotlin.multiplatform.nsexception
 
 import kotlin.native.concurrent.freeze
+import kotlin.concurrent.AtomicReference
 
 /**
  * Wraps the unhandled exception hook such that the provided [hook] is invoked
@@ -24,7 +25,7 @@ import kotlin.native.concurrent.freeze
  * @see terminateWithUnhandledException
  */
 internal fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
-    val prevHook = kotlin.concurrent.AtomicReference<ReportUnhandledExceptionHook?>(null)
+    val prevHook = AtomicReference<ReportUnhandledExceptionHook?>(null)
     val wrappedHook: ReportUnhandledExceptionHook = {
         hook(it)
         prevHook.value?.invoke(it)
