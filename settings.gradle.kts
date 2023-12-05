@@ -46,5 +46,6 @@ KMP App with MVVM and Dependency Injection with Koin:
    - Android with Jetpack Compose
    - iOS with SwiftUI and SPM
 */
-include("sentry-samples:kmp-app-mvvm-di:shared")
-include("sentry-samples:kmp-app-mvvm-di:androidApp")
+// This is currently disabled because Koin does not support Kotlin 1.9.21 yet
+// include("sentry-samples:kmp-app-mvvm-di:shared")
+// include("sentry-samples:kmp-app-mvvm-di:androidApp")
