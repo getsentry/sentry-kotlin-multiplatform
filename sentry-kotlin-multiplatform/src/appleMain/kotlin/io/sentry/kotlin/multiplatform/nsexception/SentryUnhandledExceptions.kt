@@ -34,7 +34,6 @@ import NSException.Sentry.kSentryLevelFatal
 import NSException.Sentry.prepareEvent
 import NSException.Sentry.storeEnvelope
 import NSException.Sentry.threadInspector
-import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
@@ -84,7 +83,6 @@ internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
  * Converts `this` [Throwable] to a [SentryEvent].
  */
 @Suppress("UnnecessaryOptInAnnotation")
-@OptIn(UnsafeNumber::class)
 private fun Throwable.asSentryEvent(): SentryEvent = SentryEvent(kSentryLevelFatal).apply {
     isCrashEvent = true
     @Suppress("UNCHECKED_CAST")

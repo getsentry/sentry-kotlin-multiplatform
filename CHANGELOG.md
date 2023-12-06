@@ -1,17 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Kotlin version from v1.8.0 to v1.9.21 ([#146](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/146))
+
 ## 0.3.0
 
 ### Features
 
 - Add sample & trace rate configuration ([#144](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/144))
 - Remove need for context in Sentry.init for Android ([#117](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/117))
-
-### Dependencies
-
-- Bump Java SDK from v6.14.0 to v6.33.1 ([#139](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/139))
-  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#6331)
-  - [diff](https://github.com/getsentry/sentry-java/compare/6.14.0...6.33.1)
 
 ## 0.2.1
 

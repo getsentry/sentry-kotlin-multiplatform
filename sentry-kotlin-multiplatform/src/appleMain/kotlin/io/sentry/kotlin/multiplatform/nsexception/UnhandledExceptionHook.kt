@@ -14,7 +14,7 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import kotlin.native.concurrent.AtomicReference
+import kotlin.concurrent.AtomicReference
 import kotlin.native.concurrent.freeze
 
 /**
@@ -24,7 +24,6 @@ import kotlin.native.concurrent.freeze
  * @see setUnhandledExceptionHook
  * @see terminateWithUnhandledException
  */
-@OptIn(ExperimentalStdlibApi::class)
 internal fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
     val prevHook = AtomicReference<ReportUnhandledExceptionHook?>(null)
     val wrappedHook: ReportUnhandledExceptionHook = {

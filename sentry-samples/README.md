@@ -4,7 +4,7 @@
 This contains three samples of Kotlin Multiplatform projects showcasing the Sentry Kotlin Multiplatform SDK usage.
 - Sample 1: Android, iOS with Cocoapods, Desktop with Jetpack Compose
 - Sample 2: Android, iOS with Swift Package Manager, Desktop with Jetpack Compose
-- Sample 3: Android with Jetpack Compose, iOS with Jetpack Compose, MVVM and Dependency Injection with [Koin](https://insert-koin.io/)
+- Sample 3: Android with Jetpack Compose, iOS with SwiftUI and MVVM and Dependency Injection with [Koin](https://insert-koin.io/)
 
 ## Getting Started
 > All samples are configured as sub-projects. You need to open the root project in Android Studio and sync the gradle files.

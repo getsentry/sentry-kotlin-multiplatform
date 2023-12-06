@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace = "sentry.kmp.demo.android"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "sentry.kmp.demo"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
@@ -39,29 +39,33 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs += listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+        )
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0-dev-k1.8.0-33c0ad36f83"
+        kotlinCompilerExtensionVersion = "1.5.5"
     }
 }
 
 dependencies {
     implementation(rootProject.project(":sentry-samples:kmp-app-mvvm-di:shared"))
-    implementation("androidx.core:core-ktx:1.10.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation(Config.Libs.Samples.koinAndroid)
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
-    implementation("androidx.activity:activity-compose:1.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
-    implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation("androidx.navigation:navigation-runtime:2.5.3")
-    implementation("io.insert-koin:koin-android:3.4.0")
-    implementation("androidx.compose.compiler:compiler:1.4.0-dev-k1.8.0-33c0ad36f83")
-    implementation("androidx.compose.ui:ui:1.5.0-alpha02")
-    implementation("androidx.compose.ui:ui-tooling:1.5.0-alpha02")
-    implementation("androidx.compose.foundation:foundation:1.5.0-alpha02")
-    implementation("androidx.compose.material:material:1.5.0-alpha02")
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("androidx.activity:activity-compose:1.8.1")
+    implementation("androidx.lifecycle:lifecycle-runtime:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-runtime:2.7.5")
+    implementation("androidx.compose.compiler:compiler:1.5.5")
+    implementation("androidx.compose.ui:ui:1.6.0-beta02")
+    implementation("androidx.compose.ui:ui-tooling:1.6.0-beta02")
+    implementation("androidx.compose.foundation:foundation:1.6.0-beta02")
+    implementation("androidx.compose.material:material:1.6.0-beta02")
 }
 
 // Prevent Sentry from being included in the Android app through the AGP.
