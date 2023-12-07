@@ -21,5 +21,5 @@ internal fun CocoaBreadcrumb.toKmpBreadcrumb() = Breadcrumb().apply {
     map?.let {
         this.setData(it.toMutableMap())
     }
-    level = scope.level?.toKmpSentryLevel()
+    level = scope.level.toKmpSentryLevel()
 }

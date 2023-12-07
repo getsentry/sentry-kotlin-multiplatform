@@ -14,7 +14,6 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
-import NSException.Sentry.NSExceptionKt_SentryCrashStackCursorCleanup
 import NSException.Sentry.NSExceptionKt_SentryCrashStackCursorFromNSException
 import NSException.Sentry.NSExceptionKt_SentryMechanismSetNotHandled
 import NSException.Sentry.NSExceptionKt_SentryThreadSetCrashed
@@ -34,7 +33,6 @@ import NSException.Sentry.kSentryLevelFatal
 import NSException.Sentry.prepareEvent
 import NSException.Sentry.storeEnvelope
 import NSException.Sentry.threadInspector
-import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
@@ -84,7 +82,6 @@ internal fun Throwable.asSentryEnvelope(): SentryEnvelope {
  * Converts `this` [Throwable] to a [SentryEvent].
  */
 @Suppress("UnnecessaryOptInAnnotation")
-@OptIn(UnsafeNumber::class)
 private fun Throwable.asSentryEvent(): SentryEvent = SentryEvent(kSentryLevelFatal).apply {
     isCrashEvent = true
     @Suppress("UNCHECKED_CAST")
@@ -117,7 +114,6 @@ private fun NSException.asSentryException(
     stacktrace = threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
         val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)
         val stacktrace = stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
-        NSExceptionKt_SentryCrashStackCursorCleanup(cursor)
         stacktrace
     }
 }

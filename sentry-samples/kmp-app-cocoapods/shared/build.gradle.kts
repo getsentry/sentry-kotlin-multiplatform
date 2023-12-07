@@ -5,7 +5,9 @@ plugins {
 }
 
 kotlin {
-    android {
+    applyDefaultHierarchyTemplate()
+
+    androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
@@ -24,7 +26,7 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
-        pod("Sentry", "~> 8.4.0")
+        pod("Sentry", Config.Libs.sentryCocoaVersion)
 
         framework {
             baseName = "shared"
@@ -33,36 +35,12 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":sentry-kotlin-multiplatform"))
-            }
+        commonMain.dependencies {
+            api(project(":sentry-kotlin-multiplatform"))
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-        val jvmMain by getting
-        val androidMain by getting
-        val androidUnitTest by getting
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }

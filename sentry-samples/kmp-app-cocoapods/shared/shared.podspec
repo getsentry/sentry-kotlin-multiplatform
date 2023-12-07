@@ -9,7 +9,18 @@ Pod::Spec.new do |spec|
     spec.vendored_frameworks      = 'build/cocoapods/framework/shared.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '14.1'
-    spec.dependency 'Sentry', '~> 8.4.0'
+    spec.dependency 'Sentry', '8.17.1'
+                
+    if !Dir.exist?('build/cocoapods/framework/shared.framework') || Dir.empty?('build/cocoapods/framework/shared.framework')
+        raise "
+
+        Kotlin framework 'shared' doesn't exist yet, so a proper Xcode project can't be generated.
+        'pod install' should be executed after running ':generateDummyFramework' Gradle task:
+
+            ./gradlew :sentry-samples:kmp-app-cocoapods:shared:generateDummyFramework
+
+        Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
+    end
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sentry-samples:kmp-app-cocoapods:shared',
