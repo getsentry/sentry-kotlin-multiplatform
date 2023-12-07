@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.CustomSamplingContext
 import io.sentry.Sentry
+import io.sentry.TransactionOptions
 import io.sentry.kotlin.multiplatform.converters.toJvm
 import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
@@ -65,7 +66,10 @@ internal actual object SentryBridge {
     }
 
     actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
-        val jvmTransaction = Sentry.startTransaction(name, operation, bindToScope)
+        val jvmTransaction = Sentry.startTransaction(
+            name,
+            operation,
+            TransactionOptions().apply { this.isBindToScope = bindToScope })
         return SpanProvider(jvmTransaction)
     }
 
@@ -76,7 +80,9 @@ internal actual object SentryBridge {
         val jvmCustomSamplingContext = customSamplingContext?.toJvm() ?: CustomSamplingContext()
         val jvmTransactionContext = transactionContext.toJvm()
         val jvmTransaction =
-            Sentry.startTransaction(jvmTransactionContext, jvmCustomSamplingContext)
+            Sentry.startTransaction(jvmTransactionContext, TransactionOptions().apply {
+                this.customSamplingContext = jvmCustomSamplingContext
+            })
         return SpanProvider(jvmTransaction)
     }
 
@@ -88,7 +94,12 @@ internal actual object SentryBridge {
         val jvmCustomSamplingContext = customSamplingContext?.toJvm()
         val jvmTransactionContext = transactionContext.toJvm()
         val jvmTransaction =
-            Sentry.startTransaction(jvmTransactionContext, jvmCustomSamplingContext, bindToScope)
+            Sentry.startTransaction(
+                jvmTransactionContext,
+                TransactionOptions().apply {
+                    this.isBindToScope = bindToScope
+                    this.customSamplingContext = jvmCustomSamplingContext
+                })
         return SpanProvider(jvmTransaction)
     }
 
