@@ -69,7 +69,8 @@ internal actual object SentryBridge {
         val jvmTransaction = Sentry.startTransaction(
             name,
             operation,
-            TransactionOptions().apply { this.isBindToScope = bindToScope })
+            TransactionOptions().apply { this.isBindToScope = bindToScope }
+        )
         return SpanProvider(jvmTransaction)
     }
 
@@ -80,9 +81,12 @@ internal actual object SentryBridge {
         val jvmCustomSamplingContext = customSamplingContext?.toJvm() ?: CustomSamplingContext()
         val jvmTransactionContext = transactionContext.toJvm()
         val jvmTransaction =
-            Sentry.startTransaction(jvmTransactionContext, TransactionOptions().apply {
-                this.customSamplingContext = jvmCustomSamplingContext
-            })
+            Sentry.startTransaction(
+                jvmTransactionContext,
+                TransactionOptions().apply {
+                    this.customSamplingContext = jvmCustomSamplingContext
+                }
+            )
         return SpanProvider(jvmTransaction)
     }
 
@@ -99,7 +103,8 @@ internal actual object SentryBridge {
                 TransactionOptions().apply {
                     this.isBindToScope = bindToScope
                     this.customSamplingContext = jvmCustomSamplingContext
-                })
+                }
+            )
         return SpanProvider(jvmTransaction)
     }
 
