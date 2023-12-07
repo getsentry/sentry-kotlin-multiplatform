@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(rootProject.project(":sentry-samples:kmp-app-spm:shared"))
+    implementation(rootProject.project(":sentry-samples:kmp-app-cocoapods:shared"))
     implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.appcompat:appcompat:1.4.2")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
