@@ -101,7 +101,7 @@ internal actual object SentryBridge {
         Sentry.close()
     }
 
-    private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmScope) -> Unit {
+    private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmIScope) -> Unit {
         return {
             val jvmScopeProvider = ScopeProvider(it)
             scopeCallback.invoke(jvmScopeProvider)

@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("io.sentry.android.gradle") version "3.5.0"
+    id("io.sentry.android.gradle") version "4.0.0"
 }
 
 android {
