@@ -27,6 +27,7 @@ internal actual object SentryBridge {
     actual fun captureMessage(message: String): SentryId {
         val jvmSentryId = Sentry.captureMessage(message)
         return SentryId(jvmSentryId.toString())
+
     }
 
     actual fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
