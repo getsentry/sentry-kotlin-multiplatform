@@ -270,6 +270,7 @@ public final class io/sentry/kotlin/multiplatform/SpanStatus : java/lang/Enum {
 	public static final field UNIMPLEMENTED Lio/sentry/kotlin/multiplatform/SpanStatus;
 	public static final field UNKNOWN Lio/sentry/kotlin/multiplatform/SpanStatus;
 	public static final field UNKNOWN_ERROR Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SpanStatus;
 	public static fun values ()[Lio/sentry/kotlin/multiplatform/SpanStatus;
 }
@@ -440,6 +441,7 @@ public final class io/sentry/kotlin/multiplatform/protocol/TransactionNameSource
 	public static final field TASK Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
 	public static final field URL Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
 	public static final field VIEW Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
 	public static fun values ()[Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
 }

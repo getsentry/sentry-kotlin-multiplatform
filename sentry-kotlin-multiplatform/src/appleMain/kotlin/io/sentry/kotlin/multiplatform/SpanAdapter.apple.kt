@@ -5,16 +5,16 @@ import io.sentry.kotlin.multiplatform.converters.toCocoa
 import io.sentry.kotlin.multiplatform.converters.toKmp
 import io.sentry.kotlin.multiplatform.protocol.SpanId
 
-internal class SpanProvider(private val cocoaSpan: SentrySpanProtocol) : Span {
+internal class SpanAdapter(private val cocoaSpan: SentrySpanProtocol) : Span {
     override fun startChild(operation: String): Span {
         val cocoaSpan = cocoaSpan.startChildWithOperation(operation)
-        return SpanProvider(cocoaSpan)
+        return SpanAdapter(cocoaSpan)
     }
 
     override fun startChild(operation: String, description: String?): Span {
         val cocoaSpan =
             cocoaSpan.startChildWithOperation(operation = operation, description = description)
-        return SpanProvider(cocoaSpan)
+        return SpanAdapter(cocoaSpan)
     }
 
     override fun finish() {

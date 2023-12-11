@@ -5,6 +5,6 @@ import cocoapods.Sentry.SentryScope as CocoaScope
 actual abstract class BaseSentryScopeTest {
     actual fun initializeScope(): Scope {
         val cocoaScope = CocoaScope()
-        return ScopeProvider(cocoaScope)
+        return ScopeAdapter(cocoaScope)
     }
 }

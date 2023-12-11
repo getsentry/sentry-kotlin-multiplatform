@@ -62,7 +62,7 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(name: String, operation: String): Span {
         val jvmTransaction = Sentry.startTransaction(name, operation)
-        return SpanProvider(jvmTransaction)
+        return SpanAdapter(jvmTransaction)
     }
 
     actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
@@ -71,7 +71,7 @@ internal actual object SentryBridge {
             operation,
             TransactionOptions().apply { this.isBindToScope = bindToScope }
         )
-        return SpanProvider(jvmTransaction)
+        return SpanAdapter(jvmTransaction)
     }
 
     actual fun startTransaction(
@@ -87,7 +87,7 @@ internal actual object SentryBridge {
                     this.customSamplingContext = jvmCustomSamplingContext
                 }
             )
-        return SpanProvider(jvmTransaction)
+        return SpanAdapter(jvmTransaction)
     }
 
     actual fun startTransaction(
@@ -105,12 +105,12 @@ internal actual object SentryBridge {
                     this.customSamplingContext = jvmCustomSamplingContext
                 }
             )
-        return SpanProvider(jvmTransaction)
+        return SpanAdapter(jvmTransaction)
     }
 
     actual fun getSpan(): Span? {
         val jvmSpan = Sentry.getSpan()
-        return jvmSpan?.let { SpanProvider(it) }
+        return jvmSpan?.let { SpanAdapter(it) }
     }
 
     actual fun close() {
@@ -119,7 +119,7 @@ internal actual object SentryBridge {
 
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmIScope) -> Unit {
         return {
-            val jvmScopeProvider = ScopeProvider(it)
+            val jvmScopeProvider = ScopeAdapter(it)
             scopeCallback.invoke(jvmScopeProvider)
         }
     }

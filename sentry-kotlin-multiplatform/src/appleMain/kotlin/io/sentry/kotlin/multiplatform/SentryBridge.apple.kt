@@ -67,12 +67,12 @@ internal actual object SentryBridge {
 
     actual fun startTransaction(name: String, operation: String): Span {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation)
-        return SpanProvider(cocoaSpan)
+        return SpanAdapter(cocoaSpan)
     }
 
     actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
         val cocoaSpan = SentrySDK.startTransactionWithName(name, operation, bindToScope)
-        return SpanProvider(cocoaSpan)
+        return SpanAdapter(cocoaSpan)
     }
 
     actual fun startTransaction(
@@ -83,7 +83,7 @@ internal actual object SentryBridge {
             transactionContext.toCocoa(),
             customSamplingContext?.toCocoa() ?: mapOf<Any?, Any?>()
         )
-        return SpanProvider(cocoaSpan)
+        return SpanAdapter(cocoaSpan)
     }
 
     actual fun startTransaction(
@@ -96,12 +96,12 @@ internal actual object SentryBridge {
             bindToScope,
             customSamplingContext?.toCocoa() ?: mapOf<Any?, Any?>()
         )
-        return SpanProvider(cocoaSpan)
+        return SpanAdapter(cocoaSpan)
     }
 
     actual fun getSpan(): Span? {
         val cocoaSpan = SentrySDK.span
-        return cocoaSpan?.let { SpanProvider(it) }
+        return cocoaSpan?.let { SpanAdapter(it) }
     }
 
     actual fun close() {
@@ -110,10 +110,10 @@ internal actual object SentryBridge {
 
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit {
         return { cocoaScope ->
-            val cocoaScopeProvider = cocoaScope?.let {
-                ScopeProvider(it)
+            val cocoaScopeAdapter = cocoaScope?.let {
+                ScopeAdapter(it)
             }
-            cocoaScopeProvider?.let {
+            cocoaScopeAdapter?.let {
                 scopeCallback.invoke(it)
             }
         }
