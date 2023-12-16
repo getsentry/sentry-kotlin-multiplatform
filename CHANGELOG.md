@@ -12,6 +12,12 @@
     - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.4.0...8.17.1)
 - Bump Kotlin version from v1.8.0 to v1.9.21 ([#146](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/146))
 
+### Features
+
+- Bump Cocoa SDK from v8.17.1 to v8.17.2 ([#163](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/163))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8172)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.17.1...8.17.2)
+
 ## 0.3.0
 
 ### Features
