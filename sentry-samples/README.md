@@ -7,7 +7,7 @@ This contains three samples of Kotlin Multiplatform projects showcasing the Sent
 - Sample 3: Android with Jetpack Compose, iOS with SwiftUI and MVVM and Dependency Injection with [Koin](https://insert-koin.io/)
 
 ## Getting Started
-> All samples are configured as sub-projects. You need to open the root project in Android Studio and sync the gradle files.
+> All samples are configured as sub-projects. Open the root project in Android Studio and sync the gradle files.
 
 ### Requirements
 - Xcode (for iOS)
