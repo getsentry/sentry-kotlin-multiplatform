@@ -28,6 +28,7 @@ kotlin {
 
         pod("Sentry", Config.Libs.sentryCocoaVersion)
 
+
         framework {
             baseName = "shared"
             export(project(":sentry-kotlin-multiplatform"))
