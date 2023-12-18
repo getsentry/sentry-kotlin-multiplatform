@@ -12,7 +12,6 @@ object LoginImpl {
     /**
      * login() throws a either checked InvalidUsernameException
      * or an IllegalArgumentException that crashes the app.
-     *
      */
     fun login(username: String? = null) {
         try {
