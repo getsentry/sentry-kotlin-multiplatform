@@ -26,6 +26,7 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
+
         pod("Sentry", Config.Libs.sentryCocoaVersion)
 
         framework {
