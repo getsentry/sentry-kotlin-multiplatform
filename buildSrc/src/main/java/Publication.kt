@@ -1,8 +1,6 @@
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.file.CopySpec
-import org.gradle.jvm.tasks.Jar
 import java.io.File
 
 private object Consts {
