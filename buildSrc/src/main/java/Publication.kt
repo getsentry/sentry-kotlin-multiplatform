@@ -21,9 +21,9 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         // The current Kotlin version doesn't generate this *-all.jar anymore.
         // This is a placeholder for backwards compatibility with craft.
         from("build${sep}libs") {
-            include("${project.name}*javadoc*")
+            include("${project.name}-$version")
             rename {
-                it.replace("$version-javadoc", "$version-all")
+                it.replace("$version", "$version-all")
             }
         }
         from("build${sep}kotlinToolingMetadata") {
