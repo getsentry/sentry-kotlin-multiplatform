@@ -1,6 +1,8 @@
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.file.CopySpec
+import org.gradle.jvm.tasks.Jar
 import java.io.File
 
 private object Consts {
@@ -15,6 +17,14 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     this.getByName("main").contents {
         from("build${sep}publications${sep}kotlinMultiplatform") {
             renameModule(project.name, version = version)
+        }
+        // The current kotlin version doesn't generate this *-all.jar anymore.
+        // This is a placeholder for backwards compatibility with craft.
+        from("build${sep}libs") {
+            include("${project.name}*javadoc*")
+            rename {
+                it.replace("$version-javadoc", "$version-all")
+            }
         }
         from("build${sep}kotlinToolingMetadata") {
             rename {
