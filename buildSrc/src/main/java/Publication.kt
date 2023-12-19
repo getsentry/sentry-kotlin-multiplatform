@@ -16,6 +16,14 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         from("build${sep}publications${sep}kotlinMultiplatform") {
             renameModule(project.name, version = version)
         }
+        // The current Kotlin version doesn't generate this *-all.jar anymore.
+        // This is a placeholder for backwards compatibility with craft until we fix it there directly.
+        from("build${sep}libs") {
+            include("${project.name}-$version")
+            rename {
+                it.replace("$version", "$version-all")
+            }
+        }
         from("build${sep}kotlinToolingMetadata") {
             rename {
                 it.replace("kotlin-tooling-metadata.json", "${project.name}-$version-kotlin-tooling-metadata.json")
