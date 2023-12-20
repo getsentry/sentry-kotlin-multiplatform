@@ -185,7 +185,8 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
 
 private fun CopySpec.fromKlib(projectName: String, target: String, version: String) {
     val pos = projectName.length
-    from("build${sep}libs${sep}${target}${sep}main") {
+    from("build${sep}classes${sep}kotlin${sep}${target}${sep}main${sep}cinterop") {
+        include("*.klib")
         rename {
             it.replaceRange(pos, pos, "-${target.toLowerCase()}-$version")
         }
