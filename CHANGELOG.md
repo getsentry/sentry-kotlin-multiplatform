@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
 
 ### Dependencies
 
@@ -11,7 +11,7 @@
     - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8172)
     - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.4.0...8.17.2)
 - Bump Kotlin version from v1.8.0 to v1.9.21 ([#146](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/146)
-  
+
 ## 0.3.0
 
 ### Features
