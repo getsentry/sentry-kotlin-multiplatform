@@ -8,8 +8,8 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = properties["jvm.version"].toString()
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }

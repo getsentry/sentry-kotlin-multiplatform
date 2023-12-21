@@ -1,0 +1,53 @@
+[versions]
+## Sentry SDK versions
+sentry_java = "7.1.0"
+sentry_cocoa = "8.17.2"
+
+## Android
+agp = "7.4.2"
+
+## Kotlin
+kotlin = "1.9.10"
+
+## Tests
+kotlin-coroutines = "1.7.3"
+ktor = "2.3.6"
+robolectric = "4.9"
+junit-ktx = "1.1.5"
+mockito-core = "5.7.0"
+kotlinx-serialization-json = "1.6.2"
+
+## Analyze & Format
+binary-compatibility = "0.13.2"
+detekt = "1.23.4"
+spotless = "6.23.3"
+
+## Publish & Docs
+maven-publish = "0.18.0"
+dokka = "1.9.10"
+kover = "0.7.4"
+
+## Build
+build-konfig = "0.15.1"
+
+## Samples
+compose-multiplatform = "1.6.0-alpha01"
+
+[libraries]
+
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+agp = { id = "com.android.library", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
+build-konfig = { id = "com.codingfeline.buildkonfig", version.ref = "build-konfig" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+
+[bundles]

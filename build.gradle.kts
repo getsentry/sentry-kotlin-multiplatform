@@ -2,20 +2,21 @@ import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id(Config.gradleMavenPublishPlugin).version(Config.gradleMavenPublishPluginVersion)
-    id(Config.QualityPlugins.spotless).version(Config.QualityPlugins.spotlessVersion)
-    id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
-    id(Config.dokka).version(Config.dokkaVersion)
-    kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
-    kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
-    id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
-    id(Config.androidGradle).version(Config.agpVersion).apply(false)
-    id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
-    kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
-    id(Config.QualityPlugins.kover).version(Config.QualityPlugins.koverVersion).apply(false)
-    id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion).apply(false)
+    alias(libs.plugins.maven.publish)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.multiplatform).apply(false)
+    alias(libs.plugins.kotlin.cocoapods).apply(false)
+    alias(libs.plugins.compose.multiplatform).apply(false)
+    alias(libs.plugins.agp).apply(false)
+    alias(libs.plugins.build.konfig).apply(false)
+    alias(libs.plugins.kotlinx.serialization).apply(false)
+    alias(libs.plugins.kotlinx.kover).apply(false)
+    alias(libs.plugins.binary.compatibility).apply(false)
 }
 
 allprojects {
