@@ -1,12 +1,12 @@
 PODS:
-  - Sentry (8.17.2):
-    - Sentry/Core (= 8.17.2)
-    - SentryPrivate (= 8.17.2)
-  - Sentry/Core (8.17.2):
-    - SentryPrivate (= 8.17.2)
-  - SentryPrivate (8.17.2)
+  - Sentry (8.19.0):
+    - Sentry/Core (= 8.19.0)
+    - SentryPrivate (= 8.19.0)
+  - Sentry/Core (8.19.0):
+    - SentryPrivate (= 8.19.0)
+  - SentryPrivate (8.19.0)
   - shared (1.0):
-    - Sentry (= 8.17.2)
+    - Sentry (= 8.19.0)
 
 DEPENDENCIES:
   - shared (from `../shared`)
@@ -27,4 +27,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f282da88f39e69507b0a255187c8a6b644477756
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.14.3
