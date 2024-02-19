@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+- Add APM API ([#155](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/155))
+
 ### Dependencies
 
 - Bump Cocoa SDK from v8.17.2 to v8.20.0 ([#180](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/180), [#182](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/182))

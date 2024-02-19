@@ -49,5 +49,6 @@ private fun optionsConfiguration(): OptionsConfiguration {
                 event
             }
         }
+        it.tracesSampleRate = 1.0
     }
 }

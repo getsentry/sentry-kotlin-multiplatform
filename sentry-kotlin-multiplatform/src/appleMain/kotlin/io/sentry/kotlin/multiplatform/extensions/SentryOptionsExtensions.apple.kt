@@ -5,8 +5,11 @@ import cocoapods.Sentry.SentryHttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
+import io.sentry.kotlin.multiplatform.CustomSamplingContext
+import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
+import io.sentry.kotlin.multiplatform.TransactionContextProvider
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
@@ -24,6 +27,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     dsn = options.dsn
     attachStacktrace = options.attachStackTrace
     dist = options.dist
+    tracesSampleRate = options.tracesSampleRate?.let { NSNumber(it) }
     options.environment?.let {
         environment = it
     }
@@ -79,6 +83,23 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         } else {
             cocoaBreadcrumb?.toKmpBreadcrumb()
                 ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+        }
+    }
+
+    tracesSampler = { cocoaSamplingContext ->
+        cocoaSamplingContext?.let { context ->
+            val customSamplingContext: CustomSamplingContext =
+                context.customSamplingContext?.mapKeys { entry ->
+                    entry.key.toString()
+                }
+            val cocoaTransactionContext =
+                TransactionContextProvider(context.transactionContext)
+            val samplingContext = SamplingContext(cocoaTransactionContext, customSamplingContext)
+            // returns null if KMP tracesSampler is null
+            val sampleRate = options.tracesSampler?.invoke(samplingContext)
+            sampleRate?.let { unwrappedSampleRate ->
+                NSNumber(unwrappedSampleRate)
+            }
         }
     }
 

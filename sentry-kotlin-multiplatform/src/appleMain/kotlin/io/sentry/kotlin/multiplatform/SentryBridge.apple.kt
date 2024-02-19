@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.converters.toCocoa
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
@@ -17,7 +18,6 @@ public actual abstract class Context
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
 internal actual object SentryBridge {
-
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         initSentry(configuration)
     }
@@ -65,16 +65,55 @@ internal actual object SentryBridge {
         SentrySDK.setUser(user?.toCocoaUser())
     }
 
+    actual fun startTransaction(name: String, operation: String): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithName(name, operation)
+        return SpanAdapter(cocoaSpan)
+    }
+
+    actual fun startTransaction(name: String, operation: String, bindToScope: Boolean): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithName(name, operation, bindToScope)
+        return SpanAdapter(cocoaSpan)
+    }
+
+    actual fun startTransaction(
+        transactionContext: TransactionContext,
+        customSamplingContext: CustomSamplingContext
+    ): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithContext(
+            transactionContext.toCocoa(),
+            customSamplingContext?.toCocoa() ?: mapOf<Any?, Any?>()
+        )
+        return SpanAdapter(cocoaSpan)
+    }
+
+    actual fun startTransaction(
+        transactionContext: TransactionContext,
+        customSamplingContext: CustomSamplingContext,
+        bindToScope: Boolean
+    ): Span {
+        val cocoaSpan = SentrySDK.startTransactionWithContext(
+            transactionContext.toCocoa(),
+            bindToScope,
+            customSamplingContext?.toCocoa() ?: mapOf<Any?, Any?>()
+        )
+        return SpanAdapter(cocoaSpan)
+    }
+
+    actual fun getSpan(): Span? {
+        val cocoaSpan = SentrySDK.span
+        return cocoaSpan?.let { SpanAdapter(it) }
+    }
+
     actual fun close() {
         SentrySDK.close()
     }
 
     private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit {
         return { cocoaScope ->
-            val cocoaScopeProvider = cocoaScope?.let {
-                CocoaScopeProvider(it)
+            val cocoaScopeAdapter = cocoaScope?.let {
+                ScopeAdapter(it)
             }
-            cocoaScopeProvider?.let {
+            cocoaScopeAdapter?.let {
                 scopeCallback.invoke(it)
             }
         }

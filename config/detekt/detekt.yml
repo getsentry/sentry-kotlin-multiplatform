@@ -13,6 +13,10 @@ style:
   UnusedPrivateMember:
     excludes:
       - "**/Attachment.kt"
+  MagicNumber:
+    excludes:
+      - "**/SpanStatus*"
+      - "**/TransactionNameSource*"
 naming:
   MatchingDeclarationName:
     active: false
@@ -21,12 +25,15 @@ complexity:
     excludes: [
       "**/SentryKMP.kt",
       "**/SentryBridge.*",
-      "**/CocoaScopeProvider.kt",
+      "**/ScopeAdapter.*",
       "**/Scope.kt",
-      "**/JvmScopeProvider.kt",
       "**/Breadcrumb.kt",
     ]
   LongMethod:
     excludes:
-      - "**/SentryOptionsExtensions.*"
+      - "**/SentryOptions*"
+  CyclomaticComplexMethod:
+    excludes:
+      - "**/SpanStatus*"
+      - "**/SentryOptions*"
     

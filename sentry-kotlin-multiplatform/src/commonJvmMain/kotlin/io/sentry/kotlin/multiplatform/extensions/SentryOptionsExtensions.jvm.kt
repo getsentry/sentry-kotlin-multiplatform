@@ -2,8 +2,10 @@ package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
+import io.sentry.kotlin.multiplatform.SamplingContext
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
+import io.sentry.kotlin.multiplatform.TransactionContextProvider
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
@@ -33,6 +35,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     isAttachThreads = options.attachThreads
     isAttachStacktrace = options.attachStackTrace
     dist = options.dist
+    tracesSampleRate = options.tracesSampleRate
     environment = options.environment
     release = options.release
     isDebug = options.debug
@@ -49,7 +52,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
             options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
         }
     }
-    setBeforeSend { jvmSentryEvent, hint ->
+    setBeforeSend { jvmSentryEvent, _ ->
         if (options.beforeSend == null) {
             jvmSentryEvent
         } else {
@@ -57,5 +60,12 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
                 jvmSentryEvent.applyKmpEvent(it)
             }
         }
+    }
+    setTracesSampler { jvmSamplingContext ->
+        val jvmTransactionContext = TransactionContextProvider(jvmSamplingContext.transactionContext)
+        val samplingContext = SamplingContext(jvmTransactionContext, jvmSamplingContext.customSamplingContext?.data)
+        // returns null if KMP tracesSampler is null
+        val sampleRate = options.tracesSampler?.invoke(samplingContext)
+        sampleRate
     }
 }

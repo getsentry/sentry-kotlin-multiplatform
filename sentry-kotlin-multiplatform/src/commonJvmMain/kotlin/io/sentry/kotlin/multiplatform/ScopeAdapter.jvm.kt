@@ -8,8 +8,7 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
-internal class JvmScopeProvider(private val scope: JvmIScope) : Scope {
-
+internal class ScopeAdapter(private val scope: JvmIScope) : Scope {
     override var level: SentryLevel?
         set(value) {
             scope.level = value?.toJvmSentryLevel()

@@ -15,9 +15,12 @@ object LoginImpl {
      *
      */
     fun login(username: String? = null) {
+        val transaction = Sentry.startTransaction("Authentication", "login", bindToScope = true)
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
+            val activeSpan = Sentry.getSpan()
+            activeSpan?.startChild("child demo span", "child demo span description")
             val sentryId = Sentry.captureException(exception) {
                 val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
                 breadcrumb.setData("touch event", "on login")
@@ -37,8 +40,11 @@ object LoginImpl {
                 comments = "I had an error during login on ${Platform().platform}"
             }
             Sentry.captureUserFeedback(userFeedback)
+            activeSpan?.finish()
         } catch (exception: IllegalArgumentException) {
             throw exception
+        } finally {
+            transaction.finish()
         }
     }
 

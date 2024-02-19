@@ -44,6 +44,9 @@ public open class SentryOptions {
     /** Sets the distribution. Think about it together with release and environment */
     public var dist: String? = null
 
+    /** This function is called by TracesSampler to determine if transaction is sampled - meant to be sent to Sentry. */
+    public var tracesSampler: ((SamplingContext) -> Double?)? = null
+
     /** Whether to enable or disable automatic session tracking.  */
     public var enableAutoSessionTracking: Boolean = true
 

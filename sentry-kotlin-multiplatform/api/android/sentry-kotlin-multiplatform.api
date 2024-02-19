@@ -45,6 +45,19 @@ public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange {
 public final class io/sentry/kotlin/multiplatform/HttpStatusCodeRange$Companion {
 }
 
+public final class io/sentry/kotlin/multiplatform/SamplingContext {
+	public fun <init> (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;)V
+	public final fun component1 ()Lio/sentry/kotlin/multiplatform/TransactionContext;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/SamplingContext;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/SamplingContext;Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/SamplingContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCustomSamplingContext ()Ljava/util/Map;
+	public final fun getTransactionContext ()Lio/sentry/kotlin/multiplatform/TransactionContext;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class io/sentry/kotlin/multiplatform/Scope {
 	public abstract fun addAttachment (Lio/sentry/kotlin/multiplatform/Attachment;)V
 	public abstract fun addBreadcrumb (Lio/sentry/kotlin/multiplatform/protocol/Breadcrumb;)V
@@ -82,9 +95,14 @@ public final class io/sentry/kotlin/multiplatform/Sentry {
 	public final fun close ()V
 	public final fun configureScope (Lkotlin/jvm/functions/Function1;)V
 	public final fun crash ()V
+	public final fun getSpan ()Lio/sentry/kotlin/multiplatform/Span;
 	public final fun init (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)V
 	public final fun init (Lkotlin/jvm/functions/Function1;)V
 	public final fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+	public final fun startTransaction (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/Span;
+	public final fun startTransaction (Lio/sentry/kotlin/multiplatform/TransactionContext;Ljava/util/Map;Z)Lio/sentry/kotlin/multiplatform/Span;
+	public final fun startTransaction (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/Span;
+	public final fun startTransaction (Ljava/lang/String;Ljava/lang/String;Z)Lio/sentry/kotlin/multiplatform/Span;
 }
 
 public abstract class io/sentry/kotlin/multiplatform/SentryBaseEvent {
@@ -178,6 +196,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getSdk ()Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
 	public final fun getSessionTrackingIntervalMillis ()J
 	public final fun getTracesSampleRate ()Ljava/lang/Double;
+	public final fun getTracesSampler ()Lkotlin/jvm/functions/Function1;
 	public final fun setAttachScreenshot (Z)V
 	public final fun setAttachStackTrace (Z)V
 	public final fun setAttachThreads (Z)V
@@ -199,6 +218,78 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setSdk (Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;)V
 	public final fun setSessionTrackingIntervalMillis (J)V
 	public final fun setTracesSampleRate (Ljava/lang/Double;)V
+	public final fun setTracesSampler (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/Span {
+	public abstract fun finish ()V
+	public abstract fun finish (Lio/sentry/kotlin/multiplatform/SpanStatus;)V
+	public abstract fun getData (Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun getDescription ()Ljava/lang/String;
+	public abstract fun getOperation ()Ljava/lang/String;
+	public abstract fun getParentSpanId ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+	public abstract fun getSpanId ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+	public abstract fun getStatus ()Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public abstract fun getTag (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun isFinished ()Z
+	public abstract fun setData (Ljava/lang/String;Ljava/lang/Object;)V
+	public abstract fun setDescription (Ljava/lang/String;)V
+	public abstract fun setOperation (Ljava/lang/String;)V
+	public abstract fun setStatus (Lio/sentry/kotlin/multiplatform/SpanStatus;)V
+	public abstract fun setTag (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun startChild (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/Span;
+	public abstract fun startChild (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/Span;
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/SpanContext {
+	public abstract fun getDescription ()Ljava/lang/String;
+	public abstract fun getOperation ()Ljava/lang/String;
+	public abstract fun getParentSpanId ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+	public abstract fun getSampled ()Ljava/lang/Boolean;
+	public abstract fun getSpanId ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+	public abstract fun getTraceId ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+}
+
+public final class io/sentry/kotlin/multiplatform/SpanStatus : java/lang/Enum {
+	public static final field ABORTED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field ALREADY_EXISTS Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field CANCELLED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field Companion Lio/sentry/kotlin/multiplatform/SpanStatus$Companion;
+	public static final field DATA_LOSS Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field DEADLINE_EXCEEDED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field FAILED_PRECONDITION Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field INTERNAL_ERROR Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field INVALID_ARGUMENT Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field NOT_FOUND Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field OK Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field OUT_OF_RANGE Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field PERMISSION_DENIED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field RESOURCE_EXHAUSTED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field UNAUTHENTICATED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field UNAVAILABLE Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field UNIMPLEMENTED Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field UNKNOWN Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static final field UNKNOWN_ERROR Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public static fun values ()[Lio/sentry/kotlin/multiplatform/SpanStatus;
+}
+
+public final class io/sentry/kotlin/multiplatform/SpanStatus$Companion {
+	public final fun fromHttpStatusCode (I)Lio/sentry/kotlin/multiplatform/SpanStatus;
+	public final fun fromHttpStatusCode (Ljava/lang/Integer;Lio/sentry/kotlin/multiplatform/SpanStatus;)Lio/sentry/kotlin/multiplatform/SpanStatus;
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/TransactionContext : io/sentry/kotlin/multiplatform/SpanContext {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getParentSampled ()Ljava/lang/Boolean;
+	public abstract fun getTransactionNameSource ()Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+}
+
+public final class io/sentry/kotlin/multiplatform/TransactionContextKt {
+	public static final fun TransactionContext (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/TransactionContext;
+	public static final fun TransactionContext (Ljava/lang/String;Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/TransactionContext;
+	public static final fun TransactionContext (Ljava/lang/String;Ljava/lang/String;Z)Lio/sentry/kotlin/multiplatform/TransactionContext;
 }
 
 public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb {
@@ -325,6 +416,34 @@ public final class io/sentry/kotlin/multiplatform/protocol/SentryId {
 
 public final class io/sentry/kotlin/multiplatform/protocol/SentryId$Companion {
 	public final fun getEMPTY_ID ()Lio/sentry/kotlin/multiplatform/protocol/SentryId;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/SpanId {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/protocol/SpanId$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/protocol/SpanId;Ljava/lang/String;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSpanIdString ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/SpanId$Companion {
+	public final fun getEMPTY_ID ()Lio/sentry/kotlin/multiplatform/protocol/SpanId;
+}
+
+public final class io/sentry/kotlin/multiplatform/protocol/TransactionNameSource : java/lang/Enum {
+	public static final field COMPONENT Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static final field CUSTOM Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static final field ROUTE Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static final field TASK Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static final field URL Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static final field VIEW Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
+	public static fun values ()[Lio/sentry/kotlin/multiplatform/protocol/TransactionNameSource;
 }
 
 public final class io/sentry/kotlin/multiplatform/protocol/User {
