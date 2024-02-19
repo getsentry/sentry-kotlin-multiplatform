@@ -118,6 +118,13 @@ public object Sentry {
     }
 
     /**
+     * Returns true if the app crashed during last run.
+     */
+    public fun isCrashedLastRun(): Boolean {
+        return SentryBridge.isCrashedLastRun()
+    }
+
+    /**
      * Throws a RuntimeException, useful for testing.
      */
     public fun crash() {
