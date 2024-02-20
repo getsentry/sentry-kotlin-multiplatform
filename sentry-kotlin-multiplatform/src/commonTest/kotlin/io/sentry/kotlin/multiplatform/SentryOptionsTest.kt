@@ -127,4 +127,48 @@ class SentryOptionsTest : BaseSentryTest() {
         assertTrue(options.isAnrEnabled, "anrEnabled should be true by default.")
         assertEquals(5000L, options.anrTimeoutIntervalMillis, "anrTimeoutIntervalMillis should be 5000 milliseconds by default.")
     }
+
+    @Test
+    fun `GIVEN SentryOptions WHEN applyFromOptions THEN applies values to native options`() {
+        val options = SentryOptions().apply {
+            dsn = fakeDsn
+            attachStackTrace = false
+            release = "release"
+            debug = true
+            environment = "environment"
+            dist = "dist"
+            enableAutoSessionTracking = false
+            sessionTrackingIntervalMillis = 1000L
+            maxBreadcrumbs = 10
+            maxAttachmentSize = 100L
+            sampleRate = 0.5
+            tracesSampleRate = 0.5
+            attachScreenshot = true
+            attachViewHierarchy = true
+            enableAppHangTracking = false
+            appHangTimeoutIntervalMillis = 1000L
+            isAnrEnabled = false
+            anrTimeoutIntervalMillis = 1000L
+        }
+
+        val platformOptions = createPlatformOptions()
+        platformOptions.applyFromOptions(options)
+
+        assertEquals(fakeDsn, platformOptions.dsn)
+        assertFalse(platformOptions.attachStackTrace)
+        assertEquals("release", platformOptions.release)
+        assertTrue(platformOptions.debug)
+        assertEquals("environment", platformOptions.environment)
+        assertEquals("dist", platformOptions.dist)
+        assertFalse(platformOptions.enableAutoSessionTracking)
+        assertEquals(1000L, platformOptions.sessionTrackingIntervalMillis)
+        assertEquals(10, platformOptions.maxBreadcrumbs)
+        assertEquals(100L, platformOptions.maxAttachmentSize)
+        assertEquals(0.5, platformOptions.sampleRate)
+        assertEquals(0.5, platformOptions.tracesSampleRate)
+
+        platformOptions.assertPlatformSpecificOptions(options)
+    }
 }
+
+expect fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)

@@ -34,7 +34,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     maxAttachmentSize = options.maxAttachmentSize.convert()
     maxBreadcrumbs = options.maxBreadcrumbs.convert()
     enableAppHangTracking = options.enableAppHangTracking
-    appHangTimeoutInterval = options.appHangTimeoutIntervalMillis.convert()
+    appHangTimeoutInterval = options.appHangTimeoutIntervalMillis.toDouble()
     options.sampleRate?.let {
         sampleRate = NSNumber(double = it)
     }
