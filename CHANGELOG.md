@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Features
+
+- Add App Hang Tracking / ANR options ([#187](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/187))
+  - Use `isAnrEnabled` and `anrTimeoutIntervalMillis` to configure ANR tracking for Android
+  - Use `enableAppHangTracking` and `appHangTimeoutIntervalMillis` to configure App Hang tracking for iOS
+
 ### Dependencies
 
 - Bump Cocoa SDK from v8.17.2 to v8.20.0 ([#180](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/180), [#182](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/182))
