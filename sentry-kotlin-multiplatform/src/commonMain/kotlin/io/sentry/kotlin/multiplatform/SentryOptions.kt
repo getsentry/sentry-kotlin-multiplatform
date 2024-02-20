@@ -120,4 +120,52 @@ public open class SentryOptions {
      * transactions will be sent. Transactions are picked randomly. Default is null (disabled)
      */
     public var tracesSampleRate: Double? = null
+
+    /**
+     * Controls the tracking of App Hangs capturing moments when the application becomes unresponsive for a set duration.
+     *
+     * **Default**: Enabled.
+     *
+     * **Platform Availability**: Cocoa.
+     *
+     * For more information, refer to the Cocoa documentation on App Hangs:
+     * [Cocoa App Hangs](https://docs.sentry.io/platforms/apple/configuration/app-hangs/)
+     */
+    public var enableAppHangTracking: Boolean = true
+
+    /**
+     * Defines the timeout interval in milliseconds for detecting App Hangs.
+     *
+     * **Default**: 2000 milliseconds (2 seconds).
+     *
+     * **Platform Availability**: Cocoa.
+     *
+     * For configuration details and best practices, see:
+     * [Cocoa App Hangs](https://docs.sentry.io/platforms/apple/configuration/app-hangs/)
+     */
+    public var appHangTimeoutIntervalMillis: Long = 2000
+
+    /**
+     * Enables or disables ANR (Application Not Responding) tracking.
+     *
+     * **Default**: Enabled.
+     *
+     * **Platform Availability**: Android.
+     *
+     * Detailed documentation on ANR tracking can be found here:
+     * [Android ANR](https://docs.sentry.io/platforms/android/configuration/app-not-respond/)
+     */
+    public var isAnrEnabled: Boolean = true
+
+    /**
+     * Sets the timeout interval in milliseconds for considering an application as not responding (ANR).
+     *
+     * **Default**: 5000 milliseconds (5 seconds).
+     *
+     * **Platform Availability**: Android.
+     *
+     * For more information on configuring ANR detection, visit:
+     * [Android ANR](https://docs.sentry.io/platforms/android/configuration/app-not-respond/)
+     */
+    public var anrTimeoutIntervalMillis: Long = 5000
 }
