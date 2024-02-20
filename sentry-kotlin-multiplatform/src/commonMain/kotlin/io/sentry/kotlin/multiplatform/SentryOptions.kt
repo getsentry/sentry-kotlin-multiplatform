@@ -3,9 +3,9 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 
-private const val DEFAULT_MAX_BREADCRUMBS = 100
-private const val DEFAULT_MAX_ATTACHMENT_SIZE = 20 * 1024 * 1024L
-private const val DEFAULT_SESSION_INTERVAL_MILLIS = 30000L
+internal const val DEFAULT_MAX_BREADCRUMBS = 100
+internal const val DEFAULT_MAX_ATTACHMENT_SIZE = 20 * 1024 * 1024L
+internal const val DEFAULT_SESSION_INTERVAL_MILLIS = 30000L
 
 /** Sentry options that can be used to configure the SDK. */
 public open class SentryOptions {
