@@ -6,6 +6,8 @@ import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 internal const val DEFAULT_MAX_BREADCRUMBS = 100
 internal const val DEFAULT_MAX_ATTACHMENT_SIZE = 20 * 1024 * 1024L
 internal const val DEFAULT_SESSION_INTERVAL_MILLIS = 30000L
+internal const val DEFAULT_APPHANG_TIMEOUT_INTERVAL_MILLIS = 2000L
+internal const val DEFAULT_ANR_TIMEOUT_INTERVAL_MILLIS = 5000L
 
 /** Sentry options that can be used to configure the SDK. */
 public open class SentryOptions {
@@ -122,7 +124,8 @@ public open class SentryOptions {
     public var tracesSampleRate: Double? = null
 
     /**
-     * Controls the tracking of App Hangs capturing moments when the application becomes unresponsive for a set duration.
+     * Controls the tracking of App Hangs capturing moments when the application
+     * becomes unresponsive for a set duration.
      *
      * **Default**: Enabled.
      *
@@ -143,7 +146,7 @@ public open class SentryOptions {
      * For configuration details and best practices, see:
      * [Cocoa App Hangs](https://docs.sentry.io/platforms/apple/configuration/app-hangs/)
      */
-    public var appHangTimeoutIntervalMillis: Long = 2000
+    public var appHangTimeoutIntervalMillis: Long = DEFAULT_APPHANG_TIMEOUT_INTERVAL_MILLIS
 
     /**
      * Enables or disables ANR (Application Not Responding) tracking.
@@ -167,5 +170,5 @@ public open class SentryOptions {
      * For more information on configuring ANR detection, visit:
      * [Android ANR](https://docs.sentry.io/platforms/android/configuration/app-not-respond/)
      */
-    public var anrTimeoutIntervalMillis: Long = 5000
+    public var anrTimeoutIntervalMillis: Long = DEFAULT_ANR_TIMEOUT_INTERVAL_MILLIS
 }
