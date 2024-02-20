@@ -13,7 +13,7 @@ interface CommonPlatformOptions {
     val maxAttachmentSize: Long
     val sampleRate: Double?
     val tracesSampleRate: Double?
-    
+
     fun applyFromOptions(options: SentryOptions)
 }
 
