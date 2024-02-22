@@ -27,5 +27,7 @@ internal expect object SentryBridge {
 
     fun setUser(user: User?)
 
+    fun isCrashedLastRun(): Boolean
+
     fun close()
 }
