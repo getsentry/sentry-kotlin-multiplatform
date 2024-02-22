@@ -57,6 +57,10 @@ internal actual object SentryBridge {
         Sentry.setUser(user?.toJvmUser())
     }
 
+    actual fun isCrashedLastRun(): Boolean {
+        return Sentry.isCrashedLastRun() ?: false
+    }
+
     actual fun close() {
         Sentry.close()
     }

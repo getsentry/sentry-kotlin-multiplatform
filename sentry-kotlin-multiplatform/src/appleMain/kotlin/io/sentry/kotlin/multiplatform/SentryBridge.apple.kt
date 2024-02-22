@@ -65,6 +65,10 @@ internal actual object SentryBridge {
         SentrySDK.setUser(user?.toCocoaUser())
     }
 
+    actual fun isCrashedLastRun(): Boolean {
+        return SentrySDK.crashedLastRun()
+    }
+
     actual fun close() {
         SentrySDK.close()
     }
