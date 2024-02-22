@@ -122,6 +122,14 @@ kotlin {
         macosMain.get().dependsOn(commonTvWatchMacOsMain)
         watchosMain.get().dependsOn(commonTvWatchMacOsMain)
 
+        val commonTvWatchMacOsTest by creating {
+            dependsOn(appleTest.get())
+        }
+
+        tvosTest.get().dependsOn(commonTvWatchMacOsTest)
+        macosTest.get().dependsOn(commonTvWatchMacOsTest)
+        watchosTest.get().dependsOn(commonTvWatchMacOsTest)
+
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"

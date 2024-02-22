@@ -4,6 +4,10 @@
 
 ### Features
 
+- Add App Hang Tracking / ANR options ([#187](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/187))
+  - Use `isAnrEnabled` and `anrTimeoutIntervalMillis` to configure ANR tracking for Android
+  - Use `enableAppHangTracking` and `appHangTimeoutIntervalMillis` to configure App Hang tracking for iOS
+  - Both options are enabled by default
 - Add isCrashedLastRun ([#186](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/186))
   - You can use it with `Sentry.isCrashedLastRun()`
 

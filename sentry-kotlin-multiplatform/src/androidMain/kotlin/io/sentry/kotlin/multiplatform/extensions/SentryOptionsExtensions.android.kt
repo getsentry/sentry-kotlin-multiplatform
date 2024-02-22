@@ -12,6 +12,8 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     // Apply Android specific options
     it.isAttachScreenshot = this.attachScreenshot
     it.isAttachViewHierarchy = this.attachViewHierarchy
+    it.isAnrEnabled = this.isAnrEnabled
+    it.anrTimeoutIntervalMillis = this.anrTimeoutIntervalMillis
 
     it.sdkVersion?.name = this.sdk?.name ?: BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME
     it.sdkVersion?.version = this.sdk?.version ?: BuildKonfig.VERSION_NAME

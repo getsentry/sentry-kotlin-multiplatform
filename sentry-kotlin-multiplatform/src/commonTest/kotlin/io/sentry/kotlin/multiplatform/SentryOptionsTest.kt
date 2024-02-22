@@ -4,6 +4,9 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class SentryOptionsTest : BaseSentryTest() {
     @Test
@@ -93,4 +96,79 @@ class SentryOptionsTest : BaseSentryTest() {
 
         assertEquals(null, modifiedBreadcrumb)
     }
+
+    @Test
+    fun `GIVEN SentryOptions THEN default values are set`() {
+        val options = SentryOptions()
+
+        assertNull(options.dsn)
+        assertTrue(options.attachStackTrace)
+        assertTrue(options.attachThreads)
+        assertNull(options.release)
+        assertFalse(options.debug)
+        assertNull(options.environment)
+        assertNull(options.dist)
+        assertTrue(options.enableAutoSessionTracking)
+        assertEquals(DEFAULT_SESSION_INTERVAL_MILLIS, options.sessionTrackingIntervalMillis)
+        assertFalse(options.attachScreenshot)
+        assertNull(options.beforeBreadcrumb)
+        assertNull(options.beforeSend)
+        assertNull(options.sdk)
+        assertEquals(DEFAULT_MAX_BREADCRUMBS, options.maxBreadcrumbs)
+        assertEquals(DEFAULT_MAX_ATTACHMENT_SIZE, options.maxAttachmentSize)
+        assertFalse(options.attachViewHierarchy)
+        assertTrue(options.enableCaptureFailedRequests)
+        assertEquals(listOf(HttpStatusCodeRange()), options.failedRequestStatusCodes)
+        assertEquals(listOf(".*"), options.failedRequestTargets)
+        assertNull(options.sampleRate)
+        assertNull(options.tracesSampleRate)
+        assertTrue(options.enableAppHangTracking)
+        assertEquals(2000L, options.appHangTimeoutIntervalMillis)
+        assertTrue(options.isAnrEnabled)
+        assertEquals(5000L, options.anrTimeoutIntervalMillis)
+    }
+
+    @Test
+    fun `GIVEN SentryOptions WHEN applyFromOptions THEN applies values to native options`() {
+        val options = SentryOptions().apply {
+            dsn = fakeDsn
+            attachStackTrace = false
+            release = "release"
+            debug = true
+            environment = "environment"
+            dist = "dist"
+            enableAutoSessionTracking = false
+            sessionTrackingIntervalMillis = 1000L
+            maxBreadcrumbs = 10
+            maxAttachmentSize = 100L
+            sampleRate = 0.5
+            tracesSampleRate = 0.5
+            attachScreenshot = true
+            attachViewHierarchy = true
+            enableAppHangTracking = false
+            appHangTimeoutIntervalMillis = 1000L
+            isAnrEnabled = false
+            anrTimeoutIntervalMillis = 1000L
+        }
+
+        val platformOptions = createPlatformOptions()
+        platformOptions.applyFromOptions(options)
+
+        assertEquals(fakeDsn, platformOptions.dsn)
+        assertFalse(platformOptions.attachStackTrace)
+        assertEquals("release", platformOptions.release)
+        assertTrue(platformOptions.debug)
+        assertEquals("environment", platformOptions.environment)
+        assertEquals("dist", platformOptions.dist)
+        assertFalse(platformOptions.enableAutoSessionTracking)
+        assertEquals(1000L, platformOptions.sessionTrackingIntervalMillis)
+        assertEquals(10, platformOptions.maxBreadcrumbs)
+        assertEquals(100L, platformOptions.maxAttachmentSize)
+        assertEquals(0.5, platformOptions.sampleRate)
+        assertEquals(0.5, platformOptions.tracesSampleRate)
+
+        platformOptions.assertPlatformSpecificOptions(options)
+    }
 }
+
+expect fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)

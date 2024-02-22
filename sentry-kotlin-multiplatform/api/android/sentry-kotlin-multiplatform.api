@@ -158,6 +158,8 @@ public final class io/sentry/kotlin/multiplatform/SentryLevel : java/lang/Enum {
 
 public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public fun <init> ()V
+	public final fun getAnrTimeoutIntervalMillis ()J
+	public final fun getAppHangTimeoutIntervalMillis ()J
 	public final fun getAttachScreenshot ()Z
 	public final fun getAttachStackTrace ()Z
 	public final fun getAttachThreads ()Z
@@ -167,6 +169,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getDebug ()Z
 	public final fun getDist ()Ljava/lang/String;
 	public final fun getDsn ()Ljava/lang/String;
+	public final fun getEnableAppHangTracking ()Z
 	public final fun getEnableAutoSessionTracking ()Z
 	public final fun getEnableCaptureFailedRequests ()Z
 	public final fun getEnvironment ()Ljava/lang/String;
@@ -179,6 +182,10 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getSdk ()Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
 	public final fun getSessionTrackingIntervalMillis ()J
 	public final fun getTracesSampleRate ()Ljava/lang/Double;
+	public final fun isAnrEnabled ()Z
+	public final fun setAnrEnabled (Z)V
+	public final fun setAnrTimeoutIntervalMillis (J)V
+	public final fun setAppHangTimeoutIntervalMillis (J)V
 	public final fun setAttachScreenshot (Z)V
 	public final fun setAttachStackTrace (Z)V
 	public final fun setAttachThreads (Z)V
@@ -188,6 +195,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setDebug (Z)V
 	public final fun setDist (Ljava/lang/String;)V
 	public final fun setDsn (Ljava/lang/String;)V
+	public final fun setEnableAppHangTracking (Z)V
 	public final fun setEnableAutoSessionTracking (Z)V
 	public final fun setEnableCaptureFailedRequests (Z)V
 	public final fun setEnvironment (Ljava/lang/String;)V
