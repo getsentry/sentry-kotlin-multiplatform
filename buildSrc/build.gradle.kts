@@ -9,4 +9,3 @@ repositories {
 kotlin {
     jvmToolchain(8)
 }
-
