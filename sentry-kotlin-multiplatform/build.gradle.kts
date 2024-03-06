@@ -1,5 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin(Config.multiplatform)
@@ -30,10 +31,15 @@ android {
             isMinifyEnabled = false
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 kotlin {
@@ -42,11 +48,8 @@ kotlin {
 
     androidTarget {
         publishLibraryVariants("release")
-        jvmToolchain(11)
     }
-    jvm {
-        jvmToolchain(11)
-    }
+    jvm()
     iosArm64()
     iosSimulatorArm64()
     iosX64()
