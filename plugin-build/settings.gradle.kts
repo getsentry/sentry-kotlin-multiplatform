@@ -25,6 +25,7 @@ gradleEnterprise {
     }
 }
 
-rootProject.name = ("com.ncorti.kotlin.gradle.template")
+rootProject.name = ("io.sentry.kotlin.multiplatform.gradle.plugin")
 
 include(":plugin")
+include(":${rootProject.name}:buildSrc")

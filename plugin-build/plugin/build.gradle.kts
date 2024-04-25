@@ -11,7 +11,6 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
     implementation(kotlin("gradle-plugin"))
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
 
     testImplementation(libs.junit)
 }

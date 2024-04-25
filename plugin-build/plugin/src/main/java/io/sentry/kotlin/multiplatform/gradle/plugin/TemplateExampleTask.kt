@@ -1,4 +1,4 @@
-package com.ncorti.kotlin.gradle.template.plugin
+package io.sentry.kotlin.multiplatform.gradle.plugin
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("com.ncorti.kotlin.gradle.template.plugin")
+    id("io.sentry.kotlin.multiplatform.gradle.plugin")
 }
 
 java {
@@ -49,4 +49,8 @@ android {
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
     }
+}
+
+sentry {
+    enableSentryTestLinking = false
 }
