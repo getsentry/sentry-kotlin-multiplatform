@@ -46,7 +46,7 @@ folder.
 ## Apple Privacy Manifest
 
 Starting with [May 1st 2024](https://developer.apple.com/news/?id=3d8a9yyh), iOS apps are required to declare approved reasons to access certain APIs. This also includes third-party SDKs.
-If you are using the Sentry Kotlin Multiplatform SDK with Apple device targets then update your Sentry Cocoa SDK to `8.21.0` minimum. However we recommend using `8.25.0` to ensure comaptibility with Apple's guidelines.
+If you are using the Sentry Kotlin Multiplatform SDK with Apple device targets then update your Sentry Cocoa SDK to `8.21.0` minimum. However we recommend using `8.25.0` to ensure compatibility with Apple's guidelines.
 
 ## Contribution
 
