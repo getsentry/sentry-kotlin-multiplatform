@@ -1,5 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin(Config.multiplatform)
@@ -30,6 +31,15 @@ android {
             isMinifyEnabled = false
         }
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 kotlin {
@@ -121,6 +131,14 @@ kotlin {
         tvosMain.get().dependsOn(commonTvWatchMacOsMain)
         macosMain.get().dependsOn(commonTvWatchMacOsMain)
         watchosMain.get().dependsOn(commonTvWatchMacOsMain)
+
+        val commonTvWatchMacOsTest by creating {
+            dependsOn(appleTest.get())
+        }
+
+        tvosTest.get().dependsOn(commonTvWatchMacOsTest)
+        macosTest.get().dependsOn(commonTvWatchMacOsTest)
+        watchosTest.get().dependsOn(commonTvWatchMacOsTest)
 
         cocoapods {
             summary = "Official Sentry SDK Kotlin Multiplatform"

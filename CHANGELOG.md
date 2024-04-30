@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Java SDK from v7.4.0 to v7.8.0 ([#205](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/205), [#206](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/206))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#780)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.4.0...7.8.0)
+
+## 0.5.0
+
+### Features
+
+- Add App Hang Tracking / ANR options ([#187](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/187))
+  - Use `isAnrEnabled` and `anrTimeoutIntervalMillis` to configure ANR tracking for Android
+  - Use `enableAppHangTracking` and `appHangTimeoutIntervalMillis` to configure App Hang tracking for iOS
+  - Both options are enabled by default
+- Add isCrashedLastRun ([#186](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/186))
+  - You can use it with `Sentry.isCrashedLastRun()`
+
+### Dependencies
+
+- Bump Cocoa SDK from v8.17.2 to v8.20.0 ([#180](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/180), [#182](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/182))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8200)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.17.2...8.20.0)
+- Bump Java SDK from v7.1.0 to v7.4.0 ([#177](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/177), [#181](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/181), [#189](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/189))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#740)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.1.0...7.4.0)
+
 ## 0.4.0
 
 ### Dependencies

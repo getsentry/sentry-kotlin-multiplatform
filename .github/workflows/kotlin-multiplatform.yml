@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build-apple:
-    runs-on: macos-latest-large
+    runs-on: macos-latest-xlarge
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   build-apple-samples:
-    runs-on: macos-latest-large
+    runs-on: macos-latest-xlarge
 
     steps:
       - uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
           name: sentry-kotlin-multiplatform
 
   archive-distribution:
-    runs-on: macos-latest-large
+    runs-on: macos-latest-xlarge
 
     steps:
       - uses: actions/checkout@v4
