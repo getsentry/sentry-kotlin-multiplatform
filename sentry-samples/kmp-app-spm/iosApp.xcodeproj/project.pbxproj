@@ -355,6 +355,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=*]" = "\"-compiler-option -fmodules\"";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -380,6 +382,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -421,7 +424,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
 				kind = exactVersion;
-				version = 8.20.0;
+				version = 8.25.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

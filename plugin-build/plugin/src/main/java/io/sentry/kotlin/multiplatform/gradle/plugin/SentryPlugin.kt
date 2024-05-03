@@ -4,10 +4,12 @@ import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.Copy
 import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import java.io.File
 
@@ -18,11 +20,27 @@ const val TASK_NAME = "templateExample"
 class SentryPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit = with(project) {
         val extension = project.extensions.create(EXTENSION_NAME, SentryExtension::class.java, project)
-
         afterEvaluate {
             if (extension.enableSentryTestLinking.get()) {
                 setupSentryFrameworkForTests()
             }
+
+            println("hello")
+            val extension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
+            if (extension !is KotlinMultiplatformExtension) {
+                return@afterEvaluate
+            }
+
+            (extension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
+                println(cocoapods.pods.size)
+                cocoapods.pods.forEach { pod ->
+                    println(pod.name)
+                }
+            }
+
+//            println(project.plugins.findPlugin("org.jetbrains.kotlin.native.cocoapods"))
+
+//            println(project.extensions.getByType(CocoapodsExtension::class.java))
         }
     }
 

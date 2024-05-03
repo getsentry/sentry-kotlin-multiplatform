@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("io.sentry.kotlin.multiplatform.gradle.plugin")
+//    id("io.sentry.kotlin.multiplatform.gradle.plugin")
 }
 
 java {
@@ -51,6 +51,6 @@ android {
     }
 }
 
-sentry {
-    enableSentryTestLinking = false
-}
+//sentry {
+//    enableSentryTestLinking = false
+//}
