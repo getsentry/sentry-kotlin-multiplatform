@@ -42,6 +42,11 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
     maxBreadcrumbs = options.maxBreadcrumbs
     sampleRate = options.sampleRate
     tracesSampleRate = options.tracesSampleRate
+    isEnableSpotlight = options.enableSpotlight
+    println("Spotlight Enabled: ${options.enableSpotlight}")
+    options.spotlightUrl?.let {
+        spotlightConnectionUrl = it
+    }
     setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         if (options.beforeBreadcrumb == null) {
             jvmBreadcrumb

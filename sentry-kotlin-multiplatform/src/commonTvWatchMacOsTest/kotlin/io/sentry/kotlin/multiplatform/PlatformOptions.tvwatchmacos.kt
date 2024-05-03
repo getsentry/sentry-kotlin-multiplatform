@@ -43,6 +43,12 @@ class SentryTvWatchMacOsOptionsWrapper(private val cocoaOptions: CocoaSentryOpti
     override val tracesSampleRate: Double?
         get() = cocoaOptions.tracesSampleRate?.doubleValue
 
+    override val enableSpotlight: Boolean
+        get() = cocoaOptions.enableSpotlight
+
+    override val spotlightUrl: String
+        get() = cocoaOptions.spotlightUrl
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
     }

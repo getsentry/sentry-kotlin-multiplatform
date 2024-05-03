@@ -35,6 +35,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
     maxBreadcrumbs = options.maxBreadcrumbs.convert()
     enableAppHangTracking = options.enableAppHangTracking
     appHangTimeoutInterval = options.appHangTimeoutIntervalMillis.toDouble()
+    enableSpotlight = options.enableSpotlight
+    options.spotlightUrl?.let {
+        spotlightUrl = it
+    }
     options.sampleRate?.let {
         sampleRate = NSNumber(double = it)
     }

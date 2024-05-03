@@ -61,6 +61,12 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     override val attachViewHierarchy: Boolean
         get() = androidOptions.isAttachViewHierarchy
 
+    override val enableSpotlight: Boolean
+        get() = androidOptions.isEnableSpotlight
+
+    override val spotlightUrl: String?
+        get() = androidOptions.spotlightConnectionUrl
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toAndroidSentryOptionsCallback().invoke(androidOptions)
     }

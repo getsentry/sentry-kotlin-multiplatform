@@ -171,4 +171,20 @@ public open class SentryOptions {
      * [Android ANR](https://docs.sentry.io/platforms/android/configuration/app-not-respond/)
      */
     public var anrTimeoutIntervalMillis: Long = DEFAULT_ANR_TIMEOUT_INTERVAL_MILLIS
+
+    /**
+     * Enables or disables the Spotlight feature.
+     * This is disabled by default.
+     *
+     * **Platform Availability**: Cocoa, Java, Android.
+     */
+    public var enableSpotlight: Boolean = false
+
+    /**
+     * The URL to the Spotlight sidecar.
+     *
+     * **Platform Availability**: Cocoa, Java, Android.
+     */
+    public var spotlightUrl: String? = null
 }
+

@@ -149,6 +149,8 @@ class SentryOptionsTest : BaseSentryTest() {
             appHangTimeoutIntervalMillis = 1000L
             isAnrEnabled = false
             anrTimeoutIntervalMillis = 1000L
+            enableSpotlight = true
+            spotlightUrl = "spotlightUrl"
         }
 
         val platformOptions = createPlatformOptions()
@@ -166,6 +168,8 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(100L, platformOptions.maxAttachmentSize)
         assertEquals(0.5, platformOptions.sampleRate)
         assertEquals(0.5, platformOptions.tracesSampleRate)
+        assertTrue(platformOptions.enableSpotlight)
+        assertEquals("spotlightUrl", platformOptions.spotlightUrl)
 
         platformOptions.assertPlatformSpecificOptions(options)
     }

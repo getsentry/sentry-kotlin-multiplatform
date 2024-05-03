@@ -13,6 +13,8 @@ interface CommonPlatformOptions {
     val maxAttachmentSize: Long
     val sampleRate: Double?
     val tracesSampleRate: Double?
+    val enableSpotlight: Boolean
+    val spotlightUrl: String?
 
     fun applyFromOptions(options: SentryOptions)
 }

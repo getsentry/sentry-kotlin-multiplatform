@@ -39,6 +39,7 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.debug = true
         it.failedRequestStatusCodes = listOf(HttpStatusCodeRange(400, 599))
         it.failedRequestTargets = listOf("httpbin.org")
+        it.enableSpotlight = true
         it.beforeBreadcrumb = { breadcrumb ->
             breadcrumb.message = "Add message before every breadcrumb"
             breadcrumb

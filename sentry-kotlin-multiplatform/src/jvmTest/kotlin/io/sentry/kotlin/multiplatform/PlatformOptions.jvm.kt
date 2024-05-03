@@ -41,6 +41,12 @@ class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : Platfo
     override val tracesSampleRate: Double?
         get() = jvmOptions.tracesSampleRate
 
+    override val enableSpotlight: Boolean
+        get() = jvmOptions.isEnableSpotlight
+
+    override val spotlightUrl: String?
+        get() = jvmOptions.spotlightConnectionUrl
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toJvmSentryOptionsCallback().invoke(jvmOptions)
     }
