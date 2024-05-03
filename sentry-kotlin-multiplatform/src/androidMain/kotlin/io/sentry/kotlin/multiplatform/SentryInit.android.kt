@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
 import io.sentry.android.core.SentryAndroid
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 
@@ -20,7 +19,8 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
 
     SentryAndroid.init(context) { sentryOptions ->
         options.toAndroidSentryOptionsCallback().invoke(sentryOptions)
-    }}
+    }
+}
 
 internal var applicationContext: Context? = null
     private set
