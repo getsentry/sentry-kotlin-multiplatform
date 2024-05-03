@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+**Note**: This release includes a bump to Sentry Cocoa v8.25.0.
+Please use at least version 8.25.0 of the Sentry Cocoa SDK starting from this release.
+If you are using the Cocoapods gradle plugin you need to adjust your configuration:
+
+```kotlin
+pod("Sentry") {
+    version = "8.25.0"
+    // These extra options are required
+    extraOpts += listOf("-compiler-option", "-fmodules")
+}
+```
+
 ### Enhancements
 
 - Make `setSentryUnhandledExceptionHook` public ([#208](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/208))
