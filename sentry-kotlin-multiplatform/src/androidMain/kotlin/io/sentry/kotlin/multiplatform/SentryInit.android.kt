@@ -5,16 +5,24 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.util.Log
 import io.sentry.android.core.SentryAndroid
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 
 internal actual fun initSentry(configuration: OptionsConfiguration) {
     val options = SentryOptions()
     configuration.invoke(options)
-    SentryAndroid.init(applicationContext, options.toAndroidSentryOptionsCallback())
-}
 
-internal lateinit var applicationContext: Context
+    val context = applicationContext ?: run {
+        // TODO: add logging later
+        return
+    }
+
+    SentryAndroid.init(context) { sentryOptions ->
+        options.toAndroidSentryOptionsCallback().invoke(sentryOptions)
+    }}
+
+internal var applicationContext: Context? = null
     private set
 
 public actual typealias Context = Context
