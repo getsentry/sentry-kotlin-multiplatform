@@ -38,6 +38,10 @@ class SentryPlugin : Plugin<Project> {
      */
     private fun Project.setupCocoapods() {
         val kmpExtension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
+        if (kmpExtension !is KotlinMultiplatformExtension) {
+            return
+        }
+
         (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
             val sentryPod = cocoapods.pods.findByName("Sentry")
             if (sentryPod == null) {
@@ -54,17 +58,16 @@ class SentryPlugin : Plugin<Project> {
     }
 
     private fun Project.setupSentryFrameworkForTests() {
-        val extension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
-
-        if (extension !is KotlinMultiplatformExtension) {
+        val kmpExtension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
+        if (kmpExtension !is KotlinMultiplatformExtension) {
             return
         }
 
-        val appleTargets = extension.targets.withType(KotlinNativeTarget::class.java)
+        val appleTargets = kmpExtension.targets.withType(KotlinNativeTarget::class.java)
             .filter { it.konanTarget.family.isAppleFamily }
         val buildDir = layout.buildDirectory.asFile.get().path
 
-        extension.addLinkerOpts(buildDir)
+        kmpExtension.addLinkerOpts(buildDir)
         registerSentryDownloadTask()
         registerDownloadAndUnzipSentryTask()
         registerCopyFrameworkToTestDirsTask(appleTargets)
