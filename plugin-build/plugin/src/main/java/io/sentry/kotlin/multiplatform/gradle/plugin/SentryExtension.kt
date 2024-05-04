@@ -13,10 +13,11 @@ constructor(project: Project) {
     val sentryCocoaVersion: Property<String> = objects.property(String::class.java)
 
     /**
-     * When enabled the plugin will download the Sentry.xcframework and link the framework with linkeropts.
+     * When enabled the plugin will download the Sentry.xcframework and link the framework with linker-opts.
      * This fixes the issue with the Sentry framework not being found when running tests on Apple targets.
+     * For example when trying to run tests using SPM.
      *
-     * Defaults to `true`.
+     * Defaults to `true` but is automatically **disabled** if the Cocoapods Gradle plugin is available.
      */
     val enableSentryTestLinking: Property<Boolean> =
         objects.property(Boolean::class.java).convention(true)
