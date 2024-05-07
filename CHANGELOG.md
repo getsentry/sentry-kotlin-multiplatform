@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.0
 
 **Note**: This release includes a bump to Sentry Cocoa v8.25.0.
 Please use at least version 8.25.0 of the Sentry Cocoa SDK starting from this release.
