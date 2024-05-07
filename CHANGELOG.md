@@ -14,6 +14,10 @@ pod("Sentry") {
 }
 ```
 
+### Fixes
+
+- Don't crash app when `applicationContext` is not available ([#217](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/217))
+
 ### Enhancements
 
 - Make `setSentryUnhandledExceptionHook` public ([#208](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/208))
