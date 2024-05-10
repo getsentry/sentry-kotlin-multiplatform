@@ -43,6 +43,23 @@ public object Sentry {
         SentryBridge.init(configuration = configuration)
     }
 
+    /**
+     * Sentry initialization with an option configuration handler for platform options.
+     *
+     * Since [SentryPlatformOptions] is implemented via typealias you need to have direct access
+     * to the platform-specific SDKs API to use this method.
+     *
+     * ### Java / Android
+     *   You can achieve this by specifying `compileOnly(java/android_dependency)`
+     *   in your `build.gradle.kts`.
+     *
+     * ### Cocoa
+     * - This integration requires the use of the Cocoapods gradle plugin and
+     *   adding Sentry as a pod
+     *
+     * @see SentryPlatformOptions
+     * @param configuration Platform options configuration handler.
+     */
     public fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
         SentryBridge.initWithPlatformOptions(configuration)
     }
