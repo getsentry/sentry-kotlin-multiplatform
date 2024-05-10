@@ -9,7 +9,7 @@ import kotlin.native.HiddenFromObjC
 
 public typealias ScopeCallback = (Scope) -> Unit
 public typealias OptionsConfiguration = (SentryOptions) -> Unit
-public typealias PlatformOptionsConfiguration = (SentryNativePlatformOptions) -> Unit
+public typealias PlatformOptionsConfiguration = (SentryPlatformOptions) -> Unit
 
 /** The context used for Android initialization. */
 @Deprecated("No longer necessary to initialize Sentry on Android.")
@@ -17,7 +17,6 @@ public expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point. */
 public object Sentry {
-
     /**
      * Sentry initialization with an option configuration handler.
      *
