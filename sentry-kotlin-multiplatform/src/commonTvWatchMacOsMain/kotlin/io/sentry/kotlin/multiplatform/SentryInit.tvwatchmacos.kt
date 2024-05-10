@@ -9,7 +9,7 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
     SentrySDK.start(options.toCocoaOptionsConfiguration())
 }
 
-internal actual fun initSentry(configuration: PlatformOptionsConfiguration) {
+internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
     val options = CocoaSentryOptions()
     configuration.invoke(options)
     SentrySDK.startWithOptions(options)

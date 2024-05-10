@@ -43,8 +43,8 @@ public object Sentry {
         SentryBridge.init(configuration = configuration)
     }
 
-    public fun init(options: PlatformOptionsConfiguration) {
-
+    public fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
+        SentryBridge.initWithPlatformOptions(configuration)
     }
 
     /**

@@ -16,7 +16,7 @@ public actual abstract class Context
 
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
-internal expect fun initSentry(configuration: PlatformOptionsConfiguration)
+internal expect fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration)
 
 internal actual object SentryBridge {
 
@@ -28,8 +28,8 @@ internal actual object SentryBridge {
         initSentry(configuration)
     }
 
-    actual fun init(configuration: PlatformOptionsConfiguration) {
-        initSentry(configuration)
+    actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
+        initSentryWithPlatformOptions(configuration)
     }
 
     actual fun captureMessage(message: String): SentryId {

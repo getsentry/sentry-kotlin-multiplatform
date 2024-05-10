@@ -11,20 +11,19 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
-internal expect fun initSentry(configuration: PlatformOptionsConfiguration)
+internal expect fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration)
 
 internal actual object SentryBridge {
-
     actual fun init(context: Context, configuration: OptionsConfiguration) {
-        initSentry(configuration)
-    }
-
-    actual fun init(configuration: PlatformOptionsConfiguration) {
         initSentry(configuration)
     }
 
     actual fun init(configuration: OptionsConfiguration) {
         initSentry(configuration = configuration)
+    }
+
+    actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
+        initSentryWithPlatformOptions(configuration)
     }
 
     actual fun captureMessage(message: String): SentryId {

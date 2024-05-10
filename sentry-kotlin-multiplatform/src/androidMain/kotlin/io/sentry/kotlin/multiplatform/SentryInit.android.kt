@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import io.sentry.android.core.SentryAndroid
+import io.sentry.kotlin.multiplatform.extensions.configureSdkNameAndPackages
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 
 internal actual fun initSentry(configuration: OptionsConfiguration) {
@@ -22,13 +23,16 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
     }
 }
 
-internal actual fun initSentry(configuration: PlatformOptionsConfiguration) {
+internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
     val context = applicationContext ?: run {
         // TODO: add logging later
         return
     }
 
-    SentryAndroid.init(context, configuration)
+    SentryAndroid.init(context) { options ->
+        configuration(options)
+        options.configureSdkNameAndPackages()
+    }
 }
 
 internal var applicationContext: Context? = null
