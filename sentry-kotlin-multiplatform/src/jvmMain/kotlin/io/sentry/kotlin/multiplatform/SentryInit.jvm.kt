@@ -11,8 +11,11 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
 }
 
 internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
-    val options = JvmSentryOptions()
-    Sentry.init(configuration)
+    Sentry.init { options ->
+        configuration(options)
+        options.sdkVersion?.name = BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
+        options.sdkVersion?.version = BuildKonfig.VERSION_NAME
+    }
 }
 
 // The context is unused here and only implemented to satisfy the expect

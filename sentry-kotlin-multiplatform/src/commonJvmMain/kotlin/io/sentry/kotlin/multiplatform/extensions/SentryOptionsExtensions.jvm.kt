@@ -9,24 +9,17 @@ import io.sentry.kotlin.multiplatform.SentryOptions
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
-    it.configureSdkNameAndPackages()
-}
 
-internal fun JvmSentryOptions.configureSdkNameAndPackages() {
-    // Apply SDK version details
-    sdkVersion?.name = sdkVersion?.name ?: BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
-    sdkVersion?.version = sdkVersion?.version ?: BuildKonfig.VERSION_NAME
+    // Apply JVM specific options
+    it.sdkVersion?.name = sdk?.name ?: BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
+    it.sdkVersion?.version = sdk?.version ?: BuildKonfig.VERSION_NAME
 
-    // Add packages from the source if they are not already present
-    sdkVersion?.packages?.forEach { sdkPackage ->
-        if (sdkVersion?.packages?.none { it.name == sdkPackage.name } == true) {
-            sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
-        }
+    sdk?.packages?.forEach { sdkPackage ->
+        it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
     }
 
-    // Ensure the main Java SDK package is included
-    if (sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_JAVA_PACKAGE_NAME } == true) {
-        sdkVersion?.addPackage(
+    if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_JAVA_PACKAGE_NAME } == true) {
+        it.sdkVersion?.addPackage(
             BuildKonfig.SENTRY_JAVA_PACKAGE_NAME,
             BuildKonfig.SENTRY_JAVA_VERSION
         )
