@@ -22,6 +22,15 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
     }
 }
 
+internal actual fun initSentry(configuration: PlatformOptionsConfiguration) {
+    val context = applicationContext ?: run {
+        // TODO: add logging later
+        return
+    }
+
+    SentryAndroid.init(context, configuration)
+}
+
 internal var applicationContext: Context? = null
     private set
 

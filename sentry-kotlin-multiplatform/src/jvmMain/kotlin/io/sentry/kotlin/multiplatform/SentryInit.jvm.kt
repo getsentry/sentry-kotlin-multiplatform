@@ -9,5 +9,9 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
     Sentry.init(options.toJvmSentryOptionsCallback())
 }
 
+internal actual fun initSentry(configuration: PlatformOptionsConfiguration) {
+    Sentry.init(configuration)
+}
+
 // The context is unused here and only implemented to satisfy the expect
 public actual abstract class Context

@@ -16,6 +16,8 @@ public actual abstract class Context
 
 internal expect fun initSentry(configuration: OptionsConfiguration)
 
+internal expect fun initSentry(configuration: PlatformOptionsConfiguration)
+
 internal actual object SentryBridge {
 
     actual fun init(context: Context, configuration: OptionsConfiguration) {
@@ -23,6 +25,10 @@ internal actual object SentryBridge {
     }
 
     actual fun init(configuration: OptionsConfiguration) {
+        initSentry(configuration)
+    }
+
+    actual fun init(configuration: PlatformOptionsConfiguration) {
         initSentry(configuration)
     }
 

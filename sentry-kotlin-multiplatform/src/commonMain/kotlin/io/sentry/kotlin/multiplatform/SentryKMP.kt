@@ -9,6 +9,7 @@ import kotlin.native.HiddenFromObjC
 
 public typealias ScopeCallback = (Scope) -> Unit
 public typealias OptionsConfiguration = (SentryOptions) -> Unit
+public typealias PlatformOptionsConfiguration = (SentryNativePlatformOptions) -> Unit
 
 /** The context used for Android initialization. */
 @Deprecated("No longer necessary to initialize Sentry on Android.")
@@ -41,6 +42,10 @@ public object Sentry {
      */
     public fun init(configuration: OptionsConfiguration) {
         SentryBridge.init(configuration = configuration)
+    }
+
+    public fun init(options: PlatformOptionsConfiguration) {
+
     }
 
     /**

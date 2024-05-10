@@ -11,6 +11,8 @@ internal expect object SentryBridge {
 
     fun init(configuration: OptionsConfiguration)
 
+    fun init(configuration: PlatformOptionsConfiguration)
+
     fun captureMessage(message: String): SentryId
 
     fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId
