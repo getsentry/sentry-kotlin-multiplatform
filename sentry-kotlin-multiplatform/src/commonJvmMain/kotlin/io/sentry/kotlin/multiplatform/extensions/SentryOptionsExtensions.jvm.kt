@@ -5,8 +5,6 @@ import io.sentry.kotlin.multiplatform.JvmSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 
-
-
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
 
@@ -25,7 +23,6 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
         )
     }
 }
-
 
 /**
  * Applies the given base SentryOptions to this JvmSentryOption
