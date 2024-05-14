@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform
 
-import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 
@@ -14,4 +13,3 @@ internal fun SentrySDK.Companion.start(options: CocoaSentryOptions) {
     startWithOptions(options)
     setSentryUnhandledExceptionHook()
 }
-

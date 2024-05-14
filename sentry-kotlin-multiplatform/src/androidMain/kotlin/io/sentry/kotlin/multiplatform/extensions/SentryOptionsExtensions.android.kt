@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.prepareForInit
 import kotlin.collections.forEach as kForEach
 
 internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptions) -> Unit = {

@@ -5,10 +5,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import io.sentry.Sentry
 import io.sentry.android.core.SentryAndroid
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
-import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
 
 internal actual fun initSentry(configuration: OptionsConfiguration) {
     val options = SentryOptions()
