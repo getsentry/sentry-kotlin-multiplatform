@@ -18,6 +18,12 @@ class SentryIntegrationTest : BaseSentryTest() {
     }
 
     @Test
+    fun `init with native options is successful`() {
+        val sentryPlatformOptions = createSentryPlatformOptionsConfiguration()
+        sentryInitWithPlatformOptions(sentryPlatformOptions)
+    }
+
+    @Test
     fun `captureMessage sends the correct message`() {
         val expected = "test"
         var actual = ""

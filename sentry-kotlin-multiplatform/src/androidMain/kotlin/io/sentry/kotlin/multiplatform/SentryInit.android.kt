@@ -31,9 +31,7 @@ internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptions
 
     SentryAndroid.init(context) { options ->
         configuration(options)
-        // We set the SDK name and version here because the user creates the native options directly
-        // which means it will not contain the correct KMP SDK name and version
-        options.setSdkVersionAndName()
+        options.prepareForInit()
     }
 }
 

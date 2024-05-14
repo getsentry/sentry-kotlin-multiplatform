@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import io.sentry.kotlin.multiplatform.extensions.toIosOptionsConfiguration
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
@@ -75,26 +76,6 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     assertEquals(appHangTimeoutIntervalMillis, options.appHangTimeoutIntervalMillis)
 }
 
-actual class SentryPlatformOptionsFoo {
-    private var event: CocoaSentryEvent? = null
-
-    actual fun init() {
-        Sentry.initWithPlatformOptions {
-            it.dsn = fakeDsn
-            it.setBeforeSend { event ->
-                this.event = event
-                event
-            }
-        }
-
-        // Trigger beforeSend
-        Sentry.captureMessage("Test Message")
-    }
-
-    actual fun assertSdkNameAndVersion() {
-        val sdk = event?.sdk
-        print(sdk?.keys)
-        assertEquals(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, sdk!!["name"])
-        assertEquals(BuildKonfig.VERSION_NAME, sdk["version"])
-    }
+actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
+    it.dsn = fakeDsn
 }

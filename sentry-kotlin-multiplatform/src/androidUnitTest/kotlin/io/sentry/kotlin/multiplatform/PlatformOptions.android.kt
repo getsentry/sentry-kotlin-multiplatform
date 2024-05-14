@@ -77,25 +77,11 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     assertEquals(anrTimeoutIntervalMillis, options.anrTimeoutIntervalMillis)
 }
 
-actual class SentryPlatformOptionsFoo {
-    private var event: JvmSentryEvent? = null
+actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
+    it.dsn = fakeDsn
+}
 
-    actual fun init() {
-        Sentry.initWithPlatformOptions {
-            it.dsn = fakeDsn
-            it.setBeforeSend { event, hint ->
-                this.event = event
-                event
-            }
-        }
-
-        // Trigger beforeSend
-        Sentry.captureMessage("Test Message")
-    }
-
-    actual fun assertSdkNameAndVersion() {
-        val sdk = event?.sdk
-        assertEquals(sdk!!.name, BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME)
-        assertEquals(sdk.version, BuildKonfig.VERSION_NAME)
-    }
+actual fun SentryPlatformOptions.assertSdkNameAndVersion() {
+    assertEquals(sdkVersion!!.name, BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME)
+    assertEquals(sdkVersion!!.version, BuildKonfig.VERSION_NAME)
 }

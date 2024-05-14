@@ -16,4 +16,6 @@ package io.sentry.kotlin.multiplatform
  *
  * @see Sentry.initWithPlatformOptions
  */
-public expect class SentryPlatformOptions
+public expect class SentryPlatformOptions()
+
+internal expect fun SentryPlatformOptions.prepareForInit()

@@ -12,8 +12,6 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
 internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
     val options = CocoaSentryOptions()
     configuration.invoke(options)
-    // We set the SDK name and version here because the user creates the native options directly
-    // which means it will not contain the correct KMP SDK name and version
-    setSdkVersionAndName()
+    options.prepareForInit()
     SentrySDK.start(options)
 }
