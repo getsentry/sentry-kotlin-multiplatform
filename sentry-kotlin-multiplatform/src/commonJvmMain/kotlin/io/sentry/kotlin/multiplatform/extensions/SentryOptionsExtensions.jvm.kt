@@ -8,9 +8,6 @@ import io.sentry.kotlin.multiplatform.SentryOptions
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
 
-    // Apply JVM specific options
-    it.setSdkVersionAndName()
-
     sdk?.packages?.forEach { sdkPackage ->
         it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
     }
@@ -21,11 +18,6 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
             BuildKonfig.SENTRY_JAVA_VERSION
         )
     }
-}
-
-internal fun JvmSentryOptions.setSdkVersionAndName() {
-    sdkVersion?.name = BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME
-    sdkVersion?.version = BuildKonfig.VERSION_NAME
 }
 
 /**

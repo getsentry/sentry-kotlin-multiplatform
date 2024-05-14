@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentryHttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
@@ -70,10 +69,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
             dropKotlinCrashEvent(modifiedEvent as NSExceptionSentryEvent?) as CocoaSentryEvent?
         }
     }
-
-    val sdkName = options.sdk?.name ?: BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME
-    val sdkVersion = options.sdk?.version ?: BuildKonfig.VERSION_NAME
-    PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
 
     beforeBreadcrumb = { cocoaBreadcrumb ->
         if (options.beforeBreadcrumb == null) {

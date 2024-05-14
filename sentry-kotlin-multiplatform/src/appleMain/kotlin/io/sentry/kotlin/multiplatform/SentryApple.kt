@@ -15,6 +15,3 @@ internal fun SentrySDK.Companion.start(options: CocoaSentryOptions) {
     setSentryUnhandledExceptionHook()
 }
 
-internal fun setSdkVersionAndName() {
-    PrivateSentrySDKOnly.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, BuildKonfig.VERSION_NAME)
-}

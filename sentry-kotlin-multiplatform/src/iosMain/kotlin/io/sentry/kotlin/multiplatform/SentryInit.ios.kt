@@ -10,8 +10,15 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
 }
 
 internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
-    val options = CocoaSentryOptions()
-    configuration.invoke(options)
-    options.prepareForInit()
-    SentrySDK.start(options)
+    val modifiedConfiguration: (SentryPlatformOptions?) -> Unit = { options ->
+        if (options != null) {
+            configuration(options)
+            options.prepareForInit()
+        }
+    }
+    finalizeSentryInit(modifiedConfiguration)
+}
+
+internal fun finalizeSentryInit(configuration: (SentryPlatformOptions?) -> Unit) {
+    SentrySDK.startWithConfigureOptions(configuration)
 }

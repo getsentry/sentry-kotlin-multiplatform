@@ -20,7 +20,7 @@ public expect class SentryPlatformOptions()
 
 /**
  * Prepare the platform-specific options for initialization.
- *
- * This is not used through normal initialization, only in [Sentry.initWithPlatformOptions].
  */
 internal expect fun SentryPlatformOptions.prepareForInit()
+
+
