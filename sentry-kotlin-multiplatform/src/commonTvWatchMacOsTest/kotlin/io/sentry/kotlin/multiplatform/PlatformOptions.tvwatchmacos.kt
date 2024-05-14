@@ -1,10 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
-import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import io.sentry.kotlin.multiplatform.extensions.toCocoaOptionsConfiguration
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
-import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions
 
@@ -58,8 +56,6 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     // no-op
 }
 
-
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
     it.dsn = fakeDsn
 }
-

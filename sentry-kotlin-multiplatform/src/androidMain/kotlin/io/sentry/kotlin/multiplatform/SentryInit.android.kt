@@ -6,7 +6,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import io.sentry.android.core.SentryAndroid
-import io.sentry.kotlin.multiplatform.extensions.setSdkVersionAndName
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 
 internal actual fun initSentry(configuration: OptionsConfiguration) {
