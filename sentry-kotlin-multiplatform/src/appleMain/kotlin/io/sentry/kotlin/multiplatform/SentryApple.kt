@@ -8,8 +8,3 @@ internal fun SentrySDK.Companion.start(configuration: (CocoaSentryOptions?) -> U
     startWithConfigureOptions(configuration)
     setSentryUnhandledExceptionHook()
 }
-
-internal fun SentrySDK.Companion.start(options: CocoaSentryOptions) {
-    startWithOptions(options)
-    setSentryUnhandledExceptionHook()
-}
