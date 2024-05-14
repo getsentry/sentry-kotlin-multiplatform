@@ -9,7 +9,7 @@ package io.sentry.kotlin.multiplatform
  * override settings with configurations that are specific to each platform.
  *
  * This is useful if you need to configure options that might not be supported through the
- * KMP SDK in the common code.
+ * KMP SDK in the common code or are still experimental in the native sdks.
  *
  * Using this class in common code will do nothing, as its implementation
  * is platform-dependent and expected to be empty in shared code.
