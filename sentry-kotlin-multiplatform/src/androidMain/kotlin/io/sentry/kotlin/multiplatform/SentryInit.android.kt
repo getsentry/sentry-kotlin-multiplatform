@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import io.sentry.android.core.SentryAndroid
+import io.sentry.kotlin.multiplatform.extensions.setSdkVersionAndName
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 
 internal actual fun initSentry(configuration: OptionsConfiguration) {
@@ -30,8 +31,9 @@ internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptions
 
     SentryAndroid.init(context) { options ->
         configuration(options)
-        options.sdkVersion?.name = BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME
-        options.sdkVersion?.version = BuildKonfig.VERSION_NAME
+        // We set the SDK name and version here because the user creates the native options directly
+        // which means it will not contain the correct KMP SDK name and version
+        options.setSdkVersionAndName()
     }
 }
 

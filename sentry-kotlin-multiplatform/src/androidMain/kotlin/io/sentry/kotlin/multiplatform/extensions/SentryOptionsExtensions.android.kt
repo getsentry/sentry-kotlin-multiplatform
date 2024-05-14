@@ -15,8 +15,7 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     it.isAnrEnabled = this.isAnrEnabled
     it.anrTimeoutIntervalMillis = this.anrTimeoutIntervalMillis
 
-    it.sdkVersion?.name = this.sdk?.name ?: BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME
-    it.sdkVersion?.version = this.sdk?.version ?: BuildKonfig.VERSION_NAME
+    it.setSdkVersionAndName()
 
     // kForEach solves an issue with linter where it thinks forEach is the Java version
     // see here: https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/68897591#68897591
@@ -27,4 +26,9 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME } == true) {
         it.sdkVersion?.addPackage(BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME, BuildKonfig.SENTRY_ANDROID_VERSION)
     }
+}
+
+internal fun SentryAndroidOptions.setSdkVersionAndName() {
+    sdkVersion?.name = BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME
+    sdkVersion?.version = BuildKonfig.VERSION_NAME
 }

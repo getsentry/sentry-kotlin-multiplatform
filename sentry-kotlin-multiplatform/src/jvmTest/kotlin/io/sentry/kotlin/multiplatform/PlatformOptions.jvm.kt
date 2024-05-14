@@ -1,6 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
+import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions
 
@@ -50,4 +52,27 @@ actual fun createPlatformOptions(): PlatformOptions = SentryJvmOptionsWrapper(Jv
 
 actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions) {
     // no-op
+}
+
+actual class SentryPlatformOptionsFoo {
+    private var event: JvmSentryEvent? = null
+
+    actual fun init() {
+        Sentry.initWithPlatformOptions {
+            it.dsn = fakeDsn
+            it.setBeforeSend { event, _ ->
+                this.event = event
+                event
+            }
+        }
+
+        // Trigger beforeSend
+        Sentry.captureMessage("Test Message")
+    }
+
+    actual fun assertSdkNameAndVersion() {
+        val sdk = event?.sdk
+        assertEquals(sdk!!.name, BuildKonfig.SENTRY_KMP_JAVA_SDK_NAME)
+        assertEquals(sdk.version, BuildKonfig.VERSION_NAME)
+    }
 }

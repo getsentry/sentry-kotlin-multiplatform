@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toIosOptionsConfiguration
 
@@ -12,5 +13,8 @@ internal actual fun initSentry(configuration: OptionsConfiguration) {
 internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
     val options = CocoaSentryOptions()
     configuration.invoke(options)
-    SentrySDK.startWithOptions(options)
+    // We set the SDK name and version here because the user creates the native options directly
+    // which means it will not contain the correct KMP SDK name and version
+    setSdkVersionAndName()
+    SentrySDK.start(options)
 }

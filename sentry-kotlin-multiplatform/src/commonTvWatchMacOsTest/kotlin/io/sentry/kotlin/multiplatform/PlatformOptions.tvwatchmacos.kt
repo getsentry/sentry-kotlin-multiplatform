@@ -1,7 +1,9 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaOptionsConfiguration
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
+import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions
 
@@ -53,4 +55,27 @@ actual fun createPlatformOptions(): PlatformOptions =
 
 actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions) {
     // no-op
+}
+
+actual class SentryPlatformOptionsFoo {
+    private var event: CocoaSentryEvent? = null
+
+    actual fun init() {
+        Sentry.initWithPlatformOptions {
+            it.dsn = fakeDsn
+            it.setBeforeSend { event ->
+                this.event = event
+                event
+            }
+        }
+
+        // Trigger beforeSend
+        Sentry.captureMessage("Test Message")
+    }
+
+    actual fun assertSdkNameAndVersion() {
+        val sdk = event?.sdk
+        assertEquals(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, sdk!!["name"])
+        assertEquals(BuildKonfig.VERSION_NAME, sdk["version"])
+    }
 }

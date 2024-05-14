@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions {
@@ -74,4 +75,27 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     assertEquals(attachViewHierarchy, options.attachViewHierarchy)
     assertEquals(isAnrEnabled, options.isAnrEnabled)
     assertEquals(anrTimeoutIntervalMillis, options.anrTimeoutIntervalMillis)
+}
+
+actual class SentryPlatformOptionsFoo {
+    private var event: JvmSentryEvent? = null
+
+    actual fun init() {
+        Sentry.initWithPlatformOptions {
+            it.dsn = fakeDsn
+            it.setBeforeSend { event, hint ->
+                this.event = event
+                event
+            }
+        }
+
+        // Trigger beforeSend
+        Sentry.captureMessage("Test Message")
+    }
+
+    actual fun assertSdkNameAndVersion() {
+        val sdk = event?.sdk
+        assertEquals(sdk!!.name, BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME)
+        assertEquals(sdk.version, BuildKonfig.VERSION_NAME)
+    }
 }

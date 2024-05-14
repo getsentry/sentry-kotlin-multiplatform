@@ -20,3 +20,8 @@ interface CommonPlatformOptions {
 expect interface PlatformOptions : CommonPlatformOptions
 
 expect fun createPlatformOptions(): PlatformOptions
+
+expect class SentryPlatformOptionsFoo() {
+    fun init()
+    fun assertSdkNameAndVersion()
+}
