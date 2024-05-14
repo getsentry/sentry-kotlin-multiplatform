@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+- Add feature to initialize with native options ([#221](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/221))
+
 ### Dependencies
 
 - Bump Java SDK from v7.8.0 to v7.9.0 ([#219](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/219))
