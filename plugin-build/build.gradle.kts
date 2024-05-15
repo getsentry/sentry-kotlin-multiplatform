@@ -45,7 +45,3 @@ tasks.withType<Detekt>().configureEach {
 tasks.register("clean", Delete::class.java) {
     delete(rootProject.layout.buildDirectory)
 }
-
-tasks.wrapper {
-    distributionType = Wrapper.DistributionType.ALL
-}

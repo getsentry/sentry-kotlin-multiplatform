@@ -1,10 +1,13 @@
+import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
     `java-gradle-plugin`
-    alias(libs.plugins.pluginPublish)
+//    alias(libs.plugins.pluginPublish)
     id("de.undercouch.download") version "5.6.0"
+    alias(libs.plugins.vanniktech.publish)
+    id("distribution")
 }
 
 dependencies {
@@ -44,16 +47,22 @@ gradlePlugin {
     vcsUrl.set(property("VCS_URL").toString())
 }
 
-tasks.create("setupPluginUploadFromEnvironment") {
-    doLast {
-        val key = System.getenv("GRADLE_PUBLISH_KEY")
-        val secret = System.getenv("GRADLE_PUBLISH_SECRET")
+val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
+// signing is done when uploading files to MC
+// via gpg:sign-and-deploy-file (release.kts)
+publish.releaseSigningEnabled = false
 
-        if (key == null || secret == null) {
-            throw GradleException("gradlePublishKey and/or gradlePublishSecret are not defined environment variables")
+tasks.named("distZip").configure {
+    dependsOn("publishToMavenLocal")
+}
+
+val sep = File.separator
+
+distributions {
+    main {
+        contents {
+            from("build${sep}libs")
+            from("build${sep}publications${sep}maven")
         }
-
-        System.setProperty("gradle.publish.key", key)
-        System.setProperty("gradle.publish.secret", secret)
     }
 }
