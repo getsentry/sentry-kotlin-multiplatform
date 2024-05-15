@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.android.core.SentryAndroidOptions
-import io.sentry.kotlin.multiplatform.BuildKonfig
 import io.sentry.kotlin.multiplatform.SentryOptions
 import kotlin.collections.forEach as kForEach
 
@@ -19,9 +18,5 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     // see here: https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/68897591#68897591
     this.sdk?.packages?.kForEach { sdkPackage ->
         it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
-    }
-
-    if (it.sdkVersion?.packages?.none { it.name == BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME } == true) {
-        it.sdkVersion?.addPackage(BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME, BuildKonfig.SENTRY_ANDROID_VERSION)
     }
 }
