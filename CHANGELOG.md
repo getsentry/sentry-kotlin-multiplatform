@@ -6,6 +6,7 @@
 
 - Allow initializing the KMP SDK with native options ([#221](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/221))
   - This allows you to initialize the SDK with platform-specific options that may not be available in the common code of the KMP SDK yet.
+
 Usage:
 ```kotlin
 // commonMain
