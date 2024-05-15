@@ -18,6 +18,12 @@ public actual abstract class Context
 // Since the function is the same on all apple platforms, we don't split it into expect/actual
 // like on JVM and Android, we may do that later on if needed.
 internal actual fun SentryPlatformOptions.prepareForInit() {
+    val cocoa = this as? CocoaSentryOptions
+    val existingBeforeSend = cocoa?.beforeSend
+    cocoa?.beforeSend = {
+        val event = it
+        existingBeforeSend?.invoke(it)
+    }
     PrivateSentrySDKOnly.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, BuildKonfig.VERSION_NAME)
 }
 

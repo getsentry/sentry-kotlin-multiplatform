@@ -66,7 +66,7 @@ actual fun SentryPlatformOptions.toSentryOptions(): SentryOptions {
     val cocoa = this@toSentryOptions
     return SentryOptions().apply {
         dsn = cocoa.dsn
-        releaseName = cocoa.releaseName
+        release = cocoa.releaseName
         sdk = SdkVersion(PrivateSentrySDKOnly.getSdkName()!!, PrivateSentrySDKOnly.getSdkVersionString()!!)
     }
 }
