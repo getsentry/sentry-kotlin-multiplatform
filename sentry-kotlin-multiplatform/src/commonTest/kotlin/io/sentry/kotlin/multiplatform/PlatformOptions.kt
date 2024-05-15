@@ -22,8 +22,3 @@ expect interface PlatformOptions : CommonPlatformOptions
 expect fun createPlatformOptions(): PlatformOptions
 
 expect fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration
-
-/**
- * This function is only used in tests to convert platform options to assert some properties.
- */
-expect fun SentryPlatformOptions.toSentryOptions(): SentryOptions

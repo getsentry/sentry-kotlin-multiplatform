@@ -47,9 +47,13 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
         event?.sdk = sdk
 
-        event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
-            val result = options.beforeSend?.invoke(unwrappedEvent)
-            result?.let { event.applyKmpEvent(it) }
+        if (options.beforeSend == null) {
+            event
+        } else {
+            event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
+                val result = options.beforeSend?.invoke(unwrappedEvent)
+                result?.let { event.applyKmpEvent(it) }
+            }
         }
     }
 

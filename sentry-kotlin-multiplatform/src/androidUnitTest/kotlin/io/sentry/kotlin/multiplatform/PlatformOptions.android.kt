@@ -2,7 +2,6 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
-import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.assertEquals
 
@@ -80,13 +79,4 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
     it.dsn = fakeDsn
-}
-
-actual fun SentryPlatformOptions.toSentryOptions(): SentryOptions {
-    val android = this@toSentryOptions
-    return SentryOptions().apply {
-        dsn = android.dsn
-        release = android.release
-        sdk = SdkVersion(android.sdkVersion!!.name, android.sdkVersion!!.version)
-    }
 }

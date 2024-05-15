@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -64,6 +65,11 @@ kotlin {
     macosArm64()
 
     sourceSets {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            freeCompilerArgs.add("-Xexpect-actual-classes")
+        }
+
         all {
             languageSettings.apply {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")

@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
-import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 
 actual interface PlatformOptions : CommonPlatformOptions
@@ -56,13 +55,4 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
     it.dsn = fakeDsn
-}
-
-actual fun SentryPlatformOptions.toSentryOptions(): SentryOptions {
-    val jvm = this@toSentryOptions
-    return SentryOptions().apply {
-        dsn = jvm.dsn
-        release = jvm.release
-        sdk = SdkVersion(jvm.sdkVersion!!.name, jvm.sdkVersion!!.version)
-    }
 }

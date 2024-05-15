@@ -22,17 +22,20 @@ public actual abstract class Context
 internal actual fun SentryPlatformOptions.prepareForInit() {
     val cocoa = this as? CocoaSentryOptions
     val existingBeforeSend = cocoa?.beforeSend
-    val modifiedBeforeSend: (CocoaSentryEvent?) -> CocoaSentryEvent? = { event ->
-        existingBeforeSend?.invoke(event)
+    val modifiedBeforeSend: (CocoaSentryEvent?) -> CocoaSentryEvent? = beforeSend@{ event ->
+        // Return early if the user's beforeSend returns null
+        if (existingBeforeSend?.invoke(event) == null) {
+            return@beforeSend null
+        }
 
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
 
-        val sdk = event?.sdk?.toMutableMap()
-        val packages = sdk?.get("packages") as? MutableList<Map<String, String>> ?: mutableListOf()
+        val sdk = event?.sdk?.toMutableMap() ?: mutableMapOf()
+        val packages = sdk["packages"] as? MutableList<Map<String, String>> ?: mutableListOf()
 
         packages.add(mapOf("name" to cocoaName, "version" to cocoaVersion))
-        sdk?.set("packages", packages)
+        sdk["packages"] = packages
         event?.sdk = sdk
 
         dropKotlinCrashEvent(event as SentryEvent?) as CocoaSentryEvent?
