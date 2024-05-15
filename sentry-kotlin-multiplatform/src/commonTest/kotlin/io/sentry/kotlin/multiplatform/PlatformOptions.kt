@@ -26,6 +26,6 @@ expect fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfigurat
 expect fun SentryPlatformOptions.assertSdkNameAndVersion()
 
 /**
- * This function is only
+ * This function is only used in tests to convert platform options to assert some properties.
  */
 expect fun SentryPlatformOptions.toSentryOptions(): SentryOptions
