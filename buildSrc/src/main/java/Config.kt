@@ -32,11 +32,11 @@ object Config {
     object Libs {
         val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib"
 
-        val sentryJavaVersion = "7.8.0"
+        val sentryJavaVersion = "7.9.0"
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
-        val sentryCocoaVersion = "8.20.0"
+        val sentryCocoaVersion = "8.25.0"
         val sentryCocoa = "Sentry"
 
         object Samples {

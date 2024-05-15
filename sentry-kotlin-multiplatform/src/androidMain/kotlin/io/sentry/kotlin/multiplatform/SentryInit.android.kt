@@ -11,10 +11,18 @@ import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 internal actual fun initSentry(configuration: OptionsConfiguration) {
     val options = SentryOptions()
     configuration.invoke(options)
-    SentryAndroid.init(applicationContext, options.toAndroidSentryOptionsCallback())
+
+    val context = applicationContext ?: run {
+        // TODO: add logging later
+        return
+    }
+
+    SentryAndroid.init(context) { sentryOptions ->
+        options.toAndroidSentryOptionsCallback().invoke(sentryOptions)
+    }
 }
 
-internal lateinit var applicationContext: Context
+internal var applicationContext: Context? = null
     private set
 
 public actual typealias Context = Context

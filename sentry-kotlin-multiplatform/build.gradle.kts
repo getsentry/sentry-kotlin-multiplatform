@@ -145,7 +145,10 @@ kotlin {
             homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
             version = "0.0.1"
 
-            pod(Config.Libs.sentryCocoa, Config.Libs.sentryCocoaVersion)
+            pod(Config.Libs.sentryCocoa) {
+                version = Config.Libs.sentryCocoaVersion
+                extraOpts += listOf("-compiler-option", "-fmodules")
+            }
 
             ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
             osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget

@@ -7,6 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
+import kotlin.test.assertNotNull
 
 @RunWith(AndroidJUnit4::class)
 class SentryContextProviderTest : BaseSentryTest() {
@@ -22,8 +23,8 @@ class SentryContextProviderTest : BaseSentryTest() {
     class SentryContextOnCreateTest : BaseSentryTest() {
         @Test
         fun `onCreate initializes applicationContext`() {
-            // Simple call to the lateinit applicationContext to make sure it's initialized
-            applicationContext
+            // Simple call to the applicationContext to make sure it's initialized
+            assertNotNull(applicationContext)
         }
     }
 
