@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toIosOptionsConfiguration
+import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
 import kotlin.test.assertEquals
 
@@ -72,4 +73,8 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     assertEquals(attachViewHierarchy, options.attachViewHierarchy)
     assertEquals(enableAppHangTracking, options.enableAppHangTracking)
     assertEquals(appHangTimeoutIntervalMillis, options.appHangTimeoutIntervalMillis)
+}
+
+actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
+    it.dsn = fakeDsn
 }

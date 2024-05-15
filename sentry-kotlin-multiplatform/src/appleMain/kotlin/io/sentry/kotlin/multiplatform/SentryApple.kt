@@ -5,6 +5,6 @@ import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHoo
 
 /** Convenience extension to setup unhandled exception hook */
 internal fun SentrySDK.Companion.start(configuration: (CocoaSentryOptions?) -> Unit) {
-    this.startWithConfigureOptions(configuration)
+    startWithConfigureOptions(configuration)
     setSentryUnhandledExceptionHook()
 }

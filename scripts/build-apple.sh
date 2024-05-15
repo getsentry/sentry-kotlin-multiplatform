@@ -11,6 +11,7 @@ PROJECT_NAME="$1"
           "iosX64Test" \
           "watchosX64Test" \
           "tvosX64Test" \
+          "iosSimulatorArm64Test" \
           "publishKotlinMultiplatformPublicationToMavenLocal" \
           "publishIosArm64PublicationToMavenLocal" \
           "publishIosSimulatorArm64PublicationToMavenLocal" \

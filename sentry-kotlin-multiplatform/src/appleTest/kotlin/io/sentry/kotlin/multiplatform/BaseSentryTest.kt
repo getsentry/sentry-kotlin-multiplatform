@@ -6,4 +6,8 @@ actual abstract class BaseSentryTest {
     actual fun sentryInit(optionsConfiguration: OptionsConfiguration) {
         Sentry.init(optionsConfiguration)
     }
+
+    actual fun sentryInitWithPlatformOptions(platformOptionsConfiguration: PlatformOptionsConfiguration) {
+        Sentry.initWithPlatformOptions(platformOptionsConfiguration)
+    }
 }

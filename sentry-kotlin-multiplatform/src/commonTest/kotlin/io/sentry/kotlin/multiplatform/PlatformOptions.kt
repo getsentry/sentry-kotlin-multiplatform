@@ -20,3 +20,5 @@ interface CommonPlatformOptions {
 expect interface PlatformOptions : CommonPlatformOptions
 
 expect fun createPlatformOptions(): PlatformOptions
+
+expect fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration

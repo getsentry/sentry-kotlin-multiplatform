@@ -5,11 +5,12 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
-internal expect object SentryBridge {
-
+internal expect class SentryBridge(sentryInstance: SentryInstance = SentryPlatformInstance()) {
     fun init(context: Context, configuration: OptionsConfiguration)
 
     fun init(configuration: OptionsConfiguration)
+
+    fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration)
 
     fun captureMessage(message: String): SentryId
 

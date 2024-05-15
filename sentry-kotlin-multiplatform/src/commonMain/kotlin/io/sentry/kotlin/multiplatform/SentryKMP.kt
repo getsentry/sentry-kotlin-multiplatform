@@ -9,13 +9,15 @@ import kotlin.native.HiddenFromObjC
 
 public typealias ScopeCallback = (Scope) -> Unit
 public typealias OptionsConfiguration = (SentryOptions) -> Unit
+public typealias PlatformOptionsConfiguration = (SentryPlatformOptions) -> Unit
 
-/** The context used for Android initialization. */
+/** The context used for Android initiaclization. */
 @Deprecated("No longer necessary to initialize Sentry on Android.")
 public expect abstract class Context
 
 /** Sentry Kotlin Multiplatform SDK API entry point. */
 public object Sentry {
+    private val bridge = SentryBridge()
 
     /**
      * Sentry initialization with an option configuration handler.
@@ -30,7 +32,7 @@ public object Sentry {
         ReplaceWith("Sentry.init(configuration)")
     )
     public fun init(context: Context, configuration: OptionsConfiguration) {
-        SentryBridge.init(context, configuration)
+        bridge.init(context, configuration)
     }
 
     /**
@@ -40,7 +42,28 @@ public object Sentry {
      * @param configuration Options configuration handler.
      */
     public fun init(configuration: OptionsConfiguration) {
-        SentryBridge.init(configuration = configuration)
+        bridge.init(configuration = configuration)
+    }
+
+    /**
+     * Sentry initialization with an option configuration handler for platform options.
+     *
+     * Since [SentryPlatformOptions] is implemented via typealias you need to have direct access
+     * to the platform-specific SDKs API to use this method.
+     *
+     * ### Java / Android
+     *   You can achieve this by specifying `compileOnly(java/android_dependency)`
+     *   in your `build.gradle.kts`.
+     *
+     * ### Cocoa
+     * - This integration requires the use of the Cocoapods gradle plugin and
+     *   adding Sentry as a pod
+     *
+     * @see SentryPlatformOptions
+     * @param configuration Platform options configuration handler.
+     */
+    public fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
+        bridge.initWithPlatformOptions(configuration)
     }
 
     /**
@@ -49,7 +72,7 @@ public object Sentry {
      * @param message The message to send.
      */
     public fun captureMessage(message: String): SentryId {
-        return SentryBridge.captureMessage(message)
+        return bridge.captureMessage(message)
     }
 
     /**
@@ -59,7 +82,7 @@ public object Sentry {
      * @param scopeCallback The local scope callback.
      */
     public fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
-        return SentryBridge.captureMessage(message, scopeCallback)
+        return bridge.captureMessage(message, scopeCallback)
     }
 
     /**
@@ -68,7 +91,7 @@ public object Sentry {
      * @param throwable The exception.
      */
     public fun captureException(throwable: Throwable): SentryId {
-        return SentryBridge.captureException(throwable)
+        return bridge.captureException(throwable)
     }
 
     /**
@@ -78,7 +101,7 @@ public object Sentry {
      * @param scopeCallback The local scope callback.
      */
     public fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
-        return SentryBridge.captureException(throwable, scopeCallback)
+        return bridge.captureException(throwable, scopeCallback)
     }
 
     /**
@@ -87,7 +110,7 @@ public object Sentry {
      * @param userFeedback The user feedback to send to Sentry.
      */
     public fun captureUserFeedback(userFeedback: UserFeedback) {
-        return SentryBridge.captureUserFeedback(userFeedback)
+        return bridge.captureUserFeedback(userFeedback)
     }
 
     /**
@@ -96,7 +119,7 @@ public object Sentry {
      * @param scopeCallback The configure scope callback.
      */
     public fun configureScope(scopeCallback: ScopeCallback) {
-        SentryBridge.configureScope(scopeCallback)
+        bridge.configureScope(scopeCallback)
     }
 
     /**
@@ -105,7 +128,7 @@ public object Sentry {
      * @param breadcrumb The breadcrumb to add.
      */
     public fun addBreadcrumb(breadcrumb: Breadcrumb) {
-        SentryBridge.addBreadcrumb(breadcrumb)
+        bridge.addBreadcrumb(breadcrumb)
     }
 
     /**
@@ -114,14 +137,14 @@ public object Sentry {
      * @param user The user to set.
      */
     public fun setUser(user: User?) {
-        SentryBridge.setUser(user)
+        bridge.setUser(user)
     }
 
     /**
      * Returns true if the app crashed during last run.
      */
     public fun isCrashedLastRun(): Boolean {
-        return SentryBridge.isCrashedLastRun()
+        return bridge.isCrashedLastRun()
     }
 
     /**
@@ -135,6 +158,6 @@ public object Sentry {
      * Closes the SDK.
      */
     public fun close() {
-        SentryBridge.close()
+        bridge.close()
     }
 }
