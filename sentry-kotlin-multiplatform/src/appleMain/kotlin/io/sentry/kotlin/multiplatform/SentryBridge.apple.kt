@@ -1,11 +1,13 @@
 package io.sentry.kotlin.multiplatform
 
+import NSException.Sentry.SentryEvent
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
+import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -20,10 +22,24 @@ public actual abstract class Context
 internal actual fun SentryPlatformOptions.prepareForInit() {
     val cocoa = this as? CocoaSentryOptions
     val existingBeforeSend = cocoa?.beforeSend
-    cocoa?.beforeSend = {
-        val event = it
-        existingBeforeSend?.invoke(it)
+    val modifiedBeforeSend: (CocoaSentryEvent?) -> CocoaSentryEvent? = { event ->
+        existingBeforeSend?.invoke(event)
+
+        val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
+        val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
+
+        val sdk = event?.sdk?.toMutableMap()
+        val packages = sdk?.get("packages") as? MutableList<Map<String, String>> ?: mutableListOf()
+
+        packages.add(mapOf("name" to cocoaName, "version" to cocoaVersion))
+        sdk?.set("packages", packages)
+        event?.sdk = sdk
+
+        dropKotlinCrashEvent(event as SentryEvent?) as CocoaSentryEvent?
     }
+
+    cocoa?.setBeforeSend(modifiedBeforeSend)
+
     PrivateSentrySDKOnly.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, BuildKonfig.VERSION_NAME)
 }
 
@@ -40,8 +56,9 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
 
     actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
         val finalConfiguration: PlatformOptionsConfiguration = {
-            it.prepareForInit()
             configuration(it)
+            // We modify beforeSend so we need this to run after the user's configuration
+            it.prepareForInit()
         }
         sentryInstance.init(finalConfiguration)
     }

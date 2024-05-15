@@ -24,8 +24,8 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
 
     actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
         val finalConfiguration: PlatformOptionsConfiguration = {
-            it.prepareForInitBridge()
             configuration(it)
+            it.prepareForInitBridge()
         }
         sentryInstance.init(finalConfiguration)
     }

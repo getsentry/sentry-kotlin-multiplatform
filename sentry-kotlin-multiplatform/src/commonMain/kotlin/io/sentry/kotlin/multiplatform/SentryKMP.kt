@@ -11,7 +11,7 @@ public typealias ScopeCallback = (Scope) -> Unit
 public typealias OptionsConfiguration = (SentryOptions) -> Unit
 public typealias PlatformOptionsConfiguration = (SentryPlatformOptions) -> Unit
 
-/** The context used for Android initialization. */
+/** The context used for Android initiaclization. */
 @Deprecated("No longer necessary to initialize Sentry on Android.")
 public expect abstract class Context
 

@@ -9,6 +9,15 @@
 
 Usage:
 ```kotlin
+// build.gradle.kts
+kotlin {
+    sourceSets {
+        all {
+          languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+    }
+}
+
 // commonMain
 fun init() {
   Sentry.initWithPlatformOptions(createPlatformOptions())

@@ -42,32 +42,19 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         tracesSampleRate = NSNumber(double = it)
     }
     beforeSend = { event ->
-        val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
-        val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
-
         val sdk = event?.sdk?.toMutableMap()
 
         val packages = options.sdk?.packages?.map {
             mapOf("name" to it.name, "version" to it.version)
         }?.toMutableList() ?: mutableListOf()
 
-        val names = packages.map { it["name"] }
-        if (!names.contains(cocoaName)) {
-            packages.add(mapOf("name" to cocoaName, "version" to cocoaVersion))
-        }
-
         sdk?.set("packages", packages)
 
         event?.sdk = sdk
 
-        if (options.beforeSend == null) {
-            dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as CocoaSentryEvent?
-        } else {
-            val modifiedEvent = event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
-                val result = options.beforeSend?.invoke(unwrappedEvent)
-                result?.let { event.applyKmpEvent(it) }
-            }
-            dropKotlinCrashEvent(modifiedEvent as NSExceptionSentryEvent?) as CocoaSentryEvent?
+        event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
+            val result = options.beforeSend?.invoke(unwrappedEvent)
+            result?.let { event.applyKmpEvent(it) }
         }
     }
 
