@@ -3,6 +3,7 @@ package sample.kmp.app
 import io.sentry.kotlin.multiplatform.Attachment
 import io.sentry.kotlin.multiplatform.HttpStatusCodeRange
 import io.sentry.kotlin.multiplatform.OptionsConfiguration
+import io.sentry.kotlin.multiplatform.PlatformOptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
 
 /** Configure scope applicable to all platforms */
@@ -23,9 +24,15 @@ fun configureSentryScope() {
  * Initializes Sentry with given options.
  * Make sure to hook this into your native platforms as early as possible
  */
-fun initializeSentry() {
-    Sentry.init(optionsConfiguration())
+fun initializeSentry(useNativeOptions: Boolean = false) {
+    if (useNativeOptions) {
+        Sentry.initWithPlatformOptions(createPlatformOptionsConfiguration())
+    } else {
+        Sentry.init(optionsConfiguration())
+    }
 }
+
+expect fun createPlatformOptionsConfiguration(): PlatformOptionsConfiguration
 
 /** Returns a shared options configuration */
 private fun optionsConfiguration(): OptionsConfiguration {
