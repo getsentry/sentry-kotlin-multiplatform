@@ -6,36 +6,11 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import io.sentry.android.core.SentryAndroid
-import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 
-internal actual fun initSentry(configuration: OptionsConfiguration) {
-    val options = SentryOptions()
-    configuration.invoke(options)
-    initSentryWithPlatformOptions(options.toAndroidSentryOptionsCallback())
-}
-
-internal actual fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
-    val modifiedConfiguration: PlatformOptionsConfiguration = { options ->
-        configuration(options)
-        options.prepareForInit()
-    }
-
-    finalizeSentryInit(modifiedConfiguration)
-}
-
-internal fun finalizeSentryInit(configuration: PlatformOptionsConfiguration) {
-    val context = applicationContext ?: run {
-        // TODO: add logging later
-        return
-    }
-
-    SentryAndroid.init(context, configuration)
-}
+public actual typealias Context = Context
 
 internal var applicationContext: Context? = null
     private set
-
-public actual typealias Context = Context
 
 /**
  * A ContentProvider that does NOT store or provide any data for read or write operations.

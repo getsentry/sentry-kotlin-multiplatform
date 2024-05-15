@@ -9,21 +9,25 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
-internal expect fun initSentry(configuration: OptionsConfiguration)
+internal expect fun SentryPlatformOptions.prepareForInitBridge()
 
-internal expect fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration)
-
-internal actual object SentryBridge {
+internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
     actual fun init(context: Context, configuration: OptionsConfiguration) {
-        initSentry(configuration)
+        init(configuration)
     }
 
     actual fun init(configuration: OptionsConfiguration) {
-        initSentry(configuration = configuration)
+        val options = SentryOptions()
+        configuration.invoke(options)
+        initWithPlatformOptions(options.toPlatformOptionsConfiguration())
     }
 
     actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
-        initSentryWithPlatformOptions(configuration)
+        val finalConfiguration: PlatformOptionsConfiguration = {
+            it.prepareForInitBridge()
+            configuration(it)
+        }
+        sentryInstance.init(finalConfiguration)
     }
 
     actual fun captureMessage(message: String): SentryId {
@@ -42,7 +46,8 @@ internal actual object SentryBridge {
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
-        val jvmSentryId = Sentry.captureException(throwable, configureScopeCallback(scopeCallback))
+        val jvmSentryId =
+            Sentry.captureException(throwable, configureScopeCallback(scopeCallback))
         return SentryId(jvmSentryId.toString())
     }
 

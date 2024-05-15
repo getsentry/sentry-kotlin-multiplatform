@@ -1,6 +1,8 @@
 package io.sentry.kotlin.multiplatform
 
+import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import io.sentry.kotlin.multiplatform.extensions.toCocoaOptionsConfiguration
+import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
 
@@ -58,4 +60,13 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
     it.dsn = fakeDsn
+}
+
+actual fun SentryPlatformOptions.toSentryOptions(): SentryOptions {
+    val cocoa = this@toSentryOptions
+    return SentryOptions().apply {
+        dsn = cocoa.dsn
+        releaseName = cocoa.releaseName
+        sdk = SdkVersion(PrivateSentrySDKOnly.getSdkName()!!, PrivateSentrySDKOnly.getSdkVersionString()!!)
+    }
 }

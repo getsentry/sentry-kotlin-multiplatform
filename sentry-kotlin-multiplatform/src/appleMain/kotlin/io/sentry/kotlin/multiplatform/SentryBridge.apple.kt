@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
@@ -14,22 +15,29 @@ import platform.Foundation.NSException
 
 public actual abstract class Context
 
-internal expect fun initSentry(configuration: OptionsConfiguration)
+// Since the function is the same on all apple platforms, we don't split it into expect/actual
+// like on JVM and Android, we may do that later on if needed.
+internal actual fun SentryPlatformOptions.prepareForInit() {
+    PrivateSentrySDKOnly.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, BuildKonfig.VERSION_NAME)
+}
 
-internal expect fun initSentryWithPlatformOptions(configuration: PlatformOptionsConfiguration)
-
-internal actual object SentryBridge {
-
+internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
     actual fun init(context: Context, configuration: OptionsConfiguration) {
-        initSentry(configuration)
+        init(configuration)
     }
 
     actual fun init(configuration: OptionsConfiguration) {
-        initSentry(configuration)
+        val options = SentryOptions()
+        configuration.invoke(options)
+        initWithPlatformOptions(options.toPlatformOptionsConfiguration())
     }
 
     actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
-        initSentryWithPlatformOptions(configuration)
+        val finalConfiguration: PlatformOptionsConfiguration = {
+            it.prepareForInit()
+            configuration(it)
+        }
+        sentryInstance.init(finalConfiguration)
     }
 
     actual fun captureMessage(message: String): SentryId {
