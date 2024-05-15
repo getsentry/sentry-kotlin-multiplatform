@@ -82,11 +82,6 @@ actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfigurat
     it.dsn = fakeDsn
 }
 
-actual fun SentryPlatformOptions.assertSdkNameAndVersion() {
-    assertEquals(sdkVersion!!.name, BuildKonfig.SENTRY_KMP_ANDROID_SDK_NAME)
-    assertEquals(sdkVersion!!.version, BuildKonfig.VERSION_NAME)
-}
-
 actual fun SentryPlatformOptions.toSentryOptions(): SentryOptions {
     val android = this@toSentryOptions
     return SentryOptions().apply {
