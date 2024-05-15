@@ -1,16 +1,16 @@
 [versions]
 ## Sentry SDK versions
-sentry_java = "7.1.0"
-sentry_cocoa = "8.17.2"
+sentry-java = "7.9.0"
+sentry-cocoa = "8.25.0"
 
 ## Android
 agp = "7.4.2"
 
 ## Kotlin
-kotlin = "1.9.10"
+kotlin = "1.9.23"
 
 ## Tests
-kotlin-coroutines = "1.7.3"
+kotlin-coroutines = "1.8.1"
 ktor = "2.3.6"
 robolectric = "4.9"
 junit-ktx = "1.1.5"
@@ -19,7 +19,7 @@ kotlinx-serialization-json = "1.6.2"
 
 ## Analyze & Format
 binary-compatibility = "0.13.2"
-detekt = "1.23.4"
+detekt = "1.23.6"
 spotless = "6.23.3"
 
 ## Publish & Docs
@@ -31,10 +31,26 @@ kover = "0.7.4"
 build-konfig = "0.15.1"
 
 ## Samples
-compose-multiplatform = "1.6.0-alpha01"
+compose-multiplatform = "1.6.1"
 
 [libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common" }
+kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
+roboelectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
+junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junit-ktx" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
+sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-java" }
+sentry-java = { module = "io.sentry:sentry", version.ref = "sentry-java" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -45,9 +61,12 @@ compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-m
 agp = { id = "com.android.library", version.ref = "agp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility" }
+kotlinx-binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
 build-konfig = { id = "com.codingfeline.buildkonfig", version.ref = "build-konfig" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [bundles]
+common-test = ["kotlin-test-common", "kotlin-test-annotations-common", "kotlinx-coroutines-core", "kotlinx-coroutines-test", "kotlinx-serialization-json", "ktor-client-core", "ktor-client-serialization"]
+android-test = ["junit-ktx", "roboelectric", "mockito-core"]
+common-jvm-test = ["kotlin-test-junit", "ktor-client-okhttp"]

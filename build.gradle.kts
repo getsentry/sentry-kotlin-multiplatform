@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.spotless)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka).apply(false)
     alias(libs.plugins.kotlin.multiplatform).apply(false)
     alias(libs.plugins.kotlin.cocoapods).apply(false)
     alias(libs.plugins.compose.multiplatform).apply(false)
@@ -16,7 +16,7 @@ plugins {
     alias(libs.plugins.build.konfig).apply(false)
     alias(libs.plugins.kotlinx.serialization).apply(false)
     alias(libs.plugins.kotlinx.kover).apply(false)
-    alias(libs.plugins.binary.compatibility).apply(false)
+    alias(libs.plugins.kotlinx.binary.compatibility).apply(false)
 }
 
 allprojects {
@@ -59,12 +59,6 @@ subprojects {
                 releaseSigningEnabled = false
             }
         }
-    }
-}
-
-subprojects {
-    if (project.name.contains("sentry-kotlin-multiplatform")) {
-        apply(plugin = Config.dokka)
     }
 }
 

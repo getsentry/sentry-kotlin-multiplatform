@@ -32,7 +32,7 @@ kotlin {
         podfile = project.file("../iosApp/Podfile")
 
         pod("Sentry") {
-            version = Config.Libs.sentryCocoaVersion
+            version = libs.versions.sentry.cocoa.get()
             extraOpts += listOf("-compiler-option", "-fmodules")
         }
 

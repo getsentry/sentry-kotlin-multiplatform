@@ -3,13 +3,15 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin(Config.multiplatform)
-    kotlin(Config.cocoapods)
-    id(Config.androidGradle)
-    id(Config.BuildPlugins.buildConfig)
-    kotlin(Config.kotlinSerializationPlugin)
-    id(Config.QualityPlugins.kover)
-    id(Config.QualityPlugins.binaryCompatibility)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.cocoapods)
+    alias(libs.plugins.agp)
+    alias(libs.plugins.build.konfig)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.maven.publish)
+    alias(libs.plugins.kotlinx.kover)
+    alias(libs.plugins.kotlinx.binary.compatibility)
     `maven-publish`
 }
 
@@ -73,36 +75,28 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(Config.Libs.kotlinStd)
+            implementation(libs.kotlin.stdlib)
         }
 
         commonTest.dependencies {
-            implementation(Config.TestLibs.kotlinCoroutinesCore)
-            implementation(Config.TestLibs.kotlinCoroutinesTest)
-            implementation(Config.TestLibs.ktorClientCore)
-            implementation(Config.TestLibs.ktorClientSerialization)
-            implementation(Config.TestLibs.kotlinxSerializationJson)
-            implementation(Config.TestLibs.kotlinCommon)
-            implementation(Config.TestLibs.kotlinCommonAnnotation)
+            implementation(libs.bundles.common.test)
         }
 
         androidMain.dependencies {
-            implementation(Config.Libs.sentryAndroid)
+            implementation(libs.sentry.android)
         }
 
         // androidUnitTest.dependencies doesn't exist
         val androidUnitTest by getting {
             dependencies {
-                implementation(Config.TestLibs.roboelectric)
-                implementation(Config.TestLibs.junitKtx)
-                implementation(Config.TestLibs.mockitoCore)
+                implementation(libs.bundles.android.test)
             }
         }
 
         val commonJvmMain by creating {
             dependsOn(commonMain.get())
             dependencies {
-                implementation(Config.Libs.sentryJava)
+                implementation(libs.sentry.java)
             }
         }
 
@@ -112,8 +106,7 @@ kotlin {
         val commonJvmTest by creating {
             dependsOn(commonTest.get())
             dependencies {
-                implementation(Config.TestLibs.kotlinJunit)
-                implementation(Config.TestLibs.ktorClientOkHttp)
+                implementation(libs.bundles.common.jvm.test)
             }
         }
 
@@ -121,7 +114,7 @@ kotlin {
         jvmTest.get().dependsOn(commonJvmTest)
 
         appleTest.dependencies {
-            implementation(Config.TestLibs.ktorClientDarwin)
+            implementation(libs.ktor.client.darwin)
         }
 
         val commonTvWatchMacOsMain by creating {
@@ -146,7 +139,7 @@ kotlin {
             version = "0.0.1"
 
             pod(Config.Libs.sentryCocoa) {
-                version = Config.Libs.sentryCocoaVersion
+                version = libs.versions.sentry.cocoa.get()
                 extraOpts += listOf("-compiler-option", "-fmodules")
             }
 
@@ -206,8 +199,8 @@ buildkonfig {
         buildConfigField(STRING, "SENTRY_ANDROID_PACKAGE_NAME", Config.Sentry.androidPackageName)
         buildConfigField(STRING, "SENTRY_COCOA_PACKAGE_NAME", Config.Sentry.cocoaPackageName)
 
-        buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
-        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
-        buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+        buildConfigField(STRING, "SENTRY_JAVA_VERSION", libs.versions.sentry.java.get())
+        buildConfigField(STRING, "SENTRY_ANDROID_VERSION", libs.versions.sentry.java.get())
+        buildConfigField(STRING, "SENTRY_COCOA_VERSION", libs.versions.sentry.cocoa.get())
     }
 }
