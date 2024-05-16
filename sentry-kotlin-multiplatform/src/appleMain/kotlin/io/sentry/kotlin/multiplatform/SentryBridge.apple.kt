@@ -2,7 +2,9 @@ package io.sentry.kotlin.multiplatform
 
 import NSException.Sentry.SentryEvent
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
+import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.SentrySDK
+import cocoapods.Sentry.SentryThread
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
@@ -12,6 +14,7 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import io.sentry.kotlin.multiplatform.SentryStackTraceTrimmer.removeSentryFrames
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 
@@ -26,6 +29,13 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
         // Return early if the user's beforeSend returns null
         if (existingBeforeSend?.invoke(event) == null) {
             return@beforeSend null
+        }
+
+        val threads = event?.threads as? List<SentryThread>
+        threads?.forEach { thread ->
+            thread.stacktrace?.let { stackTrace ->
+                removeSentryFrames(stackTrace)
+            }
         }
 
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
