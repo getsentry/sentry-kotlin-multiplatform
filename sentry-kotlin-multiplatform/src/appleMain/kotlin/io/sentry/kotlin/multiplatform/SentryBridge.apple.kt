@@ -2,9 +2,9 @@ package io.sentry.kotlin.multiplatform
 
 import NSException.Sentry.SentryEvent
 import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
-import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.SentrySDK
 import cocoapods.Sentry.SentryThread
+import io.sentry.kotlin.multiplatform.SentryStackTraceTrimmer.removeSentryFrames
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
@@ -14,7 +14,6 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
-import io.sentry.kotlin.multiplatform.SentryStackTraceTrimmer.removeSentryFrames
 import platform.Foundation.NSError
 import platform.Foundation.NSException
 

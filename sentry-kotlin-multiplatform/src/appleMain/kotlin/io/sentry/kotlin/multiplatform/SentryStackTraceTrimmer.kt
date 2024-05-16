@@ -2,7 +2,6 @@ package io.sentry.kotlin.multiplatform
 
 import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.SentryStacktrace
-import cocoapods.Sentry.SentryThread
 import platform.Foundation.NSThread
 
 internal object SentryStackTraceTrimmer {
@@ -22,7 +21,7 @@ internal object SentryStackTraceTrimmer {
 
     private fun trimStackTrace(stacktrace: SentryStacktrace, instructionAddress: String?) {
         val frames = stacktrace.frames as List<SentryFrame>
-        val newFrames = frames.takeWhile { frame -> frame.instructionAddress!= instructionAddress }
+        val newFrames = frames.takeWhile { frame -> frame.instructionAddress != instructionAddress }
         stacktrace.setFrames(newFrames)
     }
 
@@ -30,7 +29,7 @@ internal object SentryStackTraceTrimmer {
         val callStackSymbols = getCallStackSymbols()
         val lastSentryFrameIndex = findLastSentryFrameIndex(callStackSymbols)
 
-        if (lastSentryFrameIndex!= -1) {
+        if (lastSentryFrameIndex != -1) {
             val lastSentryFrame = callStackSymbols[lastSentryFrameIndex]
             val instructionAddress = extractInstructionAddress(lastSentryFrame)
             instructionAddress?.let { address -> trimStackTrace(stacktrace, address) }
