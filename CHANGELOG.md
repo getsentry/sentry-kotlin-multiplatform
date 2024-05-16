@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixes
+
+- Remove Sentry frames from stacktrace on Apple targets ([#223](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/223))
+
 ### Features
 
 - Allow initializing the KMP SDK with native options ([#221](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/221))
