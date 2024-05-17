@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Symbol multiply defined when running cocoa targets ([#226](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/226))
+- Symbol multiply defined when trying to run cocoa targets ([#226](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/226))
 
 ## 0.7.0
 
