@@ -37,6 +37,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             val sentryVersion = properties["versionName"].toString()
+            println("Loading Sentry KMP version: $sentryVersion")
             implementation("io.sentry:sentry-kotlin-multiplatform:$sentryVersion")
         }
     }
