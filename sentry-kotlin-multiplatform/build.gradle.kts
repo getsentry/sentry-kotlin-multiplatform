@@ -194,7 +194,11 @@ kotlin {
         targets.withType<KotlinNativeTarget>().all {
             compilations["main"].cinterops["Sentry"].extraOpts(
                 "-compiler-option",
-                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
+                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
+                "-compiler-option",
+                "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
+                "-compiler-option",
+                "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
             )
         }
     }
