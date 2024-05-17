@@ -193,9 +193,12 @@ kotlin {
         // if we need to use this class, we'd need to find a better way to work it out
         targets.withType<KotlinNativeTarget>().all {
             compilations["main"].cinterops["Sentry"].extraOpts(
-                "-compiler-option", "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                "-compiler-option", "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                "-compiler-option", "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
+                "-compiler-option",
+                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
+                "-compiler-option",
+                "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
+                "-compiler-option",
+                "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
             )
         }
     }
