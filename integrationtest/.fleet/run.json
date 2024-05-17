@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "type": "xcode-app",
+            "name": "Xcode-app configuration",
+            "workingDir": "$PROJECT_DIR$/iosApp/iosApp.xcworkspace/",
+            "buildTarget": {
+                "project": "iosApp",
+                "target": "iosApp",
+            },
+            "configuration": "Release",
+        },
+        
+    ]
+}
