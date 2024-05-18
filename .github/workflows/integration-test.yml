@@ -33,5 +33,4 @@ jobs:
       - name: Publish Maven Local & Build
         run: |
           ./gradlew publishToMavenLocal
-          cd integrationtest
-          ./gradlew assemble
+          cd integrationtest && ./gradlew assemble
