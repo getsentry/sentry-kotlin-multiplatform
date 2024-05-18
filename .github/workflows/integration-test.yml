@@ -27,11 +27,8 @@ jobs:
         run: |
           ./scripts/bump-version.sh 0 1.0.0-integration-test
 
-      - name: Publish Maven Local
+      - name: Publish Maven Local & Build
         run: |
           ./gradlew publishToMavenLocal
-
-      - name: Build Integration Test
-        run: |
           cd integrationtest
           ./gradlew assemble
