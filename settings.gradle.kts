@@ -21,6 +21,11 @@ rootProject.name = "sentry-kotlin-multiplatform-sdk"
 
 include(":sentry-kotlin-multiplatform")
 
+if (extra.has("includeIntegrationTest") && extra["includeIntegrationTest"] == "true") {
+    println("test")
+    include("integration-test:shared")
+}
+
 /*
 Simple KMP App with targets:
    - Android
