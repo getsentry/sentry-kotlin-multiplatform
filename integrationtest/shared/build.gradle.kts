@@ -36,7 +36,7 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            implementation("io.sentry:sentry-kotlin-multiplatform:1.0.0-integration-test")
+            implementation("io.sentry:sentry-kotlin-multiplatform:0.6.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
