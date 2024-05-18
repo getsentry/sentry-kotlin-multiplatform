@@ -23,6 +23,9 @@ jobs:
           java-version: 17
           distribution: temurin
 
+      - name: Set up Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
       - name: Update version
         run: |
           ./scripts/bump-version.sh 0 1.0.0-integration-test
