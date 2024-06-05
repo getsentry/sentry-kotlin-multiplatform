@@ -43,8 +43,6 @@ private fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     }
 
     val customXcodeprojPath = linkerExtension.xcodeprojPath.orNull
-    println("customXcodeprojPath: $customXcodeprojPath")
-
     val derivedDataPath = findDerivedDataPath(customXcodeprojPath)
 
     kmpExtension.appleTargets().all { target ->
