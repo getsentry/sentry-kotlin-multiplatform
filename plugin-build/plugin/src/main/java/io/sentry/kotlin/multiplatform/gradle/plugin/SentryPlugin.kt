@@ -103,6 +103,11 @@ private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): St
     return derivedDataPath
 }
 
+/**
+ * Searches for a xcodeproj starting from the root directory.
+ * This function will only work for monorepos and if it is not,
+ * the user needs to provide the custom path through the linker configuration.
+ */
 private fun findXcodeprojFile(dir: File): File? {
     val ignoredDirectories = listOf("build", "DerivedData")
 
