@@ -36,7 +36,7 @@ class SentryPlugin : Plugin<Project> {
 }
 
 private fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
-    val kmpExtension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
+    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         // todo: log, not multiplatform found
         return
@@ -141,7 +141,7 @@ private fun KotlinMultiplatformExtension.appleTargets() =
  * Installs the Sentry pod if not yet installed and configures the compiler options
  */
 private fun Project.installPod() {
-    val kmpExtension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
+    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         return
     }
