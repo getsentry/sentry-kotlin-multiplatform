@@ -12,10 +12,10 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-const val SENTRY_EXTENSION_NAME = "sentry"
-const val LINKER_EXTENSION_NAME = "linker"
-const val COCOAPODS_PLUGIN_NAME = "org.jetbrains.kotlin.plugin.cocoapods"
-const val KOTLIN_EXTENSION_NAME = "kotlin"
+internal const val SENTRY_EXTENSION_NAME = "sentry"
+internal const val LINKER_EXTENSION_NAME = "linker"
+internal const val COCOAPODS_PLUGIN_NAME = "org.jetbrains.kotlin.plugin.cocoapods"
+internal const val KOTLIN_EXTENSION_NAME = "kotlin"
 
 @Suppress("unused")
 class SentryPlugin : Plugin<Project> {
@@ -164,6 +164,7 @@ private fun KotlinNativeTarget.frameworkArchitecture(): String? {
         "iosSimulatorArm64" -> "ios-arm64_x86_64-simulator"
         "iosX64" -> "ios-arm64_x86_64-simulator"
         "iosArm64" -> "ios-arm64"
+        // todo: add more targets
         else -> null
     }
 }
