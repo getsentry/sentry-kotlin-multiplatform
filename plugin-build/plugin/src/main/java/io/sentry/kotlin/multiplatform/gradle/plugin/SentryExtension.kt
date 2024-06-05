@@ -10,19 +10,10 @@ abstract class SentryExtension
 constructor(project: Project) {
     private val objects = project.objects
 
-    val sentryCocoaVersion: Property<String> = objects.property(String::class.java)
-
-    val autoInstallCocoapodsDependency: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
-
     /**
-     * When enabled the plugin will download the Sentry.xcframework and link the framework with linker-opts.
-     * This fixes the issue with the Sentry framework not being found when running tests on Apple targets.
-     * For example when trying to run tests using SPM.
-     *
-     * Defaults to `true` but is automatically **disabled** if the Cocoapods Gradle plugin is available.
+     * Auto-installs the Sentry-Cocoa SDK pod if the cocoapods plugin is enabled.
      */
-    val enableSentryTestLinking: Property<Boolean> =
-        objects.property(Boolean::class.java).convention(true)
+    val autoInstallWithCocoapods: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
     val linker: LinkerExtension = objects.newInstance(LinkerExtension::class.java, project)
 }

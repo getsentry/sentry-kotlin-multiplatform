@@ -26,8 +26,8 @@ class SentryPlugin : Plugin<Project> {
 
         afterEvaluate {
             val hasCocoapodsPlugin = project.pluginManager.hasPlugin(COCOAPODS_PLUGIN_NAME)
-            if (hasCocoapodsPlugin) {
-                setupCocoapods()
+            if (hasCocoapodsPlugin && extension.autoInstallWithCocoapods.get()) {
+                installPod()
             } else {
                 configureLinkingOptions(extension.linker)
             }
@@ -137,7 +137,7 @@ private fun KotlinMultiplatformExtension.appleTargets() =
 /**
  * Installs the Sentry pod if not yet installed and configures the compiler options
  */
-private fun Project.setupCocoapods() {
+private fun Project.installPod() {
     val kmpExtension = this.extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         return
@@ -147,7 +147,7 @@ private fun Project.setupCocoapods() {
         val sentryPod = cocoapods.pods.findByName("Sentry")
         if (sentryPod == null) {
             cocoapods.pod("Sentry") {
-                version = "8.25.0"
+                version = "~> 8.25" // todo: check if this constraint is good enough
                 linkOnly = true
                 extraOpts += listOf("-compiler-option", "-fmodules")
             }
