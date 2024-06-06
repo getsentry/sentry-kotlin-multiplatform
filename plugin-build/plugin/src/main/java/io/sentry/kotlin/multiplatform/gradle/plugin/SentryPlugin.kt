@@ -48,17 +48,17 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
 
     kmpExtension.appleTargets().all { target ->
         val frameworkArchitecture = target.toSentryFrameworkArchitecture()
+        if (frameworkArchitecture == null) {
+            // todo: log, unsupported architecture
+            return@all
+        }
+
         val dynamicFrameworkPath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
         val staticFrameworkPath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
 
         target.binaries.all binaries@{ binary ->
-            if (frameworkArchitecture == null) {
-                // todo: log, unsupported architecture
-                return@binaries
-            }
-
             val path = when {
                 File(dynamicFrameworkPath).exists() -> dynamicFrameworkPath
                 File(staticFrameworkPath).exists() -> {
