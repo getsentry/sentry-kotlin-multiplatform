@@ -11,7 +11,8 @@ constructor(project: Project) {
     private val objects = project.objects
 
     /**
-     * Auto-installs the Sentry-Cocoa SDK pod if the cocoapods plugin is enabled.
+     * Auto-installs the Sentry-Cocoa SDK pod if the cocoapods plugin is enabled and no existing
+     * Sentry pod configuration exists.
      */
     val autoInstallWithCocoapods: Property<Boolean> =
         objects.property(Boolean::class.java).convention(true)
