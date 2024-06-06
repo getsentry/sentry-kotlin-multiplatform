@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
+import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
@@ -14,7 +15,6 @@ import java.io.File
 
 internal const val SENTRY_EXTENSION_NAME = "sentry"
 internal const val LINKER_EXTENSION_NAME = "linker"
-internal const val COCOAPODS_PLUGIN_NAME = "org.jetbrains.kotlin.plugin.cocoapods"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
 
 @Suppress("unused")
@@ -25,9 +25,10 @@ class SentryPlugin : Plugin<Project> {
         project.extensions.add(LINKER_EXTENSION_NAME, extension.linker)
 
         afterEvaluate {
-            val hasCocoapodsPlugin = project.pluginManager.hasPlugin(COCOAPODS_PLUGIN_NAME)
+            val hasCocoapodsPlugin =
+                project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
             if (hasCocoapodsPlugin && extension.autoInstallWithCocoapods.get()) {
-                installPod()
+                installSentryPod()
             } else {
                 configureLinkingOptions(extension.linker)
             }
@@ -35,7 +36,7 @@ class SentryPlugin : Plugin<Project> {
     }
 }
 
-private fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
+internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         // todo: log, not multiplatform found
@@ -46,37 +47,34 @@ private fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val derivedDataPath = findDerivedDataPath(customXcodeprojPath)
 
     kmpExtension.appleTargets().all { target ->
-        val frameworkArchitecture = target.frameworkArchitecture()
+        val frameworkArchitecture = target.toSentryFrameworkArchitecture()
         val dynamicFrameworkPath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
         val staticFrameworkPath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
 
-        target.binaries.all { binary ->
+        target.binaries.all binaries@{ binary ->
             if (frameworkArchitecture == null) {
                 // todo: log, unsupported architecture
-                return@all
+                return@binaries
             }
 
-            var path = dynamicFrameworkPath
-            if (!File(dynamicFrameworkPath).exists()) {
-                // if it doesn't exist still search for the static one since we need either one
-                // for test linking
-                // todo: log, dynamic framework not found, using static framework
-                path = staticFrameworkPath
+            val path = when {
+                File(dynamicFrameworkPath).exists() -> dynamicFrameworkPath
+                File(staticFrameworkPath).exists() -> {
+                    // todo: log, dynamic framework not found, try using static framework
+                    staticFrameworkPath
+                }
 
-                if (!File(staticFrameworkPath).exists()) {
+                else -> {
                     // todo: log, static framework also not found, error
-                    return@all
+                    return@binaries
                 }
             }
 
-            val testExecutable = binary is TestExecutable
-            val dynamicFramework = binary is Framework && !binary.isStatic
-            if (testExecutable) {
-                binary.linkerOpts("-rpath", "$path/Sentry.framework")
-                binary.linkerOpts("-F$path")
-            } else if (dynamicFramework) {
+            if (binary is TestExecutable) {
+                binary.linkerOpts("-rpath", "$path/Sentry.framework", "-F$path")
+            } else if (binary is Framework) {
                 binary.linkerOpts("-F$path")
             }
         }
@@ -106,7 +104,7 @@ private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): St
  * This function will only work for monorepos and if it is not,
  * the user needs to provide the custom path through the [LinkerExtension] configuration.
  */
-private fun findXcodeprojFile(dir: File): File? {
+internal fun findXcodeprojFile(dir: File): File? {
     val ignoredDirectories = listOf("build", "DerivedData")
 
     fun searchDirectory(directory: File): File? {
@@ -137,19 +135,17 @@ private fun KotlinMultiplatformExtension.appleTargets() =
     targets.withType(KotlinNativeTarget::class.java)
         .matching { it.konanTarget.family.isAppleFamily }
 
-/**
- * Installs the Sentry pod if not yet installed and configures the compiler options
- */
-private fun Project.installPod() {
+internal fun Project.installSentryPod() {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         return
     }
 
     (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
-        val sentryPod = cocoapods.pods.findByName("Sentry")
+        val podName = "Sentry"
+        val sentryPod = cocoapods.pods.findByName(podName)
         if (sentryPod == null) {
-            cocoapods.pod("Sentry") {
+            cocoapods.pod(podName) {
                 version = "~> 8.25" // todo: check if this constraint is good enough
                 linkOnly = true
                 extraOpts += listOf("-compiler-option", "-fmodules")
@@ -162,7 +158,7 @@ private fun Project.installPod() {
  * Transforms a Kotlin Multiplatform target name to the architecture name that is found inside
  * Sentry's framework directory.
  */
-private fun KotlinNativeTarget.frameworkArchitecture(): String? {
+internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
     return when (name) {
         "iosSimulatorArm64" -> "ios-arm64_x86_64-simulator"
         "iosX64" -> "ios-arm64_x86_64-simulator"

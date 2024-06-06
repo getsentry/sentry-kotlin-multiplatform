@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     `java-gradle-plugin`
-//    alias(libs.plugins.pluginPublish)
-    id("de.undercouch.download") version "5.6.0"
     alias(libs.plugins.vanniktech.publish)
     id("distribution")
 }
