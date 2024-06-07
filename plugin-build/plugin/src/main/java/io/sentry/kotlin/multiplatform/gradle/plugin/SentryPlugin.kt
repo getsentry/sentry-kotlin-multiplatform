@@ -41,10 +41,10 @@ class SentryPlugin : Plugin<Project> {
                 project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
 
             if (extension.autoInstall.enabled.get()) {
-                installSentryDependency(extension.autoInstall.commonMain)
+                installSentryForKmp(extension.autoInstall.commonMain)
 
                 if (hasCocoapodsPlugin) {
-                    installSentryDependency(extension.autoInstall.cocoapods)
+                    installSentryForCocoapods(extension.autoInstall.cocoapods)
                 }
             }
 
@@ -55,7 +55,7 @@ class SentryPlugin : Plugin<Project> {
     }
 }
 
-internal fun Project.installSentryDependency(sourceSetAutoInstallExtension: SourceSetAutoInstallExtension) {
+internal fun Project.installSentryForKmp(sourceSetAutoInstallExtension: SourceSetAutoInstallExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         // todo: log, not multiplatform found
@@ -80,6 +80,26 @@ internal fun Project.installSentryDependency(sourceSetAutoInstallExtension: Sour
     val sentryVersion = sourceSetAutoInstallExtension.sentryKmpVersion.get()
     commonMain?.dependencies {
         api("io.sentry:sentry-kotlin-multiplatform:$sentryVersion")
+    }
+}
+
+internal fun Project.installSentryForCocoapods(cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension) {
+    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
+    if (kmpExtension !is KotlinMultiplatformExtension) {
+        return
+    }
+
+    (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
+        val podName = "Sentry"
+        val sentryPod = cocoapods.pods.findByName(podName)
+        if (sentryPod == null) {
+            cocoapods.pod(podName) {
+                version =
+                    cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
+                linkOnly = true
+                extraOpts += listOf("-compiler-option", "-fmodules")
+            }
+        }
     }
 }
 
@@ -181,26 +201,6 @@ internal fun findXcodeprojFile(dir: File): File? {
 private fun KotlinMultiplatformExtension.appleTargets() =
     targets.withType(KotlinNativeTarget::class.java)
         .matching { it.konanTarget.family.isAppleFamily }
-
-internal fun Project.installSentryDependency(cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension) {
-    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension) {
-        return
-    }
-
-    (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
-        val podName = "Sentry"
-        val sentryPod = cocoapods.pods.findByName(podName)
-        if (sentryPod == null) {
-            cocoapods.pod(podName) {
-                version =
-                    cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
-                linkOnly = true
-                extraOpts += listOf("-compiler-option", "-fmodules")
-            }
-        }
-    }
-}
 
 /**
  * Transforms a Kotlin Multiplatform target name to the architecture name that is found inside
