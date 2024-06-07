@@ -15,6 +15,9 @@ import java.io.File
 
 internal const val SENTRY_EXTENSION_NAME = "sentry"
 internal const val LINKER_EXTENSION_NAME = "linker"
+internal const val AUTO_INSTALL_EXTENSION_NAME = "autoInstall"
+internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
+internal const val COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME = "commonMain"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
 
 @Suppress("unused")
@@ -23,16 +26,60 @@ class SentryPlugin : Plugin<Project> {
         val extension =
             project.extensions.create(SENTRY_EXTENSION_NAME, SentryExtension::class.java, project)
         project.extensions.add(LINKER_EXTENSION_NAME, extension.linker)
+        project.extensions.add(AUTO_INSTALL_EXTENSION_NAME, extension.autoInstall)
+        project.extensions.add(
+            COCOAPODS_AUTO_INSTALL_EXTENSION_NAME,
+            extension.autoInstall.cocoapods
+        )
+        project.extensions.add(
+            COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME,
+            extension.autoInstall.commonMain
+        )
 
         afterEvaluate {
             val hasCocoapodsPlugin =
                 project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
-            if (hasCocoapodsPlugin && extension.autoInstallWithCocoapods.get()) {
-                installSentryPod()
-            } else {
+
+            if (extension.autoInstall.enabled.get()) {
+                installSentryDependency(extension.autoInstall.commonMain)
+
+                if (hasCocoapodsPlugin) {
+                    installSentryDependency(extension.autoInstall.cocoapods)
+                }
+            }
+
+            if (!hasCocoapodsPlugin) {
                 configureLinkingOptions(extension.linker)
             }
         }
+    }
+}
+
+internal fun Project.installSentryDependency(sourceSetAutoInstallExtension: SourceSetAutoInstallExtension) {
+    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
+    if (kmpExtension !is KotlinMultiplatformExtension) {
+        // todo: log, not multiplatform found
+        return
+    }
+
+    if (!sourceSetAutoInstallExtension.enabled.get()) {
+        return
+    }
+
+    val unsupportedTargets = listOf("wasm", "js", "mingw", "linux")
+    kmpExtension.targets.forEach { target ->
+        if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
+            throw GradleException("Unsupported target: ${target.name}. Cannot auto install in commonMain. Please create an intermediate sourceSet with targets that the SDK supports and add the dependency manually.")
+        }
+    }
+
+    val commonMain = kmpExtension.sourceSets.find {
+        it.name.contains("common")
+    }
+
+    val sentryVersion = sourceSetAutoInstallExtension.sentryKmpVersion.get()
+    commonMain?.dependencies {
+        api("io.sentry:sentry-kotlin-multiplatform:$sentryVersion")
     }
 }
 
@@ -135,7 +182,7 @@ private fun KotlinMultiplatformExtension.appleTargets() =
     targets.withType(KotlinNativeTarget::class.java)
         .matching { it.konanTarget.family.isAppleFamily }
 
-internal fun Project.installSentryPod() {
+internal fun Project.installSentryDependency(cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         return
@@ -146,7 +193,8 @@ internal fun Project.installSentryPod() {
         val sentryPod = cocoapods.pods.findByName(podName)
         if (sentryPod == null) {
             cocoapods.pod(podName) {
-                version = "~> 8.25" // todo: check if this constraint is good enough
+                version =
+                    cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
                 linkOnly = true
                 extraOpts += listOf("-compiler-option", "-fmodules")
             }
