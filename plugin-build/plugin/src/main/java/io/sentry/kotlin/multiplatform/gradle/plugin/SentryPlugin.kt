@@ -79,7 +79,7 @@ internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceS
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
                     "Cannot auto install in commonMain. " +
-                    "Please create an intermediate sourceSet with targets that the SDK supports and add the dependency manually.",
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK supports (apple, jvm, android) and add the dependency manually.",
             )
         }
     }
