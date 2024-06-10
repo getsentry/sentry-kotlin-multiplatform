@@ -12,6 +12,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "io.sentry.kotlin.multiplatform.gradle.plugin"
+rootProject.name = "sentry-kotlin-multiplatform-gradle-plugin"
 
 include(":plugin")
