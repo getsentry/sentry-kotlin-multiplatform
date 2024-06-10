@@ -9,9 +9,9 @@ plugins {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation(gradleApi())
-    implementation(kotlin("gradle-plugin"))
+    compileOnly(kotlin("stdlib"))
+    compileOnly(gradleApi())
+    compileOnly(kotlin("gradle-plugin"))
 
     testImplementation(libs.junit)
 }
