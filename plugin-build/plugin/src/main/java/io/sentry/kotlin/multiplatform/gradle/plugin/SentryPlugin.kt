@@ -7,6 +7,8 @@ import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
+import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractExecutable
+import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractNativeLibrary
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
@@ -136,25 +138,24 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
         val staticFrameworkPath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
 
+        val dynamicFrameworkExists = File(dynamicFrameworkPath).exists()
+        val staticFrameworkExists = File(staticFrameworkPath).exists()
+
+        if (!dynamicFrameworkExists && !staticFrameworkExists) {
+            throw GradleException("Sentry Cocoa Framework not found at $dynamicFrameworkPath or $staticFrameworkPath")
+        }
+
         target.binaries.all binaries@{ binary ->
-            val path =
-                when {
-                    File(dynamicFrameworkPath).exists() -> dynamicFrameworkPath
-                    File(staticFrameworkPath).exists() -> {
-                        // todo: log, dynamic framework not found, try using static framework
-                        staticFrameworkPath
-                    }
-
-                    else -> {
-                        // todo: log, static framework also not found, error
-                        return@binaries
-                    }
-                }
-
             if (binary is TestExecutable) {
-                binary.linkerOpts("-rpath", "$path/Sentry.framework", "-F$path")
-            } else if (binary is Framework) {
-                binary.linkerOpts("-F$path")
+                val frameworkPath =
+                    if (dynamicFrameworkExists) dynamicFrameworkPath else staticFrameworkPath
+                binary.linkerOpts("-rpath", "$path/Sentry.framework", "-F$frameworkPath")
+            }
+
+            if (binary is Framework) {
+                val frameworkPath =
+                    if (binary.isStatic) staticFrameworkPath else dynamicFrameworkPath
+                binary.linkerOpts("-F$frameworkPath")
             }
         }
     }
