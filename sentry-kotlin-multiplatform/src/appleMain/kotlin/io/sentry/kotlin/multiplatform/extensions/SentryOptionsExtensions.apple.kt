@@ -1,16 +1,11 @@
 package io.sentry.kotlin.multiplatform.extensions
 
-import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentryHttpStatusCodeRange
-import io.sentry.kotlin.multiplatform.BuildKonfig
-import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
-import NSException.Sentry.SentryEvent as NSExceptionSentryEvent
 
 internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit = {
     it?.applyCocoaBaseOptions(this)
@@ -42,38 +37,25 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
         tracesSampleRate = NSNumber(double = it)
     }
     beforeSend = { event ->
-        val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
-        val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
-
         val sdk = event?.sdk?.toMutableMap()
 
         val packages = options.sdk?.packages?.map {
             mapOf("name" to it.name, "version" to it.version)
         }?.toMutableList() ?: mutableListOf()
 
-        val names = packages.map { it["name"] }
-        if (!names.contains(cocoaName)) {
-            packages.add(mapOf("name" to cocoaName, "version" to cocoaVersion))
-        }
-
         sdk?.set("packages", packages)
 
         event?.sdk = sdk
 
         if (options.beforeSend == null) {
-            dropKotlinCrashEvent(event as NSExceptionSentryEvent?) as CocoaSentryEvent?
+            event
         } else {
-            val modifiedEvent = event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
+            event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
                 val result = options.beforeSend?.invoke(unwrappedEvent)
                 result?.let { event.applyKmpEvent(it) }
             }
-            dropKotlinCrashEvent(modifiedEvent as NSExceptionSentryEvent?) as CocoaSentryEvent?
         }
     }
-
-    val sdkName = options.sdk?.name ?: BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME
-    val sdkVersion = options.sdk?.version ?: BuildKonfig.VERSION_NAME
-    PrivateSentrySDKOnly.setSdkName(sdkName, sdkVersion)
 
     beforeBreadcrumb = { cocoaBreadcrumb ->
         if (options.beforeBreadcrumb == null) {

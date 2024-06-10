@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -64,6 +65,11 @@ kotlin {
     macosArm64()
 
     sourceSets {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            freeCompilerArgs.add("-Xexpect-actual-classes")
+        }
+
         all {
             languageSettings.apply {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
@@ -87,7 +93,7 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(Config.Libs.sentryAndroid)
+            api(Config.Libs.sentryAndroid)
         }
 
         // androidUnitTest.dependencies doesn't exist
@@ -102,7 +108,7 @@ kotlin {
         val commonJvmMain by creating {
             dependsOn(commonMain.get())
             dependencies {
-                implementation(Config.Libs.sentryJava)
+                api(Config.Libs.sentryJava)
             }
         }
 
@@ -188,7 +194,11 @@ kotlin {
         targets.withType<KotlinNativeTarget>().all {
             compilations["main"].cinterops["Sentry"].extraOpts(
                 "-compiler-option",
-                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable"
+                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
+                "-compiler-option",
+                "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
+                "-compiler-option",
+                "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
             )
         }
     }

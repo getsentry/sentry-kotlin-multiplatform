@@ -81,6 +81,7 @@ public final class io/sentry/kotlin/multiplatform/Sentry {
 	public final fun crash ()V
 	public final fun init (Lio/sentry/kotlin/multiplatform/Context;Lkotlin/jvm/functions/Function1;)V
 	public final fun init (Lkotlin/jvm/functions/Function1;)V
+	public final fun initWithPlatformOptions (Lkotlin/jvm/functions/Function1;)V
 	public final fun isCrashedLastRun ()Z
 	public final fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
 }

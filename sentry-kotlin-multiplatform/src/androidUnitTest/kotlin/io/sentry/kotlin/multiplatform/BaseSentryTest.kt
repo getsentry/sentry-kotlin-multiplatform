@@ -13,6 +13,10 @@ actual abstract class BaseSentryTest {
         Sentry.init(optionsConfiguration)
     }
 
+    actual fun sentryInitWithPlatformOptions(platformOptionsConfiguration: PlatformOptionsConfiguration) {
+        Sentry.initWithPlatformOptions(platformOptionsConfiguration)
+    }
+
     @BeforeTest
     open fun setUp() {
         // Set up the provider needed for Sentry.init on Android

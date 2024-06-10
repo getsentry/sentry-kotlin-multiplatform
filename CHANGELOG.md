@@ -1,12 +1,90 @@
 # Changelog
 
-## Unreleased
+## 0.7.1
+
+### Fixes
+
+- Symbol multiply defined when trying to run cocoa targets ([#226](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/226))
+
+## 0.7.0
+
+### Features
+
+- Allow initializing the KMP SDK with native options ([#221](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/221))
+  - This allows you to initialize the SDK with platform-specific options that may not be available in the common code of the KMP SDK yet.
+
+Usage:
+```kotlin
+// build.gradle.kts
+kotlin {
+    sourceSets {
+        all {
+          languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+    }
+}
+
+// commonMain
+fun init() {
+  Sentry.initWithPlatformOptions(createPlatformOptions())
+}
+
+expect fun platformOptionsConfiguration(): PlatformOptionsConfiguration
+
+// iOS
+actual fun createPlatformOptions(): PlatformOptionsConfiguration = { 
+    dsn = "your_dsn"
+    release = "1.0.0"
+    // ...
+}
+
+// Android
+actual fun createPlatformOptions(): PlatformOptionsConfiguration = {
+  dsn = "your_dsn"
+  release = "1.0.0"
+  // ...
+}
+```
+
+### Dependencies
+
+- Bump Java SDK from v7.8.0 to v7.9.0 ([#219](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/219))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#790)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.8.0...7.9.0)
+- Bump Cocoa SDK from v8.25.0 to v8.26.0 ([#222](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/222))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8260)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.25.0...8.26.0)
+
+## 0.6.0
+
+**Note**: This release includes a bump to Sentry Cocoa v8.25.0.
+Please use at least version 8.25.0 of the Sentry Cocoa SDK starting from this release.
+If you are using the Cocoapods gradle plugin you need to adjust your configuration:
+
+```kotlin
+pod("Sentry") {
+    version = "8.25.0"
+    // These extra options are required
+    extraOpts += listOf("-compiler-option", "-fmodules")
+}
+```
+
+### Fixes
+
+- Don't crash app when `applicationContext` is not available ([#217](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/217))
+
+### Enhancements
+
+- Make `setSentryUnhandledExceptionHook` public ([#208](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/208))
 
 ### Dependencies
 
 - Bump Java SDK from v7.4.0 to v7.8.0 ([#205](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/205), [#206](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/206))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#780)
   - [diff](https://github.com/getsentry/sentry-java/compare/7.4.0...7.8.0)
+- Bump Cocoa SDK from v8.20.0 to v8.25.0 ([#209](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/209))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8250)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.20.0...8.25.0)
 
 ## 0.5.0
 

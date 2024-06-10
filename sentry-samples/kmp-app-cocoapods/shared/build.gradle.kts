@@ -44,6 +44,10 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+
         commonMain.dependencies {
             api(project(":sentry-kotlin-multiplatform"))
         }
