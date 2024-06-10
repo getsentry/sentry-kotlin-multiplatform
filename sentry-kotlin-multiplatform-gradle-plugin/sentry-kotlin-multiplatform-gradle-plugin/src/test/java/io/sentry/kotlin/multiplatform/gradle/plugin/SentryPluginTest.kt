@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.gradle.plugin
+package io.sentry.kotlin.multiplatform.gradle
 
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull

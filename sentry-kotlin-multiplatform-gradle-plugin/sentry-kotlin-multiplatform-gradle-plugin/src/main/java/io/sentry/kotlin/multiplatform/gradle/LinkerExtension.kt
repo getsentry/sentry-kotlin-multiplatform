@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.gradle.plugin
+package io.sentry.kotlin.multiplatform.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.provider.Property

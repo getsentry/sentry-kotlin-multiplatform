@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform.gradle.plugin
+package io.sentry.kotlin.multiplatform.gradle
 
 import io.sentry.BuildConfig
 import org.gradle.api.Project
