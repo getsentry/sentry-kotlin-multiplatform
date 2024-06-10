@@ -20,7 +20,7 @@ dependencyResolutionManagement {
 rootProject.name = "sentry-kotlin-multiplatform-sdk"
 
 include(":sentry-kotlin-multiplatform")
-includeBuild("plugin-build")
+includeBuild("sentry-kotlin-multiplatform-gradle-plugin")
 
 /*
 Simple KMP App with targets:

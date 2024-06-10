@@ -29,9 +29,9 @@ tasks.withType<KotlinCompile> {
 
 gradlePlugin {
     plugins {
-        create(property("ID").toString()) {
-            id = property("ID").toString()
-            implementationClass = property("IMPLEMENTATION_CLASS").toString()
+        create(property("id").toString()) {
+            id = property("id").toString()
+            implementationClass = property("implementation_class").toString()
         }
     }
 }

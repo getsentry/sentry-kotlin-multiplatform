@@ -9,8 +9,8 @@ plugins {
 }
 
 allprojects {
-    group = property("GROUP").toString()
-    version = property("VERSION").toString()
+    group = property("group").toString()
+    version = property("version").toString()
 
     apply {
         plugin(rootProject.libs.plugins.detekt.get().pluginId)
