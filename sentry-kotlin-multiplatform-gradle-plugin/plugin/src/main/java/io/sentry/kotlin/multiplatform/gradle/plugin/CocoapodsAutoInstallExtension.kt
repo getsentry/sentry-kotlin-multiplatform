@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle.plugin
 
+import io.sentry.BuildConfig
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import javax.inject.Inject
@@ -24,9 +25,9 @@ abstract class CocoapodsAutoInstallExtension
         /**
          * Overrides default Sentry Cocoa version.
          *
-         * Defaults to the `~> 8.25`.
+         * Defaults to the version used in the latest KMP SDK.
          */
         val sentryCocoaVersion: Property<String> =
             objects.property(String::class.java)
-                .convention("~> 8.25") // todo: grab the latest version properly
+                .convention(BuildConfig.SentryCocoaVersion) // todo: grab the latest version properly
     }

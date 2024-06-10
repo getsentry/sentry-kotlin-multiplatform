@@ -12,6 +12,7 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle"}
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish"}
 versionCheck = { id = "com.github.ben-manes.versions", version.ref = "versionCheck"}
 vanniktech-publish = { id = "com.vanniktech.maven.publish", version = "0.18.0"}
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.3.5"}
 
 [libraries]
 junit = "junit:junit:4.13.2"

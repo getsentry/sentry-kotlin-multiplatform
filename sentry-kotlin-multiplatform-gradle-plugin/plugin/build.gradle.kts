@@ -6,6 +6,7 @@ plugins {
     `java-gradle-plugin`
     alias(libs.plugins.vanniktech.publish)
     id("distribution")
+    alias(libs.plugins.buildConfig)
 }
 
 dependencies {
@@ -31,7 +32,7 @@ gradlePlugin {
     plugins {
         create(property("id").toString()) {
             id = property("id").toString()
-            implementationClass = property("implementation_class").toString()
+            implementationClass = property("implementationClass").toString()
         }
     }
 }
@@ -54,4 +55,12 @@ distributions {
             from("build${sep}publications${sep}maven")
         }
     }
+}
+
+buildConfig {
+    useKotlinOutput()
+    packageName("io.sentry")
+    className("BuildConfig")
+
+    buildConfigField("String", "SentryCocoaVersion", provider { "\"${project.property("sentryCocoaVersion")}\"" })
 }
