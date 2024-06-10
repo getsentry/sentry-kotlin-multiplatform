@@ -29,5 +29,5 @@ abstract class CocoapodsAutoInstallExtension
          */
         val sentryCocoaVersion: Property<String> =
             objects.property(String::class.java)
-                .convention(BuildConfig.SentryCocoaVersion) // todo: grab the latest version properly
+                .convention(BuildConfig.SentryCocoaVersion)
     }
