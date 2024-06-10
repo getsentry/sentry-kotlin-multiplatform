@@ -1,9 +1,9 @@
+import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin)
-    alias(libs.plugins.pluginPublish)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.versionCheck)
@@ -12,6 +12,9 @@ plugins {
     id("distribution")
     alias(libs.plugins.buildConfig)
 }
+
+version = property("versionName").toString()
+group = property("group").toString()
 
 dependencies {
     compileOnly(kotlin("stdlib"))
@@ -41,10 +44,10 @@ gradlePlugin {
     }
 }
 
-//val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
-//// signing is done when uploading files to MC
-//// via gpg:sign-and-deploy-file (release.kts)
-//publish.releaseSigningEnabled = false
+val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
+// signing is done when uploading files to MC
+// via gpg:sign-and-deploy-file (release.kts)
+publish.releaseSigningEnabled = false
 
 tasks.named("distZip").configure {
     dependsOn("publishToMavenLocal")
@@ -102,7 +105,3 @@ tasks.withType<Detekt>().configureEach {
         html.outputLocation.set(file("build/reports/detekt.html"))
     }
 }
-//
-//tasks.register("clean", Delete::class.java) {
-//    delete(rootProject.layout.buildDirectory)
-//}

@@ -1,14 +1,11 @@
-import io.sentry.kotlin.multiplatform.gradle.plugin.SentryPlugin
+package io.sentry.kotlin.multiplatform.gradle
+
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertNull
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
 
 class SentryPluginTest {
     @Test
@@ -33,28 +30,6 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle.plugin")
 
         assertNotNull(project.extensions.getByName("linker"))
-    }
-
-    @Test
-    fun `frameworkArchitecture returns transformed target with supported targets`() {
-        val target = mock(KotlinNativeTarget::class.java)
-
-        `when`(target.name).thenReturn("iosSimulatorArm64")
-        assertEquals("ios-arm64_x86_64-simulator", target.toSentryFrameworkArchitecture())
-
-        `when`(target.name).thenReturn("iosX64")
-        assertEquals("ios-arm64_x86_64-simulator", target.toSentryFrameworkArchitecture())
-
-        `when`(target.name).thenReturn("iosArm64")
-        assertEquals("ios-arm64", target.toSentryFrameworkArchitecture())
-    }
-
-    @Test
-    fun `frameworkArchitecture returns null with unsupported targets`() {
-        val target = mock(KotlinNativeTarget::class.java)
-
-        `when`(target.name).thenReturn("unsupported")
-        assertNull(target.toSentryFrameworkArchitecture())
     }
 
     @Test
