@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-internal const val SENTRY_EXTENSION_NAME = "sentry"
+internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
 internal const val AUTO_INSTALL_EXTENSION_NAME = "autoInstall"
 internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
