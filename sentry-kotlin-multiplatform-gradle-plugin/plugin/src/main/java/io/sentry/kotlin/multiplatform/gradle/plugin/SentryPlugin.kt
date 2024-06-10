@@ -72,7 +72,7 @@ internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceS
         return
     }
 
-    val unsupportedTargets = listOf("wasm", "js", "mingw", "linux")
+    val unsupportedTargets = listOf("wasm", "js", "mingw", "linux", "androidNative")
     kmpExtension.targets.forEach { target ->
         if (unsupportedTargets.any { unsupported ->
                 target.name.contains(unsupported)
