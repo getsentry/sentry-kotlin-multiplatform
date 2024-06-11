@@ -6,9 +6,9 @@ import javax.inject.Inject
 
 @Suppress("UnnecessaryAbstractClass")
 abstract class LinkerExtension
-    @Inject
-    constructor(project: Project) {
-        private val objects = project.objects
+@Inject
+constructor(project: Project) {
+    private val objects = project.objects
 
-        val xcodeprojPath: Property<String> = objects.property(String::class.java)
-    }
+    val xcodeprojPath: Property<String> = objects.property(String::class.java)
+}

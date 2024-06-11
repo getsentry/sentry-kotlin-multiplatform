@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("io.sentry.kotlin.multiplatform.gradle.plugin")
+    id("io.sentry.kotlin.multiplatform.gradle")
 }
 
 java {
@@ -48,11 +48,5 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
-    }
-}
-
-sentry {
-    linker {
-        // xcodeprojPath.set("/Users/giancarlobuenaflor/Desktop/SentryProjects/sentry-kotlin-multiplatform/sentry-samples/kmp-app-spm/iosApp.xcodeproj")
     }
 }

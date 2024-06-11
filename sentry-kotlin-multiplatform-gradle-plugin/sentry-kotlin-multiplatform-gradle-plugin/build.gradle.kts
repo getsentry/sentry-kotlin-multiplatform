@@ -1,48 +1,48 @@
-//import com.vanniktech.maven.publish.MavenPublishPluginExtension
-//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+// import com.vanniktech.maven.publish.MavenPublishPluginExtension
+// import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 //
-//plugins {
+// plugins {
 //    kotlin("jvm")
 //    `java-gradle-plugin`
 //    alias(libs.plugins.vanniktech.publish)
 //    id("distribution")
 //    alias(libs.plugins.buildConfig)
-//}
+// }
 //
-//dependencies {
+// dependencies {
 //    compileOnly(kotlin("stdlib"))
 //    compileOnly(gradleApi())
 //    compileOnly(kotlin("gradle-plugin"))
 //
 //    testImplementation(libs.junit)
-//}
+// }
 //
-//java {
+// java {
 //    sourceCompatibility = JavaVersion.VERSION_1_8
 //    targetCompatibility = JavaVersion.VERSION_1_8
-//}
+// }
 //
-//tasks.withType<KotlinCompile> {
+// tasks.withType<KotlinCompile> {
 //    kotlinOptions {
 //        jvmTarget = JavaVersion.VERSION_1_8.toString()
 //    }
-//}
+// }
 //
-//gradlePlugin {
+// gradlePlugin {
 //    plugins {
 //        create(property("id").toString()) {
 //            id = property("id").toString()
 //            implementationClass = property("implementationClass").toString()
 //        }
 //    }
-//}
+// }
 //
-//val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
-//// signing is done when uploading files to MC
-//// via gpg:sign-and-deploy-file (release.kts)
-//publish.releaseSigningEnabled = false
+// val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
+// // signing is done when uploading files to MC
+// // via gpg:sign-and-deploy-file (release.kts)
+// publish.releaseSigningEnabled = false
 //
-//tasks.named("distZip").configure {
+// tasks.named("distZip").configure {
 //    dependsOn("publishToMavenLocal")
 //    this.doLast {
 //        val distributionFilePath =
@@ -51,20 +51,20 @@
 //        if (!file.exists()) throw IllegalStateException("Distribution file: $distributionFilePath does not exist")
 //        if (file.length() == 0L) throw IllegalStateException("Distribution file: $distributionFilePath is empty")
 //    }
-//}
+// }
 //
-//val sep = File.separator
+// val sep = File.separator
 //
-//distributions {
+// distributions {
 //    main {
 //        contents {
 //            from("build${sep}libs")
 //            from("build${sep}publications${sep}maven")
 //        }
 //    }
-//}
+// }
 //
-//buildConfig {
+// buildConfig {
 //    useKotlinOutput()
 //    packageName("io.sentry")
 //    className("BuildConfig")
@@ -73,4 +73,4 @@
 //        "String",
 //        "SentryCocoaVersion",
 //        provider { "\"${project.property("sentryCocoaVersion")}\"" })
-//}
+// }

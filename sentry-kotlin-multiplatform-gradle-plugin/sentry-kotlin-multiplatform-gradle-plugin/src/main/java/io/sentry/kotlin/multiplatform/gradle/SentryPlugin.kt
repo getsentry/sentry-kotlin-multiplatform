@@ -7,8 +7,6 @@ import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
-import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractExecutable
-import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractNativeLibrary
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
@@ -30,17 +28,17 @@ class SentryPlugin : Plugin<Project> {
                 project.extensions.create(
                     SENTRY_EXTENSION_NAME,
                     SentryExtension::class.java,
-                    project,
+                    project
                 )
             project.extensions.add(LINKER_EXTENSION_NAME, sentryExtension.linker)
             project.extensions.add(AUTO_INSTALL_EXTENSION_NAME, sentryExtension.autoInstall)
             project.extensions.add(
                 COCOAPODS_AUTO_INSTALL_EXTENSION_NAME,
-                sentryExtension.autoInstall.cocoapods,
+                sentryExtension.autoInstall.cocoapods
             )
             project.extensions.add(
                 COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME,
-                sentryExtension.autoInstall.commonMain,
+                sentryExtension.autoInstall.commonMain
             )
 
             afterEvaluate {
@@ -75,13 +73,13 @@ internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceS
     val unsupportedTargets = listOf("wasm", "js", "mingw", "linux", "androidNative")
     kmpExtension.targets.forEach { target ->
         if (unsupportedTargets.any { unsupported ->
-                target.name.contains(unsupported)
-            }
+            target.name.contains(unsupported)
+        }
         ) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
                     "Cannot auto install in commonMain. " +
-                    "Please create an intermediate sourceSet with targets that the Sentry SDK supports (apple, jvm, android) and add the dependency manually.",
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }
@@ -167,7 +165,10 @@ private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): St
     exec {
         it.commandLine =
             listOf(
-                "xcodebuild", "-project", xcodeprojPath, "-showBuildSettings",
+                "xcodebuild",
+                "-project",
+                xcodeprojPath,
+                "-showBuildSettings"
             )
         it.standardOutput = buildDirOutput
     }

@@ -4,7 +4,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
-    id("io.sentry.kotlin.multiplatform.gradle.plugin")
+    id("io.sentry.kotlin.multiplatform.gradle")
 }
 
 java {
