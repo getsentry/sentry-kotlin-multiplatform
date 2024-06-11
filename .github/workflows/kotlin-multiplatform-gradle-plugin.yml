@@ -1,0 +1,39 @@
+name: "Plugin: sentry-kotlin-multiplatform"
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  archive-distribution:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Cached Gradle
+        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+
+      - name: DistZip
+        run: |
+          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew distZip
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            ./*/build/distributions/*.zip

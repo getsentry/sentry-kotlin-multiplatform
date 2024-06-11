@@ -72,10 +72,12 @@ spotless {
 
     kotlin {
         target("**/*.kt")
+        targetExclude("**/generated/**/*.kt")
         ktlint()
     }
     kotlinGradle {
         target("**/*.kts")
+        targetExclude("**/generated/**/*.kts")
         ktlint()
     }
 }
@@ -114,4 +116,9 @@ val detektProjectBaseline by tasks.registering(io.gitlab.arturbosch.detekt.Detek
     baseline.set(file(detektBaselineFilePath))
     include("**/*.kt")
     detektExcludes()
+}
+
+// Configure tasks so it is also run for the plugin
+tasks.getByName("detekt") {
+    gradle.includedBuild("sentry-kotlin-multiplatform-gradle-plugin").task(":detekt")
 }

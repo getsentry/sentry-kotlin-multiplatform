@@ -26,4 +26,5 @@ jobs:
           distribution: temurin
 
       - name: Analyze
-        run: ./gradlew apiCheck detekt
+        run:
+          ./gradlew apiCheck detekt spotlessCheck

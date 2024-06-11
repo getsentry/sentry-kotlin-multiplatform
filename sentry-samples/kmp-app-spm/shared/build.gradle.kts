@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("io.sentry.kotlin.multiplatform.gradle")
 }
 
 java {
@@ -26,7 +27,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
             export(project(":sentry-kotlin-multiplatform"))
         }
     }
