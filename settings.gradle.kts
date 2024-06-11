@@ -38,9 +38,9 @@ Simple KMP App with targets:
    - iOS with SwiftUI and Cocoapods
    - JVM Desktop with Jetpack Compose
 */
-//include("sentry-samples:kmp-app-cocoapods:shared")
-//include("sentry-samples:kmp-app-cocoapods:androidApp")
-//include("sentry-samples:kmp-app-cocoapods:desktopApp")
+include("sentry-samples:kmp-app-cocoapods:shared")
+include("sentry-samples:kmp-app-cocoapods:androidApp")
+include("sentry-samples:kmp-app-cocoapods:desktopApp")
 
 /*
 KMP App with MVVM and Dependency Injection with Koin:
