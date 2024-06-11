@@ -1,5 +1,4 @@
 PODS:
-
   - Sentry (8.26.0):
     - Sentry/Core (= 8.26.0)
   - Sentry/Core (8.26.0)
