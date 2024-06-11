@@ -1,18 +1,19 @@
 [versions]
 detekt = "1.23.6"
 kotlin = "1.9.23"
-ktlintGradle = "12.1.0"
 pluginPublish = "1.2.1"
-versionCheck = "0.51.0"
+buildConfig = "5.3.5"
+vanniktechPublish = "0.18.0"
+spotless = "6.25.0"
+ktfmt = "0.18.0"
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt"}
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle"}
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish"}
-versionCheck = { id = "com.github.ben-manes.versions", version.ref = "versionCheck"}
-vanniktech-publish = { id = "com.vanniktech.maven.publish", version = "0.18.0"}
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "5.3.5"}
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechPublish"}
+buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless"}
 
 [libraries]
 junit = "junit:junit:4.13.2"
