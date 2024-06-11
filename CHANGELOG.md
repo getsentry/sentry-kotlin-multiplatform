@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add plugin ([#230](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/230))
+  - Install via `plugins { id("io.sentry.kotlin.multiplatform.gradle") version "{version}" }`  
+  - Enables auto installing of the KMP SDK to commonMain (if all targets are supported)
+  - Configures linking for SPM (both dynamic and static frameworks)
+
 ## 0.7.1
 
 ### Fixes
