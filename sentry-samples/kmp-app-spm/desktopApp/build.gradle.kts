@@ -31,7 +31,7 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-//                implementation(rootProject.project(":sentry-samples:kmp-app-cocoapods:shared"))
+                implementation(rootProject.project(":sentry-samples:kmp-app-cocoapods:shared"))
                 implementation(compose.desktop.currentOs)
             }
         }
