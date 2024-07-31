@@ -25,5 +25,5 @@ abstract class CocoapodsAutoInstallExtension @Inject constructor(project: Projec
      * Defaults to the version used in the latest KMP SDK.
      */
     val sentryCocoaVersion: Property<String> =
-        objects.property(String::class.java).convention(BuildConfig.SentryCocoaVersion)
+        objects.property(String::class.java).convention("~> ${BuildConfig.SentryCocoaVersion}")
 }
