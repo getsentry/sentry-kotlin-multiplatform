@@ -10,6 +10,12 @@
   - Enables auto installing of the required Sentry Cocoa SDK with Cocoapods (if Cocoapods plugin is enabled)
   - Configures linking for SPM (both dynamic and static frameworks)
 
+### Dependencies
+
+- Bump Java SDK from v7.9.0 to v7.12.0 ([#236](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/236), [#242](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/242))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7120)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.9.0...7.12.0)
+
 ## 0.7.1
 
 ### Fixes
