@@ -156,19 +156,11 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
 
 private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String {
     val xcodeprojPath = customXcodeprojPath ?: findXcodeprojFile(rootDir)?.absolutePath
-    val buildDirOutput = ByteArrayOutputStream()
-    exec {
-        it.commandLine = listOf("xcodebuild", "-project", xcodeprojPath, "-showBuildSettings")
-        it.standardOutput = buildDirOutput
-    }
-    val buildSettings = buildDirOutput.toString("UTF-8")
-    val buildDirRegex = Regex("BUILD_DIR = (.+)")
-    val buildDirMatch = buildDirRegex.find(buildSettings)
-    val buildDir =
-        buildDirMatch?.groupValues?.get(1)
-            ?: throw GradleException("BUILD_DIR not found in xcodebuild output")
-    val derivedDataPath = buildDir.replace("/Build/Products", "")
-    return derivedDataPath
+    ?: throw GradleException("Xcode project file not found")
+
+    return providers.of(DerivedDataPathValueSource::class.java) {
+        it.parameters.xcodeprojPath.set(xcodeprojPath)
+    }.get()
 }
 
 /**
