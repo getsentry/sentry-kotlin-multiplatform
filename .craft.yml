@@ -29,5 +29,5 @@ targets:
   - name: registry
     sdks:
       maven:io.sentry:sentry-kotlin-multiplatform:
-      maven:io.sentry:sentry-kotlin-multiplatform-gradle-plugin:
+#      maven:io.sentry:sentry-kotlin-multiplatform-gradle-plugin:
 

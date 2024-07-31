@@ -10,8 +10,9 @@ abstract class AutoInstallExtension @Inject constructor(project: Project) {
 
     /**
      * Enable auto-installation of the Sentry dependencies through [CocoapodsAutoInstallExtension]
+     * and [SourceSetAutoInstallExtension].
      *
-     * Disabling this will prevent the plugin from auto installing anything.
+     * Disabling this will prevent the plugin from auto installing any dependency.
      *
      * Defaults to true.
      */
