@@ -57,7 +57,7 @@ class SentryPlugin : Plugin<Project> {
                 }
 
                 // If the user is not using the cocoapods plugin, linking to the framework is not
-                // automatic so we have to take care of that
+                // automatic so we have to configure it in the plugin.
                 if (!hasCocoapodsPlugin) {
                     configureLinkingOptions(sentryExtension.linker)
                 }
