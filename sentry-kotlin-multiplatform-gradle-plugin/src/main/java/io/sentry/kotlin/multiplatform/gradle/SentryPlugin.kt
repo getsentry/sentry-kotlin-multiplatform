@@ -49,6 +49,7 @@ class SentryPlugin : Plugin<Project> {
                     if (sentryExtension.autoInstall.commonMain.enabled.get()) {
                         installSentryForKmp(sentryExtension.autoInstall.commonMain)
                     }
+
                     if (hasCocoapodsPlugin && sentryExtension.autoInstall.cocoapods.enabled.get()) {
                         installSentryForCocoapods(sentryExtension.autoInstall.cocoapods)
                     }
@@ -101,6 +102,12 @@ internal fun Project.installSentryForCocoapods(
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
+        logger.info("Kotlin Multiplatform plugin not found. Skipping Cocoapods installation.")
+        return
+    }
+
+    if (kmpExtension.appleTargets().isEmpty()) {
+        logger.info("No Apple targets found. Skipping Cocoapods installation.")
         return
     }
 
@@ -122,6 +129,11 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         logger.info("Kotlin Multiplatform plugin not found. Skipping linker configuration.")
+        return
+    }
+
+    if (kmpExtension.appleTargets().isEmpty()) {
+        logger.info("No Apple targets found. Skipping linker configuration.")
         return
     }
 
