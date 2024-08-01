@@ -13,6 +13,9 @@ concurrency:
 jobs:
   build:
     runs-on: macos-latest-xlarge
+    defaults:
+      run:
+        working-directory: sentry-kotlin-multiplatform-gradle-plugin
 
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +38,8 @@ jobs:
 
       - name: Build
         run: |
-          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew build && ./gradlew koverXmlReport
+          ./gradlew build
+          ./gradlew koverXmlReport
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # pin@v4
