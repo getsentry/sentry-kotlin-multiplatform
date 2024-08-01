@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi
 
 PROJECT_NAME="$1"
-./gr
+
 ./gradlew "testDebugUnitTest" \
           "testReleaseUnitTest" \
           "publishAndroidReleasePublicationToMavenLocal" \

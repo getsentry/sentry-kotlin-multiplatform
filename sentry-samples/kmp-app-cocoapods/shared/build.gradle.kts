@@ -65,3 +65,9 @@ android {
         minSdk = Config.Android.minSdkVersion
     }
 }
+
+// disabling autoInstall because we are using project(":sentry-kotlin-multiplatform") directly
+// for our sample apps
+sentryKmp {
+    autoInstall.commonMain.enabled = false
+}
