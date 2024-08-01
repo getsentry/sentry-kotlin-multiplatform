@@ -4,6 +4,7 @@ kotlin = "1.9.23"
 pluginPublish = "1.2.1"
 buildConfig = "5.3.5"
 vanniktechPublish = "0.18.0"
+kover = "0.8.3"
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt"}
@@ -11,6 +12,7 @@ kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish"}
 vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechPublish"}
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover"}
 
 [libraries]
 junit = "junit:junit:4.13.2"

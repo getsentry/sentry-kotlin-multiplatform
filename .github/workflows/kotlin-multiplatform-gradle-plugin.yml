@@ -35,7 +35,13 @@ jobs:
 
       - name: Build
         run: |
-          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew build
+          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew build && ./gradlew koverXmlReport
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # pin@v4
+        with:
+          name: sentry-kotlin-multiplatform-gradle-plugin
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   archive-distribution:
     runs-on: ubuntu-latest

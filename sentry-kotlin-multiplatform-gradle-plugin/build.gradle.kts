@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.vanniktech.publish)
     id("distribution")
     alias(libs.plugins.buildConfig)
+    alias(libs.plugins.kover)
 }
 
 version = property("versionName").toString()
