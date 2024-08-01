@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
+import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -84,9 +85,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                    "Cannot auto install in commonMain. " +
-                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                    "supports (apple, jvm, android) and add the dependency manually."
+                        "Cannot auto install in commonMain. " +
+                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                        "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }
@@ -108,6 +109,11 @@ internal fun Project.installSentryForCocoapods(
 
     if (kmpExtension.appleTargets().isEmpty()) {
         logger.info("No Apple targets found. Skipping Cocoapods installation.")
+        return
+    }
+
+    if (!HostManager.hostIsMac) {
+        logger.info("Host is not macOS. Skipping Cocoapods installation.")
         return
     }
 
@@ -134,6 +140,11 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
 
     if (kmpExtension.appleTargets().isEmpty()) {
         logger.info("No Apple targets found. Skipping linker configuration.")
+        return
+    }
+
+    if (!HostManager.hostIsMac) {
+        logger.info("Host is not macOS. Skipping linker configuration.")
         return
     }
 
@@ -205,7 +216,7 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
 
 private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String {
     val xcodeprojPath = customXcodeprojPath ?: findXcodeprojFile(rootDir)?.absolutePath
-        ?: throw GradleException("Xcode project file not found")
+    ?: throw GradleException("Xcode project file not found")
 
     return providers.of(DerivedDataPathValueSource::class.java) {
         it.parameters.xcodeprojPath.set(xcodeprojPath)
