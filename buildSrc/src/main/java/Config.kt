@@ -1,7 +1,7 @@
 object Config {
     val agpVersion = "7.4.2"
-    val kotlinVersion = "1.9.21"
-    val composeVersion = "1.5.11"
+    val kotlinVersion = "1.9.23"
+    val composeVersion = "1.6.1"
     val gradleMavenPublishPluginVersion = "0.18.0"
 
     val multiplatform = "multiplatform"
@@ -32,7 +32,7 @@ object Config {
     object Libs {
         val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib"
 
-        val sentryJavaVersion = "7.12.0"
+        val sentryJavaVersion = "7.13.0"
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
