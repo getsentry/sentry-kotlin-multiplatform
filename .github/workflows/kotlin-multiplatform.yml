@@ -112,7 +112,7 @@ jobs:
 
       - name: Test samples
         run: |
-          ./gradlew allTests -p sentry-samples/kmp-app-spm/shared
+          ./gradlew allTests -p sentry-samples
 
   archive-distribution:
     runs-on: macos-latest-xlarge
