@@ -11,7 +11,7 @@ class SentryPluginTest {
     @Test
     fun `plugin is applied correctly to the project`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle.plugin")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assert(project.plugins.hasPlugin(SentryPlugin::class.java))
     }
@@ -19,15 +19,15 @@ class SentryPluginTest {
     @Test
     fun `extension sentry is created correctly`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle.plugin")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
-        assertNotNull(project.extensions.getByName("sentry"))
+        assertNotNull(project.extensions.getByName("sentryKmp"))
     }
 
     @Test
     fun `extension linker is created correctly`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle.plugin")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assertNotNull(project.extensions.getByName("linker"))
     }
@@ -35,7 +35,7 @@ class SentryPluginTest {
     @Test
     fun `install Sentry pod when cocoapods plugin is applied and no custom Sentry configuration exists`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle.plugin")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
@@ -48,7 +48,7 @@ class SentryPluginTest {
     @Test
     fun `do not install Sentry pod when cocoapods plugin is applied and custom Sentry configuration exists`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle.plugin")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 

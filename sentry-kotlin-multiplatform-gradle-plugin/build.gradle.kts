@@ -20,6 +20,7 @@ dependencies {
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
 
+    testImplementation(kotlin("gradle-plugin"))
     testImplementation(libs.junit)
 }
 
