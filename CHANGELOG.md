@@ -8,7 +8,8 @@
   - Install via `plugins { id("io.sentry.kotlin.multiplatform.gradle") version "{version}" }`  
   - Enables auto installing of the KMP SDK to commonMain (if all targets are supported)
   - Enables auto installing of the required Sentry Cocoa SDK with Cocoapods (if Cocoapods plugin is enabled)
-  - Configures linking for SPM (both dynamic and static frameworks)
+  - Configures linking for SPM (needed if you want to compile a dynamic framework)
+  - Configure via the `sentryKmp` configuration block in your build file
 
 ### Dependencies
 
