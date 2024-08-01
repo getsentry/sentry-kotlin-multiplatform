@@ -50,3 +50,7 @@ android {
         minSdk = Config.Android.minSdkVersion
     }
 }
+
+sentryKmp {
+    autoInstall.commonMain.enabled = false
+}

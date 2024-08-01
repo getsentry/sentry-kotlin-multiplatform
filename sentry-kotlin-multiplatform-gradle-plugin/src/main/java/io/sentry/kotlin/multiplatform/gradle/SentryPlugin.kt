@@ -10,8 +10,8 @@ import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
-import java.io.ByteArrayOutputStream
 import java.io.File
+import org.slf4j.LoggerFactory
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -25,7 +25,11 @@ class SentryPlugin : Plugin<Project> {
     override fun apply(project: Project): Unit =
         with(project) {
             val sentryExtension =
-                project.extensions.create(SENTRY_EXTENSION_NAME, SentryExtension::class.java, project)
+                project.extensions.create(
+                    SENTRY_EXTENSION_NAME,
+                    SentryExtension::class.java,
+                    project
+                )
             project.extensions.add(LINKER_EXTENSION_NAME, sentryExtension.linker)
             project.extensions.add(AUTO_INSTALL_EXTENSION_NAME, sentryExtension.autoInstall)
             project.extensions.add(
@@ -57,6 +61,12 @@ class SentryPlugin : Plugin<Project> {
                 }
             }
         }
+
+    companion object {
+        internal val logger by lazy {
+            LoggerFactory.getLogger(SentryPlugin::class.java)
+        }
+    }
 }
 
 internal fun Project.installSentryForKmp(
@@ -64,7 +74,7 @@ internal fun Project.installSentryForKmp(
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
-        // todo: log, not multiplatform found
+        logger.info("Kotlin Multiplatform plugin not found. Skipping Sentry installation.")
         return
     }
 
@@ -73,9 +83,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                    "Cannot auto install in commonMain. " +
-                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                    "supports (apple, jvm, android) and add the dependency manually."
+                        "Cannot auto install in commonMain. " +
+                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                        "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }
@@ -111,7 +121,7 @@ internal fun Project.installSentryForCocoapods(
 internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
-        // todo: log, not multiplatform found
+        logger.info("Kotlin Multiplatform plugin not found. Skipping Sentry installation.")
         return
     }
 
@@ -121,7 +131,7 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     kmpExtension.appleTargets().all { target ->
         val frameworkArchitecture = target.toSentryFrameworkArchitecture()
         if (frameworkArchitecture == null) {
-            // todo: log, unsupported architecture
+            logger.info("Skipping target ${target.name}. Unsupported architecture.")
             return@all
         }
 
@@ -147,10 +157,28 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
             }
 
             if (binary is Framework) {
-                val frameworkPath = if (binary.isStatic) staticFrameworkPath else dynamicFrameworkPath
+                val frameworkPath =
+                    if (binary.isStatic) staticFrameworkPath else dynamicFrameworkPath
                 binary.linkerOpts("-F$frameworkPath")
             }
         }
+    }
+}
+
+/**
+ * Transforms a Kotlin Multiplatform target name to the architecture name that is found inside
+ * Sentry's framework directory.
+ */
+internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
+    return when (name) {
+        "iosSimulatorArm64", "iosX64" -> "ios-arm64_x86_64-simulator"
+        "iosArm64" -> "ios-arm64"
+        "macosArm64", "macosX64" -> "macos-arm64_x86_64"
+        "tvosSimulatorArm64", "tvosX64" -> "tvos-arm64_x86_64-simulator"
+        "tvosArm64" -> "tvos-arm64"
+        "watchosArm32", "watchosArm64" -> "watchos-arm64_arm64_32_armv7k"
+        "watchosSimulatorArm64", "watchosX64" -> "watchos-arm64_i386_x86_64-simulator"
+        else -> null
     }
 }
 
@@ -199,17 +227,3 @@ private fun KotlinMultiplatformExtension.appleTargets() =
     targets.withType(KotlinNativeTarget::class.java).matching {
         it.konanTarget.family.isAppleFamily
     }
-
-/**
- * Transforms a Kotlin Multiplatform target name to the architecture name that is found inside
- * Sentry's framework directory.
- */
-internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
-    return when (name) {
-        "iosSimulatorArm64" -> "ios-arm64_x86_64-simulator"
-        "iosX64" -> "ios-arm64_x86_64-simulator"
-        "iosArm64" -> "ios-arm64"
-        // todo: add more targets
-        else -> null
-    }
-}
