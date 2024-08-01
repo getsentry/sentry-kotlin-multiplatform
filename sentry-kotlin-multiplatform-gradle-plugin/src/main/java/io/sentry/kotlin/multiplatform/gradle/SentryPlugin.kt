@@ -10,8 +10,8 @@ import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
-import java.io.File
 import org.slf4j.LoggerFactory
+import java.io.File
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -83,9 +83,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                        "Cannot auto install in commonMain. " +
-                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                        "supports (apple, jvm, android) and add the dependency manually."
+                    "Cannot auto install in commonMain. " +
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                    "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }
@@ -184,7 +184,7 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
 
 private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String {
     val xcodeprojPath = customXcodeprojPath ?: findXcodeprojFile(rootDir)?.absolutePath
-    ?: throw GradleException("Xcode project file not found")
+        ?: throw GradleException("Xcode project file not found")
 
     return providers.of(DerivedDataPathValueSource::class.java) {
         it.parameters.xcodeprojPath.set(xcodeprojPath)
