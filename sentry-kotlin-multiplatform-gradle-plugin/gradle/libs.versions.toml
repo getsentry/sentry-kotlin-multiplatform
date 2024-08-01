@@ -4,7 +4,7 @@ kotlin = "1.9.23"
 pluginPublish = "1.2.1"
 buildConfig = "5.3.5"
 vanniktechPublish = "0.18.0"
-kover = "0.8.3"
+kover = "0.7.3"
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt"}
