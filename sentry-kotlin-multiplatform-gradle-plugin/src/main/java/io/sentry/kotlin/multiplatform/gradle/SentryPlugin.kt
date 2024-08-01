@@ -121,7 +121,7 @@ internal fun Project.installSentryForCocoapods(
 internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
-        logger.info("Kotlin Multiplatform plugin not found. Skipping Sentry installation.")
+        logger.info("Kotlin Multiplatform plugin not found. Skipping linker configuration.")
         return
     }
 
@@ -131,10 +131,11 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     kmpExtension.appleTargets().all { target ->
         val frameworkArchitecture = target.toSentryFrameworkArchitecture()
         if (frameworkArchitecture == null) {
-            logger.info("Skipping target ${target.name}. Unsupported architecture.")
+            logger.warn("Skipping target ${target.name}. Unsupported architecture.")
             return@all
         }
 
+        @Suppress("MaxLineLength")
         val dynamicFrameworkPath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
         val staticFrameworkPath =
@@ -151,15 +152,23 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
 
         target.binaries.all binaries@{ binary ->
             if (binary is TestExecutable) {
+                // both dynamic and static frameworks will work for tests
                 val frameworkPath =
                     if (dynamicFrameworkExists) dynamicFrameworkPath else staticFrameworkPath
                 binary.linkerOpts("-rpath", frameworkPath, "-F$frameworkPath")
             }
 
             if (binary is Framework) {
-                val frameworkPath =
-                    if (binary.isStatic) staticFrameworkPath else dynamicFrameworkPath
+                val frameworkPath = when {
+                    binary.isStatic && staticFrameworkExists -> staticFrameworkPath
+                    !binary.isStatic && dynamicFrameworkExists -> dynamicFrameworkPath
+                    else -> {
+                        logger.warn("Linking to framework failed, no sentry framework found for target ${target.name}")
+                        return@binaries
+                    }
+                }
                 binary.linkerOpts("-F$frameworkPath")
+                logger.info("Linked framework from $frameworkPath")
             }
         }
     }
@@ -202,22 +211,14 @@ internal fun findXcodeprojFile(dir: File): File? {
     fun searchDirectory(directory: File): File? {
         val files = directory.listFiles() ?: return null
 
-        for (file in files) {
-            if (file.name in ignoredDirectories) {
-                continue
-            }
-
-            // Recursively search the subdirectory
-            val result = searchDirectory(file)
-            if (result != null) {
-                return result
-            }
-
-            if (file.extension == "xcodeproj") {
-                return file
+        return files.firstNotNullOfOrNull { file ->
+            when {
+                file.name in ignoredDirectories -> null
+                file.extension == "xcodeproj" -> file
+                file.isDirectory -> searchDirectory(file)
+                else -> null
             }
         }
-        return null
     }
 
     return searchDirectory(dir)
