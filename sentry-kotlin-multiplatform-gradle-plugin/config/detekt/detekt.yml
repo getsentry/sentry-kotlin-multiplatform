@@ -1,9 +1,0 @@
-style:
-  UnnecessaryAbstractClass:
-    active: false
-  ForbiddenComment:
-    active: false
-naming:
-  MatchingDeclarationName:
-    active: false
-complexi

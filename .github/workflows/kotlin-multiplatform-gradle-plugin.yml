@@ -33,9 +33,9 @@ jobs:
       - name: Cached Gradle
         uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
 
-      - name: Test
+      - name: Build
         run: |
-          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew test
+          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew build
 
   archive-distribution:
     runs-on: ubuntu-latest
