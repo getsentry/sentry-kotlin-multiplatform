@@ -102,18 +102,8 @@ internal fun Project.installSentryForCocoapods(
     cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension) {
-        logger.info("Kotlin Multiplatform plugin not found. Skipping Cocoapods installation.")
-        return
-    }
-
-    if (kmpExtension.appleTargets().isEmpty()) {
-        logger.info("No Apple targets found. Skipping Cocoapods installation.")
-        return
-    }
-
-    if (!HostManager.hostIsMac) {
-        logger.info("Host is not macOS. Skipping Cocoapods installation.")
+    if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
+        logger.info("Skipping Cocoapods installation.")
         return
     }
 
@@ -131,20 +121,11 @@ internal fun Project.installSentryForCocoapods(
     }
 }
 
+@Suppress("CyclomaticComplexMethod")
 internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension) {
-        logger.info("Kotlin Multiplatform plugin not found. Skipping linker configuration.")
-        return
-    }
-
-    if (kmpExtension.appleTargets().isEmpty()) {
-        logger.info("No Apple targets found. Skipping linker configuration.")
-        return
-    }
-
-    if (!HostManager.hostIsMac) {
-        logger.info("Host is not macOS. Skipping linker configuration.")
+    if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
+        logger.info("Skipping linker configuration.")
         return
     }
 
@@ -152,9 +133,8 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val derivedDataPath = findDerivedDataPath(customXcodeprojPath)
 
     kmpExtension.appleTargets().all { target ->
-        val frameworkArchitecture = target.toSentryFrameworkArchitecture()
-        if (frameworkArchitecture == null) {
-            logger.warn("Skipping target ${target.name}. Unsupported architecture.")
+        val frameworkArchitecture = target.toSentryFrameworkArchitecture() ?: run {
+            logger.warn("Skipping target ${target.name} - unsupported architecture.")
             return@all
         }
 
