@@ -15,4 +15,6 @@ buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover"}
 
 [libraries]
-junit = "junit:junit:4.13.2"
+junit = "org.junit.jupiter:junit-jupiter-api:5.10.3"
+junit-params = "org.junit.jupiter:junit-jupiter-params:5.10.3"
+mockk = "io.mockk:mockk:1.13.12"

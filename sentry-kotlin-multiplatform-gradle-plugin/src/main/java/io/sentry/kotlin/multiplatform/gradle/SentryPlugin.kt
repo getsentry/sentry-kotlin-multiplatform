@@ -122,6 +122,7 @@ internal fun Project.installSentryForCocoapods(
 }
 
 @Suppress("CyclomaticComplexMethod")
+// todo: write test
 internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
@@ -129,8 +130,14 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
         return
     }
 
-    val customXcodeprojPath = linkerExtension.xcodeprojPath.orNull
-    val derivedDataPath = findDerivedDataPath(customXcodeprojPath)
+    var derivedDataPath = ""
+    val frameworkPath = linkerExtension.frameworkPath.orNull
+    if (frameworkPath == null) {
+        val customXcodeprojPath = linkerExtension.xcodeprojPath.orNull
+        derivedDataPath = findDerivedDataPath(customXcodeprojPath)
+    }
+
+    logger.warn("framework path: $frameworkPath")
 
     kmpExtension.appleTargets().all { target ->
         val frameworkArchitecture = target.toSentryFrameworkArchitecture() ?: run {
@@ -138,12 +145,21 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
             return@all
         }
 
-        @Suppress("MaxLineLength")
-        val dynamicFrameworkPath =
-            "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
-        val staticFrameworkPath =
-            "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
+        val dynamicFrameworkPath: String
+        val staticFrameworkPath: String
 
+        if (frameworkPath?.isNotEmpty() == false) {
+            dynamicFrameworkPath = frameworkPath
+            staticFrameworkPath = frameworkPath
+        } else {
+            @Suppress("MaxLineLength")
+            dynamicFrameworkPath =
+                "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
+            staticFrameworkPath =
+                "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
+        }
+
+        assert(frameworkPath == "haha")
         val dynamicFrameworkExists = File(dynamicFrameworkPath).exists()
         val staticFrameworkExists = File(staticFrameworkPath).exists()
 
@@ -227,7 +243,7 @@ internal fun findXcodeprojFile(dir: File): File? {
     return searchDirectory(dir)
 }
 
-private fun KotlinMultiplatformExtension.appleTargets() =
+internal fun KotlinMultiplatformExtension.appleTargets() =
     targets.withType(KotlinNativeTarget::class.java).matching {
         it.konanTarget.family.isAppleFamily
     }
