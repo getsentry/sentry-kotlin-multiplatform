@@ -1,0 +1,75 @@
+name: "Plugin: sentry-kotlin-multiplatform"
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest-xlarge
+    defaults:
+      run:
+        working-directory: sentry-kotlin-multiplatform-gradle-plugin
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Cached Konan
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 #v3
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-konan-
+
+      - name: Cached Gradle
+        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+
+      - name: Build
+        run: |
+          ./gradlew build
+          ./gradlew koverXmlReport
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # pin@v4
+        with:
+          name: sentry-kotlin-multiplatform-gradle-plugin
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  archive-distribution:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Cached Gradle
+        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+
+      - name: DistZip
+        run: |
+          cd sentry-kotlin-multiplatform-gradle-plugin && ./gradlew distZip
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            ./*/build/distributions/*.zip
