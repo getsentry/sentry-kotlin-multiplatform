@@ -2,11 +2,14 @@ package io.sentry.kotlin.multiplatform.gradle
 
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class SentryPluginTest {
     @Test
@@ -101,5 +104,38 @@ class SentryPluginTest {
             project.configurations.find { it.name.contains("commonMain", ignoreCase = true) }
         assertNotNull(commonMainConfiguration)
         assertTrue(commonMainConfiguration!!.dependencies.contains(sentryDependency))
+    }
+
+    @Test
+    fun `configureLinkingOptions sets up linker options for apple targets`(@TempDir tempDir: File) {
+        val project = ProjectBuilder.builder().build()
+
+        project.pluginManager.apply {
+            apply("org.jetbrains.kotlin.multiplatform")
+            apply("io.sentry.kotlin.multiplatform.gradle")
+        }
+
+        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
+        kmpExtension.apply {
+            listOf(
+                iosX64(),
+                iosArm64(),
+                iosSimulatorArm64()
+            ).forEach {
+                it.binaries.framework {
+                    baseName = "shared"
+                    isStatic = false
+                }
+            }
+        }
+
+        val file =
+            tempDir.resolve("test/path")
+        file.mkdirs()
+
+        val linkerExtension = project.extensions.getByName("linker") as LinkerExtension
+        linkerExtension.frameworkPath.set(file.absolutePath)
+
+        project.configureLinkingOptions(linkerExtension)
     }
 }

@@ -122,7 +122,6 @@ internal fun Project.installSentryForCocoapods(
 }
 
 @Suppress("CyclomaticComplexMethod")
-// todo: write test
 internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
@@ -137,8 +136,6 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
         derivedDataPath = findDerivedDataPath(customXcodeprojPath)
     }
 
-    logger.warn("framework path: $frameworkPath")
-
     kmpExtension.appleTargets().all { target ->
         val frameworkArchitecture = target.toSentryFrameworkArchitecture() ?: run {
             logger.warn("Skipping target ${target.name} - unsupported architecture.")
@@ -148,18 +145,18 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
         val dynamicFrameworkPath: String
         val staticFrameworkPath: String
 
-        if (frameworkPath?.isNotEmpty() == false) {
+        if (frameworkPath?.isNotEmpty() == true) {
             dynamicFrameworkPath = frameworkPath
             staticFrameworkPath = frameworkPath
         } else {
             @Suppress("MaxLineLength")
             dynamicFrameworkPath =
                 "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
+            @Suppress("MaxLineLength")
             staticFrameworkPath =
                 "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
         }
 
-        assert(frameworkPath == "haha")
         val dynamicFrameworkExists = File(dynamicFrameworkPath).exists()
         val staticFrameworkExists = File(staticFrameworkPath).exists()
 
@@ -172,13 +169,13 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
         target.binaries.all binaries@{ binary ->
             if (binary is TestExecutable) {
                 // both dynamic and static frameworks will work for tests
-                val frameworkPath =
+                val finalFrameworkPath =
                     if (dynamicFrameworkExists) dynamicFrameworkPath else staticFrameworkPath
-                binary.linkerOpts("-rpath", frameworkPath, "-F$frameworkPath")
+                binary.linkerOpts("-rpath", finalFrameworkPath, "-F$finalFrameworkPath")
             }
 
             if (binary is Framework) {
-                val frameworkPath = when {
+                val finalFrameworkPath = when {
                     binary.isStatic && staticFrameworkExists -> staticFrameworkPath
                     !binary.isStatic && dynamicFrameworkExists -> dynamicFrameworkPath
                     else -> {
@@ -186,8 +183,8 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
                         return@binaries
                     }
                 }
-                binary.linkerOpts("-F$frameworkPath")
-                logger.info("Linked framework from $frameworkPath")
+                binary.linkerOpts("-F$finalFrameworkPath")
+                logger.info("Linked framework from $finalFrameworkPath")
             }
         }
     }
