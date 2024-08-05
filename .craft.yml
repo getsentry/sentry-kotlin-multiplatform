@@ -2,6 +2,7 @@ minVersion: 1.2.1
 changelogPolicy: auto
 targets:
   - name: maven
+    id: kmp
     gradleCliPath: ./gradlew
     mavenCliPath: scripts/mvnw
     mavenSettingsPath: scripts/settings.xml
@@ -14,8 +15,19 @@ targets:
     kmp:
       rootDistDirRegex: /^(?!.*(?:jvm|android|ios|watchos|tvos|macos)).*$/
       appleDistDirRegex: /(ios|watchos|tvos|macos)/
+    excludeNames: /sentry-kotlin-multiplatform-gradle-plugin.*$/
+  - name: maven
+    id: plugin
+    gradleCliPath: ./gradlew
+    mavenCliPath: scripts/mvnw
+    mavenSettingsPath: scripts/settings.xml
+    mavenRepoId: ossrh
+    mavenRepoUrl: https://oss.sonatype.org/service/local/staging/deploy/maven2/
+    android: false
+    includeNames: /sentry-kotlin-multiplatform-gradle-plugin.*$/
   - name: github
   - name: registry
     sdks:
       maven:io.sentry:sentry-kotlin-multiplatform:
+#      maven:io.sentry:sentry-kotlin-multiplatform-gradle-plugin:
 

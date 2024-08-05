@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("io.sentry.kotlin.multiplatform.gradle")
 }
 
 java {
@@ -26,7 +27,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
-            isStatic = true
+            isStatic = false
             export(project(":sentry-kotlin-multiplatform"))
         }
     }
@@ -48,4 +49,10 @@ android {
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
     }
+}
+
+// disabling autoInstall because we are using project(":sentry-kotlin-multiplatform") directly
+// for our sample apps
+sentryKmp {
+    autoInstall.commonMain.enabled = false
 }
