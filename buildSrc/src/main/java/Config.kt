@@ -1,4 +1,8 @@
 object Config {
+    val agpVersion = "7.4.2"
+    val kotlinVersion = "1.9.23"
+    val composeVersion = "1.6.1"
+    val gradleMavenPublishPluginVersion = "0.18.0"
 
     val multiplatform = "multiplatform"
     val cocoapods = "native.cocoapods"
@@ -18,8 +22,9 @@ object Config {
     }
 
     object Libs {
-
-        val sentryJavaVersion = "7.12.0"
+        val sentryJavaVersion = "7.13.0"
+        val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
+        val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
         val sentryCocoaVersion = "8.26.0"
         val sentryCocoa = "Sentry"
