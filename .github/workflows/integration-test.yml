@@ -1,0 +1,36 @@
+name: "Integration Test"
+on:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest-xlarge
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Set up Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.3.app
+
+      - name: Update version
+        run: |
+          ./scripts/bump-version.sh 0 1.0.0-integration-test
+
+      - name: Publish Maven Local & Build
+        run: |
+          ./gradlew publishToMavenLocal
+          cd integrationtest && ./gradlew assemble
