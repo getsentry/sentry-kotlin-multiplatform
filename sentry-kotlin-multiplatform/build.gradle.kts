@@ -79,36 +79,36 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(Config.Libs.kotlinStd)
+            implementation(libs.kotlin.stdlib)
         }
 
         commonTest.dependencies {
-            implementation(Config.TestLibs.kotlinCoroutinesCore)
-            implementation(Config.TestLibs.kotlinCoroutinesTest)
-            implementation(Config.TestLibs.ktorClientCore)
-            implementation(Config.TestLibs.ktorClientSerialization)
-            implementation(Config.TestLibs.kotlinxSerializationJson)
-            implementation(Config.TestLibs.kotlinCommon)
-            implementation(Config.TestLibs.kotlinCommonAnnotation)
+            implementation(libs.coroutines.core)
+            implementation(libs.coroutines.test)
+            implementation(libs.ktor)
+            implementation(libs.ktor.serialization)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlin.test.common)
+            implementation(libs.kotlin.test.annotations)
         }
 
         androidMain.dependencies {
-            api(Config.Libs.sentryAndroid)
+            api(libs.sentry.android)
         }
 
         // androidUnitTest.dependencies doesn't exist
         val androidUnitTest by getting {
             dependencies {
-                implementation(Config.TestLibs.roboelectric)
-                implementation(Config.TestLibs.junitKtx)
-                implementation(Config.TestLibs.mockitoCore)
+                implementation(libs.roboletric)
+                implementation(libs.junit.ktx)
+                implementation(libs.mockito.core)
             }
         }
 
         val commonJvmMain by creating {
             dependsOn(commonMain.get())
             dependencies {
-                api(Config.Libs.sentryJava)
+                api(libs.sentry.java)
             }
         }
 
@@ -118,8 +118,8 @@ kotlin {
         val commonJvmTest by creating {
             dependsOn(commonTest.get())
             dependencies {
-                implementation(Config.TestLibs.kotlinJunit)
-                implementation(Config.TestLibs.ktorClientOkHttp)
+                implementation(libs.kotlin.test.junit)
+                implementation(libs.ktor.okhttp)
             }
         }
 
@@ -127,7 +127,7 @@ kotlin {
         jvmTest.get().dependsOn(commonJvmTest)
 
         appleTest.dependencies {
-            implementation(Config.TestLibs.ktorClientDarwin)
+            implementation(libs.ktor.darwin)
         }
 
         val commonTvWatchMacOsMain by creating {
