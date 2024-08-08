@@ -82,7 +82,7 @@ tasks.named("sentryPluginMarkerDistTar") {
 }
 
 tasks.named("sentryPluginMarkerDistZip") {
-    mustRunAfter(":generatePomFileForSentryPluginPluginMarkerMavenPublication")
+    mustRunAfter("generatePomFileForSentryPluginPluginMarkerMavenPublication")
 }
 
 buildConfig {
