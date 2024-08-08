@@ -1,9 +1,6 @@
-name: "Plugin: sentry-kotlin-multiplatform"
+name: "Generate and upload distributions"
 on:
   push:
-    branches:
-      - main
-      - release/**
   pull_request:
 
 concurrency:
