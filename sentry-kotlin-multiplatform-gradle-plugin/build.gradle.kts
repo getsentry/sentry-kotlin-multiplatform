@@ -77,6 +77,14 @@ distributions {
     }
 }
 
+tasks.named("sentryPluginMarkerDistTar") {
+    mustRunAfter("generatePomFileForSentryPluginPluginMarkerMavenPublication")
+}
+
+tasks.named("sentryPluginMarkerDistZip") {
+    mustRunAfter(":generatePomFileForSentryPluginPluginMarkerMavenPublication")
+}
+
 buildConfig {
     useKotlinOutput()
     packageName("io.sentry")

@@ -30,7 +30,7 @@ jobs:
       - name: DistZip plugin
         run: |
           cd sentry-kotlin-multiplatform-gradle-plugin
-          ./gradlew distZip && ./gradlew sentryPluginMarkerDistZip
+          ./gradlew distZip sentryPluginMarkerDistZip
 
       - name: Archive packages
         uses: actions/upload-artifact@v4
