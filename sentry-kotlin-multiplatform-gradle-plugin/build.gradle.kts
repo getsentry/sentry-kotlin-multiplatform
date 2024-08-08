@@ -40,7 +40,7 @@ tasks.withType<KotlinCompile> { kotlinOptions { jvmTarget = JavaVersion.VERSION_
 
 gradlePlugin {
     plugins {
-        create(property("id").toString()) {
+        register("sentryPlugin") {
             id = property("id").toString()
             implementationClass = property("implementationClass").toString()
         }
@@ -73,7 +73,12 @@ distributions {
     main {
         contents {
             from("build${sep}libs")
-            from("build${sep}publications${sep}maven")
+            from("build${sep}publications${sep}pluginMaven")
+        }
+    }
+    create("sentryPluginMarker") {
+        contents {
+            from("build${sep}publications${sep}sentryPluginPluginMarkerMaven")
         }
     }
 }
