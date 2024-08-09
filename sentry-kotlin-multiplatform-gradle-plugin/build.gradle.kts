@@ -40,7 +40,7 @@ tasks.withType<KotlinCompile> { kotlinOptions { jvmTarget = JavaVersion.VERSION_
 
 gradlePlugin {
     plugins {
-        create(property("id").toString()) {
+        register("sentryPlugin") {
             id = property("id").toString()
             implementationClass = property("implementationClass").toString()
         }
@@ -52,30 +52,37 @@ val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
 // via gpg:sign-and-deploy-file (release.kts)
 publish.releaseSigningEnabled = false
 
-tasks.named("distZip").configure {
+tasks.named("distZip") {
     dependsOn("publishToMavenLocal")
-    this.doLast {
-        val distributionFilePath =
-            "${project.layout.buildDirectory.asFile.get().path}${sep}distributions${sep}${project.name}-${project.version}.zip"
-        val file = File(distributionFilePath)
-        if (!file.exists()) {
-            throw IllegalStateException("Distribution file: $distributionFilePath does not exist")
-        }
-        if (file.length() == 0L) {
-            throw IllegalStateException("Distribution file: $distributionFilePath is empty")
+    onlyIf {
+        inputs.sourceFiles.isEmpty.not().also {
+            require(it) { "No distribution to zip." }
         }
     }
 }
 
-val sep = File.separator
+val sep: String = File.separator
 
 distributions {
     main {
         contents {
             from("build${sep}libs")
-            from("build${sep}publications${sep}maven")
+            from("build${sep}publications${sep}pluginMaven")
         }
     }
+    create("sentryPluginMarker") {
+        contents {
+            from("build${sep}publications${sep}sentryPluginPluginMarkerMaven")
+        }
+    }
+}
+
+tasks.named("sentryPluginMarkerDistTar") {
+    mustRunAfter("generatePomFileForSentryPluginPluginMarkerMavenPublication")
+}
+
+tasks.named("sentryPluginMarkerDistZip") {
+    mustRunAfter("generatePomFileForSentryPluginPluginMarkerMavenPublication")
 }
 
 buildConfig {
