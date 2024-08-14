@@ -1,0 +1,56 @@
+[versions]
+ktor = "2.3.12"
+roboletric = "4.13"
+kotlinx-coroutines = "1.8.1"
+kotlinx-serialization = "1.7.1"
+mockito = "5.12.0"
+junit-ktx = "1.2.1"
+koin = "3.5.6"
+sentry = "7.13.0"
+spotless = "6.25.0"
+kover = "0.7.3"
+detekt = "1.22.0"
+binary-compatibility = "0.16.2"
+build-konfig = "0.13.3"
+agp = "7.4.2"
+dokka = "1.9.20"
+kotlin = "1.9.23"
+publish = "0.18.0"
+jp-compose = "1.6.1"
+
+[libraries]
+ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+roboletric = { module = "org.robolectric:robolectric", version.ref = "roboletric" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common" }
+kotlin-test-annotations = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junit-ktx" }
+koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry" }
+sentry-java = { module = "io.sentry:sentry", version.ref = "sentry" }
+
+[bundles]
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility" }
+build-konfig = { id = "com.codingfeline.buildkonfig", version.ref = "build-konfig" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }
+compose = { id = "org.jetbrains.compose", version.ref = "jp-compose" }
