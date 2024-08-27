@@ -2,8 +2,26 @@
 
 ## Unreleased
 
+### Features
+
+- New Sentry KMP Gradle plugin ([#230](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/230))
+  - Install via `plugins { id("io.sentry.kotlin.multiplatform.gradle") version "{version}" }`
+  - Enables auto installing of the KMP SDK to `commonMain` (if all targets are supported)
+    - This also automatically installs the Sentry Android SDK
+  - Enables auto installing of the required Sentry Cocoa SDK with Cocoapods (if Cocoapods plugin is enabled)
+  - Configures linking for SPM (needed if you want to compile a dynamic framework with `isStatic = false`)
+  - Configure via the `sentryKmp` configuration block in your build file
+```kotlin
+// Example configuration in build.gradle.kts
+sentryKmp {
+  // Disable auto installing the KMP SDK to commonMain
+  autoInstall.commonMain.enabled = false
+} 
+```
+
 ### Dependencies
 
+- Bump Kotlin version from v1.9.21 to v1.9.23 ([#250](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/250))
 - Bump Java SDK from v7.13.0 to v7.14.0 ([#253](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/253))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7140)
   - [diff](https://github.com/getsentry/sentry-java/compare/7.13.0...7.14.0)
