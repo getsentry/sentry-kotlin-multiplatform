@@ -38,13 +38,11 @@ fi
 
 plugin_properties_whole_match=${BASH_REMATCH[0]}
 plugin_properties_var_name=${BASH_REMATCH[1]}
-plugin_properties_version=${BASH_REMATCH[2]}
-
 
 case $1 in
 get-version)
     # We only require to return the version number of one of the files
-    echo ${plugin_properties_version}
+    echo ${config_version}
     ;;
 get-repo)
     echo "https://github.com/getsentry/sentry-cocoa.git"
