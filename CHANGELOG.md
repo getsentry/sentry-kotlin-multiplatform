@@ -4,7 +4,7 @@
 
 ### Dependencies
 
-- Bump Cocoa SDK from v8.26.0 to v8.36.0 ([#261](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/261))
+- **Gradle Plugin:** Bump default Cocoa SDK from v8.26.0 to v8.36.0 ([#261](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/261))
   - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8360)
   - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.26.0...8.36.0)
 
