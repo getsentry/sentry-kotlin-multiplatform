@@ -4,7 +4,7 @@ cd $(dirname "$0")/../
 
 config_file='buildSrc/src/main/java/Config.kt'
 podspec_file='sentry-kotlin-multiplatform/sentry_kotlin_multiplatform.podspec'
-plugin_properties_file='sentry-kotlin-multiplatform-plugin/gradle.properties'
+plugin_properties_file='sentry-kotlin-multiplatform-gradle-plugin/gradle.properties'
 
 config_content=$(cat $config_file)
 podspec_content=$(cat $podspec_file)
