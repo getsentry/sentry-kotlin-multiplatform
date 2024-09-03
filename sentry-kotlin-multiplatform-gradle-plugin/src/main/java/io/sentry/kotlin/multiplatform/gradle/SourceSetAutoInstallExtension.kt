@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.sentry.BuildConfig
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import javax.inject.Inject
@@ -19,11 +20,10 @@ abstract class SourceSetAutoInstallExtension @Inject constructor(project: Projec
     /**
      * Overrides the default Sentry Kotlin Multiplatform SDK dependency version.
      *
-     * Defaults to the latest version of the Sentry Kotlin Multiplatform SDK which is
-     * the same as the version of the Sentry Gradle Plugin.
+     * Defaults to the version of this plugin which is synchronized with the KMP SDK version.
      */
     val sentryKmpVersion: Property<String> =
         objects
             .property(String::class.java)
-            .convention(project.version.toString())
+            .convention(BuildConfig.SentryKmpVersion)
 }
