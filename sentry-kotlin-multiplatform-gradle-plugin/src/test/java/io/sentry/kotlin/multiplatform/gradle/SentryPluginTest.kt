@@ -1,14 +1,12 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.sentry.BuildConfig
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -72,6 +70,15 @@ class SentryPluginTest {
         assertNotNull(project.extensions.getByName("autoInstall"))
         assertNotNull(project.extensions.getByName("cocoapods"))
         assertNotNull(project.extensions.getByName("commonMain"))
+    }
+
+    @Test
+    fun `default kmp version is set in commonMain extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstallExtension = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        assertEquals(BuildConfig.SentryKmpVersion, autoInstallExtension.commonMain.sentryKmpVersion.get())
     }
 
     @Test
