@@ -19,10 +19,11 @@ abstract class SourceSetAutoInstallExtension @Inject constructor(project: Projec
     /**
      * Overrides the default Sentry Kotlin Multiplatform SDK dependency version.
      *
-     * Defaults to the latest version of the Sentry Kotlin Multiplatform SDK.
+     * Defaults to the latest version of the Sentry Kotlin Multiplatform SDK which is
+     * the same as the version of the Sentry Gradle Plugin.
      */
     val sentryKmpVersion: Property<String> =
         objects
             .property(String::class.java)
-            .convention("latest.release") // Replace with the actual default version
+            .convention(project.version.toString())
 }
