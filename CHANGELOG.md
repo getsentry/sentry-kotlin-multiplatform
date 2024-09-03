@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-### Features
+### Improvements
 
 - Plugin: dont use `latest.release` as default for the KMP dependency ([#262](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/262))
 
