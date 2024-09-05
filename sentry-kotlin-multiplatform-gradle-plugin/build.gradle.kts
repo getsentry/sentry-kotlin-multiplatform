@@ -95,6 +95,11 @@ buildConfig {
         "SentryCocoaVersion",
         provider { "\"${project.property("sentryCocoaVersion")}\"" }
     )
+    buildConfigField(
+        "String",
+        "SentryKmpVersion",
+        provider { "\"${project.property("versionName")}\"" }
+    )
 }
 
 detekt { config.setFrom(rootProject.files("../config/detekt/detekt.yml")) }

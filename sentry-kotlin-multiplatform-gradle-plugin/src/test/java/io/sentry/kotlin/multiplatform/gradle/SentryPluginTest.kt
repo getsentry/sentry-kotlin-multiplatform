@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.sentry.BuildConfig
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
 
 class SentryPluginTest {
@@ -72,6 +75,38 @@ class SentryPluginTest {
         assertNotNull(project.extensions.getByName("autoInstall"))
         assertNotNull(project.extensions.getByName("cocoapods"))
         assertNotNull(project.extensions.getByName("commonMain"))
+    }
+
+    @Test
+    fun `default kmp version is set in commonMain extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val sourceSetAutoInstallExtension = project.extensions.getByName("commonMain") as SourceSetAutoInstallExtension
+        assertEquals(BuildConfig.SentryKmpVersion, sourceSetAutoInstallExtension.sentryKmpVersion.get())
+    }
+
+    @Test
+    fun `custom kmp version overrides default in commonMain extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstallExtension = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstallExtension.commonMain.sentryKmpVersion.set("1.2.3")
+
+        assertEquals("1.2.3", autoInstallExtension.commonMain.sentryKmpVersion.get())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["1.0.0", "2.3.4-SNAPSHOT", "latest.release"])
+    fun `sentryKmpVersion accepts various version formats in commonMain extension`(version: String) {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstallExtension = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstallExtension.commonMain.sentryKmpVersion.set(version)
+
+        assertEquals(version, autoInstallExtension.commonMain.sentryKmpVersion.get())
     }
 
     @Test

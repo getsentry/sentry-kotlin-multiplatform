@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Improvements
+
+- Plugin: dont use `latest.release` as default for the KMP dependency ([#262](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/262))
+
 ### Dependencies
 
 - **Gradle Plugin:** Bump default Cocoa SDK from v8.26.0 to v8.36.0 ([#261](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/261))
