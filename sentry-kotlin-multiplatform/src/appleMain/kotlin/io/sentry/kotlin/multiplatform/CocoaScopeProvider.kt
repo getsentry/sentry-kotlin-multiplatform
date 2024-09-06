@@ -8,16 +8,14 @@ import io.sentry.kotlin.multiplatform.extensions.toKmpUser
 import io.sentry.kotlin.multiplatform.extensions.toMutableMap
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
-import Scope.Sentry.SentryScope as PrivateCocoaScope
 
 internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
-
     /*
      This bridge exposes private Cocoa SDK API to fetch internal properties such as user, level, etc.
      We need this in order to return properties because the Cocoa SDK doesn't implement getters.
      This is only used for get methods.
      */
-    private val privateScope = scope as? PrivateCocoaScope
+    private val privateScope = scope as? Internal.Sentry.SentryScope
 
     override var level: SentryLevel?
         set(value) {

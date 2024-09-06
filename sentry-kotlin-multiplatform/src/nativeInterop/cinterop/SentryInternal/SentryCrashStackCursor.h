@@ -14,7 +14,7 @@
 // The above copyright notice and this permission notice shall remain in place
 // in this source code.
 
-#import <Private/SentryHook.h>
+#import <SentryHook.h>
 
 #define SentryCrashSC_CONTEXT_SIZE 100
 

@@ -1,4 +1,4 @@
-// https://github.com/rickclephas/NSExceptionKt/blob/master/nsexception-kt-sentry/src/nativeInterop/cinterop/Sentry/Private/SentryCrashMonitor_NSException%2BNSExceptionKt.h
+// https://github.com/rickclephas/NSExceptionKt/blob/master/nsexception-kt-sentry/src/nativeInterop/cinterop/Sentry/SentryCrashMonitor_NSException%2BNSExceptionKt.h
 //
 // Copyright (c) 2022 Rick Clephas
 //
@@ -13,8 +13,8 @@
 // copies or substantial portions of the Software.
 
 #import <Foundation/Foundation.h>
-#import <Private/SentryCrashMonitor_NSException.h>
-#import <Private/SentryCrashStackCursor.h>
+#import <SentryCrashMonitor_NSException.h>
+#import <SentryCrashStackCursor.h>
 
 // Similar to how Sentry converts stacktraces from NSExceptions
 // https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/SentryCrash/Recording/Monitors/SentryCrashMonitor_NSException.m#L60

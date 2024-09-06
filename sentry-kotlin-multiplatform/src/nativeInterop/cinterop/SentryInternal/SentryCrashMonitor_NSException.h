@@ -1,10 +1,8 @@
 // The following are snippets from the Sentry Cocoa SDK used to generate Kotlin stubs.
 //
-// https://github.com/getsentry/sentry-cocoa/blob/825b2e1f8aa0569f29f45b7ca2e2a72b41637660/Sources/Sentry/Public/SentryDebugImageProvider.h
+// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/SentryCrash/Recording/Monitors/SentryCrashMonitor_NSException.m
 //
-// The MIT License (MIT)
-//
-// Copyright (c) 2015 Sentry
+// Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -13,15 +11,10 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall remain in place
+// in this source code.
 
 #import <Foundation/Foundation.h>
-#import <SentryDebugMeta.h>
-#import <SentryThread.h>
+#import <SentryCrashStackCursor.h>
 
-@interface SentryDebugImageProvider : NSObject
-
-- (NSArray<SentryDebugMeta *> *_Nonnull)getDebugImagesForThreads:(NSArray<SentryThread *> *_Nonnull)threads;
-
-@end
+extern void sentrycrashsc_initWithBacktrace(SentryCrashStackCursor *cursor, const uintptr_t *backtrace, int backtraceLength, int skipEntries);

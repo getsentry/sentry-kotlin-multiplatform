@@ -1,0 +1,5 @@
+language = Objective-C
+headers = SentryClient.h SentryDebugImageProvider.h SentryEnvelope.h \ SentryHub.h SentryScope.h \
+          SentryCrashMonitor_NSException.h SentryCrashMonitor_NSException+NSExceptionKt.h \
+          SentryCrashStackCursor.h SentryDependencyContainer.h SentryHook.h SentrySDK.h \
+          SentryStacktraceBuilder.h SentryThreadInspector.h PrivateSentrySDKOnly.h \

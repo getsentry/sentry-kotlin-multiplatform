@@ -1,6 +1,6 @@
 // The following are snippets from the Sentry Cocoa SDK used to generate Kotlin stubs.
 //
-// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/Public/SentryStacktrace.h
+// https://github.com/getsentry/sentry-cocoa/blob/64a7645a598b90e217be42333594c981a3ddc642/Sources/Sentry/SentryStacktraceBuilder.m
 //
 // The MIT License (MIT)
 //
@@ -17,7 +17,12 @@
 // copies or substantial portions of the Software.
 
 #import <Foundation/Foundation.h>
+#import <SentryCrashStackCursor.h>
 
-@interface SentryStacktrace : NSObject
+@class SentryStacktrace;
+
+@interface SentryStacktraceBuilder : NSObject
+
+- (SentryStacktrace *_Nonnull)retrieveStacktraceFromCursor:(SentryCrashStackCursor)stackCursor;
 
 @end

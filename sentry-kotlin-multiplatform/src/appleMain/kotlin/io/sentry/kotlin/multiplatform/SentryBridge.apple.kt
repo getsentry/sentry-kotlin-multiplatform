@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import NSException.Sentry.SentryEvent
-import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
+import Internal.Sentry.PrivateSentrySDKOnly
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
@@ -38,7 +37,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
         sdk["packages"] = packages
         event?.sdk = sdk
 
-        dropKotlinCrashEvent(event as SentryEvent?) as CocoaSentryEvent?
+        dropKotlinCrashEvent(event)
     }
 
     cocoa?.setBeforeSend(modifiedBeforeSend)
