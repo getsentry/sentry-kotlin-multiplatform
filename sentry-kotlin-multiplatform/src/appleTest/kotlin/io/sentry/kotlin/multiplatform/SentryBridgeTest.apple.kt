@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import PrivateSentrySDKOnly.Sentry.PrivateSentrySDKOnly
+import Internal.Sentry.PrivateSentrySDKOnly
 import io.sentry.kotlin.multiplatform.fakes.FakeSentryInstance
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.BeforeTest
