@@ -15,7 +15,7 @@ us [<kbd>**Check out our open positions**</kbd>](https://sentry.io/careers/)_
 This SDK is a wrapper around different platforms such as JVM, Android, iOS, macOS, watchOS, tvOS
 that can be used on Kotlin Multiplatform.
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.23-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![KDoc link](https://img.shields.io/badge/API_Reference-KDoc-blue)](https://getsentry.github.io/sentry-kotlin-multiplatform/)
 
 | Packages                    | Maven Central                                                                                                                                                                                                
