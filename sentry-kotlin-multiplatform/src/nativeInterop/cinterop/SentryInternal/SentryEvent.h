@@ -1,6 +1,6 @@
 // The following are snippets from the Sentry Cocoa SDK used to generate Kotlin stubs.
 //
-// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/include/SentrySDK+Private.h
+// https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/include/SentryEvent+Private.h
 //
 // The MIT License (MIT)
 //
@@ -16,16 +16,14 @@
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
 
-#import <SentryEnvelope.h>
-#import <SentryHub.h>
-#import <SentryOptions.h>
-#import <SentrySDK.h>
+#import <Foundation/Foundation.h>
 
-@interface SentrySDK ()
+@class SentryId;
 
-+ (void)storeEnvelope:(SentryEnvelope *_Nonnull)envelope;
-+ (SentryHub *_Nonnull)currentHub;
+@interface SentryEvent : NSObject
 
-@property (nonatomic, nullable, readonly, class) SentryOptions *options;
+@property (nonatomic, assign) BOOL isCrashEvent;
+
+@property (nonatomic, strong) SentryId *eventId;
 
 @end

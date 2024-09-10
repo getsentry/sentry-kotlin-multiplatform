@@ -4,6 +4,7 @@
 
 ### Improvements
 
+- Improve interop with objc headers ([#265](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/265))
 - Plugin: dont use `latest.release` as default for the KMP dependency ([#262](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/262))
 
 ### Dependencies

@@ -1,6 +1,7 @@
 // The following are snippets from the Sentry Cocoa SDK used to generate Kotlin stubs.
 //
-// https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/include/SentryEvent+Private.h
+// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/include/SentryThreadInspector.h
+// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/SentryThreadInspector.m
 //
 // The MIT License (MIT)
 //
@@ -17,10 +18,14 @@
 // copies or substantial portions of the Software.
 
 #import <Foundation/Foundation.h>
-#import <SentryEvent.h>
+#import <SentryStacktraceBuilder.h>
 
-@interface SentryEvent ()
+@class SentryThread;
 
-@property (nonatomic) BOOL isCrashEvent;
+@interface SentryThreadInspector : NSObject
+
+- (NSArray<SentryThread *> *_Nonnull)getCurrentThreadsWithStackTrace;
+
+@property (nonatomic, strong) SentryStacktraceBuilder *stacktraceBuilder;
 
 @end

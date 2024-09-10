@@ -17,9 +17,9 @@
 // copies or substantial portions of the Software.
 
 #import <Foundation/Foundation.h>
-#import <Private/SentryTraceContext.h>
 #import <SentryEvent.h>
-#import <SentryId.h>
+
+@class SentryId, SentryTraceContext;
 
 @interface SentryEnvelopeHeader : NSObject
 
