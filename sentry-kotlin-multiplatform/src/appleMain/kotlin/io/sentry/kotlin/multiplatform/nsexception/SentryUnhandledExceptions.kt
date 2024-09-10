@@ -95,7 +95,7 @@ private fun Throwable.asSentryEvent(): CocoapodsSentryEvent =
         this.threads = threads
         val currentThread = threads?.firstOrNull { it.current?.boolValue ?: false }?.apply {
             setCrashed(NSNumber(true))
-            // Crashed threats shouldn't have a stacktrace, the thread_id should be set on the exception instead
+            // Crashed threads shouldn't have a stacktrace, the thread_id should be set on the exception instead
             // https://develop.sentry.dev/sdk/event-payloads/threads/
             stacktrace = null
         }
