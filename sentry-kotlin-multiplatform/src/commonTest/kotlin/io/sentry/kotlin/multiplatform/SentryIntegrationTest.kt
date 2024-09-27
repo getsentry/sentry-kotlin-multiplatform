@@ -4,12 +4,7 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.coroutines.test.runTest
-import kotlin.test.AfterTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class SentryIntegrationTest : BaseSentryTest() {
     @AfterTest
@@ -223,6 +218,20 @@ class SentryIntegrationTest : BaseSentryTest() {
         assertEquals(expectedId, actualId)
         assertEquals(expectedIpAddress, actualIpAddress)
         assertEquals(expectedUsername, actualUsername)
+    }
+
+    @Test
+    fun `isEnabled returns true when SDK is enabled`() {
+        sentryInit {
+            it.dsn = fakeDsn
+        }
+
+        assertTrue(Sentry.isEnabled())
+    }
+
+    @Test
+    fun `isEnabled returns false when SDK is disabled`() {
+        assertFalse(Sentry.isEnabled())
     }
 
     @Test
