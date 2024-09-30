@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add experimental session replay options to common code ([#275](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/275))
+
 ## 0.9.0
 
 ### Improvements
