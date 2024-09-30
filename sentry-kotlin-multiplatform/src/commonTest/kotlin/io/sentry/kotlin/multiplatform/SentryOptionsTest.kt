@@ -126,6 +126,11 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(2000L, options.appHangTimeoutIntervalMillis)
         assertTrue(options.isAnrEnabled)
         assertEquals(5000L, options.anrTimeoutIntervalMillis)
+        assertNull(options.experimental.sessionReplay.onErrorSampleRate)
+        assertNull(options.experimental.sessionReplay.sessionSampleRate)
+        assertTrue(options.experimental.sessionReplay.redactAllText)
+        assertTrue(options.experimental.sessionReplay.redactAllImages)
+        assertEquals(SentryReplayOptions.Quality.MEDIUM, options.experimental.sessionReplay.quality)
     }
 
     @Test
@@ -149,6 +154,11 @@ class SentryOptionsTest : BaseSentryTest() {
             appHangTimeoutIntervalMillis = 1000L
             isAnrEnabled = false
             anrTimeoutIntervalMillis = 1000L
+            experimental.sessionReplay.onErrorSampleRate = 0.5
+            experimental.sessionReplay.sessionSampleRate = 0.5
+            experimental.sessionReplay.redactAllText = false
+            experimental.sessionReplay.redactAllImages = false
+            experimental.sessionReplay.quality = SentryReplayOptions.Quality.LOW
         }
 
         val platformOptions = createPlatformOptions()

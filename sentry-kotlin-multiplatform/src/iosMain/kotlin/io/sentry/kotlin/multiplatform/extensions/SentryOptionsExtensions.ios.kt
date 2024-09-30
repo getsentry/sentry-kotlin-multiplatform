@@ -20,6 +20,7 @@ internal fun SentryOptions.toIosOptionsConfiguration(): (CocoaSentryOptions?) ->
             setRedactAllImages(kmpOptions.experimental.sessionReplay.redactAllImages)
             kmpOptions.experimental.sessionReplay.sessionSampleRate?.let { setSessionSampleRate(it.toFloat()) }
             kmpOptions.experimental.sessionReplay.onErrorSampleRate?.let { setOnErrorSampleRate(it.toFloat()) }
+            setQuality(kmpOptions.experimental.sessionReplay.quality.ordinal.toLong())
         }
     } ?: run {
         // Log a warning if options is null

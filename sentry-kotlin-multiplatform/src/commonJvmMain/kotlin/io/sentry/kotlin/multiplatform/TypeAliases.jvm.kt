@@ -7,6 +7,7 @@ import io.sentry.Scope
 import io.sentry.SentryEvent
 import io.sentry.SentryLevel
 import io.sentry.SentryOptions
+import io.sentry.SentryReplayOptions
 import io.sentry.UserFeedback
 import io.sentry.protocol.Contexts
 import io.sentry.protocol.Message
@@ -27,3 +28,4 @@ internal typealias JvmSentryEvent = SentryEvent
 internal typealias JvmMessage = Message
 internal typealias JvmSentryException = SentryException
 internal typealias JvmContexts = Contexts
+internal typealias JvmSentryReplayQuality = SentryReplayOptions.SentryReplayQuality
