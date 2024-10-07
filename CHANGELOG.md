@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))
+
 ## 0.9.0
 
 ### Improvements
