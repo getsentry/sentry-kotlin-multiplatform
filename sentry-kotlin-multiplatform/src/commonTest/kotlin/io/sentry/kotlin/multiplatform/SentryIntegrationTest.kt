@@ -7,6 +7,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -223,6 +224,20 @@ class SentryIntegrationTest : BaseSentryTest() {
         assertEquals(expectedId, actualId)
         assertEquals(expectedIpAddress, actualIpAddress)
         assertEquals(expectedUsername, actualUsername)
+    }
+
+    @Test
+    fun `isEnabled returns true when SDK is enabled`() {
+        sentryInit {
+            it.dsn = fakeDsn
+        }
+
+        assertTrue(Sentry.isEnabled())
+    }
+
+    @Test
+    fun `isEnabled returns false when SDK is disabled`() {
+        assertFalse(Sentry.isEnabled())
     }
 
     @Test

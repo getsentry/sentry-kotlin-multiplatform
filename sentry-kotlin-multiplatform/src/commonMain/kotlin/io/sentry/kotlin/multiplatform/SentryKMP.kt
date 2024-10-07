@@ -155,6 +155,13 @@ public object Sentry {
     }
 
     /**
+     * Checks if the SDK is enabled.
+     */
+    public fun isEnabled(): Boolean {
+        return bridge.isEnabled()
+    }
+
+    /**
      * Closes the SDK.
      */
     public fun close() {

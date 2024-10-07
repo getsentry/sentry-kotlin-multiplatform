@@ -108,6 +108,10 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         return SentrySDK.crashedLastRun()
     }
 
+    actual fun isEnabled(): Boolean {
+        return SentrySDK.isEnabled()
+    }
+
     actual fun close() {
         SentrySDK.close()
     }

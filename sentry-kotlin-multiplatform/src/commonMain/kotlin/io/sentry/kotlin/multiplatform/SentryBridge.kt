@@ -30,5 +30,7 @@ internal expect class SentryBridge(sentryInstance: SentryInstance = SentryPlatfo
 
     fun isCrashedLastRun(): Boolean
 
+    fun isEnabled(): Boolean
+
     fun close()
 }
