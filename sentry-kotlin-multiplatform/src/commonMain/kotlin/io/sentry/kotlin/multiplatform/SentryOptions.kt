@@ -171,4 +171,27 @@ public open class SentryOptions {
      * [Android ANR](https://docs.sentry.io/platforms/android/configuration/app-not-respond/)
      */
     public var anrTimeoutIntervalMillis: Long = DEFAULT_ANR_TIMEOUT_INTERVAL_MILLIS
+
+    /**
+     * Experimental options for new features, these options are going to be promoted to SentryOptions
+     * before GA.
+     *
+     * Beware that experimental options can change at any time.
+     */
+    public var experimental: ExperimentalOptions = ExperimentalOptions()
+        private set
+
+    /**
+     * Experimental options for new features, these options are going to be promoted to SentryOptions
+     * before GA.
+     *
+     * Beware that experimental options can change at any time.
+     */
+    public class ExperimentalOptions {
+        /**
+         * Experimental feature. The options for session replay.
+         * Currently available for **Android** and **iOS**.
+         */
+        public var sessionReplay: SentryReplayOptions = SentryReplayOptions()
+    }
 }

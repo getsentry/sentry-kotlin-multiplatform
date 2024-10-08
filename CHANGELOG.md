@@ -4,6 +4,14 @@
 
 ### Features
 
+- Add experimental session replay options to common code ([#275](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/275))
+```kotlin
+Sentry.init { options ->
+  // Adjust these values for production
+  options.experimental.sessionReplay.onErrorSampleRate = 1.0
+  options.experimental.sessionReplay.sessionSampleRate = 1.0
+}
+```
 - Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))
 
 ### Dependencies

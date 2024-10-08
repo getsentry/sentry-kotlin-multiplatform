@@ -4,12 +4,14 @@ import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.assertEquals
+import io.sentry.SentryReplayOptions as NativeSentryReplayOptions
 
 actual interface PlatformOptions : CommonPlatformOptions {
     val isAnrEnabled: Boolean
     val anrTimeoutIntervalMillis: Long
     val attachScreenshot: Boolean
     val attachViewHierarchy: Boolean
+    val sessionReplay: NativeSentryReplayOptions
 }
 
 class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptions) :
@@ -62,6 +64,9 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     override val attachViewHierarchy: Boolean
         get() = androidOptions.isAttachViewHierarchy
 
+    override val sessionReplay: NativeSentryReplayOptions
+        get() = androidOptions.experimental.sessionReplay
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toAndroidSentryOptionsCallback().invoke(androidOptions)
     }
@@ -75,6 +80,11 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     assertEquals(attachViewHierarchy, options.attachViewHierarchy)
     assertEquals(isAnrEnabled, options.isAnrEnabled)
     assertEquals(anrTimeoutIntervalMillis, options.anrTimeoutIntervalMillis)
+    assertEquals(sessionReplay.redactAllText, options.experimental.sessionReplay.redactAllText)
+    assertEquals(sessionReplay.redactAllImages, options.experimental.sessionReplay.redactAllImages)
+    assertEquals(sessionReplay.errorSampleRate, options.experimental.sessionReplay.onErrorSampleRate)
+    assertEquals(sessionReplay.sessionSampleRate, options.experimental.sessionReplay.sessionSampleRate)
+    assertEquals(sessionReplay.quality.name, options.experimental.sessionReplay.quality.name)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {

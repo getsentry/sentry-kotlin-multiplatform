@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import cocoapods.Sentry.SentryReplayOptions
 import io.sentry.kotlin.multiplatform.extensions.toIosOptionsConfiguration
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
@@ -10,6 +11,7 @@ actual interface PlatformOptions : CommonPlatformOptions {
     val attachViewHierarchy: Boolean
     val enableAppHangTracking: Boolean
     val appHangTimeoutIntervalMillis: Long
+    val sessionReplay: SentryReplayOptions
 }
 
 class SentryIosOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) : PlatformOptions {
@@ -61,6 +63,9 @@ class SentryIosOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) : Pl
     override val tracesSampleRate: Double?
         get() = cocoaOptions.tracesSampleRate?.doubleValue
 
+    override val sessionReplay: SentryReplayOptions
+        get() = cocoaOptions.experimental.sessionReplay()
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toIosOptionsConfiguration().invoke(cocoaOptions)
     }
@@ -73,6 +78,11 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
     assertEquals(attachViewHierarchy, options.attachViewHierarchy)
     assertEquals(enableAppHangTracking, options.enableAppHangTracking)
     assertEquals(appHangTimeoutIntervalMillis, options.appHangTimeoutIntervalMillis)
+    assertEquals(sessionReplay.redactAllText(), options.experimental.sessionReplay.redactAllText)
+    assertEquals(sessionReplay.redactAllImages(), options.experimental.sessionReplay.redactAllImages)
+    assertEquals(sessionReplay.onErrorSampleRate().toDouble(), options.experimental.sessionReplay.onErrorSampleRate)
+    assertEquals(sessionReplay.sessionSampleRate().toDouble(), options.experimental.sessionReplay.sessionSampleRate)
+    assertEquals(sessionReplay.quality(), options.experimental.sessionReplay.quality.ordinal.toLong())
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
