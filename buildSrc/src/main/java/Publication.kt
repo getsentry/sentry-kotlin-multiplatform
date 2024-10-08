@@ -31,7 +31,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         from("build${sep}libs") {
             include("${project.name}-kotlin*")
             include("${project.name}-metadata*")
-            withJavadoc(project.name, "")
+            withJavadoc(project.name)
             rename {
                 it.replace("multiplatform-kotlin", "multiplatform").replace("-metadata", "")
             }
