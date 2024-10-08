@@ -5,6 +5,20 @@
 ### Features
 
 - Add experimental session replay options to common code ([#275](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/275))
+```kotlin
+Sentry.init { options ->
+  // Adjust these values for production
+  options.experimental.sessionReplay.onErrorSampleRate = 1.0
+  options.experimental.sessionReplay.sessionSampleRate = 1.0
+}
+```
+- Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))
+
+### Dependencies
+
+- Bump Cocoa SDK from v8.36.0 to v8.37.0 ([#279](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/279))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8370)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.36.0...8.37.0)
 
 ## 0.9.0
 
