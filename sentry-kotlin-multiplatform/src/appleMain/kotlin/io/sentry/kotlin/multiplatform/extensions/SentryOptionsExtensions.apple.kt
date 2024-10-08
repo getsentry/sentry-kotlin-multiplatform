@@ -23,7 +23,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     kmpOptions.environment?.let {
         cocoaOptions.environment = it
     }
-    cocoaOptions.enableWatchdogTerminationTracking
     cocoaOptions.releaseName = kmpOptions.release
     cocoaOptions.debug = kmpOptions.debug
     cocoaOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis.convert()
