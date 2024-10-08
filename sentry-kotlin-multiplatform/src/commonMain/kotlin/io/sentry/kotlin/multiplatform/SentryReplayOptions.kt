@@ -40,6 +40,10 @@ public data class SentryReplayOptions(
      */
     public var quality: Quality = Quality.MEDIUM
 ) {
+    /**
+     * Quality of the session replay.
+     */
+    @Suppress("MagicNumber")
     public enum class Quality(
         /** The scale related to the window size (in dp) at which the replay will be created.  */
         public val sizeScale: Float,

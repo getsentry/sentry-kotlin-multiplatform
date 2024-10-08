@@ -172,6 +172,12 @@ public open class SentryOptions {
      */
     public var anrTimeoutIntervalMillis: Long = DEFAULT_ANR_TIMEOUT_INTERVAL_MILLIS
 
+    /**
+     * Experimental options for new features, these options are going to be promoted to SentryOptions
+     * before GA.
+     *
+     * Beware that experimental options can change at any time.
+     */
     public var experimental: ExperimentalOptions = ExperimentalOptions()
         private set
 

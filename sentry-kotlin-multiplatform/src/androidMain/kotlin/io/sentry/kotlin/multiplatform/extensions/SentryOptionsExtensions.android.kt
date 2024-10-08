@@ -19,11 +19,16 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     androidOptions.anrTimeoutIntervalMillis = kmpOptions.anrTimeoutIntervalMillis
 
     // Replay options
-    androidOptions.experimental.sessionReplay.redactAllText = kmpOptions.experimental.sessionReplay.redactAllText
-    androidOptions.experimental.sessionReplay.redactAllImages = kmpOptions.experimental.sessionReplay.redactAllImages
-    androidOptions.experimental.sessionReplay.sessionSampleRate = kmpOptions.experimental.sessionReplay.sessionSampleRate
-    androidOptions.experimental.sessionReplay.errorSampleRate = kmpOptions.experimental.sessionReplay.onErrorSampleRate
-    androidOptions.experimental.sessionReplay.quality = kmpOptions.experimental.sessionReplay.quality.toAndroidSentryQuality()
+    androidOptions.experimental.sessionReplay.redactAllText =
+        kmpOptions.experimental.sessionReplay.redactAllText
+    androidOptions.experimental.sessionReplay.redactAllImages =
+        kmpOptions.experimental.sessionReplay.redactAllImages
+    androidOptions.experimental.sessionReplay.sessionSampleRate =
+        kmpOptions.experimental.sessionReplay.sessionSampleRate
+    androidOptions.experimental.sessionReplay.errorSampleRate =
+        kmpOptions.experimental.sessionReplay.onErrorSampleRate
+    androidOptions.experimental.sessionReplay.quality =
+        kmpOptions.experimental.sessionReplay.quality.toAndroidSentryQuality()
 
     // kForEach solves an issue with linter where it thinks forEach is the Java version
     // see here: https://stackoverflow.com/questions/44751469/kotlin-extension-functions-suddenly-require-api-level-24/68897591#68897591
