@@ -173,6 +173,16 @@ public open class SentryOptions {
     public var anrTimeoutIntervalMillis: Long = DEFAULT_ANR_TIMEOUT_INTERVAL_MILLIS
 
     /**
+     * Whether to enable Watchdog Termination tracking or not.
+     *
+     * **Default**: Enabled.
+     *
+     * **Platform Availability**: Cocoa.
+     *
+     */
+    public var enableWatchdogTerminationTracking: Boolean = true
+
+    /**
      * Experimental options for new features, these options are going to be promoted to SentryOptions
      * before GA.
      *
