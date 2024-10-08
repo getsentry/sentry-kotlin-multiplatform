@@ -1,14 +1,9 @@
-
 import org.gradle.api.Project
 import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.file.CopySpec
 import java.io.File
 
-private object Consts {
-    val taskRegex = Regex("(.*)DistZip")
-}
-
-val sep = File.separator
+val sep: String = File.separator
 
 // configure distZip tasks for multiplatform
 fun DistributionContainer.configureForMultiplatform(project: Project) {
@@ -27,7 +22,10 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         from("build${sep}kotlinToolingMetadata") {
             rename {
-                it.replace("kotlin-tooling-metadata.json", "${project.name}-$version-kotlin-tooling-metadata.json")
+                it.replace(
+                    "kotlin-tooling-metadata.json",
+                    "${project.name}-$version-kotlin-tooling-metadata.json"
+                )
             }
         }
         from("build${sep}libs") {
