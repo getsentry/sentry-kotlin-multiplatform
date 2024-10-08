@@ -31,7 +31,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.maxAttachmentSize = kmpOptions.maxAttachmentSize.convert()
     cocoaOptions.maxBreadcrumbs = kmpOptions.maxBreadcrumbs.convert()
     cocoaOptions.enableAppHangTracking = kmpOptions.enableAppHangTracking
-    cocoaOptions.enableWatchdogTerminationTracking
+    cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
     cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
     kmpOptions.sampleRate?.let {
         cocoaOptions.sampleRate = NSNumber(double = it)
