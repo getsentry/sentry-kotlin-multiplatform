@@ -174,6 +174,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getEnableAppHangTracking ()Z
 	public final fun getEnableAutoSessionTracking ()Z
 	public final fun getEnableCaptureFailedRequests ()Z
+	public final fun getEnableWatchdogTerminationTracking ()Z
 	public final fun getEnvironment ()Ljava/lang/String;
 	public final fun getExperimental ()Lio/sentry/kotlin/multiplatform/SentryOptions$ExperimentalOptions;
 	public final fun getFailedRequestStatusCodes ()Ljava/util/List;
@@ -201,6 +202,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setEnableAppHangTracking (Z)V
 	public final fun setEnableAutoSessionTracking (Z)V
 	public final fun setEnableCaptureFailedRequests (Z)V
+	public final fun setEnableWatchdogTerminationTracking (Z)V
 	public final fun setEnvironment (Ljava/lang/String;)V
 	public final fun setFailedRequestStatusCodes (Ljava/util/List;)V
 	public final fun setFailedRequestTargets (Ljava/util/List;)V
