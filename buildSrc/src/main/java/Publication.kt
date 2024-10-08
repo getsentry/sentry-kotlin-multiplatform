@@ -3,11 +3,7 @@ import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.file.CopySpec
 import java.io.File
 
-private object Consts {
-    val taskRegex = Regex("(.*)DistZip")
-}
-
-val sep = File.separator
+val sep: String = File.separator
 
 // configure distZip tasks for multiplatform
 fun DistributionContainer.configureForMultiplatform(project: Project) {
@@ -26,13 +22,16 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
         }
         from("build${sep}kotlinToolingMetadata") {
             rename {
-                it.replace("kotlin-tooling-metadata.json", "${project.name}-$version-kotlin-tooling-metadata.json")
+                it.replace(
+                    "kotlin-tooling-metadata.json",
+                    "${project.name}-$version-kotlin-tooling-metadata.json"
+                )
             }
         }
         from("build${sep}libs") {
-            include("${project.name}-?.?.*")
             include("${project.name}-kotlin*")
             include("${project.name}-metadata*")
+            withJavadoc(project.name)
             rename {
                 it.replace("multiplatform-kotlin", "multiplatform").replace("-metadata", "")
             }
@@ -188,19 +187,19 @@ private fun CopySpec.fromKlib(projectName: String, target: String, version: Stri
     from("build${sep}classes${sep}kotlin${sep}${target}${sep}main${sep}cinterop") {
         include("*.klib")
         rename {
-            it.replaceRange(pos, pos, "-${target.toLowerCase()}-$version")
+            it.replaceRange(pos, pos, "-${target.lowercase()}-$version")
         }
     }
     from("build${sep}classes${sep}kotlin${sep}${target}${sep}main${sep}klib") {
         rename {
-            "$projectName-${target.toLowerCase()}-$version.klib"
+            "$projectName-${target.lowercase()}-$version.klib"
         }
     }
 }
 
 private fun CopySpec.renameModule(projectName: String, renameTo: String = "", version: String) {
     var target = ""
-    if (!renameTo.isEmpty()) {
+    if (renameTo.isNotEmpty()) {
         target = "-$renameTo"
     }
     rename {
@@ -208,14 +207,22 @@ private fun CopySpec.renameModule(projectName: String, renameTo: String = "", ve
     }
 }
 
-private fun CopySpec.withJavadoc(projectName: String, renameTo: String) {
+private fun CopySpec.withJavadoc(projectName: String, renameTo: String = "") {
     include("*javadoc*")
-    rename {
-        if (it.contains("javadoc")) {
-            val pos = projectName.length
-            it.replaceRange(pos, pos, "-$renameTo")
-        } else {
-            it
+    rename { fileName ->
+        when {
+            "javadoc" in fileName -> {
+                val newName = buildString {
+                    append(fileName.substring(0, projectName.length))
+                    if (renameTo.isNotEmpty()) {
+                        append('-')
+                        append(renameTo)
+                    }
+                    append(fileName.substring(projectName.length))
+                }
+                newName
+            }
+            else -> fileName
         }
     }
 }
