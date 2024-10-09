@@ -63,7 +63,7 @@ subprojects {
     }
 }
 
-tasks.register("validateDistributionArtifacts") {
+tasks.register("validateDistributions") {
     subprojects {
         val subproject = this@subprojects
         if (subproject.name == "sentry-kotlin-multiplatform") {
