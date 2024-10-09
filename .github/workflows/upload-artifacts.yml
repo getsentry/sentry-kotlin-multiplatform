@@ -1,8 +1,9 @@
 name: "Generate and upload distributions"
 on:
   push:
-    branches:
-      - release/**
+#    todo: test it in pr
+#    branches:
+#      - release/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -32,6 +33,10 @@ jobs:
         run: |
           cd sentry-kotlin-multiplatform-gradle-plugin
           ./gradlew distZip sentryPluginMarkerDistZip
+
+      - name: Validate distributions
+        run: |
+          ./gradlew validateDistributions
 
       - name: Archive packages
         uses: actions/upload-artifact@v4
