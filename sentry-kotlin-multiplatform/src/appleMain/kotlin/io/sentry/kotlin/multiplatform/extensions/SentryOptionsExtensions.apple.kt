@@ -15,31 +15,33 @@ internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) 
  * Applies the given options to this CocoaSentryOptions.
  * This avoids code duplication for init on iOS.
  */
-internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
-    dsn = options.dsn
-    attachStacktrace = options.attachStackTrace
-    dist = options.dist
-    options.environment?.let {
-        environment = it
+internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions) {
+    val cocoaOptions = this
+    cocoaOptions.dsn = kmpOptions.dsn
+    cocoaOptions.attachStacktrace = kmpOptions.attachStackTrace
+    cocoaOptions.dist = kmpOptions.dist
+    kmpOptions.environment?.let {
+        cocoaOptions.environment = it
     }
-    releaseName = options.release
-    debug = options.debug
-    sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis.convert()
-    enableAutoSessionTracking = options.enableAutoSessionTracking
-    maxAttachmentSize = options.maxAttachmentSize.convert()
-    maxBreadcrumbs = options.maxBreadcrumbs.convert()
-    enableAppHangTracking = options.enableAppHangTracking
-    appHangTimeoutInterval = options.appHangTimeoutIntervalMillis.toDouble()
-    options.sampleRate?.let {
-        sampleRate = NSNumber(double = it)
+    cocoaOptions.releaseName = kmpOptions.release
+    cocoaOptions.debug = kmpOptions.debug
+    cocoaOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis.convert()
+    cocoaOptions.enableAutoSessionTracking = kmpOptions.enableAutoSessionTracking
+    cocoaOptions.maxAttachmentSize = kmpOptions.maxAttachmentSize.convert()
+    cocoaOptions.maxBreadcrumbs = kmpOptions.maxBreadcrumbs.convert()
+    cocoaOptions.enableAppHangTracking = kmpOptions.enableAppHangTracking
+    cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
+    cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
+    kmpOptions.sampleRate?.let {
+        cocoaOptions.sampleRate = NSNumber(double = it)
     }
-    options.tracesSampleRate?.let {
-        tracesSampleRate = NSNumber(double = it)
+    kmpOptions.tracesSampleRate?.let {
+        cocoaOptions.tracesSampleRate = NSNumber(double = it)
     }
-    beforeSend = { event ->
+    cocoaOptions.beforeSend = { event ->
         val sdk = event?.sdk?.toMutableMap()
 
-        val packages = options.sdk?.packages?.map {
+        val packages = kmpOptions.sdk?.packages?.map {
             mapOf("name" to it.name, "version" to it.version)
         }?.toMutableList() ?: mutableListOf()
 
@@ -47,28 +49,28 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(options: SentryOptions) {
 
         event?.sdk = sdk
 
-        if (options.beforeSend == null) {
+        if (kmpOptions.beforeSend == null) {
             event
         } else {
             event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
-                val result = options.beforeSend?.invoke(unwrappedEvent)
+                val result = kmpOptions.beforeSend?.invoke(unwrappedEvent)
                 result?.let { event.applyKmpEvent(it) }
             }
         }
     }
 
-    beforeBreadcrumb = { cocoaBreadcrumb ->
-        if (options.beforeBreadcrumb == null) {
+    cocoaOptions.beforeBreadcrumb = { cocoaBreadcrumb ->
+        if (kmpOptions.beforeBreadcrumb == null) {
             cocoaBreadcrumb
         } else {
             cocoaBreadcrumb?.toKmpBreadcrumb()
-                ?.let { options.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+                ?.let { kmpOptions.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
         }
     }
 
-    enableCaptureFailedRequests = options.enableCaptureFailedRequests
-    failedRequestTargets = options.failedRequestTargets
-    failedRequestStatusCodes = options.failedRequestStatusCodes.map {
+    cocoaOptions.enableCaptureFailedRequests = kmpOptions.enableCaptureFailedRequests
+    cocoaOptions.failedRequestTargets = kmpOptions.failedRequestTargets
+    cocoaOptions.failedRequestStatusCodes = kmpOptions.failedRequestStatusCodes.map {
         SentryHttpStatusCodeRange(
             min = it.min.convert(),
             max = it.max.convert()

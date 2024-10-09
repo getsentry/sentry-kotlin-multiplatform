@@ -131,10 +131,11 @@ class SentryOptionsTest : BaseSentryTest() {
         assertTrue(options.experimental.sessionReplay.redactAllText)
         assertTrue(options.experimental.sessionReplay.redactAllImages)
         assertEquals(SentryReplayOptions.Quality.MEDIUM, options.experimental.sessionReplay.quality)
+        assertTrue(options.enableWatchdogTerminationTracking)
     }
 
     @Test
-    fun `GIVEN SentryOptions WHEN applyFromOptions THEN applies values to native options`() {
+    fun `GIVEN non-default SentryOptions WHEN options initialized THEN applies values to native options`() {
         val options = SentryOptions().apply {
             dsn = fakeDsn
             attachStackTrace = false
@@ -154,6 +155,7 @@ class SentryOptionsTest : BaseSentryTest() {
             appHangTimeoutIntervalMillis = 1000L
             isAnrEnabled = false
             anrTimeoutIntervalMillis = 1000L
+            enableWatchdogTerminationTracking = false
             experimental.sessionReplay.onErrorSampleRate = 0.5
             experimental.sessionReplay.sessionSampleRate = 0.5
             experimental.sessionReplay.redactAllText = false
