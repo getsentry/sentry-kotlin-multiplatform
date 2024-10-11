@@ -6,14 +6,14 @@ import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import io.sentry.SentryReplayOptions as NativeSentryReplayOptions
+import io.sentry.SentryReplayOptions as AndroidSentryReplayOptions
 
 actual interface PlatformOptions : CommonPlatformOptions {
     val isAnrEnabled: Boolean
     val anrTimeoutIntervalMillis: Long
     val attachScreenshot: Boolean
     val attachViewHierarchy: Boolean
-    val sessionReplay: NativeSentryReplayOptions
+    val sessionReplay: AndroidSentryReplayOptions
 }
 
 class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptions) :
@@ -66,7 +66,7 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     override val attachViewHierarchy: Boolean
         get() = androidOptions.isAttachViewHierarchy
 
-    override val sessionReplay: NativeSentryReplayOptions
+    override val sessionReplay: AndroidSentryReplayOptions
         get() = androidOptions.experimental.sessionReplay
 
     override fun applyFromOptions(options: SentryOptions) {
@@ -89,13 +89,13 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
         kmpReplayOptions.maskAllText,
         androidOptions.sessionReplay.maskViewClasses,
         androidOptions.sessionReplay.unmaskViewClasses,
-        NativeSentryReplayOptions.TEXT_VIEW_CLASS_NAME
+        AndroidSentryReplayOptions.TEXT_VIEW_CLASS_NAME
     )
     assertViewClassMasking(
         kmpReplayOptions.maskAllImages,
         androidOptions.sessionReplay.maskViewClasses,
         androidOptions.sessionReplay.unmaskViewClasses,
-        NativeSentryReplayOptions.IMAGE_VIEW_CLASS_NAME
+        AndroidSentryReplayOptions.IMAGE_VIEW_CLASS_NAME
     )
     assertEquals(
         androidOptions.sessionReplay.onErrorSampleRate,
