@@ -96,9 +96,11 @@ private fun validateKotlinMultiplatformCoreArtifacts(project: Project) {
     )
     val listOfArtifactPaths = buildList {
         add("$rootDistributionFilePath$sep$baseFileName-$version.zip")
-        addAll(platforms.map { platform ->
-            "$rootDistributionFilePath$sep$baseFileName-$platform-$version.zip"
-        })
+        addAll(
+            platforms.map { platform ->
+                "$rootDistributionFilePath$sep$baseFileName-$platform-$version.zip"
+            }
+        )
     }
 
     listOfArtifactPaths.forEach { artifactPath ->
