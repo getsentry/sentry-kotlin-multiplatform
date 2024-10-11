@@ -1,6 +1,8 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import io.sentry.android.core.SentryAndroidOptions
+import io.sentry.android.replay.maskAllImages
+import io.sentry.android.replay.maskAllText
 import io.sentry.kotlin.multiplatform.JvmSentryReplayQuality
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.SentryReplayOptions
@@ -19,13 +21,13 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     androidOptions.anrTimeoutIntervalMillis = kmpOptions.anrTimeoutIntervalMillis
 
     // Replay options
-    androidOptions.experimental.sessionReplay.redactAllText =
-        kmpOptions.experimental.sessionReplay.redactAllText
-    androidOptions.experimental.sessionReplay.redactAllImages =
-        kmpOptions.experimental.sessionReplay.redactAllImages
+    androidOptions.experimental.sessionReplay.maskAllText =
+        kmpOptions.experimental.sessionReplay.maskAllText
+    androidOptions.experimental.sessionReplay.maskAllImages =
+        kmpOptions.experimental.sessionReplay.maskAllImages
     androidOptions.experimental.sessionReplay.sessionSampleRate =
         kmpOptions.experimental.sessionReplay.sessionSampleRate
-    androidOptions.experimental.sessionReplay.errorSampleRate =
+    androidOptions.experimental.sessionReplay.onErrorSampleRate =
         kmpOptions.experimental.sessionReplay.onErrorSampleRate
     androidOptions.experimental.sessionReplay.quality =
         kmpOptions.experimental.sessionReplay.quality.toAndroidSentryQuality()
