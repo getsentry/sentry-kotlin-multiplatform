@@ -183,4 +183,4 @@ class SentryOptionsTest : BaseSentryTest() {
     }
 }
 
-expect fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions)
+expect fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions)
