@@ -10,18 +10,17 @@ import io.sentry.kotlin.multiplatform.utils.projectSlug
 import io.sentry.kotlin.multiplatform.utils.realDsn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
@@ -42,11 +41,11 @@ class SentryE2ETest : BaseSentryTest() {
     private val client = HttpClient()
     private val jsonDecoder = Json { ignoreUnknownKeys = true }
     private var sentEvent: SentryEvent? = null
+    private var shouldSkipTests: Boolean = false
 
     @BeforeTest
     fun setup() {
-        assertNotNull(authToken)
-        assertTrue(authToken.isNotEmpty())
+        shouldSkipTests = authToken.isNullOrEmpty()
         sentryInit { options ->
             options.dsn = realDsn
             options.beforeSend = { event ->
@@ -87,7 +86,7 @@ class SentryE2ETest : BaseSentryTest() {
     // See: https://github.com/getsentry/sentry-kotlin-multiplatform/issues/17
 
     @Test
-    fun `capture message and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
+    fun `capture message and fetch event from Sentry`() = runTestOrSkip {
         if (platform != "Apple") {
             val message = "Test running on $platform"
             val eventId = Sentry.captureMessage(message)
@@ -105,7 +104,7 @@ class SentryE2ETest : BaseSentryTest() {
     }
 
     @Test
-    fun `capture exception and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
+    fun `capture exception and fetch event from Sentry`() = runTestOrSkip {
         if (platform != "Apple") {
             val exceptionMessage = "Test exception on platform $platform"
             val eventId =
@@ -118,6 +117,19 @@ class SentryE2ETest : BaseSentryTest() {
             assertEquals(sentEvent?.fingerprint?.toList(), fetchedEvent.fingerprint)
             assertEquals(2, fetchedEvent.tags.find { it["value"] == SentryLevel.ERROR.toString().lowercase() }?.size)
             assertEquals(sentEvent?.logger, fetchedEvent.logger)
+        }
+    }
+
+    private fun runTestOrSkip(
+        timeout: Duration = 30.seconds,
+        testBody: suspend () -> Unit
+    ): TestResult {
+        return runTest(timeout = timeout) {
+            if (shouldSkipTests) {
+                println("Skipping test: Auth token not available.")
+                return@runTest
+            }
+            testBody()
         }
     }
 
