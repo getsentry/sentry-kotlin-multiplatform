@@ -1,9 +1,8 @@
 name: "Generate and upload distributions"
 on:
   push:
-#    todo: test it in pr
-#    branches:
-#      - release/**
+   branches:
+     - release/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
