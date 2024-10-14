@@ -63,11 +63,11 @@ expect fun createApplePlatformOptions(): PlatformOptions
 
 expect fun ApplePlatformOptions.assertApplePlatformSpecificOptions(options: SentryOptions)
 
-actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions) {
-    (this as ApplePlatformOptions).assertApplePlatformSpecificOptions(options)
+actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) {
+    (this as ApplePlatformOptions).assertApplePlatformSpecificOptions(kmpOptions)
 
     val appleOptions = this
-    assertEquals(appleOptions.enableWatchdogTerminationTracking, options.enableWatchdogTerminationTracking)
+    assertEquals(appleOptions.enableWatchdogTerminationTracking, kmpOptions.enableWatchdogTerminationTracking)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
