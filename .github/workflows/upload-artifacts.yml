@@ -33,6 +33,10 @@ jobs:
           cd sentry-kotlin-multiplatform-gradle-plugin
           ./gradlew distZip sentryPluginMarkerDistZip
 
+      - name: Validate distributions
+        run: |
+          ./gradlew validateDistributions
+
       - name: Archive packages
         uses: actions/upload-artifact@v4
         with:
