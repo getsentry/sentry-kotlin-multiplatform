@@ -3,15 +3,17 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
-import io.sentry.SentryReplayOptions as NativeSentryReplayOptions
+import kotlin.test.assertFalse
+import io.sentry.SentryReplayOptions as AndroidSentryReplayOptions
 
 actual interface PlatformOptions : CommonPlatformOptions {
     val isAnrEnabled: Boolean
     val anrTimeoutIntervalMillis: Long
     val attachScreenshot: Boolean
     val attachViewHierarchy: Boolean
-    val sessionReplay: NativeSentryReplayOptions
+    val sessionReplay: AndroidSentryReplayOptions
 }
 
 class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptions) :
@@ -64,7 +66,7 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     override val attachViewHierarchy: Boolean
         get() = androidOptions.isAttachViewHierarchy
 
-    override val sessionReplay: NativeSentryReplayOptions
+    override val sessionReplay: AndroidSentryReplayOptions
         get() = androidOptions.experimental.sessionReplay
 
     override fun applyFromOptions(options: SentryOptions) {
@@ -75,18 +77,52 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
 actual fun createPlatformOptions(): PlatformOptions =
     SentryAndroidOptionsWrapper(SentryAndroidOptions())
 
-actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions) {
-    assertEquals(attachScreenshot, options.attachScreenshot)
-    assertEquals(attachViewHierarchy, options.attachViewHierarchy)
-    assertEquals(isAnrEnabled, options.isAnrEnabled)
-    assertEquals(anrTimeoutIntervalMillis, options.anrTimeoutIntervalMillis)
-    assertEquals(sessionReplay.redactAllText, options.experimental.sessionReplay.redactAllText)
-    assertEquals(sessionReplay.redactAllImages, options.experimental.sessionReplay.redactAllImages)
-    assertEquals(sessionReplay.errorSampleRate, options.experimental.sessionReplay.onErrorSampleRate)
-    assertEquals(sessionReplay.sessionSampleRate, options.experimental.sessionReplay.sessionSampleRate)
-    assertEquals(sessionReplay.quality.name, options.experimental.sessionReplay.quality.name)
+actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) {
+    val androidOptions = this
+    assertEquals(androidOptions.attachScreenshot, kmpOptions.attachScreenshot)
+    assertEquals(androidOptions.attachViewHierarchy, kmpOptions.attachViewHierarchy)
+    assertEquals(androidOptions.isAnrEnabled, kmpOptions.isAnrEnabled)
+    assertEquals(androidOptions.anrTimeoutIntervalMillis, kmpOptions.anrTimeoutIntervalMillis)
+
+    val kmpReplayOptions = kmpOptions.experimental.sessionReplay
+    assertViewClassMasking(
+        kmpReplayOptions.maskAllText,
+        androidOptions.sessionReplay.maskViewClasses,
+        androidOptions.sessionReplay.unmaskViewClasses,
+        AndroidSentryReplayOptions.TEXT_VIEW_CLASS_NAME
+    )
+    assertViewClassMasking(
+        kmpReplayOptions.maskAllImages,
+        androidOptions.sessionReplay.maskViewClasses,
+        androidOptions.sessionReplay.unmaskViewClasses,
+        AndroidSentryReplayOptions.IMAGE_VIEW_CLASS_NAME
+    )
+    assertEquals(
+        androidOptions.sessionReplay.onErrorSampleRate,
+        kmpReplayOptions.onErrorSampleRate
+    )
+    assertEquals(
+        androidOptions.sessionReplay.sessionSampleRate,
+        kmpReplayOptions.sessionSampleRate
+    )
+    assertEquals(androidOptions.sessionReplay.quality.name, kmpReplayOptions.quality.name)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
     it.dsn = fakeDsn
+}
+
+private fun assertViewClassMasking(
+    kmpMaskAll: Boolean,
+    maskViewClasses: Collection<String>,
+    unmaskViewClasses: Collection<String>,
+    viewClassName: String
+) {
+    if (kmpMaskAll) {
+        assertContains(maskViewClasses, viewClassName)
+        assertFalse(unmaskViewClasses.contains(viewClassName))
+    } else {
+        assertFalse(maskViewClasses.contains(viewClassName))
+        assertContains(unmaskViewClasses, viewClassName)
+    }
 }
