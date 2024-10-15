@@ -41,8 +41,8 @@ subprojects {
                 val distributionFilePath =
                     "${this.project.buildDir}${sep}distributions${sep}${this.project.name}-${this.project.version}.zip"
                 val file = File(distributionFilePath)
-                if (!file.exists()) throw IllegalStateException("Distribution file: $distributionFilePath does not exist")
-                if (file.length() == 0L) throw IllegalStateException("Distribution file: $distributionFilePath is empty")
+                if (!file.exists()) throw GradleException("Distribution file: $distributionFilePath does not exist")
+                if (file.length() == 0L) throw GradleException("Distribution file: $distributionFilePath is empty")
             }
         }
 
@@ -67,22 +67,21 @@ tasks.register("validateDistributions") {
     subprojects {
         val subproject = this@subprojects
         if (subproject.name == "sentry-kotlin-multiplatform") {
-            validateKotlinMultiplatformCoreArtifacts(subproject)
+            subproject.validateKotlinMultiplatformCoreArtifacts()
         }
     }
 }
 
-private fun validateKotlinMultiplatformCoreArtifacts(project: Project) {
-    val rootDistributionFilePath =
-        "${project.layout.buildDirectory.asFile.get().path}${sep}distributions"
+private fun Project.validateKotlinMultiplatformCoreArtifacts() {
+    val distributionDir = project.layout.buildDirectory.dir("distributions").get().asFile
     val expectedNumOfFiles = 15
-    val filesList = File(rootDistributionFilePath).listFiles()
-    val actualNumberOfFiles = filesList?.size ?: 0
+    val filesList = distributionDir.listFiles()
+    val actualNumOfFiles = filesList?.size ?: 0
 
-    if (actualNumberOfFiles == expectedNumOfFiles) {
-        println("✅ Found $actualNumberOfFiles distribution files as expected.")
+    if (actualNumOfFiles == expectedNumOfFiles) {
+        println("✅ Found $actualNumOfFiles distribution files as expected.")
     } else {
-        throw IllegalStateException("❌ Expected $expectedNumOfFiles distribution files, but found $actualNumberOfFiles")
+        throw GradleException("❌ Expected $expectedNumOfFiles distribution files, but found $actualNumOfFiles")
     }
 
     val baseFileName = "sentry-kotlin-multiplatform"
@@ -94,66 +93,62 @@ private fun validateKotlinMultiplatformCoreArtifacts(project: Project) {
         "iosx64", "iossimulatorarm64", "iosarm64",
         "android"
     )
-    val listOfArtifactPaths = buildList {
-        add("$rootDistributionFilePath$sep$baseFileName-$version.zip")
+
+    val artifactPaths = buildList {
+        add(distributionDir.resolve("$baseFileName-$version.zip"))
         addAll(
             platforms.map { platform ->
-                "$rootDistributionFilePath$sep$baseFileName-$platform-$version.zip"
+                distributionDir.resolve("$baseFileName-$platform-$version.zip")
             }
         )
     }
 
-    listOfArtifactPaths.forEach { artifactPath ->
-        val artifactFile = File(artifactPath)
+    val commonRequiredEntries = listOf(
+        "javadoc",
+        "sources",
+        "module",
+        "pom-default.xml"
+    )
+
+    artifactPaths.forEach { artifactFile ->
         if (!artifactFile.exists()) {
-            throw IllegalStateException("❌ Artifact file: $artifactPath does not exist")
+            throw GradleException("❌ Artifact file: ${artifactFile.path} does not exist")
         }
         if (artifactFile.length() == 0L) {
-            throw IllegalStateException("❌ Artifact file: $artifactPath is empty")
+            throw GradleException("❌ Artifact file: ${artifactFile.path} is empty")
         }
 
-        val file = File(artifactPath)
-        ZipFile(file).use { zip ->
+        ZipFile(artifactFile).use { zip ->
             val entries = zip.entries().asSequence().map { it.name }.toList()
-            val javadocFile = entries.firstOrNull { it.contains("javadoc") }
-            if (javadocFile == null) {
-                throw IllegalStateException("❌ javadoc file not found in ${file.name}")
-            }
-            val sourcesFile = entries.firstOrNull { it.contains("sources") }
-            if (sourcesFile == null) {
-                throw IllegalStateException("❌ sources file not found in ${file.name}")
-            }
-            val moduleFile = entries.firstOrNull { it.contains("module") }
-            if (moduleFile == null) {
-                throw IllegalStateException("❌ module file not found in ${file.name}")
-            }
-            val pomFile = entries.firstOrNull { it.contains("pom-default.xml") }
-            if (pomFile == null) {
-                throw IllegalStateException("❌ pom file not found in ${file.name}")
-            }
 
-            val isAppleArtifact =
-                file.name.contains("ios") || file.name.contains("macos") || file.name.contains("watchos") || file.name.contains(
-                    "tvos"
-                )
-            if (isAppleArtifact) {
-                // this is hardcoded but will probably not change unless we add another cinterop library or remove one
-                val expectedNumOfKlibFiles = 3
-                val actualKlibFiles = entries.filter { it.contains("klib") }
-                if (actualKlibFiles.size != expectedNumOfKlibFiles) {
-                    throw IllegalStateException("❌ $expectedNumOfKlibFiles klib files not found in ${file.name}")
+            commonRequiredEntries.forEach { requiredEntry ->
+                if (entries.none { it.contains(requiredEntry) }) {
+                    throw GradleException("❌ $requiredEntry not found in ${artifactFile.name}")
                 } else {
-                    println("✅ Found $expectedNumOfKlibFiles klib files in ${file.name}")
+                    println("✅ Found $requiredEntry in ${artifactFile.name}")
                 }
             }
 
-            val isAndroidArtifact = file.name.contains("android")
-            if (isAndroidArtifact) {
-                val aarFile = entries.firstOrNull() { it.contains("aar") }
-                if (aarFile == null) {
-                    throw IllegalStateException("❌ aar file not found in ${file.name}")
-                } else {
-                    println("✅ Found aar file in ${file.name}")
+            when {
+                artifactFile.name.contains("ios", ignoreCase = true) ||
+                    artifactFile.name.contains("macos", ignoreCase = true) ||
+                    artifactFile.name.contains("watchos", ignoreCase = true) ||
+                    artifactFile.name.contains("tvos", ignoreCase = true) -> {
+                    val expectedNumOfKlibFiles = 3
+                    val actualKlibFiles = entries.count { it.contains("klib") }
+                    if (actualKlibFiles != expectedNumOfKlibFiles) {
+                        throw GradleException("❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles")
+                    } else {
+                        println("✅ Found $expectedNumOfKlibFiles klib files in ${artifactFile.name}")
+                    }
+                }
+
+                artifactFile.name.contains("android", ignoreCase = true) -> {
+                    if (entries.none { it.contains("aar") }) {
+                        throw GradleException("❌ aar file not found in ${artifactFile.name}")
+                    } else {
+                        println("✅ Found aar file in ${artifactFile.name}")
+                    }
                 }
             }
         }
