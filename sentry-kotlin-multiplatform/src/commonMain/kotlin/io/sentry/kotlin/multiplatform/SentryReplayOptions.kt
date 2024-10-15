@@ -21,18 +21,18 @@ public data class SentryReplayOptions(
     public var onErrorSampleRate: Double? = null,
 
     /**
-     * Redact all text content. Draws a rectangle of text bounds with text color on top.
+     * Makss all text content. Draws a rectangle of text bounds with text color on top.
      *
      * The default is true.
      */
-    public var redactAllText: Boolean = true,
+    public var maskAllText: Boolean = true,
 
     /**
-     * Redact all image content. Draws a rectangle of image bounds with image's dominant color on top.
+     * Masks all image content. Draws a rectangle of image bounds with image's dominant color on top.
      *
      * The default is true.
      */
-    public var redactAllImages: Boolean = true,
+    public var maskAllImages: Boolean = true,
 
     /**
      * Defines the quality of the session replay. The higher the quality, the more accurate the replay

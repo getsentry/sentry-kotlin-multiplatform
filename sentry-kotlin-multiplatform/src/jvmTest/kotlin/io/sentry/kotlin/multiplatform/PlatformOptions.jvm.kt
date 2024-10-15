@@ -49,7 +49,7 @@ class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : Platfo
 
 actual fun createPlatformOptions(): PlatformOptions = SentryJvmOptionsWrapper(JvmSentryOptions())
 
-actual fun PlatformOptions.assertPlatformSpecificOptions(options: SentryOptions) {
+actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) {
     // no-op
 }
 

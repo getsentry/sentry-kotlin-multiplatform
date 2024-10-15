@@ -233,16 +233,16 @@ public final class io/sentry/kotlin/multiplatform/SentryReplayOptions {
 	public final fun copy (Ljava/lang/Double;Ljava/lang/Double;ZZLio/sentry/kotlin/multiplatform/SentryReplayOptions$Quality;)Lio/sentry/kotlin/multiplatform/SentryReplayOptions;
 	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/SentryReplayOptions;Ljava/lang/Double;Ljava/lang/Double;ZZLio/sentry/kotlin/multiplatform/SentryReplayOptions$Quality;ILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/SentryReplayOptions;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMaskAllImages ()Z
+	public final fun getMaskAllText ()Z
 	public final fun getOnErrorSampleRate ()Ljava/lang/Double;
 	public final fun getQuality ()Lio/sentry/kotlin/multiplatform/SentryReplayOptions$Quality;
-	public final fun getRedactAllImages ()Z
-	public final fun getRedactAllText ()Z
 	public final fun getSessionSampleRate ()Ljava/lang/Double;
 	public fun hashCode ()I
+	public final fun setMaskAllImages (Z)V
+	public final fun setMaskAllText (Z)V
 	public final fun setOnErrorSampleRate (Ljava/lang/Double;)V
 	public final fun setQuality (Lio/sentry/kotlin/multiplatform/SentryReplayOptions$Quality;)V
-	public final fun setRedactAllImages (Z)V
-	public final fun setRedactAllText (Z)V
 	public final fun setSessionSampleRate (Ljava/lang/Double;)V
 	public fun toString ()Ljava/lang/String;
 }
