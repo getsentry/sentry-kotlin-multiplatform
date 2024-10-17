@@ -23,8 +23,8 @@ internal fun SentryOptions.toIosOptionsConfiguration(): (CocoaSentryOptions?) ->
                 "errorSampleRate" to kmpOptions.experimental.sessionReplay.onErrorSampleRate?.toFloat()
             )
         ).apply {
-            setRedactAllText(kmpOptions.experimental.sessionReplay.maskAllText)
-            setRedactAllImages(kmpOptions.experimental.sessionReplay.maskAllImages)
+            setMaskAllText(kmpOptions.experimental.sessionReplay.maskAllText)
+            setMaskAllImages(kmpOptions.experimental.sessionReplay.maskAllImages)
             kmpOptions.experimental.sessionReplay.sessionSampleRate?.let { setSessionSampleRate(it.toFloat()) }
             setQuality(kmpOptions.experimental.sessionReplay.quality.ordinal.toLong())
         }
