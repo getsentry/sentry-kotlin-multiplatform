@@ -6,6 +6,7 @@ interface CommonPlatformOptions {
     val release: String?
     val debug: Boolean
     val environment: String?
+    val diagnosticLevel: SentryLevel
     val dist: String?
     val enableAutoSessionTracking: Boolean
     val sessionTrackingIntervalMillis: Long

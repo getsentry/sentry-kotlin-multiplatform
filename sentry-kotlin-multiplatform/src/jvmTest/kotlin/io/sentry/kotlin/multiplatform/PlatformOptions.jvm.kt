@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 
 actual interface PlatformOptions : CommonPlatformOptions
@@ -41,6 +42,9 @@ class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : Platfo
 
     override val tracesSampleRate: Double?
         get() = jvmOptions.tracesSampleRate
+
+    override val diagnosticLevel: SentryLevel
+        get() = jvmOptions.diagnosticLevel.toKmpSentryLevel()!!
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toJvmSentryOptionsCallback().invoke(jvmOptions)
