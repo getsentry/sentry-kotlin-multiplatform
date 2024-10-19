@@ -16,32 +16,34 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
  * Applies the given base SentryOptions to this JvmSentryOption
  * This avoids code duplication during init on Android
  */
-internal fun JvmSentryOptions.applyJvmBaseOptions(options: SentryOptions) {
-    dsn = options.dsn
-    isAttachThreads = options.attachThreads
-    isAttachStacktrace = options.attachStackTrace
-    dist = options.dist
-    environment = options.environment
-    release = options.release
-    isDebug = options.debug
-    sessionTrackingIntervalMillis = options.sessionTrackingIntervalMillis
-    isEnableAutoSessionTracking = options.enableAutoSessionTracking
-    maxAttachmentSize = options.maxAttachmentSize
-    maxBreadcrumbs = options.maxBreadcrumbs
-    sampleRate = options.sampleRate
-    tracesSampleRate = options.tracesSampleRate
-    setBeforeBreadcrumb { jvmBreadcrumb, _ ->
-        if (options.beforeBreadcrumb == null) {
+internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
+    val jvmOptions = this
+    jvmOptions.dsn = kmpOptions.dsn
+    jvmOptions.isAttachThreads = kmpOptions.attachThreads
+    jvmOptions.isAttachStacktrace = kmpOptions.attachStackTrace
+    jvmOptions.dist = kmpOptions.dist
+    jvmOptions.environment = kmpOptions.environment
+    jvmOptions.release = kmpOptions.release
+    jvmOptions.isDebug = kmpOptions.debug
+    jvmOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis
+    jvmOptions.isEnableAutoSessionTracking = kmpOptions.enableAutoSessionTracking
+    jvmOptions.maxAttachmentSize = kmpOptions.maxAttachmentSize
+    jvmOptions.maxBreadcrumbs = kmpOptions.maxBreadcrumbs
+    jvmOptions.sampleRate = kmpOptions.sampleRate
+    jvmOptions.tracesSampleRate = kmpOptions.tracesSampleRate
+    jvmOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toJvmSentryLevel())
+    jvmOptions.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
+        if (kmpOptions.beforeBreadcrumb == null) {
             jvmBreadcrumb
         } else {
-            options.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
+            kmpOptions.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
         }
     }
-    setBeforeSend { jvmSentryEvent, hint ->
-        if (options.beforeSend == null) {
+    jvmOptions.setBeforeSend { jvmSentryEvent, hint ->
+        if (kmpOptions.beforeSend == null) {
             jvmSentryEvent
         } else {
-            options.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
+            kmpOptions.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
                 jvmSentryEvent.applyKmpEvent(it)
             }
         }
