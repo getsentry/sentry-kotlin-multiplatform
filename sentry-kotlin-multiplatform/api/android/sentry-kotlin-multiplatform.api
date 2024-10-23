@@ -169,6 +169,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getBeforeBreadcrumb ()Lkotlin/jvm/functions/Function1;
 	public final fun getBeforeSend ()Lkotlin/jvm/functions/Function1;
 	public final fun getDebug ()Z
+	public final fun getDiagnosticLevel ()Lio/sentry/kotlin/multiplatform/SentryLevel;
 	public final fun getDist ()Ljava/lang/String;
 	public final fun getDsn ()Ljava/lang/String;
 	public final fun getEnableAppHangTracking ()Z
@@ -197,6 +198,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setBeforeBreadcrumb (Lkotlin/jvm/functions/Function1;)V
 	public final fun setBeforeSend (Lkotlin/jvm/functions/Function1;)V
 	public final fun setDebug (Z)V
+	public final fun setDiagnosticLevel (Lio/sentry/kotlin/multiplatform/SentryLevel;)V
 	public final fun setDist (Ljava/lang/String;)V
 	public final fun setDsn (Ljava/lang/String;)V
 	public final fun setEnableAppHangTracking (Z)V
