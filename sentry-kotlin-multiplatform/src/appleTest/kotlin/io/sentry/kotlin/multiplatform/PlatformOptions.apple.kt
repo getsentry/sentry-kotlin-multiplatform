@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.extensions.toCocoaOptionsConfiguration
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlinx.cinterop.convert
 import kotlin.test.assertEquals
@@ -49,6 +50,9 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
 
     override val enableWatchdogTerminationTracking: Boolean
         get() = cocoaOptions.enableWatchdogTerminationTracking
+
+    override val diagnosticLevel: SentryLevel
+        get() = cocoaOptions.diagnosticLevel.toKmpSentryLevel()!!
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)

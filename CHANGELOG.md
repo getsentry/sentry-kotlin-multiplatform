@@ -14,6 +14,7 @@ Sentry.init { options ->
 ```
 - Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))
 - Add `enableWatchdogTerminationTracking` in common options ([#281](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/281))
+- Add `diagnosticLevel` in common options ([#287](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/287))
 
 ### Dependencies
 
