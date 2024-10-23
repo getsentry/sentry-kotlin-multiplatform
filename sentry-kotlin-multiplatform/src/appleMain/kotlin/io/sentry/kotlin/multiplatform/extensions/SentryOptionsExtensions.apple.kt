@@ -32,7 +32,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.enableAppHangTracking = kmpOptions.enableAppHangTracking
     cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
     cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
-    cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel();
+    cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel()
     kmpOptions.sampleRate?.let {
         cocoaOptions.sampleRate = NSNumber(double = it)
     }
