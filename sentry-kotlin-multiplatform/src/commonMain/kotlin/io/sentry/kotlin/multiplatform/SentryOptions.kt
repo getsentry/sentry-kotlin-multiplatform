@@ -70,6 +70,7 @@ public open class SentryOptions {
     /** Information about the Sentry SDK that generated this event. */
     public var sdk: SdkVersion? = null
 
+    /** Sets the minimum LogLevel if null, it uses the default min. Default is [SentryLevel.DEBUG] */
     public var diagnosticLevel: SentryLevel = SentryLevel.DEBUG
 
     /** This variable controls the total amount of breadcrumbs that should be captured. Default is 100. */
