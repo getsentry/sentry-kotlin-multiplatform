@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.extensions.toAndroidSentryOptionsCallback
+import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -29,6 +30,9 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
 
     override val debug: Boolean
         get() = androidOptions.isDebug
+
+    override val diagnosticLevel: SentryLevel
+        get() = androidOptions.diagnosticLevel.toKmpSentryLevel()!!
 
     override val environment: String?
         get() = androidOptions.environment

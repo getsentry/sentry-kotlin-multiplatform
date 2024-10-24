@@ -114,6 +114,7 @@ class SentryOptionsTest : BaseSentryTest() {
         assertNull(options.beforeBreadcrumb)
         assertNull(options.beforeSend)
         assertNull(options.sdk)
+        assertEquals(SentryLevel.DEBUG, options.diagnosticLevel)
         assertEquals(DEFAULT_MAX_BREADCRUMBS, options.maxBreadcrumbs)
         assertEquals(DEFAULT_MAX_ATTACHMENT_SIZE, options.maxAttachmentSize)
         assertFalse(options.attachViewHierarchy)
@@ -145,6 +146,7 @@ class SentryOptionsTest : BaseSentryTest() {
             dist = "dist"
             enableAutoSessionTracking = false
             sessionTrackingIntervalMillis = 1000L
+            diagnosticLevel = SentryLevel.ERROR
             maxBreadcrumbs = 10
             maxAttachmentSize = 100L
             sampleRate = 0.5
@@ -178,6 +180,7 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(100L, platformOptions.maxAttachmentSize)
         assertEquals(0.5, platformOptions.sampleRate)
         assertEquals(0.5, platformOptions.tracesSampleRate)
+        assertEquals(SentryLevel.ERROR, platformOptions.diagnosticLevel)
 
         platformOptions.assertPlatformSpecificOptions(options)
     }

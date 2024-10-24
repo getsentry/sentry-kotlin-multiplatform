@@ -14,15 +14,16 @@ Sentry.init { options ->
 ```
 - Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))
 - Add `enableWatchdogTerminationTracking` in common options ([#281](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/281))
+- Add `diagnosticLevel` in common options ([#287](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/287))
 
 ### Dependencies
 
 - Bump Cocoa SDK from v8.36.0 to v8.38.0 ([#279](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/279), [#285](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/285))
   - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8380)
   - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.36.0...8.38.0)
-- Bump Java SDK from v7.14.0 to v7.15.0 ([#284](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/284))
-  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7150)
-  - [diff](https://github.com/getsentry/sentry-java/compare/7.14.0...7.15.0)
+- Bump Java SDK from v7.14.0 to v7.16.0 ([#284](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/284), [#289](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/289))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7160)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.14.0...7.16.0)
 
 ## 0.9.0
 
