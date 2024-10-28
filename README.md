@@ -33,6 +33,18 @@ that can be used on Kotlin Multiplatform.
 |     watchOS     | <ul><li>`watchosArm32`</li><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
 |      tvOS       | <ul><li>`tvosArm64`</li><li>`tvosX64`</li><li>`tvosSimulatorArm64`</li></ul>                                 |
 
+### Cocoa SDK Version Compatibility Table
+
+Every version of our Kotlin Multiplatform SDK is compiled with a specific version of the [Sentry Cocoa SDK](/platforms/apple/).
+Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table below to ensure the best compatibility and stability.
+
+| Kotlin Multiplatform SDK Version | Cocoa SDK Version |
+| -------------------------------- | ----------------- |
+| 0.6.0                            | 8.25.0            |
+| 0.7.0, 0.7.1                     | 8.26.0            |
+| 0.8.0, 0.9.0                     | 8.36.0            |
+| 0.10.0                           | 8.38.0            |
+
 ## Usage
 
 For detailed usage, check out the [Kotlin Multiplatform Documentation](https://docs.sentry.io/platforms/kotlin-multiplatform/).
