@@ -35,7 +35,7 @@ that can be used on Kotlin Multiplatform.
 
 ### Cocoa SDK Version Compatibility Table
 
-Every version of our Kotlin Multiplatform SDK is compiled with a specific version of the [Sentry Cocoa SDK](/platforms/apple/).
+Every version of our Kotlin Multiplatform SDK is compiled with a specific version of the [Sentry Cocoa SDK](https://github.com/getsentry/sentry-cocoa/).
 Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table below to ensure the best compatibility and stability.
 
 | Kotlin Multiplatform SDK Version | Cocoa SDK Version |
