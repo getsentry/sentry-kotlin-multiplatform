@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Java SDK from v7.16.0 to v7.18.0 ([#295](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/295))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7180)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.16.0...7.18.0)
+
 ## 0.10.0
 
 ### Features
