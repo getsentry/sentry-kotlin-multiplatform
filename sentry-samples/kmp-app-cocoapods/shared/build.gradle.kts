@@ -32,11 +32,6 @@ kotlin {
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
 
-        pod("Sentry") {
-            version = Config.Libs.sentryCocoaVersion
-            extraOpts += listOf("-compiler-option", "-fmodules")
-        }
-
         framework {
             baseName = "shared"
             export(project(":sentry-kotlin-multiplatform"))
