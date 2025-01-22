@@ -4,9 +4,9 @@
 
 ### Dependencies
 
-- Bump Java SDK from v7.16.0 to v7.18.1 ([#295](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/295), [#299](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/299))
-  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#7181)
-  - [diff](https://github.com/getsentry/sentry-java/compare/7.16.0...7.18.1)
+- Bump Java SDK from v7.16.0 to v8.0.0 ([#295](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/295), [#299](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/299), [#315](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/315))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#800)
+  - [diff](https://github.com/getsentry/sentry-java/compare/7.16.0...8.0.0)
 
 ## 0.10.0
 
