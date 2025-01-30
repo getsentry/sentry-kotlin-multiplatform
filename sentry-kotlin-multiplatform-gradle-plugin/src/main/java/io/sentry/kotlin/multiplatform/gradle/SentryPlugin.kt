@@ -137,8 +137,6 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     }
 
     kmpExtension.appleTargets().all { target ->
-        // Contains a set of names where one should match the arch name in the framework
-        // This is needed for backwards compatibility as the arch names have changed throughout different versions of the Cocoa SDK
         val frameworkArchitectures = target.toSentryFrameworkArchitecture()
         if (frameworkArchitectures.isEmpty()) {
             logger.warn("Skipping target ${target.name} - unsupported architecture.")
