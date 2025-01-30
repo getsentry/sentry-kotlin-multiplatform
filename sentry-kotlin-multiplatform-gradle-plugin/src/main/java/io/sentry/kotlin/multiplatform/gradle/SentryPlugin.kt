@@ -137,47 +137,58 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
     }
 
     kmpExtension.appleTargets().all { target ->
-        val frameworkArchitecture = target.toSentryFrameworkArchitecture() ?: run {
+        // Contains a set of names where one should match the arch name in the framework
+        // This is needed for backwards compatibility as the arch names have changed throughout different versions of the Cocoa SDK
+        val frameworkArchitectures = target.toSentryFrameworkArchitecture()
+        if (frameworkArchitectures.isEmpty()) {
             logger.warn("Skipping target ${target.name} - unsupported architecture.")
             return@all
         }
 
-        val dynamicFrameworkPath: String
-        val staticFrameworkPath: String
+        var dynamicFrameworkPath: String? = null
+        var staticFrameworkPath: String? = null
 
         if (frameworkPath?.isNotEmpty() == true) {
             dynamicFrameworkPath = frameworkPath
             staticFrameworkPath = frameworkPath
         } else {
-            @Suppress("MaxLineLength")
-            dynamicFrameworkPath =
-                "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
-            @Suppress("MaxLineLength")
-            staticFrameworkPath =
-                "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
+            frameworkArchitectures.forEach {
+                val dynamicPath =
+                    "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$it"
+                logger.info("Looking for dynamic framework at $dynamicPath")
+                if (File(dynamicPath).exists()) {
+                    logger.info("Found dynamic framework at $dynamicPath")
+                    dynamicFrameworkPath = dynamicPath
+                    return@forEach
+                }
+
+                val staticPath = "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$it"
+                logger.info("Looking for dynamic framework at $dynamicPath")
+                if (File(staticPath).exists()) {
+                    logger.info("Found static framework at $staticPath")
+                    staticFrameworkPath = staticPath
+                    return@forEach
+                }
+            }
         }
 
-        val dynamicFrameworkExists = File(dynamicFrameworkPath).exists()
-        val staticFrameworkExists = File(staticFrameworkPath).exists()
-
-        if (!dynamicFrameworkExists && !staticFrameworkExists) {
+        if (staticFrameworkPath == null && dynamicFrameworkPath == null) {
             throw GradleException(
-                "Sentry Cocoa Framework not found at $dynamicFrameworkPath or $staticFrameworkPath"
+                "Sentry Cocoa Framework not found. Make sure the Sentry Cocoa SDK is installed with SPM in your Xcode project."
             )
         }
 
         target.binaries.all binaries@{ binary ->
             if (binary is TestExecutable) {
                 // both dynamic and static frameworks will work for tests
-                val finalFrameworkPath =
-                    if (dynamicFrameworkExists) dynamicFrameworkPath else staticFrameworkPath
-                binary.linkerOpts("-rpath", finalFrameworkPath, "-F$finalFrameworkPath")
+                val path = (dynamicFrameworkPath ?: staticFrameworkPath)!!
+                binary.linkerOpts("-rpath", path, "-F$path")
             }
 
             if (binary is Framework) {
                 val finalFrameworkPath = when {
-                    binary.isStatic && staticFrameworkExists -> staticFrameworkPath
-                    !binary.isStatic && dynamicFrameworkExists -> dynamicFrameworkPath
+                    binary.isStatic && staticFrameworkPath != null -> staticFrameworkPath
+                    !binary.isStatic && dynamicFrameworkPath != null -> dynamicFrameworkPath
                     else -> {
                         logger.warn("Linking to framework failed, no sentry framework found for target ${target.name}")
                         return@binaries
@@ -191,19 +202,44 @@ internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
 }
 
 /**
- * Transforms a Kotlin Multiplatform target name to the architecture name that is found inside
+ * Transforms a Kotlin Multiplatform target name to possible architecture names found inside
  * Sentry's framework directory.
+ *
+ * Returns a set of possible architecture names because Sentry Cocoa SDK has changed folder naming
+ * across different versions. For example:
+ * - iosArm64 -> ["ios-arm64", "ios-arm64_arm64e"]
+ * - macosArm64 -> ["macos-arm64_x86_64", "macos-arm64_arm64e_x86_64"]
+ * *
+ * @return Set of possible architecture folder names for the given target. Returns empty set if target is not supported.
  */
-internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
-    return when (name) {
-        "iosSimulatorArm64", "iosX64" -> "ios-arm64_x86_64-simulator"
-        "iosArm64" -> "ios-arm64"
-        "macosArm64", "macosX64" -> "macos-arm64_x86_64"
-        "tvosSimulatorArm64", "tvosX64" -> "tvos-arm64_x86_64-simulator"
-        "tvosArm64" -> "tvos-arm64"
-        "watchosArm32", "watchosArm64" -> "watchos-arm64_arm64_32_armv7k"
-        "watchosSimulatorArm64", "watchosX64" -> "watchos-arm64_i386_x86_64-simulator"
-        else -> null
+internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = buildSet {
+    when (name) {
+        "iosSimulatorArm64", "iosX64" -> add("ios-arm64_x86_64-simulator")
+        "iosArm64" -> {
+            add("ios-arm64")
+            add("ios-arm64_arm64e")
+        }
+        "macosArm64", "macosX64" -> {
+            add("macos-arm64_x86_64")
+            add("macos-arm64_arm64e_x86_64")
+        }
+        "tvosSimulatorArm64", "tvosX64" -> {
+            add("tvos-arm64_x86_64-simulator")
+            add("tvos-arm64_x86_64-simulator")
+        }
+        "tvosArm64" -> {
+            add("tvos-arm64")
+            add("tvos-arm64_arm64e")
+        }
+        "watchosArm32", "watchosArm64" -> {
+            add("watchos-arm64_arm64_32_armv7k")
+            add("watchos-arm64_arm64_32_arm64e_armv7k")
+        }
+        "watchosSimulatorArm64", "watchosX64" -> {
+            add("watchos-arm64_i386_x86_64-simulator")
+            add("watchos-arm64_i386_x86_64-simulator")
+        }
+        else -> emptySet<String>()
     }
 }
 
