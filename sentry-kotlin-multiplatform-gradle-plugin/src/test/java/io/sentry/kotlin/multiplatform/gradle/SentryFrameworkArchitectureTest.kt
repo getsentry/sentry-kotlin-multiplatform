@@ -21,9 +21,9 @@ class SentryFrameworkArchitectureTest {
         )
     }
 
-    @ParameterizedTest(name = "Test SPM compatibility with Cocoa Version {0}")
+    @ParameterizedTest(name = "Test architecture name compatibility with Cocoa Version {0} in static framework")
     @MethodSource("cocoaVersions")
-    fun `finds arch folders across different cocoa versions`(
+    fun `finds arch folders in static framework`(
         cocoaVersion: String
     ) {
         val project = ProjectBuilder.builder().build()
@@ -53,7 +53,7 @@ class SentryFrameworkArchitectureTest {
                 }
             }
         }
-        val frameworkDir = downloadAndUnzip(cocoaVersion)
+        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic = true)
         val xcFramework = File(frameworkDir, "Sentry.xcframework")
 
         val downloadedArchNames =
@@ -72,14 +72,68 @@ class SentryFrameworkArchitectureTest {
         }
     }
 
-    private fun downloadAndUnzip(cocoaVersion: String): File {
+    @ParameterizedTest(name = "Test architecture name compatibility with Cocoa Version {0} in dynamic framework")
+    @MethodSource("cocoaVersions")
+    fun `finds arch folders in dynamic framework`(
+        cocoaVersion: String
+    ) {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply {
+            apply("org.jetbrains.kotlin.multiplatform")
+            apply("io.sentry.kotlin.multiplatform.gradle")
+        }
+
+        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
+        kmpExtension.apply {
+            listOf(
+                iosX64(),
+                iosArm64(),
+                iosSimulatorArm64(),
+                macosArm64(),
+                macosX64(),
+                watchosX64(),
+                watchosArm32(),
+                watchosSimulatorArm64(),
+                tvosX64(),
+                tvosArm64(),
+                tvosSimulatorArm64()
+            ).forEach {
+                it.binaries.framework {
+                    baseName = "shared"
+                    isStatic = false
+                }
+            }
+        }
+        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic = false)
+        val xcFramework = File(frameworkDir, "Sentry-Dynamic.xcframework")
+
+        val downloadedArchNames =
+            xcFramework.listFiles()?.map { it.name } ?: throw IllegalStateException("No archs found")
+
+        kmpExtension.appleTargets().forEach {
+            val mappedArchNames = it.toSentryFrameworkArchitecture()
+            val foundMatch = mappedArchNames.any { mappedArchName ->
+                downloadedArchNames.contains(mappedArchName)
+            }
+
+            assert(foundMatch) {
+                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${xcFramework.listFiles()
+                    ?.map { file -> file.name }}"
+            }
+        }
+    }
+
+
+    private fun downloadAndUnzip(cocoaVersion: String, isStatic: Boolean): File {
         val tempDir = Files.createTempDirectory("sentry-cocoa-test").toFile()
         tempDir.deleteOnExit()
 
-        val targetFile = tempDir.resolve("Sentry.xcframework.zip")
-        val downloadLink =
-            if (cocoaVersion == "latest") "https://github.com/getsentry/sentry-cocoa/releases/latest/download/Sentry.xcframework.zip" else "https://github.com/getsentry/sentry-cocoa/releases/download/$cocoaVersion/Sentry.xcframework.zip"
+        val targetFile = tempDir.resolve("Framework.zip")
 
+        // Download
+        val xcFrameworkZip = if (isStatic) "Sentry.xcframework.zip" else "Sentry-Dynamic.xcframework.zip"
+        val downloadLink =
+            if (cocoaVersion == "latest") "https://github.com/getsentry/sentry-cocoa/releases/latest/download/$xcFrameworkZip" else "https://github.com/getsentry/sentry-cocoa/releases/download/$cocoaVersion/$xcFrameworkZip"
         val url = URL(downloadLink)
         url.openStream().use { input ->
             Files.copy(
@@ -89,6 +143,7 @@ class SentryFrameworkArchitectureTest {
             )
         }
 
+        // Unzip
         ZipFile(targetFile).use { zip ->
             zip.entries().asSequence().forEach { entry ->
                 val entryFile = File(tempDir, entry.name)
