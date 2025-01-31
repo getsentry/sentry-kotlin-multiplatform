@@ -20,7 +20,7 @@ abstract class LinkerExtension @Inject constructor(project: Project) {
      *
      * The path must:
      * 1. Point directly to the .xcframework folder
-     * 2. The .xcframework folder needs to be either `Sentry.xcframework` (static) or `Sentry-Dynamic.xcframework`
+     * 2. The .xcframework folder needs to be either `Sentry.xcframework` or `Sentry-Dynamic.xcframework`
      *
      * ### Usage Example:
      * ```kotlin
