@@ -96,6 +96,9 @@ internal class FrameworkPathResolver(
         }
     }
 
+    /**
+     * Fallback method for fetching paths
+     */
     private fun getFrameworkPath(
         type: FrameworkType,
         derivedData: String,
@@ -164,14 +167,17 @@ internal class FrameworkLinker(
     private val frameworkNotFoundMessage = """
         Failed to find Sentry Cocoa framework. Steps to resolve:
         
-        1. Install via SPM or download the framework manually
+        1. Install Sentry Cocoa via SPM in Xcode
         2. Verify framework exists in Xcode's DerivedData folder:
            - Static: Sentry.xcframework
            - Dynamic: Sentry-Dynamic.xcframework
-        3. Either:
-           a) Set explicit path in build.gradle.kts:
-              sentryKmp { frameworkPath.set("path/to/framework") }
-           b) Configure Xcode project path in sentryKmp.xcodeprojPath
+           
+        If problem persists consider setting explicit path in build.gradle.kts:
+        sentryKmp { 
+            linker {
+                frameworkPath.set("path/to/framework") 
+            }
+        }
         
         More details: https://docs.sentry.io/platforms/apple/install/
     """.trimIndent()
@@ -225,8 +231,6 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = b
             add("watchos-arm64_i386_x86_64-simulator")
             add("watchos-arm64_i386_x86_64-simulator")
         }
-
-        else -> emptySet<String>()
     }
 }
 
