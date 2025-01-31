@@ -75,7 +75,6 @@ abstract class FrameworkPathValueSource : ValueSource<String?, FrameworkPathValu
         execOperations.exec {
             it.commandLine(
                 "bash", "-c",
-                // Use the full path (replace ~ with $HOME) and escape quotes correctly
                 "find \"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\" " +
                         "-name $xcFrameworkName " +
                         "-exec stat -f \"%m %N\" {} \\; | " +

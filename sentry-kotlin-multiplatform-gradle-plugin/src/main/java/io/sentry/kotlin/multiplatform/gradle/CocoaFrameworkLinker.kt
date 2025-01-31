@@ -87,11 +87,12 @@ internal class FrameworkPathResolver(
     private fun validateCustomPath(path: String) {
         if (!File(path).exists()) {
             throw FrameworkLinkingException(
-                "Custom framework path not found: $path\n" +
-                        "Verify the path ends with either:\n" +
-                        "- Sentry.xcframework (static)\n" +
-                        "- Sentry-Dynamic.xcframework (dynamic)"
+                "Custom framework path not found or does not exist: $path"
             )
+        }
+
+        if (path.isStaticFrameworkPath().not() && path.isDynamicFrameworkPath().not()) {
+            throw FrameworkLinkingException("Invalid framework at $path - path must end with Sentry.xcframework or Sentry-Dynamic.xcframework")
         }
     }
 
