@@ -178,8 +178,6 @@ internal class FrameworkLinker(
                 frameworkPath.set("path/to/framework") 
             }
         }
-        
-        More details: https://docs.sentry.io/platforms/apple/install/
     """.trimIndent()
 }
 
