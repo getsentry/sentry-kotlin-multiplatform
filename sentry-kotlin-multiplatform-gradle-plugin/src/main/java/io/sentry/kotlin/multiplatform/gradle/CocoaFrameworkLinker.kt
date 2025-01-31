@@ -267,7 +267,7 @@ internal fun KotlinMultiplatformExtension.appleTargets() =
         it.konanTarget.family.isAppleFamily
     }
 
-internal enum class FrameworkType {
+enum class FrameworkType {
     STATIC,
     DYNAMIC
 }
