@@ -1,7 +1,13 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.mockk.every
+import io.mockk.mockk
+import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.KonanTarget
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -66,8 +72,10 @@ class SentryFrameworkArchitectureTest {
             }
 
             assert(foundMatch) {
-                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${xcFramework.listFiles()
-                    ?.map { file -> file.name }}"
+                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
+                    xcFramework.listFiles()
+                        ?.map { file -> file.name }
+                }"
             }
         }
     }
@@ -117,12 +125,28 @@ class SentryFrameworkArchitectureTest {
             }
 
             assert(foundMatch) {
-                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${xcFramework.listFiles()
-                    ?.map { file -> file.name }}"
+                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
+                    xcFramework.listFiles()
+                        ?.map { file -> file.name }
+                }"
             }
         }
     }
 
+    @Test
+    fun `returns empty list if target is unsupported`() {
+        val unsupportedTarget = mockk<KotlinNativeTarget>()
+        every { unsupportedTarget.name } returns "unsupported"
+        every { unsupportedTarget.konanTarget } returns mockk {
+            every { family } returns mockk {
+                every { isAppleFamily } returns true
+            }
+        }
+
+        assert(unsupportedTarget.toSentryFrameworkArchitecture().isEmpty()) {
+            "Expected empty list for unsupported target"
+        }
+    }
 
     private fun downloadAndUnzip(cocoaVersion: String, isStatic: Boolean): File {
         val tempDir = Files.createTempDirectory("sentry-cocoa-test").toFile()
@@ -162,5 +186,11 @@ class SentryFrameworkArchitectureTest {
 
         targetFile.delete()
         return tempDir
+    }
+}
+
+private class FakeTarget(project: Project, konanTarget: KonanTarget) : KotlinNativeTarget(project, konanTarget) {
+    override fun getName(): String {
+        return "fake"
     }
 }

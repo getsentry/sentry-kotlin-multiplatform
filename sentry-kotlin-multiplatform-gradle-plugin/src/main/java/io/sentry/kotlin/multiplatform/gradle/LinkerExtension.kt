@@ -17,6 +17,24 @@ abstract class LinkerExtension @Inject constructor(project: Project) {
     /**
      * Path to the framework that will be linked.
      * Takes precedence over [xcodeprojPath] if both are set.
+     *
+     * The path must:
+     * 1. Point directly to the .xcframework folder
+     * 2. The .xcframework folder needs to be either `Sentry.xcframework` (static) or `Sentry-Dynamic.xcframework`
+     *
+     * ### Usage Example:
+     * ```kotlin
+     * sentryKmp {
+     *     frameworkPath.set(
+     *         "path/to/Sentry.xcframework" // Static framework
+     *         // or
+     *         "path/to/Sentry-Dynamic.xcframework" // Dynamic framework
+     *     )
+     * }
+     * ```
+     *
+     * ### Typical Locations:
+     *   `~/Library/Developer/Xcode/DerivedData/{PROJECT}/SourcePackages/artifacts/sentry-cocoa`
      */
     val frameworkPath: Property<String> = objects.property(String::class.java)
 }
