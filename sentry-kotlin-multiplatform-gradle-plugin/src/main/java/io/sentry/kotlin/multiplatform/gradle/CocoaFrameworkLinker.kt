@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinNativeBinaryContainer
@@ -175,15 +174,6 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = b
             add("watchos-arm64_i386_x86_64-simulator")
         }
     }
-}
-
-internal fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String? {
-    val xcodeprojPath = customXcodeprojPath ?: findXcodeprojFile(rootDir)?.absolutePath
-    ?: throw GradleException("Xcode project file not found")
-
-    return providers.of(DerivedDataPathValueSource::class.java) {
-        it.parameters.xcodeprojPath.set(xcodeprojPath)
-    }.get()
 }
 
 /**
