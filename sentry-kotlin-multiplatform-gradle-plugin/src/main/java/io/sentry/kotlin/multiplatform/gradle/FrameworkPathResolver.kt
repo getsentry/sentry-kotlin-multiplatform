@@ -56,7 +56,7 @@ sealed interface FrameworkResolutionStrategy {
 }
 
 /**
- * Handles the custom framework paths set by the user. This should generally be executed first.
+ * Finds the framework path based on the custom framework paths set by the user. This should generally be executed first.
  */
 class CustomPathStrategy(
     private val project: Project,
@@ -90,6 +90,13 @@ class CustomPathStrategy(
     }
 }
 
+/**
+ * Finds framework paths based on the derived data path.
+ *
+ * This strategy prioritizes:
+ * 1. A user-specified Xcode project path via [LinkerExtension].
+ * 2. An auto-found Xcode project in the root directory. (mainly works for mono repo)
+ */
 class DerivedDataStrategy(
     private val project: Project,
 ) : FrameworkResolutionStrategy {
@@ -98,9 +105,7 @@ class DerivedDataStrategy(
     override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         project.logger.lifecycle("Resolving Sentry Cocoa framework paths using derived data path")
 
-        // First priority: User-specified xcodeproj path
         val xcodeprojSetByUser = linker.xcodeprojPath.orNull?.takeIf { it.isNotEmpty() }
-        // Second priority: Auto-discovered xcodeproj in project root
         val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile2(project.rootDir)?.absolutePath
 
         val derivedDataPath = foundXcodeproj?.let { path ->
@@ -146,6 +151,16 @@ class DerivedDataStrategy(
     }
 }
 
+/**
+ * Performs a manual search for Sentry Cocoa frameworks using system tools.
+ *
+ * This strategy:
+ * - Searches the DerivedData for valid framework paths
+ * - Returns first validated paths found for either static or dynamic frameworks
+ *
+ * If multiple paths were found for a single framework type, the most recently used is chosen.
+ * See [ManualFrameworkPathSearchValueSource] for details.
+ */
 class ManualSearchStrategy(
     private val project: Project,
 ) : FrameworkResolutionStrategy {
@@ -223,5 +238,4 @@ class FrameworkPathResolver(
             )
         }
     }
-
 }
