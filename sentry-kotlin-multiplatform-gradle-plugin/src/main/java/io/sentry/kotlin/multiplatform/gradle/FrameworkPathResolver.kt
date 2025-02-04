@@ -223,7 +223,7 @@ class FrameworkPathResolver(
 
     companion object {
         /**
-         * Resolution strategies for finding the framework path
+         * Default resolution strategies for finding the Sentry Cocoa framework path.
          *
          * The order of resolution strategies matters, as the framework path will be resolved by the first successful strategy
          * Specifically here Custom Path will be checked first, if that fails then it is followed by the Derived Data strategy etc...
