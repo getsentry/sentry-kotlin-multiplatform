@@ -2,11 +2,9 @@ package io.sentry.kotlin.multiplatform.gradle
 
 import io.mockk.every
 import io.mockk.mockk
-import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -186,11 +184,5 @@ class SentryFrameworkArchitectureTest {
 
         targetFile.delete()
         return tempDir
-    }
-}
-
-private class FakeTarget(project: Project, konanTarget: KonanTarget) : KotlinNativeTarget(project, konanTarget) {
-    override fun getName(): String {
-        return "fake"
     }
 }

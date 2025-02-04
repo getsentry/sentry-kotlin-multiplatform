@@ -14,7 +14,6 @@ import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayOutputStream
 
 class DerivedDataPathTest {
-
     private lateinit var valueSource: DerivedDataPathValueSource
     private lateinit var execOperations: ExecOperations
     private lateinit var parameters: DerivedDataPathValueSource.Parameters

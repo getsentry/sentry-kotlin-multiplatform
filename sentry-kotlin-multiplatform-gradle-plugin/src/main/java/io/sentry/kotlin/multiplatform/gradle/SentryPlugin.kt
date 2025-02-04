@@ -8,7 +8,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.konan.target.HostManager
-import org.slf4j.LoggerFactory
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -55,16 +54,24 @@ class SentryPlugin : Plugin<Project> {
                 // If the user is not using the cocoapods plugin, linking to the framework is not
                 // automatic so we have to configure it in the plugin.
                 if (!hasCocoapodsPlugin) {
-                    CocoaFrameworkLinker(project, logger).configure(sentryExtension.linker)
+                    logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
+
+                    val kmpExtension =
+                        extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
+                    val appleTargets = kmpExtension?.appleTargets()?.toList()
+                        ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
+
+                    CocoaFrameworkLinker(
+                        logger = logger,
+                        pathResolver = FrameworkPathResolver(project),
+                        binaryLinker = FrameworkLinker(logger),
+                        HostManager.hostIsMac
+                    ).configure(
+                        appleTargets,
+                    )
                 }
             }
         }
-
-    companion object {
-        internal val logger by lazy {
-            LoggerFactory.getLogger(SentryPlugin::class.java)
-        }
-    }
 }
 
 internal fun Project.installSentryForKmp(

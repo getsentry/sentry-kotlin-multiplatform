@@ -8,115 +8,59 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinNativeBinaryContainer
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
-import org.jetbrains.kotlin.konan.target.HostManager
 import java.io.File
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
  *
  * Resolves framework paths and applies necessary linker options to both test and framework binaries.
-*/
+ */
 class CocoaFrameworkLinker(
-    private val project: Project,
-    private val logger: Logger
+    private val logger: Logger,
+    private val pathResolver: FrameworkPathResolver,
+    private val binaryLinker: FrameworkLinker,
+    private val hostIsMac: Boolean
 ) {
-    private val pathResolver = FrameworkPathResolver(project)
-    private val binaryLinker = FrameworkLinker(logger)
-
-    fun configure(extension: LinkerExtension) {
-        val kmpExtension =
-            project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension ?: run {
-                logger.info("Skipping Apple framework linking: Kotlin Multiplatform extension not found")
-                return
-            }
-
-        if (!HostManager.hostIsMac) {
+    fun configure(
+        appleTargets: List<KotlinNativeTarget>,
+    ) {
+        if (!hostIsMac) {
             logger.info("Skipping Apple framework linking: Requires macOS host")
             return
         }
 
-        kmpExtension.appleTargets().all { target ->
+        appleTargets.forEach { target ->
             try {
-                processTarget(target, extension)
+                logger.lifecycle(
+                    "Start resolving cocoa framework paths for target: ${target.name}"
+                )
+                processTarget(target)
             } catch (e: Exception) {
                 throw GradleException("Failed to configure ${target.name}: ${e.message}", e)
             }
         }
     }
 
-    private fun processTarget(target: KotlinNativeTarget, linker: LinkerExtension) {
+    private fun processTarget(target: KotlinNativeTarget) {
         val architectures =
             target.toSentryFrameworkArchitecture().takeIf { it.isNotEmpty() } ?: run {
                 logger.warn("Skipping target ${target.name}: Unsupported architecture")
                 return
             }
 
-        val (dynamicPath, staticPath) = pathResolver.resolvePaths(linker, architectures)
+        val (dynamicPath, staticPath) = pathResolver.resolvePaths(architectures)
         binaryLinker.configureBinaries(target.binaries, dynamicPath, staticPath)
     }
 }
 
-internal class FrameworkPathResolver(
-    private val project: Project
-) {
-    fun resolvePaths(
-        linker: LinkerExtension,
-        architectures: Set<String>
-    ): Pair<String?, String?> {
-        val customPath = linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }
-        val derivedData = linker.xcodeprojPath.orNull?.let(project::findDerivedDataPath)
-            ?: project.findDerivedDataPath(null)
-
-        return customPath?.let { path ->
-            validateCustomPath(path)
-            when {
-                path.isStaticFrameworkPath() -> null to path
-                path.isDynamicFrameworkPath() -> path to null
-                else -> throw FrameworkLinkingException(
-                    "Invalid framework name at $path - must be Sentry.xcframework or Sentry-Dynamic.xcframework"
-                )
-            }
-        } ?: run {
-            Pair(
-                getFrameworkPath(FrameworkType.DYNAMIC, derivedData, architectures),
-                getFrameworkPath(FrameworkType.STATIC, derivedData, architectures)
-            )
-        }
-    }
-
-    private fun validateCustomPath(path: String) {
-        if (!File(path).exists()) {
-            throw FrameworkLinkingException(
-                "Custom framework path not found or does not exist: $path"
-            )
-        }
-
-        if (path.isStaticFrameworkPath().not() && path.isDynamicFrameworkPath().not()) {
-            throw FrameworkLinkingException("Invalid framework at $path - path must end with Sentry.xcframework or Sentry-Dynamic.xcframework")
-        }
-    }
-
-    /**
-     * Fallback method for fetching paths
-     */
-    private fun getFrameworkPath(
-        type: FrameworkType,
-        derivedData: String,
-        architectures: Set<String>
-    ) = project.providers.of(FrameworkPathValueSource::class.java) {
-        it.parameters.frameworkType.set(type)
-        it.parameters.derivedDataPath.set(derivedData)
-        it.parameters.frameworkArchitectures.set(architectures)
-    }.orNull
-
-    private fun String.isStaticFrameworkPath() = endsWith("Sentry.xcframework")
-    private fun String.isDynamicFrameworkPath() = endsWith("Sentry-Dynamic.xcframework")
-}
-
-internal class FrameworkLinker(
+class FrameworkLinker(
     private val logger: Logger
 ) {
-    fun configureBinaries(binaries: KotlinNativeBinaryContainer, dynamicPath: String?, staticPath: String?) {
+    fun configureBinaries(
+        binaries: KotlinNativeBinaryContainer,
+        dynamicPath: String?,
+        staticPath: String?
+    ) {
         validatePaths(dynamicPath, staticPath)
 
         binaries.all { binary ->
@@ -146,6 +90,7 @@ internal class FrameworkLinker(
     }
 
     private fun linkTestBinary(binary: TestExecutable, path: String) {
+        // Linking in test binaries works with both dynamic and static framework
         binary.linkerOpts("-rpath", path, "-F$path")
         logger.info("Linked Sentry Cocoa framework to test binary ${binary.name}")
     }
@@ -232,7 +177,7 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = b
     }
 }
 
-internal fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String {
+internal fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String? {
     val xcodeprojPath = customXcodeprojPath ?: findXcodeprojFile(rootDir)?.absolutePath
     ?: throw GradleException("Xcode project file not found")
 

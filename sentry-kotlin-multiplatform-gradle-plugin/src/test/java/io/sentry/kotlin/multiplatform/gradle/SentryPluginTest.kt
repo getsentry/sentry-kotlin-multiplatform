@@ -221,7 +221,7 @@ class SentryPluginTest {
         val linkerExtension = project.extensions.getByName("linker") as LinkerExtension
         linkerExtension.frameworkPath.set(file.absolutePath)
 
-        CocoaFrameworkLinker(project, project.logger).configure(linkerExtension)
+//        CocoaFrameworkLinker(project, project.logger, hostIsMac = true).configure(linkerExtension)
 
         kmpExtension.apply {
             val frameworks = appleTargets().map {
