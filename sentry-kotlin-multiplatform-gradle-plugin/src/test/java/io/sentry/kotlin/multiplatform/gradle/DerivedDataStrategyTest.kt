@@ -4,6 +4,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -21,7 +22,7 @@ class DerivedDataStrategyTest {
         fixture = Fixture()
     }
 
-    @ParameterizedTest(name = "should return static path for architecture {0}")
+    @ParameterizedTest(name = "resolve static path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve static path`(
         expectedArchitecture: String,
@@ -48,7 +49,8 @@ class DerivedDataStrategyTest {
         @TempDir dir: Path
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
-        val xcframeworkPath = dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework")
+        val xcframeworkPath =
+            dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework")
         val xcframeworkDirectory = Files.createDirectories(xcframeworkPath)
         val archDirectory = Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture))
 
@@ -61,31 +63,27 @@ class DerivedDataStrategyTest {
         assertNull(paths.static)
     }
 
-    @ParameterizedTest(name = "should return dynamic path for architecture {0}")
-    @MethodSource("architectureMappingProvider")
+    @Test
     fun `if xcodeproj is null and find xcode project is not successful then return NONE`(
-        expectedArchitecture: String,
         @TempDir dir: Path
     ) {
         val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
             dir.toFile().absolutePath
         }
 
-        val paths = sut.resolvePaths(expectedArchitecture)
+        val paths = sut.resolvePaths("doesnt matter")
         assertEquals(FrameworkPaths.NONE, paths)
     }
 
-    @ParameterizedTest(name = "should return dynamic path for architecture {0}")
-    @MethodSource("architectureMappingProvider")
+    @Test
     fun `if xcodeproj is not null and find xcode project is not successful then return NONE`(
-        expectedArchitecture: String,
         @TempDir dir: Path
     ) {
         val sut = fixture.getSut("some invalid path", rootDirPath = dir.toFile().absolutePath) { _: String ->
             dir.toFile().absolutePath
         }
 
-        val paths = sut.resolvePaths(expectedArchitecture)
+        val paths = sut.resolvePaths("doesnt matter")
         assertEquals(FrameworkPaths.NONE, paths)
     }
 
