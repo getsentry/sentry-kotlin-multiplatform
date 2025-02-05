@@ -67,6 +67,8 @@ class ManualSearchStrategyTest {
         val xcframeworkPath1 = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
         Files.createDirectory(xcframeworkPath1.resolve(expectedArchitecture))
 
+        // sleep so both directories have different timestamps.
+        // This needs to be in seconds since the captured timestamps are not precise enough
         sleep(1000)
 
         val xcframeworkPath2 = dir.resolve("more/recent/Sentry.xcframework").createDirectories()
