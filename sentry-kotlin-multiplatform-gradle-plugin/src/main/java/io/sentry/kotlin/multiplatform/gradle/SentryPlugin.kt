@@ -51,24 +51,25 @@ class SentryPlugin : Plugin<Project> {
                     }
                 }
 
-                // If the user is not using the cocoapods plugin, linking to the framework is not
-                // automatic so we have to configure it in the plugin.
-                if (!hasCocoapodsPlugin) {
-                    logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
+                if (HostManager.hostIsMac) {
+                    // If the user is not using the cocoapods plugin, linking to the framework is not
+                    // automatic so we have to configure it in the plugin.
+                    if (!hasCocoapodsPlugin) {
+                        logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
 
-                    val kmpExtension =
-                        extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-                    val appleTargets = kmpExtension?.appleTargets()?.toList()
-                        ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
+                        val kmpExtension =
+                            extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
+                        val appleTargets = kmpExtension?.appleTargets()?.toList()
+                            ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
 
-                    CocoaFrameworkLinker(
-                        logger = logger,
-                        pathResolver = FrameworkPathResolver(project),
-                        binaryLinker = FrameworkLinker(logger),
-                        HostManager.hostIsMac
-                    ).configure(
-                        appleTargets
-                    )
+                        CocoaFrameworkLinker(
+                            logger = logger,
+                            pathResolver = FrameworkPathResolver(project),
+                            binaryLinker = FrameworkLinker(logger),
+                        ).configure(
+                            appleTargets
+                        )
+                    }
                 }
             }
         }
@@ -88,9 +89,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                    "Cannot auto install in commonMain. " +
-                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                    "supports (apple, jvm, android) and add the dependency manually."
+                        "Cannot auto install in commonMain. " +
+                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                        "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }

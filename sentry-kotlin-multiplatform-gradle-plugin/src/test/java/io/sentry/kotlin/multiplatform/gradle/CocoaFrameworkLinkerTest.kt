@@ -23,13 +23,6 @@ class CocoaFrameworkLinkerTest {
     }
 
     @Test
-    fun `throws if host is not macOS`() {
-        val sut = fixture.getSut(false)
-
-        assertThrows<FrameworkLinkingException> { sut.configure(emptyList()) }
-    }
-
-    @Test
     fun `framework linking succeeds for static Framework binary`() {
         val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val appleTargets = listOf(
@@ -51,7 +44,7 @@ class CocoaFrameworkLinkerTest {
             }
         }
 
-        val sut = fixture.getSut(true)
+        val sut = fixture.getSut()
         sut.configure(appleTargets)
 
         appleTargets.forEach { target ->
@@ -83,7 +76,7 @@ class CocoaFrameworkLinkerTest {
             }
         }
 
-        val sut = fixture.getSut(true)
+        val sut = fixture.getSut()
         sut.configure(appleTargets)
 
         appleTargets.forEach { target ->
@@ -115,7 +108,7 @@ class CocoaFrameworkLinkerTest {
             }
         }
 
-        val sut = fixture.getSut(true)
+        val sut = fixture.getSut()
         sut.configure(appleTargets)
 
         // both dynamic and static frameworks can be used for linkin in test executables
@@ -138,12 +131,11 @@ class CocoaFrameworkLinkerTest {
             }
         }
 
-        fun getSut(hostIsMac: Boolean): CocoaFrameworkLinker {
+        fun getSut(): CocoaFrameworkLinker {
             return CocoaFrameworkLinker(
                 project.logger,
                 FrameworkPathResolver(project, strategies = listOf(FakeStrategy())),
                 FrameworkLinker(project.logger),
-                hostIsMac
             )
         }
     }

@@ -17,15 +17,8 @@ class CocoaFrameworkLinker(
     private val logger: Logger,
     private val pathResolver: FrameworkPathResolver,
     private val binaryLinker: FrameworkLinker,
-    private val hostIsMac: Boolean
 ) {
-    fun configure(
-        appleTargets: List<KotlinNativeTarget>
-    ) {
-        if (!hostIsMac) {
-            throw FrameworkLinkingException("Sentry Cocoa framework linking requires a macOS host")
-        }
-
+    fun configure(appleTargets: List<KotlinNativeTarget>) {
         appleTargets.forEach { target ->
             try {
                 logger.lifecycle(
