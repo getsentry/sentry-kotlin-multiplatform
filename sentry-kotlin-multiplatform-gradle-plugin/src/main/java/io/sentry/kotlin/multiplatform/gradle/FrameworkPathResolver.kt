@@ -173,9 +173,6 @@ class ManualSearchStrategy(
                 }
             }
 
-        println("static: ${staticValueSource.orNull}")
-        println("dynamic: ${dynamicValueSource.orNull}")
-
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicValueSource.orNull,
             staticBasePath = staticValueSource.orNull,

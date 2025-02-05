@@ -9,12 +9,14 @@ import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.lang.Thread.sleep
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
 import java.time.Instant
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
+import kotlin.io.path.setLastModifiedTime
 
 class ManualSearchStrategyTest {
     private lateinit var fixture: Fixture
@@ -62,10 +64,10 @@ class ManualSearchStrategyTest {
         expectedArchitecture: String,
         @TempDir dir: Path
     ) {
-        val temp = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
-        // Modifying this path so it's modified longer ago than the second path
-        val xcframeworkPath1 = Files.setLastModifiedTime(temp, FileTime.from(Instant.now().minusSeconds(5)))
+        val xcframeworkPath1 = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
         Files.createDirectory(xcframeworkPath1.resolve(expectedArchitecture))
+
+        sleep(1000)
 
         val xcframeworkPath2 = dir.resolve("more/recent/Sentry.xcframework").createDirectories()
         val archDirectory2 = Files.createDirectory(xcframeworkPath2.resolve(expectedArchitecture))
