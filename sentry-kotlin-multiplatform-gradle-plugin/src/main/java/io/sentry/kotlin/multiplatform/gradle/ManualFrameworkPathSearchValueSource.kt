@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream
 
 abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, ManualFrameworkPathSearchValueSource.Parameters> {
     interface Parameters : ValueSourceParameters {
-        val frameworkArchitectures: SetProperty<String>
+        val frameworkArchitecture: Property<String>
         val frameworkType: Property<FrameworkType>
     }
 
@@ -17,16 +17,14 @@ abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, Manua
     abstract val execOperations: ExecOperations
 
     override fun obtain(): String? {
-        val frameworkArchitectures = parameters.frameworkArchitectures.get()
+        val frameworkArchitectures = parameters.frameworkArchitecture.get()
         val frameworkType = parameters.frameworkType.get()
 
-        return frameworkArchitectures.firstNotNullOfOrNull { architecture ->
-            findFrameworkWithFindCommand(frameworkType, architecture)
-        }
+        return findFrameworkWithFindCommand(frameworkType, frameworkArchitectures)
     }
 
     /**
-     * Returns valid framework if exists with with the find command.
+     * Returns valid framework if exists with the find command.
      * If the command finds multiple frameworks, it will return the one who has been modified or used most recently.
      */
     private fun findFrameworkWithFindCommand(

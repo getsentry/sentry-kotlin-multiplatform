@@ -18,23 +18,17 @@ data class FrameworkPaths(
         fun createValidated(
             dynamicBasePath: String? = null,
             staticBasePath: String? = null,
-            architectures: Set<String>,
+            architecture: String,
             pathExists: (String) -> Boolean = { path -> File(path).exists() }
         ): FrameworkPaths {
-            // Find first valid dynamic path
             val dynamicPath = dynamicBasePath?.let { basePath ->
-                architectures.firstNotNullOfOrNull { arch ->
-                    val path = "$basePath/$arch"
-                    path.takeIf { pathExists(it) }
-                }
+                val path = "$basePath/$architecture"
+                path.takeIf { pathExists(it) }
             }
 
-            // Find first valid static path
             val staticPath = staticBasePath?.let { basePath ->
-                architectures.firstNotNullOfOrNull { arch ->
-                    val path = "$basePath/$arch"
-                    path.takeIf { pathExists(it) }
-                }
+                val path = "$basePath/$architecture"
+                path.takeIf { pathExists(it) }
             }
 
             return when {
@@ -55,32 +49,30 @@ data class FrameworkPaths(
 }
 
 interface FrameworkResolutionStrategy {
-    fun resolvePaths(
-        architectures: Set<String>,
-    ): FrameworkPaths
+    fun resolvePaths(architecture: String): FrameworkPaths
 }
 
 /**
  * Finds the framework path based on the custom framework paths set by the user. This should generally be executed first.
  */
 class CustomPathStrategy(
-    private val project: Project,
+    project: Project,
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
-    // In this function we don't really distinguish between static and dynamic framework
+    // In this function we don't distinguish between static and dynamic frameworks
     // We trust that the user knows the distinction if they purposefully override the framework path
-    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
+    override fun resolvePaths(architecture: String): FrameworkPaths {
         return linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }?.let { basePath ->
             when {
                 basePath.endsWith("Sentry.xcframework") -> FrameworkPaths.createValidated(
                     staticBasePath = basePath,
-                    architectures = architectures
+                    architecture = architecture
                 )
 
                 basePath.endsWith("Sentry-Dynamic.xcframework") -> FrameworkPaths.createValidated(
                     dynamicBasePath = basePath,
-                    architectures = architectures
+                    architecture = architecture
                 )
 
                 else -> FrameworkPaths.NONE
@@ -101,7 +93,7 @@ class DerivedDataStrategy(
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
-    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
+    override fun resolvePaths(architecture: String): FrameworkPaths {
         val xcodeprojSetByUser = linker.xcodeprojPath.orNull?.takeIf { it.isNotEmpty() }
         val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile(project.rootDir)?.absolutePath
 
@@ -119,7 +111,7 @@ class DerivedDataStrategy(
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicBasePath,
             staticBasePath = staticBasePath,
-            architectures = architectures
+            architecture = architecture
         )
     }
 
@@ -161,22 +153,22 @@ class DerivedDataStrategy(
 class ManualSearchStrategy(
     private val project: Project,
 ) : FrameworkResolutionStrategy {
-    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
+    override fun resolvePaths(architecture: String): FrameworkPaths {
         val dynamicValueSource =
             project.providers.of(ManualFrameworkPathSearchValueSource::class.java) {
                 it.parameters.frameworkType.set(FrameworkType.DYNAMIC)
-                it.parameters.frameworkArchitectures.set(architectures)
+                it.parameters.frameworkArchitecture.set(architecture)
             }
         val staticValueSource =
             project.providers.of(ManualFrameworkPathSearchValueSource::class.java) {
                 it.parameters.frameworkType.set(FrameworkType.STATIC)
-                it.parameters.frameworkArchitectures.set(architectures)
+                it.parameters.frameworkArchitecture.set(architecture)
             }
 
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicValueSource.orNull,
             staticBasePath = staticValueSource.orNull,
-            architectures = architectures
+            architecture = architecture
         )
     }
 }
@@ -186,12 +178,12 @@ class FrameworkPathResolver(
     private val strategies: List<FrameworkResolutionStrategy> = defaultStrategies(project),
 ) {
     fun resolvePaths(
-        architectures: Set<String>
+        architecture: String
     ): FrameworkPaths {
         strategies.forEach { strategy ->
             try {
                 project.logger.lifecycle("Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}")
-                val result = strategy.resolvePaths(architectures)
+                val result = strategy.resolvePaths(architecture)
                 if (result != FrameworkPaths.NONE) {
                     project.logger.lifecycle("Found Sentry Cocoa framework paths using ${strategy::class.simpleName}")
                     return result

@@ -29,7 +29,7 @@ class FrameworkPathResolverTest {
         val strategy2 = mockk<FrameworkResolutionStrategy>()
 
         val sut = fixture.getSut(listOf(strategy1, strategy2))
-        sut.resolvePaths(setOf("arch"))
+        sut.resolvePaths("test")
 
         verify(exactly = 0) { strategy2.resolvePaths(any()) }
     }
@@ -41,7 +41,7 @@ class FrameworkPathResolverTest {
         every { mockStrategy3.resolvePaths(any()) } returns FrameworkPaths(static = "valid")
 
         val sut = fixture.getSut(listOf(mockStrategy1, mockStrategy2, mockStrategy3))
-        val result = sut.resolvePaths(setOf("arch"))
+        val result = sut.resolvePaths("test")
 
         assertEquals("valid", result.static)
     }
@@ -53,7 +53,7 @@ class FrameworkPathResolverTest {
 
         val sut = fixture.getSut(listOf(mockStrategy1, mockStrategy2))
         assertThrows<FrameworkLinkingException> {
-            sut.resolvePaths(setOf("arch"))
+            sut.resolvePaths("test")
         }
 
         verifyOrder {
@@ -67,20 +67,20 @@ class FrameworkPathResolverTest {
         val sut = fixture.getSut(emptyList())
 
         assertThrows<FrameworkLinkingException> {
-            sut.resolvePaths(setOf("arch"))
+            sut.resolvePaths("test")
         }
     }
-}
 
-private class Fixture {
-    fun getSut(strategies: List<FrameworkResolutionStrategy>): FrameworkPathResolver {
-        val project = ProjectBuilder.builder().build()
+    private class Fixture {
+        fun getSut(strategies: List<FrameworkResolutionStrategy>): FrameworkPathResolver {
+            val project = ProjectBuilder.builder().build()
 
-        project.pluginManager.apply {
-            apply("org.jetbrains.kotlin.multiplatform")
-            apply("io.sentry.kotlin.multiplatform.gradle")
+            project.pluginManager.apply {
+                apply("org.jetbrains.kotlin.multiplatform")
+                apply("io.sentry.kotlin.multiplatform.gradle")
+            }
+
+            return FrameworkPathResolver(project, strategies)
         }
-
-        return FrameworkPathResolver(project, strategies)
     }
 }

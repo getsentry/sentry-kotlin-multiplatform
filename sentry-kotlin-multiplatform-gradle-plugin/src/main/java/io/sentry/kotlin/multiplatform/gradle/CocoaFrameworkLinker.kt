@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinNativeBinaryContainer
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
+import java.awt.Frame
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
@@ -34,7 +35,7 @@ class CocoaFrameworkLinker(
                 )
                 processTarget(target)
             } catch (e: Exception) {
-                throw GradleException("Failed to configure ${target.name}: ${e.message}", e)
+                throw FrameworkLinkingException("Failed to configure ${target.name}: ${e.message}", e)
             }
         }
     }
@@ -45,8 +46,10 @@ class CocoaFrameworkLinker(
                 logger.warn("Skipping target ${target.name}: Unsupported architecture")
                 return
             }
-        val (dynamicPath, staticPath) = pathResolver.resolvePaths(architectures)
-        binaryLinker.configureBinaries(target.binaries, dynamicPath, staticPath)
+        val paths: FrameworkPaths = architectures.firstNotNullOf { arch ->
+            pathResolver.resolvePaths(arch).takeIf { it != FrameworkPaths.NONE }
+        }
+        binaryLinker.configureBinaries(target.binaries, paths.dynamic, paths.static)
     }
 }
 
@@ -110,44 +113,34 @@ internal class FrameworkLinkingException(
  *
  * Returns a set of possible architecture names because Sentry Cocoa SDK has changed folder naming
  * across different versions. For example:
- * - iosArm64 -> ["ios-arm64", "ios-arm64_arm64e"]
- * - macosArm64 -> ["macos-arm64_x86_64", "macos-arm64_arm64e_x86_64"]
- * *
+ * - iosArm64 -> [SentryCocoaFrameworkArchitectures.IOS_ARM64]
+ * - macosArm64 -> [SentryCocoaFrameworkArchitectures.MACOS_ARM64_AND_X64]
+ * 
  * @return Set of possible architecture folder names for the given target. Returns empty set if target is not supported.
  */
 internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = buildSet {
     when (name) {
-        "iosSimulatorArm64", "iosX64" -> add("ios-arm64_x86_64-simulator")
-        "iosArm64" -> {
-            add("ios-arm64")
-            add("ios-arm64_arm64e")
-        }
-
-        "macosArm64", "macosX64" -> {
-            add("macos-arm64_x86_64")
-            add("macos-arm64_arm64e_x86_64")
-        }
-
-        "tvosSimulatorArm64", "tvosX64" -> {
-            add("tvos-arm64_x86_64-simulator")
-            add("tvos-arm64_x86_64-simulator")
-        }
-
-        "tvosArm64" -> {
-            add("tvos-arm64")
-            add("tvos-arm64_arm64e")
-        }
-
-        "watchosArm32", "watchosArm64" -> {
-            add("watchos-arm64_arm64_32_armv7k")
-            add("watchos-arm64_arm64_32_arm64e_armv7k")
-        }
-
-        "watchosSimulatorArm64", "watchosX64" -> {
-            add("watchos-arm64_i386_x86_64-simulator")
-            add("watchos-arm64_i386_x86_64-simulator")
-        }
+        "iosSimulatorArm64", "iosX64" -> addAll(SentryCocoaFrameworkArchitectures.IOS_SIMULATOR_AND_X64)
+        "iosArm64" -> addAll(SentryCocoaFrameworkArchitectures.IOS_ARM64)
+        "macosArm64", "macosX64" -> addAll(SentryCocoaFrameworkArchitectures.MACOS_ARM64_AND_X64)
+        "tvosSimulatorArm64", "tvosX64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_SIMULATOR_AND_X64)
+        "tvosArm64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_ARM64)
+        "watchosArm32", "watchosArm64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_ARM)
+        "watchosSimulatorArm64", "watchosX64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_SIMULATOR_AND_X64)
     }
+}
+
+internal object SentryCocoaFrameworkArchitectures {
+    val IOS_SIMULATOR_AND_X64 = setOf("ios-arm64_x86_64-simulator")
+    val IOS_ARM64 = setOf("ios-arm64", "ios-arm64_arm64e")
+    val MACOS_ARM64_AND_X64 = setOf("macos-arm64_x86_64", "macos-arm64_arm64e_x86_64")
+    val TVOS_SIMULATOR_AND_X64 = setOf("tvos-arm64_x86_64-simulator")
+    val TVOS_ARM64 = setOf("tvos-arm64", "tvos-arm64_arm64e")
+    val WATCHOS_ARM = setOf("watchos-arm64_arm64_32_armv7k", "watchos-arm64_arm64_32_arm64e_armv7k")
+    val WATCHOS_SIMULATOR_AND_X64 = setOf("watchos-arm64_i386_x86_64-simulator")
+
+    // Used for tests
+    val all = setOf(IOS_SIMULATOR_AND_X64, IOS_ARM64, MACOS_ARM64_AND_X64, TVOS_SIMULATOR_AND_X64, TVOS_ARM64, WATCHOS_ARM, WATCHOS_SIMULATOR_AND_X64)
 }
 
 internal fun KotlinMultiplatformExtension.appleTargets() =
