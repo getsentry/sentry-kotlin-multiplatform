@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinNativeBinaryContainer
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
-import java.io.File
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
@@ -31,7 +30,7 @@ class CocoaFrameworkLinker(
         appleTargets.forEach { target ->
             try {
                 logger.lifecycle(
-                    "Start resolving cocoa framework paths for target: ${target.name}"
+                    "Start resolving Sentry Cocoa framework paths for target: ${target.name}"
                 )
                 processTarget(target)
             } catch (e: Exception) {
@@ -46,7 +45,6 @@ class CocoaFrameworkLinker(
                 logger.warn("Skipping target ${target.name}: Unsupported architecture")
                 return
             }
-
         val (dynamicPath, staticPath) = pathResolver.resolvePaths(architectures)
         binaryLinker.configureBinaries(target.binaries, dynamicPath, staticPath)
     }
@@ -60,8 +58,6 @@ class FrameworkLinker(
         dynamicPath: String?,
         staticPath: String?
     ) {
-        validatePaths(dynamicPath, staticPath)
-
         binaries.all { binary ->
             when (binary) {
                 is TestExecutable -> linkTestBinary(binary, chooseTestPath(dynamicPath, staticPath))
@@ -80,12 +76,6 @@ class FrameworkLinker(
         dynamic != null -> dynamic
         static != null -> static
         else -> throw FrameworkLinkingException("No valid framework path found for tests")
-    }
-
-    private fun validatePaths(dynamic: String?, static: String?) {
-        if (dynamic == null && static == null) {
-            throw FrameworkLinkingException(frameworkNotFoundMessage)
-        }
     }
 
     private fun linkTestBinary(binary: TestExecutable, path: String) {
@@ -107,22 +97,6 @@ class FrameworkLinker(
         binary.linkerOpts("-F$path")
         logger.info("Linked $type Sentry Cocoa framework to ${binary.name}")
     }
-
-    private val frameworkNotFoundMessage = """
-        Failed to find Sentry Cocoa framework. Steps to resolve:
-        
-        1. Install Sentry Cocoa via SPM in Xcode
-        2. Verify framework exists in Xcode's DerivedData folder:
-           - Static: Sentry.xcframework
-           - Dynamic: Sentry-Dynamic.xcframework
-           
-        If problem persists consider setting explicit path in build.gradle.kts:
-        sentryKmp { 
-            linker {
-                frameworkPath.set("path/to/framework") 
-            }
-        }
-    """.trimIndent()
 }
 
 internal class FrameworkLinkingException(
@@ -176,36 +150,7 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = b
     }
 }
 
-/**
- * Searches for a xcodeproj starting from the root directory. This function will only work for
- * monorepos and if it is not, the user needs to provide the custom path through the
- * [LinkerExtension] configuration.
- */
-internal fun findXcodeprojFile(dir: File): File? {
-    val ignoredDirectories = listOf("build", "DerivedData")
-
-    fun searchDirectory(directory: File): File? {
-        val files = directory.listFiles() ?: return null
-
-        return files.firstNotNullOfOrNull { file ->
-            when {
-                file.name in ignoredDirectories -> null
-                file.extension == "xcodeproj" -> file
-                file.isDirectory -> searchDirectory(file)
-                else -> null
-            }
-        }
-    }
-
-    return searchDirectory(dir)
-}
-
 internal fun KotlinMultiplatformExtension.appleTargets() =
     targets.withType(KotlinNativeTarget::class.java).matching {
         it.konanTarget.family.isAppleFamily
     }
-
-enum class FrameworkType {
-    STATIC,
-    DYNAMIC
-}

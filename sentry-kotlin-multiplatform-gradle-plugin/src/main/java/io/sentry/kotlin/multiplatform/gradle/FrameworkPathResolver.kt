@@ -3,6 +3,11 @@ package io.sentry.kotlin.multiplatform.gradle
 import org.gradle.api.Project
 import java.io.File
 
+enum class FrameworkType {
+    STATIC,
+    DYNAMIC
+}
+
 data class FrameworkPaths(
     val dynamic: String? = null,
     val static: String? = null
@@ -49,7 +54,7 @@ data class FrameworkPaths(
     }
 }
 
-sealed interface FrameworkResolutionStrategy {
+interface FrameworkResolutionStrategy {
     fun resolvePaths(
         architectures: Set<String>,
     ): FrameworkPaths
@@ -67,12 +72,6 @@ class CustomPathStrategy(
     // We trust that the user knows the distinction if they purposefully override the framework path
     override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         return linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }?.let { basePath ->
-            project.logger.lifecycle(
-                "Resolving Sentry Cocoa framework paths using custom path: {} and looking for Sentry architectures: {} within the custom path",
-                basePath,
-                architectures
-            )
-
             when {
                 basePath.endsWith("Sentry.xcframework") -> FrameworkPaths.createValidated(
                     staticBasePath = basePath,
@@ -103,10 +102,8 @@ class DerivedDataStrategy(
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
     override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
-        project.logger.lifecycle("Resolving Sentry Cocoa framework paths using derived data path")
-
         val xcodeprojSetByUser = linker.xcodeprojPath.orNull?.takeIf { it.isNotEmpty() }
-        val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile2(project.rootDir)?.absolutePath
+        val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile(project.rootDir)?.absolutePath
 
         val derivedDataPath = foundXcodeproj?.let { path ->
             project.providers.of(DerivedDataPathValueSource::class.java) {
@@ -131,7 +128,7 @@ class DerivedDataStrategy(
      * monorepos and if it is not, the user needs to provide the custom path through the
      * [LinkerExtension] configuration.
      */
-    internal fun findXcodeprojFile2(dir: File): File? {
+    private fun findXcodeprojFile(dir: File): File? {
         val ignoredDirectories = listOf("build", "DerivedData")
 
         fun searchDirectory(directory: File): File? {
@@ -191,35 +188,42 @@ class FrameworkPathResolver(
     fun resolvePaths(
         architectures: Set<String>
     ): FrameworkPaths {
-        return strategies.asSequence()
-            .mapNotNull { strategy ->
-                try {
-                    val result = strategy.resolvePaths(architectures)
-                    when {
-                        result == FrameworkPaths.NONE -> {
-                            project.logger.debug("Strategy ${strategy::class.simpleName} returned no paths")
-                            null
-                        }
-
-                        else -> {
-                            project.logger.lifecycle("✅ Found Sentry Cocoa framework paths using ${strategy::class.simpleName}")
-                            result
-                        }
-                    }
-                } catch (e: Exception) {
-                    project.logger.debug(
-                        "Strategy ${strategy::class.simpleName} failed: ${e.message}"
-                    )
-                    null
+        strategies.forEach { strategy ->
+            try {
+                project.logger.lifecycle("Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}")
+                val result = strategy.resolvePaths(architectures)
+                if (result != FrameworkPaths.NONE) {
+                    project.logger.lifecycle("Found Sentry Cocoa framework paths using ${strategy::class.simpleName}")
+                    return result
+                } else {
+                    project.logger.debug("Strategy ${strategy::class.simpleName} did not find valid paths")
                 }
+            } catch (e: Exception) {
+                project.logger.warn(
+                    "Strategy ${strategy::class.simpleName} failed due to error: ${e.message}"
+                )
             }
-            .firstOrNull()
-            ?: throw FrameworkLinkingException(
-                "No valid framework paths found. Attempted strategies: ${
-                    strategies.joinToString { it::class.simpleName!! }
-                }"
-            )
+        }
+
+        // If at this point we didn't find a path to the framework, we cannot proceed
+        throw FrameworkLinkingException(frameworkNotFoundMessage)
     }
+
+    private val frameworkNotFoundMessage = """
+        Failed to find Sentry Cocoa framework. Steps to resolve:
+        
+        1. Install Sentry Cocoa via SPM in Xcode
+        2. Verify framework exists in Xcode's DerivedData folder:
+           - If static: Sentry.xcframework
+           - If dynamic: Sentry-Dynamic.xcframework
+           
+        If problem persists consider setting explicit path in build.gradle.kts:
+        sentryKmp { 
+            linker {
+                frameworkPath.set("path/to/Sentry.xcframework") 
+            }
+        }
+    """.trimIndent()
 
     companion object {
         /**

@@ -1,50 +1,86 @@
 package io.sentry.kotlin.multiplatform.gradle
 
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import org.gradle.api.Project
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.mockk.verify
+import io.mockk.verifyOrder
+import org.gradle.internal.impldep.org.junit.Assert.assertEquals
+import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.io.TempDir
-import java.io.File
+import org.junit.jupiter.api.assertThrows
 
-@ExtendWith(MockKExtension::class)
 class FrameworkPathResolverTest {
-    @TempDir
-    lateinit var tempDir: File
-
-    @MockK
-    lateinit var mockLinkerExtension: LinkerExtension
-
-    lateinit var mockProject: Project
-
-    lateinit var resolver: FrameworkPathResolver
+    private val mockStrategy1 = mockk<FrameworkResolutionStrategy>()
+    private val mockStrategy2 = mockk<FrameworkResolutionStrategy>()
+    private val mockStrategy3 = mockk<FrameworkResolutionStrategy>()
+    private lateinit var fixture: Fixture
 
     @BeforeEach
-    fun setup() {
-        mockProject = mockk<Project> {
-            every { providers } returns mockk {
-                every { of(any<Class<DerivedDataPathValueSource>>(), any()) } returns mockk {
-                    every { get() } returns tempDir.resolve("DerivedData").absolutePath
-                }
-            }
-        }
-        resolver = FrameworkPathResolver(mockProject)
+    fun setUp() {
+        fixture = Fixture()
     }
 
     @Test
-    fun `resolves valid static custom path`() {
-        val frameworkDir = File(tempDir, "Sentry.xcframework").apply { mkdir() }
+    fun `does not execute subsequent strategies after first success`() {
+        val strategy1 = mockk<FrameworkResolutionStrategy> {
+            every { resolvePaths(any()) } returns FrameworkPaths(dynamic = "dyn")
+        }
+        val strategy2 = mockk<FrameworkResolutionStrategy>()
 
-        val (dynamic, static) = resolver.resolvePaths(
-            mockLinkerExtension,
-            architectures = setOf("ios-arm64")
-        )
+        val sut = fixture.getSut(listOf(strategy1, strategy2))
+        sut.resolvePaths(setOf("arch"))
 
-        assertEquals(null to frameworkDir.absolutePath, dynamic to static)
+        verify(exactly = 0) { strategy2.resolvePaths(any()) }
+    }
+
+    @Test
+    fun `proceeds past multiple failing strategies and returns first success`() {
+        every { mockStrategy1.resolvePaths(any()) } throws RuntimeException()
+        every { mockStrategy2.resolvePaths(any()) } returns FrameworkPaths.NONE
+        every { mockStrategy3.resolvePaths(any()) } returns FrameworkPaths(static = "valid")
+
+        val sut = fixture.getSut(listOf(mockStrategy1, mockStrategy2, mockStrategy3))
+        val result = sut.resolvePaths(setOf("arch"))
+
+        assertEquals("valid", result.static)
+    }
+
+    @Test
+    fun `throws if no framework paths are resolved by strategies`() {
+        every { mockStrategy1.resolvePaths(any()) } returns FrameworkPaths.NONE
+        every { mockStrategy2.resolvePaths(any()) } returns FrameworkPaths.NONE
+
+        val sut = fixture.getSut(listOf(mockStrategy1, mockStrategy2))
+        assertThrows<FrameworkLinkingException> {
+            sut.resolvePaths(setOf("arch"))
+        }
+
+        verifyOrder {
+            mockStrategy1.resolvePaths(any())
+            mockStrategy2.resolvePaths(any())
+        }
+    }
+
+    @Test
+    fun `throws when no strategies provided`() {
+        val sut = fixture.getSut(emptyList())
+
+        assertThrows<FrameworkLinkingException> {
+            sut.resolvePaths(setOf("arch"))
+        }
+    }
+}
+
+private class Fixture {
+    fun getSut(strategies: List<FrameworkResolutionStrategy>): FrameworkPathResolver {
+        val project = ProjectBuilder.builder().build()
+
+        project.pluginManager.apply {
+            apply("org.jetbrains.kotlin.multiplatform")
+            apply("io.sentry.kotlin.multiplatform.gradle")
+        }
+
+        return FrameworkPathResolver(project, strategies)
     }
 }
