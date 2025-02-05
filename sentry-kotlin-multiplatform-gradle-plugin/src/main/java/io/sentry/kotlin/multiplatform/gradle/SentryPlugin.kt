@@ -67,7 +67,7 @@ class SentryPlugin : Plugin<Project> {
                         binaryLinker = FrameworkLinker(logger),
                         HostManager.hostIsMac
                     ).configure(
-                        appleTargets,
+                        appleTargets
                     )
                 }
             }
@@ -88,9 +88,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                        "Cannot auto install in commonMain. " +
-                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                        "supports (apple, jvm, android) and add the dependency manually."
+                    "Cannot auto install in commonMain. " +
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                    "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }

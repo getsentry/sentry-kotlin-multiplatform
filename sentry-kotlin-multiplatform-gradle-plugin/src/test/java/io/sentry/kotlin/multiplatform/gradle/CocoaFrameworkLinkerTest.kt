@@ -1,5 +1,9 @@
-import io.sentry.kotlin.multiplatform.gradle.*
+import io.sentry.kotlin.multiplatform.gradle.CocoaFrameworkLinker
+import io.sentry.kotlin.multiplatform.gradle.FrameworkLinker
 import io.sentry.kotlin.multiplatform.gradle.FrameworkLinkingException
+import io.sentry.kotlin.multiplatform.gradle.FrameworkPathResolver
+import io.sentry.kotlin.multiplatform.gradle.FrameworkPaths
+import io.sentry.kotlin.multiplatform.gradle.FrameworkResolutionStrategy
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension

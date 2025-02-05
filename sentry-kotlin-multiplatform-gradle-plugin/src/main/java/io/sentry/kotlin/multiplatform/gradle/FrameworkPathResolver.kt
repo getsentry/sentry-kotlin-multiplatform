@@ -56,7 +56,7 @@ interface FrameworkResolutionStrategy {
  * Finds the framework path based on the custom framework paths set by the user. This should generally be executed first.
  */
 class CustomPathStrategy(
-    project: Project,
+    project: Project
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
@@ -94,7 +94,7 @@ class DerivedDataStrategy(
         project.providers.of(DerivedDataPathValueSource::class.java) {
             it.parameters.xcodeprojPath.set(xcodeprojPath)
         }.orNull
-    },
+    }
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
@@ -108,9 +108,9 @@ class DerivedDataStrategy(
         val derivedDataPath = derivedDataProvider(foundXcodeproj) ?: return FrameworkPaths.NONE
 
         val dynamicBasePath =
-            "${derivedDataPath}/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework"
+            "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework"
         val staticBasePath =
-            "${derivedDataPath}/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework"
+            "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework"
 
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicBasePath,
@@ -186,7 +186,7 @@ class ManualSearchStrategy(
 
 class FrameworkPathResolver(
     private val project: Project,
-    private val strategies: List<FrameworkResolutionStrategy> = defaultStrategies(project),
+    private val strategies: List<FrameworkResolutionStrategy> = defaultStrategies(project)
 ) {
     fun resolvePaths(
         architecture: String
@@ -239,7 +239,7 @@ class FrameworkPathResolver(
             return listOf(
                 CustomPathStrategy(project),
                 DerivedDataStrategy(project),
-                ManualSearchStrategy(project),
+                ManualSearchStrategy(project)
                 // TODO: add DownloadStrategy -> downloads the framework and stores it in build dir
                 // this is especially useful for users who dont have a monorepo setup
             )

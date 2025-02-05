@@ -24,7 +24,8 @@ class CustomPathStrategyTest {
     @ParameterizedTest(name = "should return static path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return static path when framework is Sentry xcframework`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("Sentry.xcframework")
         Files.createDirectory(xcframeworkPath)
@@ -40,7 +41,8 @@ class CustomPathStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return dynamic path when framework is Sentry xcframework`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("Sentry-Dynamic.xcframework")
         Files.createDirectory(xcframeworkPath)

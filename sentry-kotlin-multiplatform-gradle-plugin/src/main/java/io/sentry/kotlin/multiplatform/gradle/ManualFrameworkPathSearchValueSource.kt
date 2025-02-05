@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.SetProperty
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.process.ExecOperations
@@ -40,19 +39,24 @@ abstract class ManualFrameworkPathSearchValueSource :
             if (frameworkType == FrameworkType.STATIC) "Sentry.xcframework" else "Sentry-Dynamic.xcframework"
         execOperations.exec {
             it.commandLine(
-                "bash", "-c",
+                "bash",
+                "-c",
                 "find $basePathToSearch " +
-                        "-name $xcFrameworkName " +
-                        "-exec stat -f \"%m %N\" {} \\; | " +
-                        "sort -nr | " +
-                        "cut -d' ' -f2-"
+                    "-name $xcFrameworkName " +
+                    "-exec stat -f \"%m %N\" {} \\; | " +
+                    "sort -nr | " +
+                    "cut -d' ' -f2-"
             )
             it.standardOutput = output
             it.isIgnoreExitValue = true
         }
 
         val stringOutput = output.toString("UTF-8")
-        return if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) null else stringOutput.lineSequence()
-            .first()
+        return if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) {
+            null
+        } else {
+            stringOutput.lineSequence()
+                .first()
+        }
     }
 }

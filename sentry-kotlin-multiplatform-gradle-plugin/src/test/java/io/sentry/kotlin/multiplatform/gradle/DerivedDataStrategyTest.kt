@@ -24,7 +24,8 @@ class DerivedDataStrategyTest {
     @ParameterizedTest(name = "should return static path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve static path`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
         val xcframeworkPath = dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework")
@@ -43,7 +44,8 @@ class DerivedDataStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve dynamic path`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
         val xcframeworkPath = dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework")
@@ -62,7 +64,8 @@ class DerivedDataStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project is not successful then return NONE`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
             dir.toFile().absolutePath
@@ -75,7 +78,8 @@ class DerivedDataStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is not null and find xcode project is not successful then return NONE`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val sut = fixture.getSut("some invalid path", rootDirPath = dir.toFile().absolutePath) { _: String ->
             dir.toFile().absolutePath

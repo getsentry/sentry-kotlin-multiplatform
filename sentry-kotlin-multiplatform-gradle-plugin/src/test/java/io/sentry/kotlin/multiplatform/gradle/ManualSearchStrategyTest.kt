@@ -27,7 +27,8 @@ class ManualSearchStrategyTest {
     @ParameterizedTest(name = "should return static path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return static path when framework exists`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
         val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture))
@@ -42,7 +43,8 @@ class ManualSearchStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return dynamic path when framework exists`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("somewhere/hidden/Sentry-Dynamic.xcframework").createDirectories()
         val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture))
@@ -57,7 +59,8 @@ class ManualSearchStrategyTest {
     @ParameterizedTest(name = "should return most recently used path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return most recently used path when multiple framework exists`(
-        expectedArchitecture: String, @TempDir dir: Path
+        expectedArchitecture: String,
+        @TempDir dir: Path
     ) {
         val temp = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
         // Modifying this path so it's modified longer ago than the second path

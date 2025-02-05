@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinNativeBinaryContainer
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
-import java.awt.Frame
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
@@ -21,7 +20,7 @@ class CocoaFrameworkLinker(
     private val hostIsMac: Boolean
 ) {
     fun configure(
-        appleTargets: List<KotlinNativeTarget>,
+        appleTargets: List<KotlinNativeTarget>
     ) {
         if (!hostIsMac) {
             throw FrameworkLinkingException("Sentry Cocoa framework linking requires a macOS host")
@@ -92,7 +91,7 @@ class FrameworkLinker(
             !binary.isStatic && dynamicPath != null -> dynamicPath to "dynamic"
             else -> throw FrameworkLinkingException(
                 "Framework mismatch for ${binary.name}. " +
-                        "Required ${if (binary.isStatic) "static" else "dynamic"} Sentry Cocoa framework not found."
+                    "Required ${if (binary.isStatic) "static" else "dynamic"} Sentry Cocoa framework not found."
             )
         }
 
@@ -114,8 +113,7 @@ internal class FrameworkLinkingException(
  * across different versions. For example:
  * - iosArm64 -> [SentryCocoaFrameworkArchitectures.IOS_ARM64]
  * - macosArm64 -> [SentryCocoaFrameworkArchitectures.MACOS_ARM64_AND_X64]
- * 
- * @return Set of possible architecture folder names for the given target. Returns empty set if target is not supported.
+ * * @return Set of possible architecture folder names for the given target. Returns empty set if target is not supported.
  */
 internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = buildSet {
     when (name) {
