@@ -90,18 +90,22 @@ class CustomPathStrategy(
  */
 class DerivedDataStrategy(
     private val project: Project,
+    private val derivedDataProvider: (String) -> String? = { xcodeprojPath ->
+        project.providers.of(DerivedDataPathValueSource::class.java) {
+            it.parameters.xcodeprojPath.set(xcodeprojPath)
+        }.orNull
+    },
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
     override fun resolvePaths(architecture: String): FrameworkPaths {
         val xcodeprojSetByUser = linker.xcodeprojPath.orNull?.takeIf { it.isNotEmpty() }
         val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile(project.rootDir)?.absolutePath
+        if (foundXcodeproj == null) {
+            return FrameworkPaths.NONE
+        }
 
-        val derivedDataPath = foundXcodeproj?.let { path ->
-            project.providers.of(DerivedDataPathValueSource::class.java) {
-                it.parameters.xcodeprojPath.set(path)
-            }.orNull
-        } ?: FrameworkPaths.NONE
+        val derivedDataPath = derivedDataProvider(foundXcodeproj) ?: return FrameworkPaths.NONE
 
         val dynamicBasePath =
             "${derivedDataPath}/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework"
@@ -117,10 +121,9 @@ class DerivedDataStrategy(
 
     /**
      * Searches for a xcodeproj starting from the root directory. This function will only work for
-     * monorepos and if it is not, the user needs to provide the custom path through the
-     * [LinkerExtension] configuration.
+     * monorepos and if it is not, the user needs to provide the [LinkerExtension.xcodeprojPath].
      */
-    private fun findXcodeprojFile(dir: File): File? {
+    private fun findXcodeprojFile(startingDir: File): File? {
         val ignoredDirectories = listOf("build", "DerivedData")
 
         fun searchDirectory(directory: File): File? {
@@ -136,7 +139,7 @@ class DerivedDataStrategy(
             }
         }
 
-        return searchDirectory(dir)
+        return searchDirectory(startingDir)
     }
 }
 
@@ -152,18 +155,26 @@ class DerivedDataStrategy(
  */
 class ManualSearchStrategy(
     private val project: Project,
+    private val basePathToSearch: String? = null
 ) : FrameworkResolutionStrategy {
     override fun resolvePaths(architecture: String): FrameworkPaths {
         val dynamicValueSource =
             project.providers.of(ManualFrameworkPathSearchValueSource::class.java) {
                 it.parameters.frameworkType.set(FrameworkType.DYNAMIC)
-                it.parameters.frameworkArchitecture.set(architecture)
+                if (basePathToSearch != null) {
+                    it.parameters.basePathToSearch.set(basePathToSearch)
+                }
             }
         val staticValueSource =
             project.providers.of(ManualFrameworkPathSearchValueSource::class.java) {
                 it.parameters.frameworkType.set(FrameworkType.STATIC)
-                it.parameters.frameworkArchitecture.set(architecture)
+                if (basePathToSearch != null) {
+                    it.parameters.basePathToSearch.set(basePathToSearch)
+                }
             }
+
+        println("static: ${staticValueSource.orNull}")
+        println("dynamic: ${dynamicValueSource.orNull}")
 
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicValueSource.orNull,

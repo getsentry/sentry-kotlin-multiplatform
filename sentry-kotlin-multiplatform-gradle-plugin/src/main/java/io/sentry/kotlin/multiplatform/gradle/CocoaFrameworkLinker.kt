@@ -24,8 +24,7 @@ class CocoaFrameworkLinker(
         appleTargets: List<KotlinNativeTarget>,
     ) {
         if (!hostIsMac) {
-            logger.info("Skipping Apple framework linking: Requires macOS host")
-            return
+            throw FrameworkLinkingException("Sentry Cocoa framework linking requires a macOS host")
         }
 
         appleTargets.forEach { target ->

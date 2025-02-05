@@ -7,20 +7,23 @@ import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
 
-abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, ManualFrameworkPathSearchValueSource.Parameters> {
+abstract class ManualFrameworkPathSearchValueSource :
+    ValueSource<String?, ManualFrameworkPathSearchValueSource.Parameters> {
     interface Parameters : ValueSourceParameters {
-        val frameworkArchitecture: Property<String>
         val frameworkType: Property<FrameworkType>
+        val basePathToSearch: Property<String>
     }
 
     @get:javax.inject.Inject
     abstract val execOperations: ExecOperations
 
     override fun obtain(): String? {
-        val frameworkArchitectures = parameters.frameworkArchitecture.get()
         val frameworkType = parameters.frameworkType.get()
+        val basePathToSearch =
+            parameters.basePathToSearch.convention("\"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\"")
+                .get()
 
-        return findFrameworkWithFindCommand(frameworkType, frameworkArchitectures)
+        return findFrameworkWithFindCommand(frameworkType, basePathToSearch)
     }
 
     /**
@@ -29,7 +32,7 @@ abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, Manua
      */
     private fun findFrameworkWithFindCommand(
         frameworkType: FrameworkType,
-        frameworkArchitecture: String
+        basePathToSearch: String
     ): String? {
         val output = ByteArrayOutputStream()
 
@@ -38,7 +41,7 @@ abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, Manua
         execOperations.exec {
             it.commandLine(
                 "bash", "-c",
-                "find \"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\" " +
+                "find $basePathToSearch " +
                         "-name $xcFrameworkName " +
                         "-exec stat -f \"%m %N\" {} \\; | " +
                         "sort -nr | " +
@@ -49,6 +52,7 @@ abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, Manua
         }
 
         val stringOutput = output.toString("UTF-8")
-        return stringOutput.lineSequence().firstOrNull()
+        return if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) null else stringOutput.lineSequence()
+            .first()
     }
 }

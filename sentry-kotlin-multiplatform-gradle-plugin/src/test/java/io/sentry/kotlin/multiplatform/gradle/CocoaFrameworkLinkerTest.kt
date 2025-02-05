@@ -1,114 +1,157 @@
-//import io.mockk.*
-//import io.mockk.impl.annotations.MockK
-//import io.mockk.junit5.MockKExtension
-//import io.sentry.kotlin.multiplatform.gradle.*
-//import org.gradle.api.logging.Logger
-//import org.gradle.testfixtures.ProjectBuilder
-//import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-//import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.junit.jupiter.api.extension.ExtendWith
-//
-//@ExtendWith(MockKExtension::class)
-//class CocoaFrameworkLinkerTest {
-//    @MockK
-//    lateinit var mockLogger: Logger
-//
-//    @MockK
-//    lateinit var mockPathResolver: FrameworkPathResolver
-//
-//    @MockK
-//    lateinit var mockFrameworkLinker: FrameworkLinker
-//
-//    @MockK
-//    lateinit var mockLinkerExtension: LinkerExtension
-//
-//    private lateinit var linker: CocoaFrameworkLinker
-//
-//    @BeforeEach
-//    fun setup() {
-//        every { mockLogger.info(any()) } just Runs
-//        linker = CocoaFrameworkLinker(mockLogger, mockPathResolver, mockFrameworkLinker)
-//    }
-//
-//    @Test
-//    fun `configure should skip when not on macOS host`() {
-//        linker.configure(mockLinkerExtension, emptyList(), hostIsMac = false)
-//
-//        verify { mockLogger.info("Skipping Apple framework linking: Requires macOS host") }
-//        verify { mockPathResolver wasNot Called }
-//        verify { mockFrameworkLinker wasNot Called }
-//    }
-//
-//    @Test
-//    fun `integration test`() {
-//        val project = ProjectBuilder.builder().build()
-//
-//        project.pluginManager.apply {
-//            apply("org.jetbrains.kotlin.multiplatform")
-//            apply("io.sentry.kotlin.multiplatform.gradle")
-//        }
-//
-//        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
-//        kmpExtension.apply {
-//            listOf(
-//                iosArm64(),
-//            ).forEach {
-//                it.binaries.framework {
-//                    baseName = "shared"
-//                    isStatic = false
-//                }
-//            }
-//        }
-//
-//        val linker2 = project.extensions.getByName("linker") as LinkerExtension
-//        CocoaFrameworkLinker(
-//            project.logger,
-//            FrameworkPathResolver2(),
-//            FrameworkLinker(project.logger)
-//        ).configure(linker2, kmpExtension.appleTargets().toList(), hostIsMac = true)
-//
-//        kmpExtension.iosArm64().binaries.filterIsInstance<Framework>().forEach {
-//            println(it.linkerOpts)
-//        }
-//    }
-//
-//    @Test
-//    fun `configure should process valid Apple targets`() {
-//        val project = ProjectBuilder.builder().build()
-//
-//        project.pluginManager.apply {
-//            apply("org.jetbrains.kotlin.multiplatform")
-//            apply("io.sentry.kotlin.multiplatform.gradle")
-//        }
-//
-//        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
-//        kmpExtension.apply {
-//            listOf(
-//                iosArm64(),
-//            ).forEach {
-//                it.binaries.framework {
-//                    baseName = "shared"
-//                    isStatic = false
-//                }
-//            }
-//        }
-//
-//        every { mockPathResolver.resolvePaths(any(), any()) } returns ("dynamic/path" to "static/path")
-//        justRun { mockFrameworkLinker.configureBinaries(any(), any(), any()) }
-//
-//        linker.configure(mockLinkerExtension, kmpExtension.appleTargets().toList(), hostIsMac = true)
-//
-//        verifyAll {
-//            mockPathResolver.resolvePaths(mockLinkerExtension, setOf("ios-arm64", "ios-arm64_arm64e"))
-//            mockFrameworkLinker.configureBinaries(any(), "dynamic/path", "static/path")
-//        }
-//    }
-//}
-//
-//private class Fixture {
-//    fun getSut(): CocoaFrameworkLinker {
-//        return CocoaFrameworkLinker()
-//    }
-//}
+import io.sentry.kotlin.multiplatform.gradle.*
+import io.sentry.kotlin.multiplatform.gradle.FrameworkLinkingException
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+
+class CocoaFrameworkLinkerTest {
+    private lateinit var fixture: Fixture
+
+    @BeforeEach
+    fun setUp() {
+        fixture = Fixture()
+    }
+
+    @Test
+    fun `throws if host is not macOS`() {
+        val sut = fixture.getSut(false)
+
+        assertThrows<FrameworkLinkingException> { sut.configure(emptyList()) }
+    }
+
+    @Test
+    fun `framework linking succeeds for static Framework binary`() {
+        val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val appleTargets = listOf(
+            kmpExtension.iosSimulatorArm64(),
+            kmpExtension.iosArm64(),
+            kmpExtension.watchosArm32(),
+            kmpExtension.watchosSimulatorArm64(),
+            kmpExtension.watchosX64(),
+            kmpExtension.macosArm64(),
+            kmpExtension.macosX64(),
+            kmpExtension.tvosArm64(),
+            kmpExtension.tvosSimulatorArm64(),
+            kmpExtension.tvosX64()
+        )
+        appleTargets.forEach {
+            it.binaries.framework {
+                baseName = "MyFramework"
+                isStatic = true
+            }
+        }
+
+        val sut = fixture.getSut(true)
+        sut.configure(appleTargets)
+
+        appleTargets.forEach { target ->
+            val binary = target.binaries.find { it.baseName == "MyFramework" }!!
+            assertTrue(binary.linkerOpts.size == 1)
+            assertEquals(binary.linkerOpts.first(), "-F$staticPath")
+        }
+    }
+
+    @Test
+    fun `framework linking succeeds for dynamic Framework binary`() {
+        val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val appleTargets = listOf(
+            kmpExtension.iosSimulatorArm64(),
+            kmpExtension.iosArm64(),
+            kmpExtension.watchosArm32(),
+            kmpExtension.watchosSimulatorArm64(),
+            kmpExtension.watchosX64(),
+            kmpExtension.macosArm64(),
+            kmpExtension.macosX64(),
+            kmpExtension.tvosArm64(),
+            kmpExtension.tvosSimulatorArm64(),
+            kmpExtension.tvosX64()
+        )
+        appleTargets.forEach {
+            it.binaries.framework {
+                baseName = "MyFramework"
+                isStatic = false
+            }
+        }
+
+        val sut = fixture.getSut(true)
+        sut.configure(appleTargets)
+
+        appleTargets.forEach { target ->
+            val binary = target.binaries.find { it.baseName == "MyFramework" }!!
+            assertTrue(binary.linkerOpts.size == 1)
+            assertEquals(binary.linkerOpts.first(), "-F$dynamicPath")
+        }
+    }
+
+    @Test
+    fun `framework linking succeeds for TestExecutable binary`() {
+        val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val appleTargets = listOf(
+            kmpExtension.iosSimulatorArm64(),
+            kmpExtension.iosArm64(),
+            kmpExtension.watchosArm32(),
+            kmpExtension.watchosSimulatorArm64(),
+            kmpExtension.watchosX64(),
+            kmpExtension.macosArm64(),
+            kmpExtension.macosX64(),
+            kmpExtension.tvosArm64(),
+            kmpExtension.tvosSimulatorArm64(),
+            kmpExtension.tvosX64()
+        )
+        appleTargets.forEach {
+            it.binaries.framework {
+                baseName = "MyFramework"
+                isStatic = true
+            }
+        }
+
+        val sut = fixture.getSut(true)
+        sut.configure(appleTargets)
+
+        // both dynamic and static frameworks can be used for linkin in test executables
+        appleTargets.forEach { target ->
+            val binary = target.binaries.find { it is TestExecutable }!!
+            assertTrue(binary.linkerOpts.size == 3)
+            assertEquals(binary.linkerOpts.first(), "-rpath")
+            assertTrue(binary.linkerOpts[1] == staticPath || binary.linkerOpts[1] == dynamicPath)
+            assertTrue(binary.linkerOpts[2] == "-F$staticPath" || binary.linkerOpts[2] == "-F$dynamicPath")
+        }
+    }
+
+    private class Fixture {
+        val project: Project = ProjectBuilder.builder().build()
+
+        init {
+            project.pluginManager.apply {
+                apply("org.jetbrains.kotlin.multiplatform")
+                apply("io.sentry.kotlin.multiplatform.gradle")
+            }
+        }
+
+        fun getSut(hostIsMac: Boolean): CocoaFrameworkLinker {
+            return CocoaFrameworkLinker(
+                project.logger,
+                FrameworkPathResolver(project, strategies = listOf(FakeStrategy())),
+                FrameworkLinker(project.logger),
+                hostIsMac
+            )
+        }
+    }
+}
+
+// We don't really care what the strategy exactly does in this test
+// The strategies themselves are tested independently
+private class FakeStrategy : FrameworkResolutionStrategy {
+    override fun resolvePaths(architecture: String): FrameworkPaths {
+        return FrameworkPaths(static = staticPath, dynamic = dynamicPath)
+    }
+}
+
+val staticPath = "/path/to/static/Sentry.xcframework"
+val dynamicPath = "/path/to/dynamic/Sentry-Dynamic.xcframework"
