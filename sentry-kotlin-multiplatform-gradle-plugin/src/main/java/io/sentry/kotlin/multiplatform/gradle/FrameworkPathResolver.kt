@@ -162,6 +162,8 @@ class ManualSearchStrategy(
     private val project: Project,
     private val basePathToSearch: String? = null
 ) : FrameworkResolutionStrategy {
+    // TODO: currently the search doesnt differentiate between Cocoa versions
+    // we can improve this by checking the info.plist and prefer the ones that are the version we are looking for
     override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         val dynamicValueSource =
             project.providers.of(ManualFrameworkPathSearchValueSource::class.java) {
