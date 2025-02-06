@@ -36,7 +36,7 @@ class FrameworkPathResolverTest {
 
     @Test
     fun `proceeds past multiple failing strategies and returns first success`() {
-        every { mockStrategy1.resolvePaths(any()) } throws RuntimeException()
+        every { mockStrategy1.resolvePaths(any()) } throws FrameworkLinkingException("")
         every { mockStrategy2.resolvePaths(any()) } returns FrameworkPaths.NONE
         every { mockStrategy3.resolvePaths(any()) } returns FrameworkPaths(static = "valid")
 
