@@ -3,10 +3,7 @@ package io.sentry.kotlin.multiplatform.gradle
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinNativeBinaryContainer
-import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
@@ -84,7 +81,8 @@ internal object SentryCocoaFrameworkArchitectures {
     // Used for tests
     val all = setOf(
         IOS_SIMULATOR_AND_X64,
-        IOS_ARM64, MACOS_ARM64_AND_X64,
+        IOS_ARM64,
+        MACOS_ARM64_AND_X64,
         TVOS_SIMULATOR_AND_X64,
         TVOS_ARM64,
         WATCHOS_ARM,

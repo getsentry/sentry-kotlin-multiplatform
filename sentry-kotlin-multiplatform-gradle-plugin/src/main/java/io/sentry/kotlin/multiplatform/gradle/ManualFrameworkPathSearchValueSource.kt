@@ -43,10 +43,10 @@ abstract class ManualFrameworkPathSearchValueSource :
                 "bash",
                 "-c",
                 "find $basePathToSearch " +
-                        "-name $xcFrameworkName " +
-                        "-exec stat -f \"%m %N\" {} \\; | " +
-                        "sort -nr | " +
-                        "cut -d' ' -f2-"
+                    "-name $xcFrameworkName " +
+                    "-exec stat -f \"%m %N\" {} \\; | " +
+                    "sort -nr | " +
+                    "cut -d' ' -f2-"
             )
             it.standardOutput = output
             it.isIgnoreExitValue = true
