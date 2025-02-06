@@ -19,8 +19,9 @@ abstract class ManualFrameworkPathSearchValueSource :
     override fun obtain(): String? {
         val frameworkType = parameters.frameworkType.get()
         val basePathToSearch =
-            parameters.basePathToSearch.convention("\"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\"")
-                .get()
+            parameters.basePathToSearch.convention(
+                "\"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\""
+            ).get()
 
         return findFrameworkWithFindCommand(frameworkType, basePathToSearch)
     }
@@ -42,10 +43,10 @@ abstract class ManualFrameworkPathSearchValueSource :
                 "bash",
                 "-c",
                 "find $basePathToSearch " +
-                    "-name $xcFrameworkName " +
-                    "-exec stat -f \"%m %N\" {} \\; | " +
-                    "sort -nr | " +
-                    "cut -d' ' -f2-"
+                        "-name $xcFrameworkName " +
+                        "-exec stat -f \"%m %N\" {} \\; | " +
+                        "sort -nr | " +
+                        "cut -d' ' -f2-"
             )
             it.standardOutput = output
             it.isIgnoreExitValue = true

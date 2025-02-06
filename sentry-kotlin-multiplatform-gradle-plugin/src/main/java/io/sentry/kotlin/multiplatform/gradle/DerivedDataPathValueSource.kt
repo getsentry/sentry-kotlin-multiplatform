@@ -41,8 +41,7 @@ abstract class DerivedDataPathValueSource :
         val buildSettings = buildDirOutput.toString("UTF-8")
         val buildDirMatch = buildDirRegex.find(buildSettings)
         val buildDir = buildDirMatch?.groupValues?.get(1)
-            ?: return null
-        if (buildDir.contains("DerivedData").not()) {
+        if (buildDir == null || buildDir.contains("DerivedData").not()) {
             return null
         }
         return buildDir.replace("/Build/Products", "")

@@ -53,7 +53,8 @@ interface FrameworkResolutionStrategy {
 }
 
 /**
- * Finds the framework path based on the custom framework paths set by the user. This should generally be executed first.
+ * Finds the framework path based on the custom framework paths set by the user.
+ * This should generally be executed first.
  */
 class CustomPathStrategy(
     project: Project
@@ -190,7 +191,9 @@ class FrameworkPathResolver(
     ): FrameworkPaths {
         strategies.forEach { strategy ->
             try {
-                project.logger.lifecycle("Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}")
+                project.logger.lifecycle(
+                    "Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}"
+                )
                 val result = strategy.resolvePaths(architecture)
                 if (result != FrameworkPaths.NONE) {
                     project.logger.lifecycle("Found Sentry Cocoa framework paths using ${strategy::class.simpleName}")
@@ -198,7 +201,7 @@ class FrameworkPathResolver(
                 } else {
                     project.logger.debug("Strategy ${strategy::class.simpleName} did not find valid paths")
                 }
-            } catch (e: Exception) {
+            } catch (e: FrameworkLinkingException) {
                 project.logger.warn(
                     "Strategy ${strategy::class.simpleName} failed due to error: ${e.message}"
                 )
@@ -229,8 +232,9 @@ class FrameworkPathResolver(
         /**
          * Default resolution strategies for finding the Sentry Cocoa framework path.
          *
-         * The order of resolution strategies matters, as the framework path will be resolved by the first successful strategy
-         * Specifically here Custom Path will be checked first, if that fails then it is followed by the Derived Data strategy etc...
+         * The order of resolution strategies matters, as the framework path will be
+         * resolved by the first successful strategy. Specifically here Custom Path will be checked first,
+         * if that fails then it is followed by the Derived Data strategy etc...
          */
         fun defaultStrategies(project: Project): List<FrameworkResolutionStrategy> {
             return listOf(
