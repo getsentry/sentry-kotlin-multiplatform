@@ -198,6 +198,8 @@ class SentryPluginTest {
         // Check that it now exists
         val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
         assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, cocoapodsAutoInstallExtension.sentryCocoaVersion.get())
+        assertTrue(cocoapodsExtension.pods.getByName("Sentry").linkOnly)
+        assertEquals(cocoapodsExtension.pods.getByName("Sentry").extraOpts, listOf("-compiler-option", "-fmodules"))
     }
 
     @Test
