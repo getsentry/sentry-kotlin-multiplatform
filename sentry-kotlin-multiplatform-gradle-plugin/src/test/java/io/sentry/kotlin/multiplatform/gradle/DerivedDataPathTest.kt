@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform.gradle
 import io.mockk.every
 import io.mockk.mockk
 import org.gradle.api.Action
-import org.gradle.api.GradleException
 import org.gradle.process.ExecOperations
 import org.gradle.process.ExecResult
 import org.gradle.process.ExecSpec
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayOutputStream
 
 class DerivedDataPathTest {

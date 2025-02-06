@@ -1,6 +1,5 @@
 import io.sentry.kotlin.multiplatform.gradle.CocoaFrameworkLinker
 import io.sentry.kotlin.multiplatform.gradle.FrameworkLinker
-import io.sentry.kotlin.multiplatform.gradle.FrameworkLinkingException
 import io.sentry.kotlin.multiplatform.gradle.FrameworkPathResolver
 import io.sentry.kotlin.multiplatform.gradle.FrameworkPaths
 import io.sentry.kotlin.multiplatform.gradle.FrameworkResolutionStrategy
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class CocoaFrameworkLinkerTest {
     private lateinit var fixture: Fixture
@@ -135,7 +133,7 @@ class CocoaFrameworkLinkerTest {
             return CocoaFrameworkLinker(
                 project.logger,
                 FrameworkPathResolver(project, strategies = listOf(FakeStrategy())),
-                FrameworkLinker(project.logger),
+                FrameworkLinker(project.logger)
             )
         }
     }

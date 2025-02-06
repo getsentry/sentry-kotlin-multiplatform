@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 class CocoaFrameworkLinker(
     private val logger: Logger,
     private val pathResolver: FrameworkPathResolver,
-    private val binaryLinker: FrameworkLinker,
+    private val binaryLinker: FrameworkLinker
 ) {
     fun configure(appleTargets: List<KotlinNativeTarget>) {
         appleTargets.forEach { target ->

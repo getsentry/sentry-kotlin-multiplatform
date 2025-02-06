@@ -38,41 +38,40 @@ class SentryPlugin : Plugin<Project> {
             )
 
             afterEvaluate {
-                val hasCocoapodsPlugin =
-                    project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
-
-                if (sentryExtension.autoInstall.enabled.get()) {
-                    if (sentryExtension.autoInstall.commonMain.enabled.get()) {
-                        installSentryForKmp(sentryExtension.autoInstall.commonMain)
-                    }
-
-                    if (hasCocoapodsPlugin && sentryExtension.autoInstall.cocoapods.enabled.get()) {
-                        installSentryForCocoapods(sentryExtension.autoInstall.cocoapods)
-                    }
-                }
-
-                if (HostManager.hostIsMac) {
-                    // If the user is not using the cocoapods plugin, linking to the framework is not
-                    // automatic so we have to configure it in the plugin.
-                    if (!hasCocoapodsPlugin) {
-                        logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
-
-                        val kmpExtension =
-                            extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-                        val appleTargets = kmpExtension?.appleTargets()?.toList()
-                            ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
-
-                        CocoaFrameworkLinker(
-                            logger = logger,
-                            pathResolver = FrameworkPathResolver(project),
-                            binaryLinker = FrameworkLinker(logger),
-                        ).configure(
-                            appleTargets
-                        )
-                    }
-                }
+                executeConfiguration(project)
             }
         }
+
+    internal fun executeConfiguration(project: Project, hostIsMac: Boolean = HostManager.hostIsMac) {
+        val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
+        val hasCocoapodsPlugin = project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
+
+        if (sentryExtension.autoInstall.enabled.get()) {
+            val autoInstall = sentryExtension.autoInstall
+
+            if (autoInstall.commonMain.enabled.get()) {
+                project.installSentryForKmp(autoInstall.commonMain)
+            }
+
+            if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
+                project.installSentryForCocoapods(autoInstall.cocoapods)
+            }
+        }
+
+        if (hostIsMac && !hasCocoapodsPlugin) {
+            project.logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
+
+            val kmpExtension = project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
+            val appleTargets = kmpExtension?.appleTargets()?.toList()
+                ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
+
+            CocoaFrameworkLinker(
+                logger = project.logger,
+                pathResolver = FrameworkPathResolver(project),
+                binaryLinker = FrameworkLinker(project.logger)
+            ).configure(appleTargets)
+        }
+    }
 }
 
 internal fun Project.installSentryForKmp(
@@ -89,9 +88,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                        "Cannot auto install in commonMain. " +
-                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                        "supports (apple, jvm, android) and add the dependency manually."
+                    "Cannot auto install in commonMain. " +
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                    "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }

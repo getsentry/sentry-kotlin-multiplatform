@@ -12,11 +12,8 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.lang.Thread.sleep
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.attribute.FileTime
-import java.time.Instant
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
-import kotlin.io.path.setLastModifiedTime
 
 class ManualSearchStrategyTest {
     private lateinit var fixture: Fixture
