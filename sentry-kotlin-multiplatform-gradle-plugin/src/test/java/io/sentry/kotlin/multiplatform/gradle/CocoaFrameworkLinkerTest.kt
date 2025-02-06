@@ -142,10 +142,10 @@ class CocoaFrameworkLinkerTest {
 // We don't really care what the strategy exactly does in this test
 // The strategies themselves are tested independently
 private class FakeStrategy : FrameworkResolutionStrategy {
-    override fun resolvePaths(architecture: String): FrameworkPaths {
+    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         return FrameworkPaths(static = staticPath, dynamic = dynamicPath)
     }
 }
 
-val staticPath = "/path/to/static/Sentry.xcframework"
-val dynamicPath = "/path/to/dynamic/Sentry-Dynamic.xcframework"
+private const val staticPath = "/path/to/static/Sentry.xcframework"
+private const val dynamicPath = "/path/to/dynamic/Sentry-Dynamic.xcframework"

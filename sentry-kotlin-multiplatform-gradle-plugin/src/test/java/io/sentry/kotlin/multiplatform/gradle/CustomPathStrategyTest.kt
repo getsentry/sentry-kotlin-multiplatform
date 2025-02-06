@@ -24,12 +24,12 @@ class CustomPathStrategyTest {
     @ParameterizedTest(name = "should return static path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return static path when framework is Sentry xcframework`(
-        expectedArchitecture: String,
+        expectedArchitecture: Set<String>,
         @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("Sentry.xcframework")
         Files.createDirectory(xcframeworkPath)
-        val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture))
+        val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture.first()))
 
         val sut = fixture.getSut(xcframeworkPath.absolutePathString())
         val paths = sut.resolvePaths(expectedArchitecture)
@@ -41,12 +41,12 @@ class CustomPathStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `should return dynamic path when framework is Sentry xcframework`(
-        expectedArchitecture: String,
+        expectedArchitecture: Set<String>,
         @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("Sentry-Dynamic.xcframework")
         Files.createDirectory(xcframeworkPath)
-        val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture))
+        val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture.first()))
 
         val sut = fixture.getSut(xcframeworkPath.absolutePathString())
         val paths = sut.resolvePaths(expectedArchitecture)
@@ -58,7 +58,7 @@ class CustomPathStrategyTest {
     @Test
     fun `returns NONE when frameworkPath is null`() {
         val sut = fixture.getSut(null)
-        val result = sut.resolvePaths("doesnt matter")
+        val result = sut.resolvePaths(setOf("doesnt matter"))
 
         assertEquals(FrameworkPaths.NONE, result)
     }
@@ -66,7 +66,7 @@ class CustomPathStrategyTest {
     @Test
     fun `returns NONE when frameworkPath is empty`() {
         val sut = fixture.getSut("")
-        val result = sut.resolvePaths("doesnt matter")
+        val result = sut.resolvePaths(setOf("doesnt matter"))
 
         assertEquals(FrameworkPaths.NONE, result)
     }
@@ -76,14 +76,14 @@ class CustomPathStrategyTest {
         val xcframeworkPath = dir.resolve("Invalid.xcframework")
         val sut = fixture.getSut(xcframeworkPath.absolutePathString())
 
-        val paths = sut.resolvePaths("doesnt matter")
+        val paths = sut.resolvePaths(setOf("doesnt matter"))
 
         assertEquals(FrameworkPaths.NONE, paths)
     }
 
     companion object {
         @JvmStatic
-        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all.flatten()
+        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all
             .map { Arguments.of(it) }
             .toList()
     }

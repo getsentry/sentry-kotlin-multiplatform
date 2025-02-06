@@ -18,10 +18,11 @@ class CocoaFrameworkLinker(
     fun configure(appleTargets: List<KotlinNativeTarget>) {
         appleTargets.forEach { target ->
             try {
-                logger.lifecycle(
+                logger.info(
                     "Start resolving Sentry Cocoa framework paths for target: ${target.name}"
                 )
                 processTarget(target)
+                logger.lifecycle("Successfully configured Sentry Cocoa framework linking for target: ${target.name}")
             } catch (e: FrameworkLinkingException) {
                 throw FrameworkLinkingException("Failed to configure ${target.name}: ${e.message}", e)
             }
@@ -34,9 +35,7 @@ class CocoaFrameworkLinker(
                 logger.warn("Skipping target ${target.name}: Unsupported architecture")
                 return
             }
-        val paths: FrameworkPaths = architectures.firstNotNullOf { arch ->
-            pathResolver.resolvePaths(arch).takeIf { it != FrameworkPaths.NONE }
-        }
+        val paths: FrameworkPaths = pathResolver.resolvePaths(architectures)
         binaryLinker.configureBinaries(target.binaries, paths.dynamic, paths.static)
     }
 }

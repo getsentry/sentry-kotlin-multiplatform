@@ -18,17 +18,15 @@ data class FrameworkPaths(
         fun createValidated(
             dynamicBasePath: String? = null,
             staticBasePath: String? = null,
-            architecture: String,
+            architectures: Set<String>,
             pathExists: (String) -> Boolean = { path -> File(path).exists() }
         ): FrameworkPaths {
             val dynamicPath = dynamicBasePath?.let { basePath ->
-                val path = "$basePath/$architecture"
-                path.takeIf { pathExists(it) }
+                architectures.map { arch -> "$basePath/$arch" }.firstOrNull { pathExists(it) }
             }
 
             val staticPath = staticBasePath?.let { basePath ->
-                val path = "$basePath/$architecture"
-                path.takeIf { pathExists(it) }
+                architectures.map { arch -> "$basePath/$arch" }.firstOrNull { pathExists(it) }
             }
 
             return when {
@@ -49,7 +47,7 @@ data class FrameworkPaths(
 }
 
 interface FrameworkResolutionStrategy {
-    fun resolvePaths(architecture: String): FrameworkPaths
+    fun resolvePaths(architectures: Set<String>): FrameworkPaths
 }
 
 /**
@@ -57,28 +55,35 @@ interface FrameworkResolutionStrategy {
  * This should generally be executed first.
  */
 class CustomPathStrategy(
-    project: Project
+    private val project: Project
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
     // In this function we don't distinguish between static and dynamic frameworks
     // We trust that the user knows the distinction if they purposefully override the framework path
-    override fun resolvePaths(architecture: String): FrameworkPaths {
-        return linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }?.let { basePath ->
+    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
+        val result = linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }?.let { basePath ->
             when {
                 basePath.endsWith("Sentry.xcframework") -> FrameworkPaths.createValidated(
                     staticBasePath = basePath,
-                    architecture = architecture
+                    architectures = architectures
                 )
 
                 basePath.endsWith("Sentry-Dynamic.xcframework") -> FrameworkPaths.createValidated(
                     dynamicBasePath = basePath,
-                    architecture = architecture
+                    architectures = architectures
                 )
 
                 else -> FrameworkPaths.NONE
             }
         } ?: FrameworkPaths.NONE
+        if (linker.frameworkPath.orNull != null && result == FrameworkPaths.NONE) {
+            project.logger.warn(
+                "Custom framework path has been set manually but could not be found. " +
+                    "Trying to resolve framework paths using other strategies."
+            )
+        }
+        return result
     }
 }
 
@@ -99,7 +104,7 @@ class DerivedDataStrategy(
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
-    override fun resolvePaths(architecture: String): FrameworkPaths {
+    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         val xcodeprojSetByUser = linker.xcodeprojPath.orNull?.takeIf { it.isNotEmpty() }
         val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile(project.rootDir)?.absolutePath
         if (foundXcodeproj == null) {
@@ -107,7 +112,6 @@ class DerivedDataStrategy(
         }
 
         val derivedDataPath = derivedDataProvider(foundXcodeproj) ?: return FrameworkPaths.NONE
-
         val dynamicBasePath =
             "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework"
         val staticBasePath =
@@ -116,7 +120,7 @@ class DerivedDataStrategy(
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicBasePath,
             staticBasePath = staticBasePath,
-            architecture = architecture
+            architectures = architectures
         )
     }
 
@@ -158,7 +162,7 @@ class ManualSearchStrategy(
     private val project: Project,
     private val basePathToSearch: String? = null
 ) : FrameworkResolutionStrategy {
-    override fun resolvePaths(architecture: String): FrameworkPaths {
+    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         val dynamicValueSource =
             project.providers.of(ManualFrameworkPathSearchValueSource::class.java) {
                 it.parameters.frameworkType.set(FrameworkType.DYNAMIC)
@@ -177,7 +181,7 @@ class ManualSearchStrategy(
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicValueSource.orNull,
             staticBasePath = staticValueSource.orNull,
-            architecture = architecture
+            architectures = architectures
         )
     }
 }
@@ -187,16 +191,17 @@ class FrameworkPathResolver(
     private val strategies: List<FrameworkResolutionStrategy> = defaultStrategies(project)
 ) {
     fun resolvePaths(
-        architecture: String
+        architectures: Set<String>
     ): FrameworkPaths {
         strategies.forEach { strategy ->
             try {
-                project.logger.lifecycle(
+                project.logger.info(
                     "Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}"
                 )
-                val result = strategy.resolvePaths(architecture)
+                val result = strategy.resolvePaths(architectures)
                 if (result != FrameworkPaths.NONE) {
-                    project.logger.lifecycle("Found Sentry Cocoa framework paths using ${strategy::class.simpleName}")
+                    val path = result.dynamic ?: result.static
+                    project.logger.lifecycle("Found Sentry Cocoa framework path using ${strategy::class.simpleName} at $path")
                     return result
                 } else {
                     project.logger.debug("Strategy ${strategy::class.simpleName} did not find valid paths")

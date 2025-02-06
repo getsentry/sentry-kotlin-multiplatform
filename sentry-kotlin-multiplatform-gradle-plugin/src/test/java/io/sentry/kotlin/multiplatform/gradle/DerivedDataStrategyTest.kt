@@ -25,13 +25,15 @@ class DerivedDataStrategyTest {
     @ParameterizedTest(name = "resolve static path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve static path`(
-        expectedArchitecture: String,
+        expectedArchitecture: Set<String>,
         @TempDir dir: Path
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
-        val xcframeworkPath = dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework")
+        val xcframeworkPath =
+            dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework")
         val xcframeworkDirectory = Files.createDirectories(xcframeworkPath)
-        val archDirectory = Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture))
+        val archDirectory =
+            Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture.first()))
 
         val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
             dir.toFile().absolutePath
@@ -45,14 +47,15 @@ class DerivedDataStrategyTest {
     @ParameterizedTest(name = "should return dynamic path for architecture {0}")
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve dynamic path`(
-        expectedArchitecture: String,
+        expectedArchitecture: Set<String>,
         @TempDir dir: Path
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
         val xcframeworkPath =
             dir.resolve("SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework")
         val xcframeworkDirectory = Files.createDirectories(xcframeworkPath)
-        val archDirectory = Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture))
+        val archDirectory =
+            Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture.first()))
 
         val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
             dir.toFile().absolutePath
@@ -71,7 +74,7 @@ class DerivedDataStrategyTest {
             dir.toFile().absolutePath
         }
 
-        val paths = sut.resolvePaths("doesnt matter")
+        val paths = sut.resolvePaths(setOf("doesnt matter"))
         assertEquals(FrameworkPaths.NONE, paths)
     }
 
@@ -79,17 +82,20 @@ class DerivedDataStrategyTest {
     fun `if xcodeproj is not null and find xcode project is not successful then return NONE`(
         @TempDir dir: Path
     ) {
-        val sut = fixture.getSut("some invalid path", rootDirPath = dir.toFile().absolutePath) { _: String ->
+        val sut = fixture.getSut(
+            "some invalid path",
+            rootDirPath = dir.toFile().absolutePath
+        ) { _: String ->
             dir.toFile().absolutePath
         }
 
-        val paths = sut.resolvePaths("doesnt matter")
+        val paths = sut.resolvePaths(setOf("doesnt matter"))
         assertEquals(FrameworkPaths.NONE, paths)
     }
 
     companion object {
         @JvmStatic
-        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all.flatten()
+        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all
             .map { Arguments.of(it) }
             .toList()
     }

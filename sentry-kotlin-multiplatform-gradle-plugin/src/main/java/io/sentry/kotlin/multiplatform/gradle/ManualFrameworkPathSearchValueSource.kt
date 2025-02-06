@@ -19,10 +19,8 @@ abstract class ManualFrameworkPathSearchValueSource :
     override fun obtain(): String? {
         val frameworkType = parameters.frameworkType.get()
         val basePathToSearch =
-            parameters.basePathToSearch.convention(
-                "\"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\""
-            ).get()
-
+            parameters.basePathToSearch.orNull
+                ?: "\"${System.getProperty("user.home")}/Library/Developer/Xcode/DerivedData\""
         return findFrameworkWithFindCommand(frameworkType, basePathToSearch)
     }
 

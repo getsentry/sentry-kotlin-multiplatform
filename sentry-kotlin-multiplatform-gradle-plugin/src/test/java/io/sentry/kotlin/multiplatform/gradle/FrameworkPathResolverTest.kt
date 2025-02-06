@@ -29,7 +29,7 @@ class FrameworkPathResolverTest {
         val strategy2 = mockk<FrameworkResolutionStrategy>()
 
         val sut = fixture.getSut(listOf(strategy1, strategy2))
-        sut.resolvePaths("test")
+        sut.resolvePaths(setOf("test"))
 
         verify(exactly = 0) { strategy2.resolvePaths(any()) }
     }
@@ -41,7 +41,7 @@ class FrameworkPathResolverTest {
         every { mockStrategy3.resolvePaths(any()) } returns FrameworkPaths(static = "valid")
 
         val sut = fixture.getSut(listOf(mockStrategy1, mockStrategy2, mockStrategy3))
-        val result = sut.resolvePaths("test")
+        val result = sut.resolvePaths(setOf("test"))
 
         assertEquals("valid", result.static)
     }
@@ -53,7 +53,7 @@ class FrameworkPathResolverTest {
 
         val sut = fixture.getSut(listOf(mockStrategy1, mockStrategy2))
         assertThrows<FrameworkLinkingException> {
-            sut.resolvePaths("test")
+            sut.resolvePaths(setOf("test"))
         }
 
         verifyOrder {
@@ -67,7 +67,7 @@ class FrameworkPathResolverTest {
         val sut = fixture.getSut(emptyList())
 
         assertThrows<FrameworkLinkingException> {
-            sut.resolvePaths("test")
+            sut.resolvePaths(setOf("test"))
         }
     }
 
