@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.sentry.kotlin.multiplatform.gradle.SentryPlugin.Companion.logger
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
@@ -29,7 +30,9 @@ abstract class DerivedDataPathValueSource :
 
     override fun obtain(): String? {
         val buildDirOutput = ByteArrayOutputStream()
-        execOperations.exec {
+        val errOutput = ByteArrayOutputStream()
+
+        val execOperations = execOperations.exec {
             it.commandLine = listOf(
                 "xcodebuild",
                 "-project",
@@ -37,13 +40,26 @@ abstract class DerivedDataPathValueSource :
                 "-showBuildSettings"
             )
             it.standardOutput = buildDirOutput
+            it.errorOutput = errOutput
         }
-        val buildSettings = buildDirOutput.toString("UTF-8")
-        val buildDirMatch = buildDirRegex.find(buildSettings)
-        val buildDir = buildDirMatch?.groupValues?.get(1)
-        if (buildDir == null || buildDir.contains("DerivedData").not()) {
+
+        if (execOperations.exitValue == 0) {
+            val buildSettings = buildDirOutput.toString("UTF-8")
+            val buildDirMatch = buildDirRegex.find(buildSettings)
+            val buildDir = buildDirMatch?.groupValues?.get(1)
+            if (buildDir == null || buildDir.contains("DerivedData").not()) {
+                return null
+            }
+            return buildDir.replace("/Build/Products", "")
+        } else {
+            logger.warn(
+                "Failed to retrieve derived data path. xcodebuild command failed. Error output: ${
+                errOutput.toString(
+                    Charsets.UTF_8
+                )
+                }"
+            )
             return null
         }
-        return buildDir.replace("/Build/Products", "")
     }
 }

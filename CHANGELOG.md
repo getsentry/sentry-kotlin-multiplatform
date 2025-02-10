@@ -5,6 +5,7 @@
 ### Fixes
 
 - [Gradle Plugin]: Architecture folder name missmatch when using SPM and framework path searching ([#320](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/320))
+- [Gradle Plugin]: Check exit value when executing `xcodebuild` command ([#326](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/326))
 
 ### Dependencies
 
