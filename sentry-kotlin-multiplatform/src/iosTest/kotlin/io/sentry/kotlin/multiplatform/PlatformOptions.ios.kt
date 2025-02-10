@@ -26,7 +26,7 @@ class SentryIosOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) : Se
         get() = cocoaOptions.appHangTimeoutInterval.toLong()
 
     override val sessionReplay: SentryReplayOptions
-        get() = cocoaOptions.experimental.sessionReplay()
+        get() = cocoaOptions.sessionReplay()
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toIosOptionsConfiguration().invoke(cocoaOptions)
