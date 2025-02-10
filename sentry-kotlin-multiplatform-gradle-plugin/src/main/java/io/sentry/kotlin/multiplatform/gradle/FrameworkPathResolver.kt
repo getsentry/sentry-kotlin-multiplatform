@@ -86,7 +86,7 @@ class CustomPathStrategy(
         if (linker.frameworkPath.orNull != null && result == FrameworkPaths.NONE) {
             project.logger.warn(
                 "Custom framework path has been set manually but could not be found. " +
-                    "Trying to resolve framework paths using other strategies."
+                        "Trying to resolve framework paths using other strategies."
             )
         }
         return result
@@ -141,13 +141,17 @@ class DerivedDataStrategy(
         Files.walkFileTree(
             startingDir.toPath(),
             object : SimpleFileVisitor<Path>() {
-                override fun preVisitDirectory(dir: Path, attrs: BasicFileAttributes): FileVisitResult {
+                override fun preVisitDirectory(
+                    dir: Path,
+                    attrs: BasicFileAttributes
+                ): FileVisitResult {
                     return when {
                         // Check if current directory is a xcodeproj before checking ignored dirs
                         dir.toString().endsWith(".xcodeproj") -> {
                             foundXcodeprojPath = dir.absolutePathString()
                             FileVisitResult.TERMINATE
                         }
+
                         ignoredDirectories.contains(dir.fileName.toString()) -> FileVisitResult.SKIP_SUBTREE
                         else -> FileVisitResult.CONTINUE
                     }
@@ -218,7 +222,9 @@ class FrameworkPathResolver(
                 val result = strategy.resolvePaths(architectures)
                 if (result != FrameworkPaths.NONE) {
                     val path = result.dynamic ?: result.static
-                    project.logger.lifecycle("Found Sentry Cocoa framework path using ${strategy::class.simpleName} at $path")
+                    project.logger.lifecycle(
+                        "Found Sentry Cocoa framework path using ${strategy::class.simpleName} at $path"
+                    )
                     return result
                 } else {
                     project.logger.debug("Strategy ${strategy::class.simpleName} did not find valid paths")

@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.sentry.kotlin.multiplatform.gradle.SentryPlugin.Companion.logger
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
@@ -60,6 +61,10 @@ abstract class ManualFrameworkPathSearchValueSource :
                     .first()
             }
         } else {
+            logger.warn(
+                "Manual search failed to find $xcFrameworkName in $basePathToSearch. " +
+                    "Error output: ${errOutput.toString(Charsets.UTF_8)}"
+            )
             null
         }
     }

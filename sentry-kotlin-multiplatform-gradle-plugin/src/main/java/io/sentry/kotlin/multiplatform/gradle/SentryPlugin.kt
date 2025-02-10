@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.konan.target.HostManager
+import org.slf4j.LoggerFactory
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -70,6 +71,12 @@ class SentryPlugin : Plugin<Project> {
                 pathResolver = FrameworkPathResolver(project),
                 binaryLinker = FrameworkLinker(project.logger)
             ).configure(appleTargets)
+        }
+    }
+
+    companion object {
+        internal val logger by lazy {
+            LoggerFactory.getLogger(SentryPlugin::class.java)
         }
     }
 }
