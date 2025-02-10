@@ -2,6 +2,12 @@ package io.sentry.kotlin.multiplatform.gradle
 
 import org.gradle.api.Project
 import java.io.File
+import java.nio.file.FileVisitResult
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
+import kotlin.io.path.absolutePathString
 
 enum class FrameworkType {
     STATIC,
@@ -106,7 +112,7 @@ class DerivedDataStrategy(
 
     override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
         val xcodeprojSetByUser = linker.xcodeprojPath.orNull?.takeIf { it.isNotEmpty() }
-        val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFile(project.rootDir)?.absolutePath
+        val foundXcodeproj = xcodeprojSetByUser ?: findXcodeprojFilePath(project.rootDir)
         if (foundXcodeproj == null) {
             return FrameworkPaths.NONE
         }
@@ -128,23 +134,32 @@ class DerivedDataStrategy(
      * Searches for a xcodeproj starting from the root directory. This function will only work for
      * monorepos and if it is not, the user needs to provide the [LinkerExtension.xcodeprojPath].
      */
-    private fun findXcodeprojFile(startingDir: File): File? {
-        val ignoredDirectories = listOf("build", "DerivedData")
+    private fun findXcodeprojFilePath(startingDir: File): String? {
+        val ignoredDirectories = setOf("build", "DerivedData")
+        var foundXcodeprojPath: String? = null
 
-        fun searchDirectory(directory: File): File? {
-            val files = directory.listFiles() ?: return null
-
-            return files.firstNotNullOfOrNull { file ->
-                when {
-                    file.name in ignoredDirectories -> null
-                    file.extension == "xcodeproj" -> file
-                    file.isDirectory -> searchDirectory(file)
-                    else -> null
+        Files.walkFileTree(
+            startingDir.toPath(),
+            object : SimpleFileVisitor<Path>() {
+                override fun preVisitDirectory(dir: Path, attrs: BasicFileAttributes): FileVisitResult {
+                    return when {
+                        // Check if current directory is a xcodeproj before checking ignored dirs
+                        dir.toString().endsWith(".xcodeproj") -> {
+                            foundXcodeprojPath = dir.absolutePathString()
+                            FileVisitResult.TERMINATE
+                        }
+                        ignoredDirectories.contains(dir.fileName.toString()) -> FileVisitResult.SKIP_SUBTREE
+                        else -> FileVisitResult.CONTINUE
+                    }
                 }
             }
+        )
+
+        if (foundXcodeprojPath != null) {
+            project.logger.info("Found xcodeproj through file walking at path: $foundXcodeprojPath")
         }
 
-        return searchDirectory(startingDir)
+        return foundXcodeprojPath
     }
 }
 

@@ -32,11 +32,12 @@ abstract class ManualFrameworkPathSearchValueSource :
         frameworkType: FrameworkType,
         basePathToSearch: String
     ): String? {
-        val output = ByteArrayOutputStream()
+        val stdOutput = ByteArrayOutputStream()
+        val errOutput = ByteArrayOutputStream()
 
         val xcFrameworkName =
             if (frameworkType == FrameworkType.STATIC) "Sentry.xcframework" else "Sentry-Dynamic.xcframework"
-        execOperations.exec {
+        val execResult = execOperations.exec {
             it.commandLine(
                 "bash",
                 "-c",
@@ -46,16 +47,20 @@ abstract class ManualFrameworkPathSearchValueSource :
                     "sort -nr | " +
                     "cut -d' ' -f2-"
             )
-            it.standardOutput = output
-            it.isIgnoreExitValue = true
+            it.standardOutput = stdOutput
+            it.errorOutput = errOutput
         }
 
-        val stringOutput = output.toString("UTF-8")
-        return if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) {
-            null
+        val stringOutput = stdOutput.toString("UTF-8")
+        return if (execResult.exitValue == 0) {
+            if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) {
+                null
+            } else {
+                stringOutput.lineSequence()
+                    .first()
+            }
         } else {
-            stringOutput.lineSequence()
-                .first()
+            null
         }
     }
 }

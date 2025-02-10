@@ -27,11 +27,6 @@ class FrameworkLinker(
     }
 
     private fun chooseTestPath(dynamic: String?, static: String?) = when {
-        dynamic != null && static != null -> {
-            logger.debug("Both framework types available, preferring dynamic for tests")
-            dynamic
-        }
-
         dynamic != null -> dynamic
         static != null -> static
         else -> throw FrameworkLinkingException("No valid framework path found for tests")
