@@ -1,20 +1,20 @@
 package io.sentry.kotlin.multiplatform.gradle
 
 import io.sentry.BuildConfig
+import org.gradle.api.GradleException
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.io.File
 
 class SentryPluginTest {
     @Test
@@ -154,6 +154,30 @@ class SentryPluginTest {
         assertTrue(commonMainConfiguration!!.dependencies.contains(sentryDependency))
     }
 
+    @OptIn(ExperimentalWasmDsl::class)
+    @ParameterizedTest(name = "installSentryForKmp throws if build contains unsupported target {0}")
+    @ValueSource(strings = ["wasm", "js", "mingw", "linux", "androidNative"])
+    fun `installSentryForKmp throws if build contains any unsupported target`(unsupportedTarget: String) {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.apply {
+            when (unsupportedTarget) {
+                "wasm" -> wasmJs()
+                "js" -> js()
+                "mingw" -> mingwX64()
+                "linux" -> linuxX64()
+                "androidNative" -> androidNativeArm64()
+            }
+        }
+
+        assertThrows<GradleException> {
+            project.installSentryForKmp(project.extensions.getByName("commonMain") as SourceSetAutoInstallExtension)
+        }
+    }
+
     @Test
     fun `install Sentry pod if not already exists`() {
         val project = ProjectBuilder.builder().build()
@@ -161,14 +185,45 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
-        project.installSentryForCocoapods(project.extensions.getByName("cocoapods") as CocoapodsAutoInstallExtension)
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java) as ExtensionAware
+        val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
+        val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
 
-        project.afterEvaluate {
-            val cocoapodsExtension = project.extensions.findByType(CocoapodsExtension::class.java)
-            val sentryPod = cocoapodsExtension?.pods?.findByName("Sentry")
-            assertTrue(sentryPod != null)
-            assertTrue(sentryPod!!.linkOnly)
-        }
+        // Check that it does not exist
+        assertNull(sentryPod)
+
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        plugin.executeConfiguration(project)
+
+        // Check that it now exists
+        val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
+        assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, cocoapodsAutoInstallExtension.sentryCocoaVersion.get())
+        assertTrue(cocoapodsExtension.pods.getByName("Sentry").linkOnly)
+        assertEquals(cocoapodsExtension.pods.getByName("Sentry").extraOpts, listOf("-compiler-option", "-fmodules"))
+    }
+
+    @Test
+    fun `install Sentry pod and prioritize user set version for cocoapods installation`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
+
+        val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java) as ExtensionAware
+        val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
+        val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
+
+        cocoapodsAutoInstallExtension.sentryCocoaVersion.set("10000.0.0")
+
+        // Check that it does not exist
+        assertNull(sentryPod)
+
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        plugin.executeConfiguration(project)
+
+        // Check that it now exists
+        assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "10000.0.0")
     }
 
     @Test
@@ -183,106 +238,31 @@ class SentryPluginTest {
             cocoapods.pod("Sentry") { version = "custom version" }
         }
 
-        // plugin does not configure sentry pod if there is already an existing configuration
-        project.afterEvaluate {
-            val cocoapodsExtension = project.extensions.findByType(CocoapodsExtension::class.java)
-            val pod = cocoapodsExtension?.pods?.findByName("Sentry")
-            assertEquals(pod?.version, "custom version")
-        }
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        plugin.executeConfiguration(project)
+
+        val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
+        assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "custom version")
     }
 
     @Test
-    fun `configureLinkingOptions sets up linker options for apple targets`(@TempDir tempDir: File) {
+    fun `do not install Sentry pod if host is not mac`() {
         val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
-        project.pluginManager.apply {
-            apply("org.jetbrains.kotlin.multiplatform")
-            apply("io.sentry.kotlin.multiplatform.gradle")
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
+            cocoapods.ios.deploymentTarget = "14.1"
+            cocoapods.summary = "Test"
+            cocoapods.homepage = "https://sentry.io"
         }
 
-        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
-        kmpExtension.apply {
-            listOf(
-                iosX64(),
-                iosArm64(),
-                iosSimulatorArm64()
-            ).forEach {
-                it.binaries.framework {
-                    baseName = "shared"
-                    isStatic = false
-                }
-            }
-        }
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        plugin.executeConfiguration(project, hostIsMac = false)
 
-        val file =
-            tempDir.resolve("test/path")
-        file.mkdirs()
-
-        val linkerExtension = project.extensions.getByName("linker") as LinkerExtension
-        linkerExtension.frameworkPath.set(file.absolutePath)
-
-        project.configureLinkingOptions(linkerExtension)
-
-        kmpExtension.apply {
-            val frameworks = appleTargets().map {
-                it.binaries.findFramework(NativeBuildType.DEBUG)
-            }
-            frameworks.forEach {
-                assertTrue(it?.linkerOpts?.contains("-F${file.absolutePath}") ?: false)
-            }
-        }
-    }
-
-    @Test
-    fun `findXcodeprojFile returns xcodeproj file when it exists`(@TempDir tempDir: File) {
-        val xcodeprojFile = File(tempDir, "TestProject.xcodeproj")
-        xcodeprojFile.mkdir()
-
-        val result = findXcodeprojFile(tempDir)
-
-        assertEquals(xcodeprojFile, result)
-    }
-
-    @Test
-    fun `findXcodeprojFile returns null when no xcodeproj file exists`(@TempDir tempDir: File) {
-        val result = findXcodeprojFile(tempDir)
-
-        assertNull(result)
-    }
-
-    @Test
-    fun `findXcodeprojFile ignores build and DerivedData directories`(@TempDir tempDir: File) {
-        File(tempDir, "build").mkdir()
-        File(tempDir, "DerivedData").mkdir()
-        val xcodeprojFile = File(tempDir, "TestProject.xcodeproj")
-        xcodeprojFile.mkdir()
-
-        val result = findXcodeprojFile(tempDir)
-
-        assertEquals(xcodeprojFile, result)
-    }
-
-    @Test
-    fun `findXcodeprojFile searches subdirectories`(@TempDir tempDir: File) {
-        val subDir = File(tempDir, "subdir")
-        subDir.mkdir()
-        val xcodeprojFile = File(subDir, "TestProject.xcodeproj")
-        xcodeprojFile.mkdir()
-
-        val result = findXcodeprojFile(tempDir)
-
-        assertEquals(xcodeprojFile, result)
-    }
-
-    @Test
-    fun `findXcodeprojFile returns first xcodeproj file found`(@TempDir tempDir: File) {
-        val xcodeprojFile1 = File(tempDir, "TestProject1.xcodeproj")
-        xcodeprojFile1.mkdir()
-        val xcodeprojFile2 = File(tempDir, "TestProject2.xcodeproj")
-        xcodeprojFile2.mkdir()
-
-        val result = findXcodeprojFile(tempDir)
-
-        assertEquals(xcodeprojFile1, result)
+        val cocoapodsExtension = (kmpExtension as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java)
+        assertNull(cocoapodsExtension.pods.findByName("Sentry"))
     }
 }

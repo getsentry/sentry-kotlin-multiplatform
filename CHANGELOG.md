@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixes
+
+- [Gradle Plugin]: Architecture folder name missmatch when using SPM and framework path searching ([#320](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/320))
+
 ### Dependencies
 
 - Bump Java SDK from v7.16.0 to v7.18.1 ([#295](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/295), [#299](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/299))

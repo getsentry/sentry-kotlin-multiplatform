@@ -7,12 +7,8 @@ import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
-import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
-import java.io.File
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -43,26 +39,40 @@ class SentryPlugin : Plugin<Project> {
             )
 
             afterEvaluate {
-                val hasCocoapodsPlugin =
-                    project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
-
-                if (sentryExtension.autoInstall.enabled.get()) {
-                    if (sentryExtension.autoInstall.commonMain.enabled.get()) {
-                        installSentryForKmp(sentryExtension.autoInstall.commonMain)
-                    }
-
-                    if (hasCocoapodsPlugin && sentryExtension.autoInstall.cocoapods.enabled.get()) {
-                        installSentryForCocoapods(sentryExtension.autoInstall.cocoapods)
-                    }
-                }
-
-                // If the user is not using the cocoapods plugin, linking to the framework is not
-                // automatic so we have to configure it in the plugin.
-                if (!hasCocoapodsPlugin) {
-                    configureLinkingOptions(sentryExtension.linker)
-                }
+                executeConfiguration(project)
             }
         }
+
+    internal fun executeConfiguration(project: Project, hostIsMac: Boolean = HostManager.hostIsMac) {
+        val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
+        val hasCocoapodsPlugin = project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
+
+        if (sentryExtension.autoInstall.enabled.get()) {
+            val autoInstall = sentryExtension.autoInstall
+
+            if (autoInstall.commonMain.enabled.get()) {
+                project.installSentryForKmp(autoInstall.commonMain)
+            }
+
+            if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
+                project.installSentryForCocoapods(autoInstall.cocoapods)
+            }
+        }
+
+        if (hostIsMac && !hasCocoapodsPlugin) {
+            project.logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
+
+            val kmpExtension = project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
+            val appleTargets = kmpExtension?.appleTargets()?.toList()
+                ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
+
+            CocoaFrameworkLinker(
+                logger = project.logger,
+                pathResolver = FrameworkPathResolver(project),
+                binaryLinker = FrameworkLinker(project.logger)
+            ).configure(appleTargets)
+        }
+    }
 
     companion object {
         internal val logger by lazy {
@@ -120,127 +130,3 @@ internal fun Project.installSentryForCocoapods(
         }
     }
 }
-
-@Suppress("CyclomaticComplexMethod")
-internal fun Project.configureLinkingOptions(linkerExtension: LinkerExtension) {
-    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
-        logger.info("Skipping linker configuration.")
-        return
-    }
-
-    var derivedDataPath = ""
-    val frameworkPath = linkerExtension.frameworkPath.orNull
-    if (frameworkPath == null) {
-        val customXcodeprojPath = linkerExtension.xcodeprojPath.orNull
-        derivedDataPath = findDerivedDataPath(customXcodeprojPath)
-    }
-
-    kmpExtension.appleTargets().all { target ->
-        val frameworkArchitecture = target.toSentryFrameworkArchitecture() ?: run {
-            logger.warn("Skipping target ${target.name} - unsupported architecture.")
-            return@all
-        }
-
-        val dynamicFrameworkPath: String
-        val staticFrameworkPath: String
-
-        if (frameworkPath?.isNotEmpty() == true) {
-            dynamicFrameworkPath = frameworkPath
-            staticFrameworkPath = frameworkPath
-        } else {
-            @Suppress("MaxLineLength")
-            dynamicFrameworkPath =
-                "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry-Dynamic/Sentry-Dynamic.xcframework/$frameworkArchitecture"
-            @Suppress("MaxLineLength")
-            staticFrameworkPath =
-                "$derivedDataPath/SourcePackages/artifacts/sentry-cocoa/Sentry/Sentry.xcframework/$frameworkArchitecture"
-        }
-
-        val dynamicFrameworkExists = File(dynamicFrameworkPath).exists()
-        val staticFrameworkExists = File(staticFrameworkPath).exists()
-
-        if (!dynamicFrameworkExists && !staticFrameworkExists) {
-            throw GradleException(
-                "Sentry Cocoa Framework not found at $dynamicFrameworkPath or $staticFrameworkPath"
-            )
-        }
-
-        target.binaries.all binaries@{ binary ->
-            if (binary is TestExecutable) {
-                // both dynamic and static frameworks will work for tests
-                val finalFrameworkPath =
-                    if (dynamicFrameworkExists) dynamicFrameworkPath else staticFrameworkPath
-                binary.linkerOpts("-rpath", finalFrameworkPath, "-F$finalFrameworkPath")
-            }
-
-            if (binary is Framework) {
-                val finalFrameworkPath = when {
-                    binary.isStatic && staticFrameworkExists -> staticFrameworkPath
-                    !binary.isStatic && dynamicFrameworkExists -> dynamicFrameworkPath
-                    else -> {
-                        logger.warn("Linking to framework failed, no sentry framework found for target ${target.name}")
-                        return@binaries
-                    }
-                }
-                binary.linkerOpts("-F$finalFrameworkPath")
-                logger.info("Linked framework from $finalFrameworkPath")
-            }
-        }
-    }
-}
-
-/**
- * Transforms a Kotlin Multiplatform target name to the architecture name that is found inside
- * Sentry's framework directory.
- */
-internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): String? {
-    return when (name) {
-        "iosSimulatorArm64", "iosX64" -> "ios-arm64_x86_64-simulator"
-        "iosArm64" -> "ios-arm64"
-        "macosArm64", "macosX64" -> "macos-arm64_x86_64"
-        "tvosSimulatorArm64", "tvosX64" -> "tvos-arm64_x86_64-simulator"
-        "tvosArm64" -> "tvos-arm64"
-        "watchosArm32", "watchosArm64" -> "watchos-arm64_arm64_32_armv7k"
-        "watchosSimulatorArm64", "watchosX64" -> "watchos-arm64_i386_x86_64-simulator"
-        else -> null
-    }
-}
-
-private fun Project.findDerivedDataPath(customXcodeprojPath: String? = null): String {
-    val xcodeprojPath = customXcodeprojPath ?: findXcodeprojFile(rootDir)?.absolutePath
-        ?: throw GradleException("Xcode project file not found")
-
-    return providers.of(DerivedDataPathValueSource::class.java) {
-        it.parameters.xcodeprojPath.set(xcodeprojPath)
-    }.get()
-}
-
-/**
- * Searches for a xcodeproj starting from the root directory. This function will only work for
- * monorepos and if it is not, the user needs to provide the custom path through the
- * [LinkerExtension] configuration.
- */
-internal fun findXcodeprojFile(dir: File): File? {
-    val ignoredDirectories = listOf("build", "DerivedData")
-
-    fun searchDirectory(directory: File): File? {
-        val files = directory.listFiles() ?: return null
-
-        return files.firstNotNullOfOrNull { file ->
-            when {
-                file.name in ignoredDirectories -> null
-                file.extension == "xcodeproj" -> file
-                file.isDirectory -> searchDirectory(file)
-                else -> null
-            }
-        }
-    }
-
-    return searchDirectory(dir)
-}
-
-internal fun KotlinMultiplatformExtension.appleTargets() =
-    targets.withType(KotlinNativeTarget::class.java).matching {
-        it.konanTarget.family.isAppleFamily
-    }

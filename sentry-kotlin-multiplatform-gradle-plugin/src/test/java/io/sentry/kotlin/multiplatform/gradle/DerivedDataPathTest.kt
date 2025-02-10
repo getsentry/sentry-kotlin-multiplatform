@@ -3,18 +3,16 @@ package io.sentry.kotlin.multiplatform.gradle
 import io.mockk.every
 import io.mockk.mockk
 import org.gradle.api.Action
-import org.gradle.api.GradleException
 import org.gradle.process.ExecOperations
 import org.gradle.process.ExecResult
 import org.gradle.process.ExecSpec
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayOutputStream
 
 class DerivedDataPathTest {
-
     private lateinit var valueSource: DerivedDataPathValueSource
     private lateinit var execOperations: ExecOperations
     private lateinit var parameters: DerivedDataPathValueSource.Parameters
@@ -72,7 +70,7 @@ class DerivedDataPathTest {
     }
 
     @Test
-    fun `obtain should throw GradleException when BUILD_DIR is not found`() {
+    fun `obtain should return null when BUILD_DIR is not found`() {
         val xcodebuildOutput = "Some output without BUILD_DIR"
 
         every { parameters.xcodeprojPath } returns mockk {
@@ -102,8 +100,6 @@ class DerivedDataPathTest {
             }
         }
 
-        assertThrows<GradleException> {
-            valueSource.obtain()
-        }
+        assertNull(valueSource.obtain())
     }
 }
