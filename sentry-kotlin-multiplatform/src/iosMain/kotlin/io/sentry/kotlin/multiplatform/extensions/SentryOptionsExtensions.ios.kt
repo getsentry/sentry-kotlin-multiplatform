@@ -28,7 +28,7 @@ internal fun SentryOptions.toIosOptionsConfiguration(): (CocoaSentryOptions?) ->
             kmpOptions.experimental.sessionReplay.sessionSampleRate?.let { setSessionSampleRate(it.toFloat()) }
             setQuality(kmpOptions.experimental.sessionReplay.quality.ordinal.toLong())
         }
-        cocoaOptions.experimental().setSessionReplay(replayOptions)
+        cocoaOptions.setSessionReplay(replayOptions)
     } ?: run {
         // Log a warning if options is null
         // TODO: Replace with actual logging when a logger is available
