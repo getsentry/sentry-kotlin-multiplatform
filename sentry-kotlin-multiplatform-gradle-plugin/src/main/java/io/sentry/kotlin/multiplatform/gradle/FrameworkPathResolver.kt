@@ -86,7 +86,7 @@ class CustomPathStrategy(
         if (linker.frameworkPath.orNull != null && result == FrameworkPaths.NONE) {
             project.logger.warn(
                 "Custom framework path has been set manually but could not be found. " +
-                        "Trying to resolve framework paths using other strategies."
+                    "Trying to resolve framework paths using other strategies."
             )
         }
         return result
