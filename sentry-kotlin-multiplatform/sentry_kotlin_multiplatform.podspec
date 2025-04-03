@@ -8,10 +8,10 @@ Pod::Spec.new do |spec|
     spec.summary                  = 'Official Sentry SDK Kotlin Multiplatform'
     spec.vendored_frameworks      = 'build/cocoapods/framework/sentry_kotlin_multiplatform.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target = '11.0'
-    spec.osx.deployment_target = '10.13'
-    spec.tvos.deployment_target = '11.0'
-    spec.watchos.deployment_target = '4.0'
+    spec.ios.deployment_target    = '11.0'
+    spec.osx.deployment_target    = '10.13'
+    spec.tvos.deployment_target    = '11.0'
+    spec.watchos.deployment_target    = '4.0'
     spec.dependency 'Sentry', '8.48.0'
                 
     if !Dir.exist?('build/cocoapods/framework/sentry_kotlin_multiplatform.framework') || Dir.empty?('build/cocoapods/framework/sentry_kotlin_multiplatform.framework')
@@ -24,6 +24,10 @@ Pod::Spec.new do |spec|
 
         Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
     end
+                
+    spec.xcconfig = {
+        'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO',
+    }
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':sentry-kotlin-multiplatform',
