@@ -110,6 +110,10 @@ jobs:
 #      - name: Cached Gradle
 #        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
 #
+      # temporary for testing
+      - name: Remove DerivedData first
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
       - name: Test samples
         run: |
           ./gradlew allTests -p sentry-samples/kmp-app-spm
