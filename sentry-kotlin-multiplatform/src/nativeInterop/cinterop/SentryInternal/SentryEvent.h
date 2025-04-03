@@ -22,7 +22,7 @@
 
 @interface SentryEvent : NSObject
 
-@property (nonatomic, assign) BOOL isCrashEvent;
+@property (nonatomic, assign) BOOL isFatalEvent;
 
 @property (nonatomic, strong) SentryId *eventId;
 
