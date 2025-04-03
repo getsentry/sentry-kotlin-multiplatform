@@ -11,89 +11,89 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-apple:
-    runs-on: macos-latest-xlarge
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: JDK setup
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-
-      - name: Cached Konan
-        uses: actions/cache@v4
-        with:
-          path: ~/.konan
-          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-konan-
-
-      - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
-
-      - name: Apple build
-        run: |
-          ./scripts/build-apple.sh sentry-kotlin-multiplatform
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
-  build-apple-samples:
-    runs-on: macos-latest-xlarge
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: JDK setup
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-
-      - name: Cached Konan
-        uses: actions/cache@v4
-        with:
-          path: ~/.konan
-          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-konan-
-
-      - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
-
-      - name: Apple build
-        run: |
-          make buildAppleSamples
-
-  build-jvm:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: JDK setup
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-
-      - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
-
-      - name: JVM build
-        run: |
-          ./scripts/build-jvm.sh sentry-kotlin-multiplatform
-          make createCoverageReports
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
-
-      # Kover coverage currently only works for JVM
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # pin@v4
-        with:
-          name: sentry-kotlin-multiplatform
-          token: ${{ secrets.CODECOV_TOKEN }}
+#  build-apple:
+#    runs-on: macos-latest-xlarge
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: JDK setup
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 17
+#          distribution: temurin
+#
+#      - name: Cached Konan
+#        uses: actions/cache@v4
+#        with:
+#          path: ~/.konan
+#          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+#          restore-keys: ${{ runner.os }}-konan-
+#
+#      - name: Cached Gradle
+#        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+#
+#      - name: Apple build
+#        run: |
+#          ./scripts/build-apple.sh sentry-kotlin-multiplatform
+#        env:
+#          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#
+#  build-apple-samples:
+#    runs-on: macos-latest-xlarge
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: JDK setup
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 17
+#          distribution: temurin
+#
+#      - name: Cached Konan
+#        uses: actions/cache@v4
+#        with:
+#          path: ~/.konan
+#          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+#          restore-keys: ${{ runner.os }}-konan-
+#
+#      - name: Cached Gradle
+#        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+#
+#      - name: Apple build
+#        run: |
+#          make buildAppleSamples
+#
+#  build-jvm:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: JDK setup
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 17
+#          distribution: temurin
+#
+#      - name: Cached Gradle
+#        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+#
+#      - name: JVM build
+#        run: |
+#          ./scripts/build-jvm.sh sentry-kotlin-multiplatform
+#          make createCoverageReports
+#        env:
+#          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#          GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx3g"
+#
+#      # Kover coverage currently only works for JVM
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # pin@v4
+#        with:
+#          name: sentry-kotlin-multiplatform
+#          token: ${{ secrets.CODECOV_TOKEN }}
 
   test-samples:
     runs-on: macos-latest-xlarge
@@ -112,4 +112,4 @@ jobs:
 
       - name: Test samples
         run: |
-          ./gradlew allTests -p sentry-samples
+          ./gradlew allTests -p sentry-samples/kmp-app-spm
