@@ -12,7 +12,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
     }
     nativeSdkName = BuildKonfig.SENTRY_KMP_NATIVE_ANDROID_SDK_NAME
 }
-a
+
 internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
     toAndroidSentryOptionsCallback()
 
