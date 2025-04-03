@@ -71,7 +71,7 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
         get() = androidOptions.isAttachViewHierarchy
 
     override val sessionReplay: AndroidSentryReplayOptions
-        get() = androidOptions.experimental.sessionReplay
+        get() = androidOptions.sessionReplay
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toAndroidSentryOptionsCallback().invoke(androidOptions)

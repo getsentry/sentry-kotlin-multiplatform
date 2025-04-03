@@ -21,15 +21,15 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     androidOptions.anrTimeoutIntervalMillis = kmpOptions.anrTimeoutIntervalMillis
 
     // Replay options
-    androidOptions.experimental.sessionReplay.maskAllText =
+    androidOptions.sessionReplay.maskAllText =
         kmpOptions.experimental.sessionReplay.maskAllText
-    androidOptions.experimental.sessionReplay.maskAllImages =
+    androidOptions.sessionReplay.maskAllImages =
         kmpOptions.experimental.sessionReplay.maskAllImages
-    androidOptions.experimental.sessionReplay.sessionSampleRate =
+    androidOptions.sessionReplay.sessionSampleRate =
         kmpOptions.experimental.sessionReplay.sessionSampleRate
-    androidOptions.experimental.sessionReplay.onErrorSampleRate =
+    androidOptions.sessionReplay.onErrorSampleRate =
         kmpOptions.experimental.sessionReplay.onErrorSampleRate
-    androidOptions.experimental.sessionReplay.quality =
+    androidOptions.sessionReplay.quality =
         kmpOptions.experimental.sessionReplay.quality.toAndroidSentryQuality()
 
     // kForEach solves an issue with linter where it thinks forEach is the Java version

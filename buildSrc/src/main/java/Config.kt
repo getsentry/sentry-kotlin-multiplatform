@@ -32,7 +32,7 @@ object Config {
     object Libs {
         val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib"
 
-        val sentryJavaVersion = "7.18.1"
+        val sentryJavaVersion = "8.6.0"
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
@@ -67,7 +67,7 @@ object Config {
     object Android {
         private val sdkVersion = 33
 
-        val minSdkVersion = 19
+        val minSdkVersion = 21
         val targetSdkVersion = sdkVersion
         val compileSdkVersion = sdkVersion
     }

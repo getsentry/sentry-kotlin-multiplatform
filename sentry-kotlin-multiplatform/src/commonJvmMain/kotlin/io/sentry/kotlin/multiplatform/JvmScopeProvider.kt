@@ -5,6 +5,7 @@ import io.sentry.kotlin.multiplatform.extensions.toJvmSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpUser
+import io.sentry.kotlin.multiplatform.extensions.toMap
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
@@ -31,7 +32,7 @@ internal class JvmScopeProvider(private val scope: JvmIScope) : Scope {
     }
 
     override fun getContexts(): MutableMap<String, Any> {
-        return scope.contexts
+        return scope.contexts.toMap().toMutableMap()
     }
 
     override fun getTags(): MutableMap<String, String> {
