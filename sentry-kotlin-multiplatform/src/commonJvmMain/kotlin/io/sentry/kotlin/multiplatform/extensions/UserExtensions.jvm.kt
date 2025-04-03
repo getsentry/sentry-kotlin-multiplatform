@@ -9,7 +9,7 @@ internal fun User.toJvmUser() = JvmUser().apply {
     username = scope.username
     email = scope.email
     ipAddress = scope.ipAddress
-    others = scope.other?.toMutableMap()
+    data = scope.other?.toMutableMap()
     unknown = scope.unknown?.toMutableMap()
 }
 
@@ -19,6 +19,6 @@ internal fun JvmUser.toKmpUser() = User().apply {
     username = scope.username
     email = scope.email
     ipAddress = scope.ipAddress
-    other = scope.others?.toMutableMap()
+    other = scope.data?.toMutableMap()
     unknown = scope.unknown?.toMutableMap()
 }

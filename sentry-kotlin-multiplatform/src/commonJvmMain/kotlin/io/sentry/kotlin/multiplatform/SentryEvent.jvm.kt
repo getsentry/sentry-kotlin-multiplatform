@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.extensions.toMap
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKmpMessage
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryException
@@ -34,7 +35,7 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         user = jvmSentryEvent.user?.toKmpUser()
         serverName = jvmSentryEvent.serverName
         dist = jvmSentryEvent.dist
-        contexts = jvmSentryEvent.contexts
+        contexts = jvmSentryEvent.contexts.toMap()
         jvmSentryEvent.fingerprints?.let { fingerprint = it }
         jvmSentryEvent.exceptions?.let { exceptions = it.map { it.toKmpSentryException() }.toMutableList() }
         jvmSentryEvent.breadcrumbs?.let { breadcrumbs = it.map { it.toKmpBreadcrumb() }.toMutableList() }
