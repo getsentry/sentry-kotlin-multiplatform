@@ -39,7 +39,7 @@ private typealias CocoapodsSentryThread = cocoapods.Sentry.SentryThread
  */
 internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentryEvent? {
     return event?.takeUnless {
-        (it as InternalSentryEvent).isCrashEvent && (
+        (it as InternalSentryEvent).isFatalEvent && (
             it.tags?.containsKey(
                 KOTLIN_CRASH_TAG
             ) ?: false
@@ -75,7 +75,7 @@ internal fun Throwable.asSentryEnvelope(): InternalSentryEnvelope {
     val event = asSentryEvent() as InternalSentryEvent
     val preparedEvent = InternalSentrySDK.currentHub().let { hub ->
         hub.getClient()
-            ?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isCrashEvent = true)
+            ?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isFatalEvent = true)
     } ?: event
     val item = InternalSentryEnvelopeItem(preparedEvent)
     // TODO: pass traceState when enabling performance monitoring for KMP SDK

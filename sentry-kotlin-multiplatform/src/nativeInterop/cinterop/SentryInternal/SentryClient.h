@@ -28,6 +28,6 @@
 - (SentryEvent *_Nullable)prepareEvent:(SentryEvent *_Nonnull)event
                              withScope:(SentryScope *_Nonnull)scope
                 alwaysAttachStacktrace:(BOOL)alwaysAttachStacktrace
-                          isCrashEvent:(BOOL)isCrashEvent;
+                          isFatalEvent:(BOOL)isFatalEvent;
 
 @end
