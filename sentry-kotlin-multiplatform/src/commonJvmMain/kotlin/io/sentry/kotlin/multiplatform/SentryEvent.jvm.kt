@@ -1,11 +1,11 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.extensions.toMap
 import io.sentry.kotlin.multiplatform.extensions.toKmpBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKmpMessage
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryException
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.extensions.toKmpUser
+import io.sentry.kotlin.multiplatform.extensions.toMap
 import io.sentry.kotlin.multiplatform.protocol.Message
 import io.sentry.kotlin.multiplatform.protocol.SentryException
 import io.sentry.kotlin.multiplatform.protocol.SentryId
