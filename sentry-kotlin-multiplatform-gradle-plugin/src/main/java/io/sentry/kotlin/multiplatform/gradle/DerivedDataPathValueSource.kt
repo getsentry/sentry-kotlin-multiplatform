@@ -41,6 +41,7 @@ abstract class DerivedDataPathValueSource :
             )
             it.standardOutput = buildDirOutput
             it.errorOutput = errOutput
+            it.isIgnoreExitValue = true
         }
 
         if (execOperations.exitValue == 0) {
