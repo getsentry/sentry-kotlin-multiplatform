@@ -32,6 +32,6 @@ internal class Fixture {
     val sentryInstance = FakeSentryInstance()
 
     fun getSut(): SentryBridge {
-        return SentryBridge(instance)
+        return SentryBridge(sentryInstance)
     }
 }
