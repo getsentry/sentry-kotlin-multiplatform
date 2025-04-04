@@ -23,7 +23,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
     val existingBeforeSend = cocoa?.beforeSend
     val modifiedBeforeSend: (CocoaSentryEvent?) -> CocoaSentryEvent? = beforeSend@{ event ->
         // Return early if the user's beforeSend returns null
-        if (existingBeforeSend?.invoke(event) == null) {
+        if (existingBeforeSend != null && existingBeforeSend.invoke(event) == null) {
             return@beforeSend null
         }
 
@@ -37,6 +37,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
         sdk["packages"] = packages
         event?.sdk = sdk
 
+        existingBeforeSend?.invoke(event)
         dropKotlinCrashEvent(event)
     }
 
