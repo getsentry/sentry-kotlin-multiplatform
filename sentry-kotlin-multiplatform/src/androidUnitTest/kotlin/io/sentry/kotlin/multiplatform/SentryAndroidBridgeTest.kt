@@ -17,7 +17,7 @@ class SentryAndroidBridgeTest {
     fun `init sets native android sdk name`() {
         val sut = fixture.getSut()
 
-        sut.init {  }
+        sut.init { }
 
         val option = SentryPlatformOptions().apply {
             fixture.sentryInstance.lastConfiguration?.invoke(this)
