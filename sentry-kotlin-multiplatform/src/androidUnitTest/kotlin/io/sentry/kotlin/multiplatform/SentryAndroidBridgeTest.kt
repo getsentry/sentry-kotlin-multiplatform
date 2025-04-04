@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.android.core.SentryAndroidOptions
 import io.sentry.kotlin.multiplatform.fakes.FakeSentryInstance
 import junit.framework.TestCase.assertEquals
 import kotlin.test.BeforeTest
