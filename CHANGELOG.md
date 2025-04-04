@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Miscellaneous
+
+- Update native android sdk name to `sentry.native.android.kmp` ([#353](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/353))
+
 ### Dependencies
 
 - Bump Cocoa SDK from v8.44.0 to v8.48.0 ([#345](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/345))
