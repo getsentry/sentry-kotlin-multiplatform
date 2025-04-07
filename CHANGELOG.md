@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixes
+
+## Unreleased
+
+- Do not throw if exec operation fails ([#360](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/360))
+
 ### Dependencies
 
 - Bump Cocoa SDK from v8.44.0 to v8.48.0 ([#345](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/345))
