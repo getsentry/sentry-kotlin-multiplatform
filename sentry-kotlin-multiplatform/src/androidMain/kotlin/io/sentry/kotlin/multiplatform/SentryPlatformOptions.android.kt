@@ -10,6 +10,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
     if (sdkVersion?.packageSet?.none { it.name == BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME } == true) {
         sdkVersion?.addPackage(BuildKonfig.SENTRY_ANDROID_PACKAGE_NAME, BuildKonfig.SENTRY_ANDROID_VERSION)
     }
+    nativeSdkName = BuildKonfig.SENTRY_KMP_NATIVE_ANDROID_SDK_NAME
 }
 
 internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
