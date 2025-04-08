@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixes
+
+- Do not throw if exec operation fails ([#360](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/360))
+
 ### Miscellaneous
 
 - Update native android sdk name to `sentry.native.android.kmp` ([#353](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/353))
