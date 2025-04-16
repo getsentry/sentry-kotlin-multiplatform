@@ -31,7 +31,7 @@ jobs:
           restore-keys: ${{ runner.os }}-konan-
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: Apple build
         run: |
@@ -59,7 +59,7 @@ jobs:
           restore-keys: ${{ runner.os }}-konan-
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: Apple build
         run: |
@@ -78,7 +78,7 @@ jobs:
           distribution: temurin
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: JVM build
         run: |
@@ -108,7 +108,7 @@ jobs:
           distribution: temurin
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: Test samples
         run: |
