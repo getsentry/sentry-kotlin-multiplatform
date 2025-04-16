@@ -200,11 +200,11 @@ public open class SentryOptions {
      *
      * Beware that experimental options can change at any time.
      */
-    public class ExperimentalOptions {
-        /**
-         * Experimental feature. The options for session replay.
-         * Currently available for **Android** and **iOS**.
-         */
-        public var sessionReplay: SentryReplayOptions = SentryReplayOptions()
-    }
+    public class ExperimentalOptions
+
+    /**
+     * Experimental feature. The options for session replay.
+     * Currently available for **Android** and **iOS**.
+     */
+    public var sessionReplay: SentryReplayOptions = SentryReplayOptions()
 }
