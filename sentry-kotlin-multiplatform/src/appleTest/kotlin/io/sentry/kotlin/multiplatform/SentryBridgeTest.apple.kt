@@ -84,7 +84,6 @@ actual class SentryBridgeTest {
             fixture.sentryInstance.lastConfiguration?.invoke(this)
         }.let { it as CocoaSentryOptions }
 
-
         // THEN
         assert(option.beforeSend != null)
         assert(option.beforeSend!!.invoke(CocoaSentryEvent()) != null)
