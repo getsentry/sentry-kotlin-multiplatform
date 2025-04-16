@@ -7,14 +7,14 @@ import io.sentry.kotlin.multiplatform.SentryEvent
 internal fun CocoaSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): CocoaSentryEvent {
     kmpEvent.level?.let { level = it.toCocoaSentryLevel() }
     kmpEvent.platform?.let { platform = it }
-    message = kmpEvent.message?.toCocoaMessage()
-    logger = kmpEvent.logger
+    kmpEvent.release?.let { releaseName = it }
+    kmpEvent.message?.let { message = it.toCocoaMessage() }
+    kmpEvent.logger?.let { logger = it }
+    kmpEvent.environment?.let { environment = it }
+    kmpEvent.user?.let { user = it.toCocoaUser() }
+    kmpEvent.serverName?.let { serverName = it }
+    kmpEvent.dist?.let { dist = it }
     fingerprint = kmpEvent.fingerprint
-    releaseName = kmpEvent.release
-    environment = kmpEvent.environment
-    user = kmpEvent.user?.toCocoaUser()
-    serverName = kmpEvent.serverName
-    dist = kmpEvent.dist
     breadcrumbs = kmpEvent.breadcrumbs.map { it.toCocoaBreadcrumb() }.toMutableList()
     tags = kmpEvent.tags.toMutableMap()
     eventId = SentryId(kmpEvent.eventId.toString())
