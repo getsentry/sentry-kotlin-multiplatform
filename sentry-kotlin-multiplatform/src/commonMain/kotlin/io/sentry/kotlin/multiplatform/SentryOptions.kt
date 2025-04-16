@@ -186,6 +186,12 @@ public open class SentryOptions {
     public var enableWatchdogTerminationTracking: Boolean = true
 
     /**
+     * The options for session replay.
+     * Currently available for **Android** and **iOS**.
+     */
+    public var sessionReplay: SentryReplayOptions = SentryReplayOptions()
+
+    /**
      * Experimental options for new features, these options are going to be promoted to SentryOptions
      * before GA.
      *
@@ -201,10 +207,4 @@ public open class SentryOptions {
      * Beware that experimental options can change at any time.
      */
     public class ExperimentalOptions
-
-    /**
-     * Experimental feature. The options for session replay.
-     * Currently available for **Android** and **iOS**.
-     */
-    public var sessionReplay: SentryReplayOptions = SentryReplayOptions()
 }
