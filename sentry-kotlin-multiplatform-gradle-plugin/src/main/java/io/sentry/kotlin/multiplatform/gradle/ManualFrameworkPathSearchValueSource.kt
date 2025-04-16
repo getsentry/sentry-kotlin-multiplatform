@@ -50,6 +50,7 @@ abstract class ManualFrameworkPathSearchValueSource :
             )
             it.standardOutput = stdOutput
             it.errorOutput = errOutput
+            it.isIgnoreExitValue = true
         }
 
         val stringOutput = stdOutput.toString("UTF-8")
