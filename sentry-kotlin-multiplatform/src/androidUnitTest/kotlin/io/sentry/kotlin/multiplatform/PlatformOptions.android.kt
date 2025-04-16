@@ -88,7 +88,7 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
     assertEquals(androidOptions.isAnrEnabled, kmpOptions.isAnrEnabled)
     assertEquals(androidOptions.anrTimeoutIntervalMillis, kmpOptions.anrTimeoutIntervalMillis)
 
-    val kmpReplayOptions = kmpOptions.experimental.sessionReplay
+    val kmpReplayOptions = kmpOptions.sessionReplay
     assertViewClassMasking(
         kmpReplayOptions.maskAllText,
         androidOptions.sessionReplay.maskViewClasses,
