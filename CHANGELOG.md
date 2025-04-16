@@ -5,6 +5,7 @@
 ### Fixes
 
 - Do not throw if exec operation fails ([#360](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/360))
+- `initWithPlatforms` not sending events if `beforeSend` is not set on iOS ([#366](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/366))
 
 ### Miscellaneous
 
