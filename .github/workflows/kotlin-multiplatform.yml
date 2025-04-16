@@ -31,7 +31,7 @@ jobs:
           restore-keys: ${{ runner.os }}-konan-
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: Apple build
         run: |
@@ -59,7 +59,7 @@ jobs:
           restore-keys: ${{ runner.os }}-konan-
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: Apple build
         run: |
@@ -78,7 +78,7 @@ jobs:
           distribution: temurin
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: JVM build
         run: |
@@ -90,7 +90,7 @@ jobs:
 
       # Kover coverage currently only works for JVM
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be # pin@v4
+        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # pin@v4
         with:
           name: sentry-kotlin-multiplatform
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -108,7 +108,7 @@ jobs:
           distribution: temurin
 
       - name: Cached Gradle
-        uses: gradle/gradle-build-action@842c587ad8aa4c68eeba24c396e15af4c2e9f30a
+        uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1
 
       - name: Test samples
         run: |

@@ -32,11 +32,11 @@ object Config {
     object Libs {
         val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib"
 
-        val sentryJavaVersion = "8.6.0"
+        val sentryJavaVersion = "8.8.0"
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
-        val sentryCocoaVersion = "8.48.0"
+        val sentryCocoaVersion = "8.49.0"
         val sentryCocoa = "Sentry"
 
         object Samples {
@@ -83,6 +83,7 @@ object Config {
         val kmpCocoaSdkName = "sentry.cocoa.kmp"
         val kmpJavaSdkName = "sentry.java.kmp"
         val kmpAndroidSdkName = "sentry.java.android.kmp"
+        val kmpNativeAndroidSdkName = "sentry.native.android.kmp"
         val javaPackageName = "maven:io.sentry:sentry"
         val androidPackageName = "maven:io.sentry:sentry-android"
         val cocoaPackageName = "cocoapods:sentry-cocoa"
