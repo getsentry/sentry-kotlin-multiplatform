@@ -90,6 +90,19 @@ actual class SentryBridgeTest {
     }
 
     @Test
+    actual fun `default beforeSend in init does not drop the event after prepareForInit`() {
+        fixture.sut.init { }
+
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+            prepareForInit()
+        }.let { it as CocoaSentryOptions }
+
+        assert(option.beforeSend != null)
+        assert(option.beforeSend!!.invoke(CocoaSentryEvent()) != null)
+    }
+
+    @Test
     actual fun `init sets the SDK packages`() {
         // GIVEN
         fixture.sut.init { }
