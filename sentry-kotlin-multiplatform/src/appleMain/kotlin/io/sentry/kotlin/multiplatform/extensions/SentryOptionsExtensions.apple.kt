@@ -56,7 +56,6 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
             event
         } else {
             event?.let { cocoaEvent ->
-                println("before release1: ${cocoaEvent.releaseName}")
                 val beforeKmpEvent = SentryEvent(cocoaEvent)
                 val beforeKmpEventCopy = SentryEvent(cocoaEvent)
                 kmpOptions.beforeSend
