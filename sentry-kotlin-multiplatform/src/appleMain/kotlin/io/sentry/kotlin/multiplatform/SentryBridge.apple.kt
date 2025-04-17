@@ -20,8 +20,12 @@ public actual abstract class Context
 // like on JVM and Android, we may do that later on if needed.
 internal actual fun SentryPlatformOptions.prepareForInit() {
     val cocoa = this as? CocoaSentryOptions
-    val existingBeforeSend = cocoa?.beforeSend
+    val userDefinedBeforeSend = cocoa?.beforeSend
     val modifiedBeforeSend: (CocoaSentryEvent?) -> CocoaSentryEvent? = beforeSend@{ event ->
+        // Return early if the user's beforeSend returns null
+        if (userDefinedBeforeSend != null && userDefinedBeforeSend.invoke(event) == null) {
+            return@beforeSend null
+        }
         val cocoaName = BuildKonfig.SENTRY_COCOA_PACKAGE_NAME
         val cocoaVersion = BuildKonfig.SENTRY_COCOA_VERSION
 
@@ -32,9 +36,6 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
         sdk["packages"] = packages
         event?.sdk = sdk
 
-        if (existingBeforeSend?.invoke(event) == null) {
-            return@beforeSend null
-        }
         dropKotlinCrashEvent(event)
     }
 
