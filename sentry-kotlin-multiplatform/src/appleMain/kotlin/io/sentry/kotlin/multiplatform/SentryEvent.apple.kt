@@ -10,7 +10,7 @@ import io.sentry.kotlin.multiplatform.protocol.SentryException
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 
-public actual open class SentryEvent actual constructor() : SentryBaseEvent() {
+public actual class SentryEvent actual constructor() : SentryBaseEvent() {
     public actual var level: SentryLevel? = null
     public actual var message: Message? = null
     public actual var logger: String? = null
