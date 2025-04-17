@@ -43,9 +43,12 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
         if (kmpOptions.beforeSend == null) {
             jvmSentryEvent
         } else {
-            kmpOptions.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
-                jvmSentryEvent.applyKmpEvent(it)
+            val beforeKmpEvent = SentryEvent(jvmSentryEvent)
+            val beforeKmpEventCopy = SentryEvent(jvmSentryEvent)
+            kmpOptions.beforeSend?.invoke(beforeKmpEventCopy)?.let { afterKmpEvent ->
+                jvmSentryEvent.updateFromKmpEventChanges(beforeKmpEvent, afterKmpEvent)
             }
         }
     }
 }
+

@@ -23,7 +23,9 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     kmpOptions.environment?.let {
         cocoaOptions.environment = it
     }
-    cocoaOptions.releaseName = kmpOptions.release
+    kmpOptions.release?.let{
+        cocoaOptions.releaseName = it
+    }
     cocoaOptions.debug = kmpOptions.debug
     cocoaOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis.convert()
     cocoaOptions.enableAutoSessionTracking = kmpOptions.enableAutoSessionTracking
@@ -53,9 +55,15 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
         if (kmpOptions.beforeSend == null) {
             event
         } else {
-            event?.let { SentryEvent(it) }?.let { unwrappedEvent ->
-                val result = kmpOptions.beforeSend?.invoke(unwrappedEvent)
-                result?.let { event.applyKmpEvent(it) }
+            event?.let { cocoaEvent ->
+                println("before release1: ${cocoaEvent.releaseName}")
+                val beforeKmpEvent = SentryEvent(cocoaEvent)
+                val beforeKmpEventCopy = SentryEvent(cocoaEvent)
+                kmpOptions.beforeSend
+                    ?.invoke(beforeKmpEventCopy)
+                    ?.let { afterEvent ->
+                        cocoaEvent.updateFromKmpEventChanges(beforeKmpEvent, afterEvent)
+                    }
             }
         }
     }
