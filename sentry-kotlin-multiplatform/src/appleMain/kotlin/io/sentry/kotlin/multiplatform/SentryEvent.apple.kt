@@ -25,7 +25,7 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
 
     public constructor(cocoaSentryEvent: CocoaSentryEvent) : this() {
         eventId = SentryId(cocoaSentryEvent.eventId.toString())
-        level = cocoaSentryEvent.level?.toKmpSentryLevel()
+        level = cocoaSentryEvent.level.toKmpSentryLevel()
         message = cocoaSentryEvent.message?.toKmpMessage()
         logger = cocoaSentryEvent.logger
         release = cocoaSentryEvent.releaseName

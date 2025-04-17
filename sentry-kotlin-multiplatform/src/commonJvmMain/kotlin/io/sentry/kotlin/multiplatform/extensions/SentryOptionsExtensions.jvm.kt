@@ -51,4 +51,3 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
         }
     }
 }
-

@@ -23,7 +23,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     kmpOptions.environment?.let {
         cocoaOptions.environment = it
     }
-    kmpOptions.release?.let{
+    kmpOptions.release?.let {
         cocoaOptions.releaseName = it
     }
     cocoaOptions.debug = kmpOptions.debug
