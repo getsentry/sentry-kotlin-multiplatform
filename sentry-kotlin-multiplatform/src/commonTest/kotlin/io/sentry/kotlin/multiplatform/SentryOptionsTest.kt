@@ -127,11 +127,11 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(2000L, options.appHangTimeoutIntervalMillis)
         assertTrue(options.isAnrEnabled)
         assertEquals(5000L, options.anrTimeoutIntervalMillis)
-        assertNull(options.experimental.sessionReplay.onErrorSampleRate)
-        assertNull(options.experimental.sessionReplay.sessionSampleRate)
-        assertTrue(options.experimental.sessionReplay.maskAllText)
-        assertTrue(options.experimental.sessionReplay.maskAllImages)
-        assertEquals(SentryReplayOptions.Quality.MEDIUM, options.experimental.sessionReplay.quality)
+        assertNull(options.sessionReplay.onErrorSampleRate)
+        assertNull(options.sessionReplay.sessionSampleRate)
+        assertTrue(options.sessionReplay.maskAllText)
+        assertTrue(options.sessionReplay.maskAllImages)
+        assertEquals(SentryReplayOptions.Quality.MEDIUM, options.sessionReplay.quality)
         assertTrue(options.enableWatchdogTerminationTracking)
     }
 
@@ -158,11 +158,11 @@ class SentryOptionsTest : BaseSentryTest() {
             isAnrEnabled = false
             anrTimeoutIntervalMillis = 1000L
             enableWatchdogTerminationTracking = false
-            experimental.sessionReplay.onErrorSampleRate = 0.5
-            experimental.sessionReplay.sessionSampleRate = 0.5
-            experimental.sessionReplay.maskAllText = false
-            experimental.sessionReplay.maskAllImages = false
-            experimental.sessionReplay.quality = SentryReplayOptions.Quality.LOW
+            sessionReplay.onErrorSampleRate = 0.5
+            sessionReplay.sessionSampleRate = 0.5
+            sessionReplay.maskAllText = false
+            sessionReplay.maskAllImages = false
+            sessionReplay.quality = SentryReplayOptions.Quality.LOW
         }
 
         val platformOptions = createPlatformOptions()

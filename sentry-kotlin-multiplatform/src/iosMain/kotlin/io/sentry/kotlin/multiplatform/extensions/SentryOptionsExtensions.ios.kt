@@ -20,13 +20,13 @@ internal fun SentryOptions.toIosOptionsConfiguration(): (CocoaSentryOptions?) ->
             dictionary = mapOf(
                 // Setting the onErrorSampleRate like this, using setOnErrorSampleRate
                 // crashes on compose multiplatform for some unknown reason
-                "errorSampleRate" to kmpOptions.experimental.sessionReplay.onErrorSampleRate?.toFloat()
+                "errorSampleRate" to kmpOptions.sessionReplay.onErrorSampleRate?.toFloat()
             )
         ).apply {
-            setMaskAllText(kmpOptions.experimental.sessionReplay.maskAllText)
-            setMaskAllImages(kmpOptions.experimental.sessionReplay.maskAllImages)
-            kmpOptions.experimental.sessionReplay.sessionSampleRate?.let { setSessionSampleRate(it.toFloat()) }
-            setQuality(kmpOptions.experimental.sessionReplay.quality.ordinal.toLong())
+            setMaskAllText(kmpOptions.sessionReplay.maskAllText)
+            setMaskAllImages(kmpOptions.sessionReplay.maskAllImages)
+            kmpOptions.sessionReplay.sessionSampleRate?.let { setSessionSampleRate(it.toFloat()) }
+            setQuality(kmpOptions.sessionReplay.quality.ordinal.toLong())
         }
         cocoaOptions.setSessionReplay(replayOptions)
     } ?: run {
