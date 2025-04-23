@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Feature
+
+- Add `sendDefaultPii` option ([#377](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/377))
+
 ## 0.12.0
 
 ### Feature
