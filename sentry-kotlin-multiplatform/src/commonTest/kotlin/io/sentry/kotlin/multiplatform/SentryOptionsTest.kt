@@ -133,6 +133,7 @@ class SentryOptionsTest : BaseSentryTest() {
         assertTrue(options.sessionReplay.maskAllImages)
         assertEquals(SentryReplayOptions.Quality.MEDIUM, options.sessionReplay.quality)
         assertTrue(options.enableWatchdogTerminationTracking)
+        assertFalse(options.sendDefaultPii)
     }
 
     @Test
@@ -163,6 +164,7 @@ class SentryOptionsTest : BaseSentryTest() {
             sessionReplay.maskAllText = false
             sessionReplay.maskAllImages = false
             sessionReplay.quality = SentryReplayOptions.Quality.LOW
+            sendDefaultPii = true
         }
 
         val platformOptions = createPlatformOptions()
