@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.12.0
+
+### Feature
+
+- Move replay options out of experimental ([#367](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/367))
+  - You can now access the replay options via `options.sessionReplay`
 
 ### Fixes
 
@@ -44,8 +49,8 @@
 ```kotlin
 Sentry.init { options ->
   // Adjust these values for production
-  options.experimental.sessionReplay.onErrorSampleRate = 1.0
-  options.experimental.sessionReplay.sessionSampleRate = 1.0
+  options.sessionReplay.onErrorSampleRate = 1.0
+  options.sessionReplay.sessionSampleRate = 1.0
 }
 ```
 - Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))

@@ -185,6 +185,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getRelease ()Ljava/lang/String;
 	public final fun getSampleRate ()Ljava/lang/Double;
 	public final fun getSdk ()Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
+	public final fun getSessionReplay ()Lio/sentry/kotlin/multiplatform/SentryReplayOptions;
 	public final fun getSessionTrackingIntervalMillis ()J
 	public final fun getTracesSampleRate ()Ljava/lang/Double;
 	public final fun isAnrEnabled ()Z
@@ -213,14 +214,13 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setRelease (Ljava/lang/String;)V
 	public final fun setSampleRate (Ljava/lang/Double;)V
 	public final fun setSdk (Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;)V
+	public final fun setSessionReplay (Lio/sentry/kotlin/multiplatform/SentryReplayOptions;)V
 	public final fun setSessionTrackingIntervalMillis (J)V
 	public final fun setTracesSampleRate (Ljava/lang/Double;)V
 }
 
 public final class io/sentry/kotlin/multiplatform/SentryOptions$ExperimentalOptions {
 	public fun <init> ()V
-	public final fun getSessionReplay ()Lio/sentry/kotlin/multiplatform/SentryReplayOptions;
-	public final fun setSessionReplay (Lio/sentry/kotlin/multiplatform/SentryReplayOptions;)V
 }
 
 public final class io/sentry/kotlin/multiplatform/SentryReplayOptions {
