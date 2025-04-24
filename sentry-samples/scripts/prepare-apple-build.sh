@@ -16,7 +16,7 @@ SENTRY_PROJECT = $project_slug
 SENTRY_AUTH_TOKEN = $auth_token"
 proj_root="$PWD"
 
-dirs=$(find "$proj_root" -type f -name "Info.plist" -exec dirname {} \; | grep -E 'kmp-app-(cocoapods|spm|mvvm-di)/iosApp' | sort | uniq)
+dirs=$(find "$proj_root" -type f -name "Info.plist" -exec dirname {} \; | grep -E 'kmp-app-(cocoapods|spm)/iosApp' | sort | uniq)
 
 for dir in $dirs; do
   if [ -d "$dir" ]; then

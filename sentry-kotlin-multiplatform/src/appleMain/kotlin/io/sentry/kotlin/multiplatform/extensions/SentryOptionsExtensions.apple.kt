@@ -26,6 +26,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     kmpOptions.release?.let {
         cocoaOptions.releaseName = it
     }
+    cocoaOptions.sendDefaultPii = kmpOptions.sendDefaultPii
     cocoaOptions.debug = kmpOptions.debug
     cocoaOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis.convert()
     cocoaOptions.enableAutoSessionTracking = kmpOptions.enableAutoSessionTracking
