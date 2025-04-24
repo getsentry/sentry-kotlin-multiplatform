@@ -8,9 +8,9 @@ import io.sentry.kotlin.multiplatform.protocol.User
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UpdateFromKmpEventChangesTest {
+actual class UpdateFromKmpEventChangesTest {
     @Test
-    fun `native value is untouched when before and after values are the same`() {
+    actual fun `native value is untouched when before and after values are the same`() {
         val jvmEvent = JvmSentryEvent().apply {
             release = "1.0"
             dist = "1"
@@ -55,7 +55,7 @@ class UpdateFromKmpEventChangesTest {
     }
 
     @Test
-    fun `native value is updated when before and after values are different`() {
+    actual fun `native value is updated when before and after values are different`() {
         val jvmEvent = JvmSentryEvent().apply {
             release = "1.0"
             dist = "1"

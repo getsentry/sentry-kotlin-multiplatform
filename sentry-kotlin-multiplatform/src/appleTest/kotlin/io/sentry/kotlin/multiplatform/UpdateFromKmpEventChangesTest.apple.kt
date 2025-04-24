@@ -9,9 +9,9 @@ import kotlinx.cinterop.convert
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UpdateFromKmpEventChangesTest {
+actual class UpdateFromKmpEventChangesTest {
     @Test
-    fun `native value is untouched when before and after values are the same`() {
+    actual fun `native value is untouched when before and after values are the same`() {
         val cocoaEvent = CocoaSentryEvent().apply {
             releaseName = "1.0"
             dist = "1"
@@ -56,7 +56,7 @@ class UpdateFromKmpEventChangesTest {
     }
 
     @Test
-    fun `native value is updated when before and after values are different`() {
+    actual fun `native value is updated when before and after values are different`() {
         val cocoaEvent = CocoaSentryEvent().apply {
             releaseName = "1.0"
             dist = "1"
