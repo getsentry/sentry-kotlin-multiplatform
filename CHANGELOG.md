@@ -2,7 +2,22 @@
 
 ## Unreleased
 
-### Feature
+### Features
+
+- Add `sendDefaultPii` option ([#377](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/377))
+
+### Dependencies
+
+- Bump Java SDK from v8.8.0 to v8.9.0 ([#375](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/375))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#890)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.8.0...8.9.0)
+- Bump Cocoa SDK from v8.49.0 to v8.49.1 ([#374](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/374))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8491)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.49.0...8.49.1)
+
+## 0.12.0
+
+### Features
 
 - Move replay options out of experimental ([#367](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/367))
   - You can now access the replay options via `options.sessionReplay`
@@ -10,6 +25,7 @@
 ### Fixes
 
 - Do not throw if exec operation fails ([#360](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/360))
+- `initWithPlatforms` not sending events if `beforeSend` is not set on iOS ([#366](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/366))
 
 ### Miscellaneous
 
