@@ -16,7 +16,7 @@ defaults.org=$org_slug
 auth.token=$auth_token"
 proj_root="$PWD"
 
-dirs=$(find "$proj_root" -type f -name "sentry.keystore" -exec dirname {} \; | grep -E 'kmp-app-(cocoapods|spm|mvvm-di)/androidApp' | sort | uniq)
+dirs=$(find "$proj_root" -type f -name "sentry.keystore" -exec dirname {} \; | grep -E 'kmp-app-(cocoapods|spm)/androidApp' | sort | uniq)
 
 for dir in $dirs; do
   if [ -d "$dir" ]; then
