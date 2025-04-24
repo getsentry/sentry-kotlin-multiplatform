@@ -215,6 +215,7 @@ class BeforeSendIntegrationTest {
     fun `event release is not modified if KMP beforeSend callback config is not modified`() {
         val originalEvent = sentryEventConfigurator.originalEvent
         val event = sentryEventConfigurator.applyOptions {
+            it.release = "1.0.0"
             it.dsn = fakeDsn
         }
         assertNotNull(event)
@@ -236,6 +237,9 @@ class BeforeSendIntegrationTest {
         val originalEvent = sentryEventConfigurator.originalEvent
         val event = sentryEventConfigurator.applyOptions {
             it.dsn = fakeDsn
+            it.beforeSend = { event ->
+                event
+            }
         }
         assertNotNull(event)
         assertEquals(originalEvent.serverName, event.serverName)
