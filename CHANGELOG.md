@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- `beforeSend` overriding default values even if they were not set explicitly ([#376](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/376))
+
 ## 0.12.0
 
 ### Feature
