@@ -1,5 +1,5 @@
- {
-   "pins" : [
+{
+  "pins" : [
     {
       "identity" : "sentry-cocoa",
       "kind" : "remoteSourceControl",
