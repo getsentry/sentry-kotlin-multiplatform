@@ -2,13 +2,19 @@
 
 ## Unreleased
 
-### Feature
+### Features
 
 - Add `sendDefaultPii` option ([#377](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/377))
 
+### Dependencies
+
+- Bump Java SDK from v8.8.0 to v8.9.0 ([#375](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/375))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#890)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.8.0...8.9.0)
+
 ## 0.12.0
 
-### Feature
+### Features
 
 - Move replay options out of experimental ([#367](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/367))
   - You can now access the replay options via `options.sessionReplay`
