@@ -61,8 +61,8 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
                 val beforeKmpEventCopy = SentryEvent(cocoaEvent)
                 kmpOptions.beforeSend
                     ?.invoke(beforeKmpEventCopy)
-                    ?.let { afterEvent ->
-                        cocoaEvent.updateFromKmpEventChanges(beforeKmpEvent, afterEvent)
+                    ?.let { afterKmpEvent ->
+                        cocoaEvent.updateFromKmpEventChanges(beforeKmpEvent, afterKmpEvent)
                     }
             }
         }
