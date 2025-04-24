@@ -23,6 +23,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.isAttachStacktrace = kmpOptions.attachStackTrace
     jvmOptions.dist = kmpOptions.dist
     jvmOptions.environment = kmpOptions.environment
+    jvmOptions.isSendDefaultPii = kmpOptions.sendDefaultPii
     jvmOptions.release = kmpOptions.release
     jvmOptions.isDebug = kmpOptions.debug
     jvmOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis
