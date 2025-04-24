@@ -11,5 +11,5 @@ import kotlin.test.assertEquals
 
 expect class UpdateFromKmpEventChangesTest {
     fun `native value is untouched when before and after values are the same`()
-    fun `native value is updated when before and after values are different`
+    fun `native value is updated when before and after values are different`()
 }
