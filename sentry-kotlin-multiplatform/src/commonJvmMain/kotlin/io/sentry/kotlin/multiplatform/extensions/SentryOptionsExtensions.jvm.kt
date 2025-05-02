@@ -23,7 +23,6 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.isAttachStacktrace = kmpOptions.attachStackTrace
     jvmOptions.dist = kmpOptions.dist
     jvmOptions.environment = kmpOptions.environment
-    jvmOptions.isSendDefaultPii = kmpOptions.sendDefaultPii
     jvmOptions.release = kmpOptions.release
     jvmOptions.isDebug = kmpOptions.debug
     jvmOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis
@@ -44,10 +43,8 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
         if (kmpOptions.beforeSend == null) {
             jvmSentryEvent
         } else {
-            val beforeKmpEvent = SentryEvent(jvmSentryEvent)
-            val beforeKmpEventCopy = SentryEvent(jvmSentryEvent)
-            kmpOptions.beforeSend?.invoke(beforeKmpEventCopy)?.let { afterKmpEvent ->
-                jvmSentryEvent.updateFromKmpEventChanges(beforeKmpEvent, afterKmpEvent)
+            kmpOptions.beforeSend?.invoke(SentryEvent(jvmSentryEvent))?.let {
+                jvmSentryEvent.applyKmpEvent(it)
             }
         }
     }

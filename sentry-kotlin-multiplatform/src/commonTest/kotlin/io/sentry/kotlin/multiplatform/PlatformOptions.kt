@@ -14,7 +14,6 @@ interface CommonPlatformOptions {
     val maxAttachmentSize: Long
     val sampleRate: Double?
     val tracesSampleRate: Double?
-    val sendDefaultPii: Boolean
 
     fun applyFromOptions(options: SentryOptions)
 }

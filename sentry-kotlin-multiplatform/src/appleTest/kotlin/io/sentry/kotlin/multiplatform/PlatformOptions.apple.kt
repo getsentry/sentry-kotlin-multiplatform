@@ -54,9 +54,6 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
     override val diagnosticLevel: SentryLevel
         get() = cocoaOptions.diagnosticLevel.toKmpSentryLevel()!!
 
-    override val sendDefaultPii: Boolean
-        get() = cocoaOptions.sendDefaultPii
-
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
     }

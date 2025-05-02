@@ -46,9 +46,6 @@ class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : Platfo
     override val diagnosticLevel: SentryLevel
         get() = jvmOptions.diagnosticLevel.toKmpSentryLevel()!!
 
-    override val sendDefaultPii: Boolean
-        get() = jvmOptions.isSendDefaultPii
-
     override fun applyFromOptions(options: SentryOptions) {
         options.toJvmSentryOptionsCallback().invoke(jvmOptions)
     }

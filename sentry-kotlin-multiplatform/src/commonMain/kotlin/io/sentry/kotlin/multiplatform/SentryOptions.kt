@@ -192,19 +192,6 @@ public open class SentryOptions {
     public var sessionReplay: SentryReplayOptions = SentryReplayOptions()
 
     /**
-     * If this flag is enabled, certain personally identifiable information (PII) is added by active integrations.
-     * Among other things, enabling this will enable automatic IP address collection on events.
-     *
-     * If you enable this option, be sure to manually remove what you don't want to send using
-     * our features for managing sensitive data.
-     *
-     * For further details, refer to the documentation in the respective native SDKs:
-     * - [Cocoa](https://docs.sentry.io/platforms/apple/data-management/data-collected/)
-     * - [Android](https://docs.sentry.io/platforms/android/data-management/data-collected/)
-     */
-    public var sendDefaultPii: Boolean = false
-
-    /**
      * Experimental options for new features, these options are going to be promoted to SentryOptions
      * before GA.
      *

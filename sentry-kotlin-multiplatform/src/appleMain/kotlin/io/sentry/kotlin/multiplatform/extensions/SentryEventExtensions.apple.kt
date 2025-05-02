@@ -3,43 +3,25 @@ package io.sentry.kotlin.multiplatform.extensions
 import cocoapods.Sentry.SentryId
 import io.sentry.kotlin.multiplatform.CocoaSentryEvent
 import io.sentry.kotlin.multiplatform.SentryEvent
-import io.sentry.kotlin.multiplatform.util.applyIfChanged
 
-/**
- * Syncs updated fields from a KMP [SentryEvent] to this [CocoaSentryEvent].
- *
- * Only the properties modified (e.g., in beforeSend or event processors) are copied.
- *
- * @param beforeKmpEvent The KMP [SentryEvent] before the changes were applied.
- * @param afterKmpEvent The KMP [SentryEvent] after the changes were applied.
- * @return The modified [CocoaSentryEvent].
- */
-internal fun CocoaSentryEvent.updateFromKmpEventChanges(
-    beforeKmpEvent: SentryEvent,
-    afterKmpEvent: SentryEvent
-): CocoaSentryEvent {
-    applyIfChanged(beforeKmpEvent.release, afterKmpEvent.release) { releaseName = it }
-    applyIfChanged(beforeKmpEvent.dist, afterKmpEvent.dist) { dist = it }
-    applyIfChanged(beforeKmpEvent.environment, afterKmpEvent.environment) { environment = it }
-    applyIfChanged(beforeKmpEvent.serverName, afterKmpEvent.serverName) { serverName = it }
-    applyIfChanged(beforeKmpEvent.platform, afterKmpEvent.platform) {
-        if (it != null) {
-            platform = it
-        }
+internal fun CocoaSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): CocoaSentryEvent {
+    // Native SDKs may have a default behaviour if no release is set.
+    // Setting a release (even if it's null) will remove this behaviour,
+    // so we have to check if the values differ first before setting.
+    if (releaseName != kmpEvent.release) {
+        releaseName = kmpEvent.release
     }
-    applyIfChanged(beforeKmpEvent.logger, afterKmpEvent.logger) { logger = it }
-    applyIfChanged(beforeKmpEvent.level, afterKmpEvent.level) {
-        if (it != null) level = it.toCocoaSentryLevel()
-    }
-    applyIfChanged(beforeKmpEvent.message, afterKmpEvent.message) { message = it?.toCocoaMessage() }
-    applyIfChanged(beforeKmpEvent.fingerprint, afterKmpEvent.fingerprint) { fingerprint = it }
-    applyIfChanged(beforeKmpEvent.user, afterKmpEvent.user) { user = it?.toCocoaUser() }
-    applyIfChanged(beforeKmpEvent.breadcrumbs, afterKmpEvent.breadcrumbs) {
-        breadcrumbs = it.map { it.toCocoaBreadcrumb() }.toMutableList()
-    }
-    applyIfChanged(beforeKmpEvent.eventId, afterKmpEvent.eventId) {
-        eventId = SentryId(it.toString())
-    }
-    applyIfChanged(beforeKmpEvent.tags, afterKmpEvent.tags) { tags = it.toMutableMap() }
+    kmpEvent.level?.let { level = it.toCocoaSentryLevel() }
+    kmpEvent.platform?.let { platform = it }
+    message = kmpEvent.message?.toCocoaMessage()
+    logger = kmpEvent.logger
+    fingerprint = kmpEvent.fingerprint
+    environment = kmpEvent.environment
+    user = kmpEvent.user?.toCocoaUser()
+    serverName = kmpEvent.serverName
+    dist = kmpEvent.dist
+    breadcrumbs = kmpEvent.breadcrumbs.map { it.toCocoaBreadcrumb() }.toMutableList()
+    tags = kmpEvent.tags.toMutableMap()
+    eventId = SentryId(kmpEvent.eventId.toString())
     return this
 }

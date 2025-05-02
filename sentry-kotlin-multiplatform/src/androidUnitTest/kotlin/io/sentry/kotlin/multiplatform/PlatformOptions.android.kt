@@ -73,9 +73,6 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     override val sessionReplay: AndroidSentryReplayOptions
         get() = androidOptions.sessionReplay
 
-    override val sendDefaultPii: Boolean
-        get() = androidOptions.isSendDefaultPii
-
     override fun applyFromOptions(options: SentryOptions) {
         options.toAndroidSentryOptionsCallback().invoke(androidOptions)
     }
