@@ -12,7 +12,7 @@ Pod::Spec.new do |spec|
     spec.osx.deployment_target    = '10.13'
     spec.tvos.deployment_target    = '11.0'
     spec.watchos.deployment_target    = '4.0'
-    spec.dependency 'Sentry', '8.49.1'
+    spec.dependency 'Sentry', '8.50.0'
                 
     if !Dir.exist?('build/cocoapods/framework/sentry_kotlin_multiplatform.framework') || Dir.empty?('build/cocoapods/framework/sentry_kotlin_multiplatform.framework')
         raise "
