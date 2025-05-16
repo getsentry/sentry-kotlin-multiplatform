@@ -1,0 +1,48 @@
+[versions]
+agp = "7.4.2"
+kotlin = "1.9.23"
+spotless = "7.0.3"
+dokka = "1.8.10"
+vanniktech-mavenPublish = "0.18.0"
+kover = "0.7.3"
+detekt = "1.22.0"
+binaryCompatibility = "0.13.1"
+buildKonfig = "0.13.3"
+compose = "1.6.1"
+android-compileSdk = "33"
+android-minSdk = "21"
+kotlinx-serialization = "1.5.0"
+kotlinx-coroutines = "1.7.0-RC"
+ktor-client = "2.3.6"
+mockito = "5.4.0"
+roboelectric = "4.9"
+androidx-test-junitx = "1.1.5"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization"}
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines"}
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor-client" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-client" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor-client" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+roboelectric = { module = "org.robolectric:robolectric", version.ref = "roboelectric" }
+androidx-test-junitx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-junitx" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+kotlinx-binary-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibility" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-mavenPublish" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }

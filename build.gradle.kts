@@ -5,19 +5,18 @@ import io.gitlab.arturbosch.detekt.Detekt
 import java.util.zip.ZipFile
 
 plugins {
-    id(Config.gradleMavenPublishPlugin).version(Config.gradleMavenPublishPluginVersion)
-    id(Config.QualityPlugins.spotless).version(Config.QualityPlugins.spotlessVersion)
-    id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
-    id(Config.dokka).version(Config.dokkaVersion)
-    kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
-    kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
-    id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
-    id(Config.androidGradle).version(Config.agpVersion).apply(false)
-    id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
-    kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
-    id(Config.QualityPlugins.kover).version(Config.QualityPlugins.koverVersion).apply(false)
-    id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion)
-        .apply(false)
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.native.cocoapods) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlinx.kover) apply false
+    alias(libs.plugins.kotlinx.binary.compatibility) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.buildKonfig) apply false
+    alias(libs.plugins.vanniktech.mavenPublish)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.detekt)
 }
 
 allprojects {
@@ -152,12 +151,6 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                 }
             }
         }
-    }
-}
-
-subprojects {
-    if (project.name.contains("sentry-kotlin-multiplatform")) {
-        apply(plugin = Config.dokka)
     }
 }
 
