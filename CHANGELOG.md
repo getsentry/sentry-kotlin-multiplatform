@@ -8,7 +8,7 @@
 
 ### Fixes
 
-- `beforeSend` overriding default release even if it was not set explicitly ([#376](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/376))
+- `beforeSend` overriding default release and dist even if it was not set explicitly ([#376](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/376))
 
 ### Dependencies
 
