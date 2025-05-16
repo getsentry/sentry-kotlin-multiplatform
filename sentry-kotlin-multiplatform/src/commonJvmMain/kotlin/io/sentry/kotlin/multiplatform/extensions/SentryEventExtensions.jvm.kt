@@ -23,7 +23,6 @@ internal fun JvmSentryEvent.applyKmpEvent(kmpEvent: SentryEvent): JvmSentryEvent
     platform = kmpEvent.platform
     user = kmpEvent.user?.toJvmUser()
     serverName = kmpEvent.serverName
-    dist = kmpEvent.dist
     breadcrumbs = kmpEvent.breadcrumbs?.map { it.toJvmBreadcrumb() }
     eventId = JvmSentryId(kmpEvent.eventId.toString())
     tags = kmpEvent.tags
