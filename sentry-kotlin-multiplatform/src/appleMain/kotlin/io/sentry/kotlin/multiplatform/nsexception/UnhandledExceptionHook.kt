@@ -31,5 +31,5 @@ internal fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
         prevHook.value?.invoke(it)
         terminateWithUnhandledException(it)
     }
-    prevHook.value = setUnhandledExceptionHook(wrappedHook.freeze())
+    prevHook.value = setUnhandledExceptionHook(wrappedHook)
 }
