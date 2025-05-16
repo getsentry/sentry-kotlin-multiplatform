@@ -4,27 +4,28 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin(Config.multiplatform)
-    kotlin(Config.cocoapods)
-    id(Config.androidGradle)
-    id(Config.BuildPlugins.buildConfig)
-    kotlin(Config.kotlinSerializationPlugin)
-    id(Config.QualityPlugins.kover)
-    id(Config.QualityPlugins.binaryCompatibility)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.native.cocoapods)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlinx.kover)
+    alias(libs.plugins.kotlinx.binary.compatibility)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.dokka)
     `maven-publish`
 }
 
-koverReport {
-    defaults {
-        // adds the contents of the reports of `release` Android build variant to default reports
-        mergeWith("release")
-    }
-}
+//kover {
+//    defaults {
+//        // adds the contents of the reports of `release` Android build variant to default reports
+//        mergeWith("release")
+//    }
+//}
 
 android {
-    compileSdk = Config.Android.compileSdkVersion
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = Config.Android.minSdkVersion
+        minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -78,18 +79,13 @@ kotlin {
             }
         }
 
-        commonMain.dependencies {
-            implementation(Config.Libs.kotlinStd)
-        }
-
         commonTest.dependencies {
-            implementation(Config.TestLibs.kotlinCoroutinesCore)
-            implementation(Config.TestLibs.kotlinCoroutinesTest)
-            implementation(Config.TestLibs.ktorClientCore)
-            implementation(Config.TestLibs.ktorClientSerialization)
-            implementation(Config.TestLibs.kotlinxSerializationJson)
-            implementation(Config.TestLibs.kotlinCommon)
-            implementation(Config.TestLibs.kotlinCommonAnnotation)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlin.test)
         }
 
         androidMain.dependencies {
@@ -99,9 +95,9 @@ kotlin {
         // androidUnitTest.dependencies doesn't exist
         val androidUnitTest by getting {
             dependencies {
-                implementation(Config.TestLibs.roboelectric)
-                implementation(Config.TestLibs.junitKtx)
-                implementation(Config.TestLibs.mockitoCore)
+                implementation(libs.roboelectric)
+                implementation(libs.androidx.test.junitx)
+                implementation(libs.mockito.core)
             }
         }
 
@@ -118,8 +114,8 @@ kotlin {
         val commonJvmTest by creating {
             dependsOn(commonTest.get())
             dependencies {
-                implementation(Config.TestLibs.kotlinJunit)
-                implementation(Config.TestLibs.ktorClientOkHttp)
+                implementation(libs.kotlin.test.junit)
+                implementation(libs.ktor.client.okhttp)
             }
         }
 
@@ -127,7 +123,7 @@ kotlin {
         jvmTest.get().dependsOn(commonJvmTest)
 
         appleTest.dependencies {
-            implementation(Config.TestLibs.ktorClientDarwin)
+            implementation(libs.ktor.client.darwin)
         }
 
         val commonTvWatchMacOsMain by creating {
