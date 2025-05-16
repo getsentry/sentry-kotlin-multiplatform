@@ -75,6 +75,8 @@ kotlin {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.cinterop.UnsafeNumber")
                 optIn("kotlin.experimental.ExperimentalNativeApi")
+                // TODO(buenaflor): we get compiler errors with k2 so right now don't use it
+                languageVersion = "1.9"
             }
         }
 
