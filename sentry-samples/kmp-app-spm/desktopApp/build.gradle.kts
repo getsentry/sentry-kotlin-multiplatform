@@ -26,9 +26,7 @@ tasks.withType<KotlinCompile> {
 }
 
 kotlin {
-    jvm {
-        withJava()
-    }
+    jvm()
     sourceSets {
         val jvmMain by getting {
             dependencies {
