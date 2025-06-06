@@ -36,7 +36,7 @@ object Config {
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
-        val sentryCocoaVersion = "8.49.1"
+        val sentryCocoaVersion = "8.52.1"
         val sentryCocoa = "Sentry"
 
         object Samples {
