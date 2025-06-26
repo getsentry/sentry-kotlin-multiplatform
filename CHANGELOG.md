@@ -6,6 +6,10 @@
 
 - Add `sendDefaultPii` option ([#377](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/377))
 
+### Fixes
+
+- `beforeSend` overriding default release and dist even if it was not set explicitly ([#376](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/376))
+
 ### Dependencies
 
 - Bump Java SDK from v8.8.0 to v8.14.0 ([#375](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/375), [#382](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/382), [#387](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/387), [#402](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/402))
