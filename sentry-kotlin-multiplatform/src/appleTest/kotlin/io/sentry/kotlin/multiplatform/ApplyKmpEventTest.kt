@@ -3,8 +3,6 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.applyKmpEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class ApplyKmpEventTest {
     @Test
@@ -20,7 +18,6 @@ class ApplyKmpEventTest {
 
         assertEquals(1, nativeEvent.releaseSetCount)
     }
-
 
     @Test
     fun `native dist is not set if kmp dist has same value`() {
