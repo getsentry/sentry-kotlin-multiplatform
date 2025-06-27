@@ -13,4 +13,3 @@ PROJECT_NAME="$1"
           "publishJvmPublicationToMavenLocal" \
           "publishKotlinMultiplatformPublicationToMavenLocal" \
           -p "${PROJECT_NAME}"
-          --debug
