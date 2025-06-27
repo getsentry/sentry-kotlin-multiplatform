@@ -27,7 +27,7 @@ object Config {
         val detekt = "io.gitlab.arturbosch.detekt"
         val detektVersion = "1.22.0"
         val binaryCompatibility = "org.jetbrains.kotlinx.binary-compatibility-validator"
-        val binaryCompatibilityVersion = "0.13.1"
+        val binaryCompatibilityVersion = "0.18.0"
     }
 
     object Libs {
