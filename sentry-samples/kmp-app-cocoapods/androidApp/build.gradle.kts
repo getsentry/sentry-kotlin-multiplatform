@@ -7,6 +7,10 @@ plugins {
 }
 
 android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     compileSdk = Config.Android.compileSdkVersion
     defaultConfig {
         applicationId = "sample.kmp.app.android"
