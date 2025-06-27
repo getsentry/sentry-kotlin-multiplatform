@@ -15,7 +15,6 @@
 package io.sentry.kotlin.multiplatform.nsexception
 
 import kotlin.concurrent.AtomicReference
-import kotlin.native.concurrent.freeze
 
 /**
  * Wraps the unhandled exception hook such that the provided [hook] is invoked
