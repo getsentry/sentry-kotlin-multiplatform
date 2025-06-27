@@ -60,9 +60,9 @@ object Config {
         val ktorClientOkHttp = "io.ktor:ktor-client-okhttp:2.3.6"
         val ktorClientDarwin = "io.ktor:ktor-client-darwin:2.3.6"
 
-        val roboelectric = "org.robolectric:robolectric:4.9"
-        val junitKtx = "androidx.test.ext:junit-ktx:1.1.5"
-        val mockitoCore = "org.mockito:mockito-core:5.4.0"
+        val roboelectric = "org.robolectric:robolectric:4.15.1"
+        val junitKtx = "androidx.test.ext:junit-ktx:1.2.1"
+        val mockitoCore = "org.mockito:mockito-core:5.18.0"
     }
 
     object Android {
