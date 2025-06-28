@@ -7,4 +7,6 @@ internal interface SentryInstance {
 /**
  * Represents the actual Sentry SDK instance.
  */
-internal expect class SentryPlatformInstance() : SentryInstance
+internal expect class SentryPlatformInstance() : SentryInstance {
+    override fun init(configuration: PlatformOptionsConfiguration)
+}
