@@ -5,6 +5,11 @@ on:
       - main
       - release/**
   pull_request:
+    paths:
+      - '.github/workflows/kotlin-multiplatform-gradle-plugin.yml'
+      - 'sentry-kotlin-multiplatform-gradle-plugin/**'
+      - 'sentry-samples/**'
+      - '!**/*.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
