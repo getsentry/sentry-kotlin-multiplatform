@@ -74,7 +74,7 @@ class SentryE2ETest : BaseSentryTest() {
         var json = ""
         val result: SentryEventSerializable = withContext(Dispatchers.Default) {
             while (json.isEmpty() || json.contains("Event not found")) {
-                delay(5000)
+                delay(20000)
                 json = fetchEvent(eventId)
                 assertFalse(json.contains("Invalid token"), "Invalid auth token")
             }
