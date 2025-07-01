@@ -9,6 +9,7 @@ on:
       - '.github/workflows/kotlin-multiplatform-gradle-plugin.yml'
       - 'sentry-kotlin-multiplatform-gradle-plugin/**'
       - 'sentry-samples/**'
+      - 'buildSrc/src/'
       - '!**/*.md'
 
 concurrency:
