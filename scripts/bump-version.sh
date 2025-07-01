@@ -37,6 +37,14 @@ PODSPEC_VERSION=${BASH_REMATCH[2]}
 # Find the line number of the last entry in the compatibility table and insert the new entry after it
 README_FILE="README.md"
 
+# Check if an entry with the same KMP version and Cocoa version already exists
+EXISTING_ENTRY=$(grep "| $NEW_VERSION" $README_FILE 2>/dev/null | grep "$PODSPEC_VERSION" 2>/dev/null || true)
+
+if [ -n "$EXISTING_ENTRY" ]; then
+    echo "Found same KMP and Cocoaversion in the compatibility table. Skipping addition to avoid duplicate."
+    exit 0
+fi
+
 # We'll look for the last line that matches the table entry pattern (starts with | and contains version numbers)
 LAST_TABLE_LINE=$(grep -n "^| [0-9]" $README_FILE | tail -1 | cut -d: -f1)
 
