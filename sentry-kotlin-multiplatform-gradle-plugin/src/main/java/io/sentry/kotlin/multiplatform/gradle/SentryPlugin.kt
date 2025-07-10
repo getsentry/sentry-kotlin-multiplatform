@@ -71,6 +71,17 @@ class SentryPlugin : Plugin<Project> {
                 return
             }
 
+            // If the current Gradle invocation does not request any tasks for Apple targets, skip linking.
+            val requestedTasks = project.gradle.startParameter.taskNames
+            val requestsAppleBuild = requestedTasks.any { taskName ->
+                appleTargets.any { target -> taskName.contains(target.name, ignoreCase = true) }
+            }
+
+            if (requestedTasks.isNotEmpty() && !requestsAppleBuild) {
+                project.logger.info("Gradle build does not request Apple target tasks – skipping Sentry Cocoa framework linking step.")
+                return
+            }
+
             CocoaFrameworkLinker(
                 logger = project.logger,
                 pathResolver = FrameworkPathResolver(project),
