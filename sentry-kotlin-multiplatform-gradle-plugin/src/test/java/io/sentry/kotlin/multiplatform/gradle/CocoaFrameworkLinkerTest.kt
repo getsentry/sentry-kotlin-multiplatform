@@ -119,6 +119,32 @@ class CocoaFrameworkLinkerTest {
         }
     }
 
+    @Test
+    fun `framework linking is skipped for non Apple targets`() {
+        val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val nonAppleTargets = listOf(
+            kmpExtension.linuxX64(),
+            kmpExtension.mingwX64()
+        )
+
+        // Create simple executable binaries so that we can later inspect linkerOpts
+        nonAppleTargets.forEach { target ->
+            target.binaries.executable {
+                baseName = "MyNonAppleExecutable"
+            }
+        }
+
+        val sut = fixture.getSut()
+        sut.configure(nonAppleTargets)
+
+        // Ensure that no linker options were added as these are non-Apple targets
+        nonAppleTargets.forEach { target ->
+            target.binaries.forEach { binary ->
+                assertTrue(binary.linkerOpts.isEmpty())
+            }
+        }
+    }
+
     private class Fixture {
         val project: Project = ProjectBuilder.builder().build()
 

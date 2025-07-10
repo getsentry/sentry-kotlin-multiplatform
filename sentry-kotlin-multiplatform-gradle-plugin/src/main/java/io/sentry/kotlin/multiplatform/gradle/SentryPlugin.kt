@@ -66,6 +66,11 @@ class SentryPlugin : Plugin<Project> {
             val appleTargets = kmpExtension?.appleTargets()?.toList()
                 ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
 
+            if (appleTargets.isEmpty()) {
+                project.logger.info("No Apple targets detected – skipping Sentry Cocoa framework linking step.")
+                return
+            }
+
             CocoaFrameworkLinker(
                 logger = project.logger,
                 pathResolver = FrameworkPathResolver(project),
