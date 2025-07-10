@@ -53,6 +53,19 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 
 For detailed usage, check out the [Kotlin Multiplatform Documentation](https://docs.sentry.io/platforms/kotlin-multiplatform/).
 
+### Gradle Plugin
+
+The Sentry Kotlin Multiplatform Gradle Plugin automatically configures your project with the Sentry SDK. The plugin intelligently handles different target platforms:
+
+- **Auto-installation**: Automatically adds the Sentry KMP library to your project
+- **Cocoa framework linking**: Automatically links the Sentry Cocoa framework for Apple targets (iOS, macOS, tvOS, watchOS)
+- **Target-specific behavior**: Framework linking is only applied to Apple targets, ensuring compatibility with mixed-platform projects
+
+The plugin's conditional linking behavior ensures that:
+- Apple targets (iOS, macOS, tvOS, watchOS) receive proper Cocoa framework linking
+- Non-Apple targets (JVM, Linux, Windows, etc.) are gracefully skipped
+- Mixed-platform projects work seamlessly without configuration conflicts
+
 ## Samples
 
 For detailed information on how to build and run the samples, check out our `README.md` in the

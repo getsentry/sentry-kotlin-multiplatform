@@ -7,6 +7,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
 
@@ -55,7 +56,7 @@ class SentryPlugin : Plugin<Project> {
             }
 
             if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
-                project.installSentryForCocoapods(autoInstall.cocoapods)
+                project.installSentryForCocoapods(autoInstall.cocoapods, hostIsMac)
             }
         }
 
@@ -63,14 +64,19 @@ class SentryPlugin : Plugin<Project> {
             project.logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
 
             val kmpExtension = project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-            val appleTargets = kmpExtension?.appleTargets()?.toList()
-                ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
+            val allTargets = kmpExtension?.targets?.withType(KotlinNativeTarget::class.java)?.toList()
+                ?: throw GradleException("Error fetching native targets from Kotlin Multiplatform plugin.")
 
-            CocoaFrameworkLinker(
-                logger = project.logger,
-                pathResolver = FrameworkPathResolver(project),
-                binaryLinker = FrameworkLinker(project.logger)
-            ).configure(appleTargets)
+            try {
+                CocoaFrameworkLinker(
+                    logger = project.logger,
+                    pathResolver = FrameworkPathResolver(project),
+                    binaryLinker = FrameworkLinker(project.logger)
+                ).configure(allTargets)
+            } catch (e: FrameworkLinkingException) {
+                project.logger.warn("Failed to link Sentry Cocoa framework: ${e.message}")
+                project.logger.info("Framework linking failure is not fatal. The plugin will continue without framework linking.")
+            }
         }
     }
 
@@ -109,10 +115,11 @@ internal fun Project.installSentryForKmp(
 }
 
 internal fun Project.installSentryForCocoapods(
-    cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension
+    cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension,
+    hostIsMac: Boolean = HostManager.hostIsMac
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
+    if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !hostIsMac) {
         logger.info("Skipping Cocoapods installation.")
         return
     }

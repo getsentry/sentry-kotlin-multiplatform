@@ -186,6 +186,9 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java) as ExtensionAware
+        // Add a KMP target so cocoapods installation doesn't get skipped
+        (kmpExtension as KotlinMultiplatformExtension).iosArm64()
+        
         val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
         val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
 
@@ -193,7 +196,7 @@ class SentryPluginTest {
         assertNull(sentryPod)
 
         val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
-        plugin.executeConfiguration(project)
+        plugin.executeConfiguration(project, hostIsMac = true)
 
         // Check that it now exists
         val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
@@ -209,8 +212,11 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
-        val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java) as ExtensionAware
+        // Add a KMP target so cocoapods installation doesn't get skipped
+        (kmpExtension as KotlinMultiplatformExtension).iosArm64()
+        
+        val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
         val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
         val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
 
@@ -220,7 +226,7 @@ class SentryPluginTest {
         assertNull(sentryPod)
 
         val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
-        plugin.executeConfiguration(project)
+        plugin.executeConfiguration(project, hostIsMac = true)
 
         // Check that it now exists
         assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "10000.0.0")
@@ -234,6 +240,9 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
         val kmpExtension = project.extensions.findByName("kotlin")
+        // Add a KMP target so cocoapods installation doesn't get skipped
+        (kmpExtension as KotlinMultiplatformExtension).iosArm64()
+        
         (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
             cocoapods.pod("Sentry") { version = "custom version" }
         }
@@ -253,6 +262,9 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        // Add a KMP target so cocoapods installation doesn't get skipped for other reasons
+        kmpExtension.iosArm64()
+        
         (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
             cocoapods.ios.deploymentTarget = "14.1"
             cocoapods.summary = "Test"
@@ -264,5 +276,56 @@ class SentryPluginTest {
 
         val cocoapodsExtension = (kmpExtension as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java)
         assertNull(cocoapodsExtension.pods.findByName("Sentry"))
+    }
+
+    @Test
+    fun `framework linking is attempted for projects with mixed Apple and non-Apple targets`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        
+        // Add both Apple and non-Apple targets
+        kmpExtension.iosArm64()
+        kmpExtension.macosArm64()
+        kmpExtension.linuxX64()
+
+        // Set autoInstall to false to prevent automatic dependency installation
+        val autoInstallExtension = project.extensions.getByType(AutoInstallExtension::class.java)
+        autoInstallExtension.enabled.set(false)
+
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        
+        // Should not throw an exception and should complete successfully
+        plugin.executeConfiguration(project, hostIsMac = true)
+        
+        // Verify that the plugin executed without errors
+        assertTrue(project.plugins.hasPlugin(SentryPlugin::class.java))
+    }
+
+    @Test
+    fun `framework linking is skipped for projects with only non-Apple targets`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        
+        // Add only non-Apple targets
+        kmpExtension.linuxX64()
+        kmpExtension.mingwX64()
+
+        // Set autoInstall to false to prevent automatic dependency installation
+        val autoInstallExtension = project.extensions.getByType(AutoInstallExtension::class.java)
+        autoInstallExtension.enabled.set(false)
+
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        
+        // Should not throw an exception and should complete successfully
+        plugin.executeConfiguration(project, hostIsMac = true)
+        
+        // Verify that the plugin executed without errors
+        assertTrue(project.plugins.hasPlugin(SentryPlugin::class.java))
     }
 }

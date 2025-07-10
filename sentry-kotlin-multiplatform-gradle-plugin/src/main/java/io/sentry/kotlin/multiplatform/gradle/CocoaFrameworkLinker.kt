@@ -9,13 +9,22 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
  *
  * Resolves framework paths and applies necessary linker options to both test and framework binaries.
+ * Only processes Apple targets (iOS, macOS, tvOS, watchOS) and skips non-Apple targets.
  */
 class CocoaFrameworkLinker(
     private val logger: Logger,
     private val pathResolver: FrameworkPathResolver,
     private val binaryLinker: FrameworkLinker
 ) {
-    fun configure(appleTargets: List<KotlinNativeTarget>) {
+    fun configure(targets: List<KotlinNativeTarget>) {
+        // Filter out non-Apple targets
+        val appleTargets = targets.filter { it.isAppleTarget() }
+        
+        if (appleTargets.isEmpty()) {
+            logger.info("No Apple targets found for Cocoa framework linking. Skipping configuration.")
+            return
+        }
+        
         appleTargets.forEach { target ->
             try {
                 logger.info(
@@ -26,6 +35,12 @@ class CocoaFrameworkLinker(
             } catch (e: FrameworkLinkingException) {
                 throw FrameworkLinkingException("Failed to configure ${target.name}: ${e.message}", e)
             }
+        }
+        
+        // Log skipped targets for transparency
+        val skippedTargets = targets.filter { !it.isAppleTarget() }
+        if (skippedTargets.isNotEmpty()) {
+            logger.info("Skipped Cocoa framework linking for non-Apple targets: ${skippedTargets.map { it.name }}")
         }
     }
 
@@ -38,6 +53,15 @@ class CocoaFrameworkLinker(
         val paths: FrameworkPaths = pathResolver.resolvePaths(architectures)
         binaryLinker.configureBinaries(target.binaries, paths.dynamic, paths.static)
     }
+}
+
+/**
+ * Checks if a Kotlin Native target is an Apple target.
+ * 
+ * @return true if the target is an Apple target (iOS, macOS, tvOS, watchOS), false otherwise
+ */
+internal fun KotlinNativeTarget.isAppleTarget(): Boolean {
+    return konanTarget.family.isAppleFamily
 }
 
 internal class FrameworkLinkingException(
