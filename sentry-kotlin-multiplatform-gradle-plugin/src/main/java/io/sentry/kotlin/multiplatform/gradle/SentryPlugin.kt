@@ -60,17 +60,42 @@ class SentryPlugin : Plugin<Project> {
         }
 
         if (hostIsMac && !hasCocoapodsPlugin) {
-            project.logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
+            // Register a task graph listener so that we only configure Cocoa framework linking
+            // if at least one Apple target task is part of the requested task graph. This avoids
+            // executing the (potentially expensive) path-resolution logic when the build is only
+            // concerned with non-Apple targets such as Android.
 
             val kmpExtension = project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-            val appleTargets = kmpExtension?.appleTargets()?.toList()
-                ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
+                ?: throw GradleException("Error fetching Kotlin Multiplatform extension.")
 
-            CocoaFrameworkLinker(
-                logger = project.logger,
-                pathResolver = FrameworkPathResolver(project),
-                binaryLinker = FrameworkLinker(project.logger)
-            ).configure(appleTargets)
+            val appleTargets = kmpExtension.appleTargets().toList()
+
+            if (appleTargets.isEmpty()) {
+                project.logger.info("No Apple targets detected – skipping Sentry Cocoa framework linking setup.")
+                return
+            }
+
+            project.gradle.taskGraph.whenReady { taskGraph ->
+                val targetsInGraph = appleTargets.filter { target ->
+                    taskGraph.allTasks.any { task -> task.path.contains(target.name, ignoreCase = true) }
+                }
+
+                if (targetsInGraph.isEmpty()) {
+                    project.logger.info("No Apple target tasks requested – skipping Sentry Cocoa framework linking.")
+                    return@whenReady
+                }
+
+                project.logger.info(
+                    "Configuring Sentry Cocoa framework linking for Apple targets present in the task graph: " +
+                        targetsInGraph.joinToString { it.name }
+                )
+
+                CocoaFrameworkLinker(
+                    logger = project.logger,
+                    pathResolver = FrameworkPathResolver(project),
+                    binaryLinker = FrameworkLinker(project.logger)
+                ).configure(targetsInGraph)
+            }
         }
     }
 
