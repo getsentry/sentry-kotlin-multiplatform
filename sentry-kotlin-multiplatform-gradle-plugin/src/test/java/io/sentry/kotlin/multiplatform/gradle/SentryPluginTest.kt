@@ -265,4 +265,36 @@ class SentryPluginTest {
         val cocoapodsExtension = (kmpExtension as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java)
         assertNull(cocoapodsExtension.pods.findByName("Sentry"))
     }
+
+    @Test
+    fun `cocoa framework linking is skipped when no apple tasks are requested`() {
+        val project = ProjectBuilder.builder().build()
+
+        // Apply necessary plugins
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        // Configure both Apple and non-Apple targets
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val iosTarget = kmpExtension.iosArm64() // Apple target
+        kmpExtension.jvm()                     // Non-Apple target just for completeness
+
+        // Create a framework binary for the Apple target so we can later inspect linkerOpts
+        iosTarget.binaries.framework {
+            baseName = "MyFramework"
+            isStatic = true
+        }
+
+        // Simulate a Gradle invocation that only requests a JVM/Android task
+        project.gradle.startParameter.setTaskNames(listOf("assembleDebug"))
+
+        // Execute plugin configuration with hostIsMac = true to test the skipping logic
+        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
+        plugin.executeConfiguration(project, hostIsMac = true)
+
+        // Assert that no linker options were added, meaning Cocoa linking was skipped
+        iosTarget.binaries.forEach { binary ->
+            assertTrue(binary.linkerOpts.isEmpty())
+        }
+    }
 }
