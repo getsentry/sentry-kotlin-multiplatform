@@ -54,26 +54,19 @@ abstract class ManualFrameworkPathSearchValueSource :
         }
 
         val stringOutput = stdOutput.toString("UTF-8")
-        if (execResult.exitValue == 0) {
-            val firstLine = stringOutput.lineSequence().firstOrNull()
-            if (!firstLine.isNullOrEmpty()) {
-                return firstLine
+        return if (execResult.exitValue == 0) {
+            if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) {
+                null
+            } else {
+                stringOutput.lineSequence()
+                    .first()
             }
-        }
-
-        // Fallback – platform-agnostic traversal based on java.io.File
-        val candidate = try {
-            val root = java.io.File(basePathToSearch.replace("\"", "").trim())
-            if (!root.exists()) return null
-
-            root.walkTopDown()
-                .filter { it.isDirectory && it.name.equals(xcFrameworkName, ignoreCase = true) }
-                .maxByOrNull { it.lastModified() }
-        } catch (e: Exception) {
-            logger.warn("Fallback directory traversal failed: ${e.message}")
+        } else {
+            logger.warn(
+                "Manual search failed to find $xcFrameworkName in $basePathToSearch. " +
+                    "Error output: ${errOutput.toString(Charsets.UTF_8)}"
+            )
             null
         }
-
-        return candidate?.absolutePath
     }
 }
