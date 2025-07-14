@@ -32,7 +32,7 @@ class CocoaFrameworkLinkerIntegrationTest {
 
     /**
      * Verifies that the Cocoa linker **is** configured when at least one Apple
-     * task is present in the task graph (here: `compileKotlinIosX64`).
+     * task is present in the task graph.
      */
     @Test
     fun `linker is configured when an Apple task is requested`(@TempDir projectDir: File) {
