@@ -12,7 +12,7 @@ import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import kotlin.test.assertContains
 
-@EnabledOnOs(OS.MAC)          // the Cocoa linker only runs on macOS hosts
+@EnabledOnOs(OS.MAC)
 class CocoaFrameworkLinkerIntegrationTest {
     /**
      * Verifies that the Cocoa linker is **not** configured when the task graph
@@ -43,8 +43,6 @@ class CocoaFrameworkLinkerIntegrationTest {
             .withArguments("compileKotlinIosSimulatorArm64", "--dry-run", "--info")
             .build()
 
-        println("-----")
-        println(output.toString());
         assertContains(output.toString(), "Set up Sentry Cocoa linking for target: iosSimulatorArm64")
         assertContains(output.toString(), "Start resolving Sentry Cocoa framework paths for target: iosSimulatorArm64")
     }
@@ -54,6 +52,18 @@ class CocoaFrameworkLinkerIntegrationTest {
     // ---------------------------------------------------------------------
 
     private fun writeBuildFiles(dir: File) {
+        // -----------------------------------------------------------------
+        // Create a fake XCFramework on disk so that the CustomPathStrategy
+        // can resolve a valid framework path even on CI machines where SPM
+        // (and hence DerivedData) is not available.
+        // -----------------------------------------------------------------
+        val fakeFrameworkDir = File(dir, "Sentry-Dynamic.xcframework").apply {
+            // Create minimal structure that satisfies path validation logic
+            val archDirName = "ios-arm64_x86_64-simulator" // architecture used for iosSimulatorArm64
+            val archDir = File(this, archDirName)
+            archDir.mkdirs()
+        }
+
         File(dir, "settings.gradle").writeText("""rootProject.name = "fixture"""")
 
         val pluginClasspath = PluginUnderTestMetadataReading
@@ -83,8 +93,19 @@ class CocoaFrameworkLinkerIntegrationTest {
             }
 
             kotlin {
-              jvm()      // non-Apple target
-              iosSimulatorArm64()   // Apple target
+              jvm()                // non-Apple target
+              iosSimulatorArm64()   // Apple target used in tests
+            }
+            
+            // -----------------------------------------------------------------
+            // Configure the plugin to use the fake framework path created above.
+            // This makes the CustomPathStrategy succeed immediately, bypassing the
+            // DerivedData and manual search strategies that rely on an SPM setup.
+            // -----------------------------------------------------------------
+            sentryKmp {
+              linker {
+                frameworkPath.set("${fakeFrameworkDir.absolutePath.replace('\\', '/')}")
+              }
             }
             """
                 .trimIndent()
