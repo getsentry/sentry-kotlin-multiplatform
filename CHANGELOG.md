@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Enhancements
+
+- Gradle Plugin: implement conditional Cocoa linking for targets ([#421](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/421))
+
 ## 0.14.0
 
 ### Dependencies
