@@ -25,6 +25,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.junit.params)
     testImplementation(libs.mockk)
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {
