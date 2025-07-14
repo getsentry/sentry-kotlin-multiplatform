@@ -13,7 +13,7 @@ import org.junit.jupiter.api.io.TempDir
 import kotlin.test.assertContains
 
 @EnabledOnOs(OS.MAC)          // the Cocoa linker only runs on macOS hosts
-class CocoaFrameworkLinkerIT {
+class CocoaFrameworkLinkerIntegrationTest {
     /**
      * Verifies that the Cocoa linker is **not** configured when the task graph
      * contains only non-Apple targets (here: `compileKotlinJvm`).
