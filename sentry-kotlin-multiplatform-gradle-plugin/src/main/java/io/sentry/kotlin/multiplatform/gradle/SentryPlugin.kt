@@ -98,7 +98,8 @@ class SentryPlugin : Plugin<Project> {
                 }
 
                 if (activeTargets.isEmpty()) {
-                    project.logger.lifecycle("No Apple compile task scheduled for this build - skipping Sentry Cocoa framework linking")
+                    project.logger.lifecycle("No Apple compile task scheduled for this build " +
+                            "- skipping Sentry Cocoa framework linking")
                     return@whenReady
                 }
 
