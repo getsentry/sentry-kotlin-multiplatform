@@ -19,7 +19,6 @@ internal const val AUTO_INSTALL_EXTENSION_NAME = "autoInstall"
 internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
 internal const val COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME = "commonMain"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
-internal const val LINK_SENTRY_COCOA_FRAMEWORKS_TASK_NAME = "linkSentryCocoaFrameworks"
 
 @Suppress("unused")
 class SentryPlugin : Plugin<Project> {
