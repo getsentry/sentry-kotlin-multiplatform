@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStreamWriter
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
 import org.gradle.testkit.runner.internal.io.SynchronizedOutputStream
 import org.junit.jupiter.api.Test
@@ -12,15 +11,9 @@ import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import kotlin.test.assertContains
-import kotlin.test.assertEquals
 
 @EnabledOnOs(OS.MAC)          // the Cocoa linker only runs on macOS hosts
 class CocoaFrameworkLinkerIT {
-
-    private companion object {
-        private const val KOTLIN_VERSION = "1.9.24"
-    }
-
     /**
      * Verifies that the Cocoa linker is **not** configured when the task graph
      * contains only non-Apple targets (here: `compileKotlinJvm`).
@@ -46,7 +39,7 @@ class CocoaFrameworkLinkerIT {
         writeBuildFiles(projectDir)
 
         val output = ByteArrayOutputStream()
-        val runner = defaultRunner(projectDir, output)
+        defaultRunner(projectDir, output)
             .withArguments("compileKotlinIosSimulatorArm64", "--dry-run", "--info")
             .build()
 
@@ -107,4 +100,8 @@ class CocoaFrameworkLinkerIT {
             .forwardStdOutput(OutputStreamWriter(SynchronizedOutputStream(out)))
             .forwardStdError(OutputStreamWriter(SynchronizedOutputStream(out)))
             .withArguments("--stacktrace")
+
+    private companion object {
+        private const val KOTLIN_VERSION = "2.1.21"
+    }
 }
