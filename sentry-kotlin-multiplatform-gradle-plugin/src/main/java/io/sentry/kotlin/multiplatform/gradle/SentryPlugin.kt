@@ -103,6 +103,14 @@ class SentryPlugin : Plugin<Project> {
                     return@whenReady
                 }
 
+                if (activeTargets.size > 1) {
+                    project.logger.warn(
+                        "Cannot set up Sentry Cocoa linking: " +
+                                "expected exactly one Apple target but found ${activeTargets.size} ($activeTargets)."
+                    )
+                    return@whenReady
+                }
+
                 project.logger.lifecycle("Set up Sentry Cocoa linking for target: ${activeTargets.first().name}")
 
                 CocoaFrameworkLinker(
