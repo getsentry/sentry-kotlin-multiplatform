@@ -51,6 +51,15 @@ kotlin {
         publishLibraryVariants("release")
     }
     jvm()
+    js(IR) {
+        browser()
+        binaries.library()
+
+        // Disable JS test execution; commonTest already covers logic
+        testTask {
+            enabled = false
+        }
+    }
     iosArm64()
     iosSimulatorArm64()
     iosX64()
