@@ -106,7 +106,7 @@ class SentryPlugin : Plugin<Project> {
                 if (activeTargets.size > 1) {
                     project.logger.warn(
                         "Cannot set up Sentry Cocoa linking: " +
-                                "expected exactly one Apple target but found ${activeTargets.size} ($activeTargets)."
+                            "expected exactly one Apple target but found ${activeTargets.size} ($activeTargets)."
                     )
                     return@whenReady
                 }
