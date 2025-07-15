@@ -1,8 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.OutputStreamWriter
+import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
 import org.gradle.testkit.runner.internal.io.SynchronizedOutputStream
@@ -10,13 +8,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
-import kotlin.test.assertContains
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.OutputStreamWriter
 
 @EnabledOnOs(OS.MAC)
 class CocoaFrameworkLinkerIntegrationTest {
     /**
      * Verifies that the Cocoa linker is **not** configured when the task graph
-     * contains only non-Apple targets (here: `compileKotlinJvm`).
+     * contains only non-Apple targets.
      */
     @Test
     fun `linker is not configured when only non-Apple tasks are requested`(@TempDir projectDir: File) {
@@ -27,7 +27,8 @@ class CocoaFrameworkLinkerIntegrationTest {
             .withArguments("compileKotlinJvm", "--dry-run", "--info")
             .build()
 
-        assertContains(output.toString(), "No Apple compile task scheduled for this build - skipping Sentry Cocoa framework linking")
+        assertThat(output.toString())
+            .contains("No Apple compile task scheduled for this build - skipping Sentry Cocoa framework linking")
     }
 
     /**
@@ -43,8 +44,10 @@ class CocoaFrameworkLinkerIntegrationTest {
             .withArguments("compileKotlinIosSimulatorArm64", "--dry-run", "--info")
             .build()
 
-        assertContains(output.toString(), "Set up Sentry Cocoa linking for target: iosSimulatorArm64")
-        assertContains(output.toString(), "Start resolving Sentry Cocoa framework paths for target: iosSimulatorArm64")
+        assertThat(output.toString())
+            .contains("Set up Sentry Cocoa linking for target: iosSimulatorArm64")
+        assertThat(output.toString())
+            .contains("Start resolving Sentry Cocoa framework paths for target: iosSimulatorArm64")
     }
 
     // ---------------------------------------------------------------------
@@ -107,8 +110,7 @@ class CocoaFrameworkLinkerIntegrationTest {
                 frameworkPath.set("${fakeFrameworkDir.absolutePath.replace('\\', '/')}")
               }
             }
-            """
-                .trimIndent()
+            """.trimIndent()
         )
     }
 

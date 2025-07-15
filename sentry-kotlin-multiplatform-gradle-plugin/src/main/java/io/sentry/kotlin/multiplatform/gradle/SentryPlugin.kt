@@ -7,11 +7,8 @@ import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-import org.jetbrains.kotlin.gradle.utils.named
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
-import java.util.Locale
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -89,31 +86,33 @@ class SentryPlugin : Plugin<Project> {
                     val targetName = target.name.replaceFirstChar {
                         it.uppercase()
                     }
-                    val path = if (project.path == ":")
+                    val path = if (project.path == ":") {
                         ":compileKotlin$targetName"
-                    else
+                    } else {
                         "${project.path}:compileKotlin$targetName"
+                    }
                     // Will throw if it doesn't exist
                     graph.hasTask(path)
                 }
 
                 if (activeTargets.isEmpty()) {
-                    project.logger.lifecycle("No Apple compile task scheduled for this build " +
-                            "- skipping Sentry Cocoa framework linking")
+                    project.logger.lifecycle(
+                        "No Apple compile task scheduled for this build " +
+                            "- skipping Sentry Cocoa framework linking"
+                    )
                     return@whenReady
                 }
 
                 project.logger.lifecycle("Set up Sentry Cocoa linking for target: ${activeTargets.first().name}")
 
                 CocoaFrameworkLinker(
-                    logger        = project.logger,
-                    pathResolver  = FrameworkPathResolver(project),
-                    binaryLinker  = FrameworkLinker(project.logger)
+                    logger = project.logger,
+                    pathResolver = FrameworkPathResolver(project),
+                    binaryLinker = FrameworkLinker(project.logger)
                 ).configure(appleTargets = activeTargets)
             }
         }
     }
-
 
     companion object {
         internal val logger by lazy {
@@ -136,9 +135,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                        "Cannot auto install in commonMain. " +
-                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                        "supports (apple, jvm, android) and add the dependency manually."
+                    "Cannot auto install in commonMain. " +
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                    "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }
