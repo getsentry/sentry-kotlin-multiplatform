@@ -45,7 +45,7 @@ class CocoaFrameworkLinkerIntegrationTest {
             .build()
 
         assertThat(output.toString())
-            .contains("Set up Sentry Cocoa linking for target: iosSimulatorArm64")
+            .contains("Set up Sentry Cocoa linking for targets: [iosSimulatorArm64]")
         assertThat(output.toString())
             .contains("Start resolving Sentry Cocoa framework paths for target: iosSimulatorArm64")
     }
