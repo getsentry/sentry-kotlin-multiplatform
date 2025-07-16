@@ -5,12 +5,6 @@ on:
       - main
       - release/**
   pull_request:
-    paths:
-      - '.github/workflows/kotlin-multiplatform.yml'
-      - 'kotlin-multiplatform/**'
-      - 'sentry-samples/**'
-      - 'buildSrc/src/'
-      - '!**/*.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
