@@ -3,10 +3,12 @@ package io.sentry.kotlin.multiplatform.gradle
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
 
@@ -43,9 +45,13 @@ class SentryPlugin : Plugin<Project> {
             }
         }
 
-    internal fun executeConfiguration(project: Project, hostIsMac: Boolean = HostManager.hostIsMac) {
+    internal fun executeConfiguration(
+        project: Project,
+        hostIsMac: Boolean = HostManager.hostIsMac
+    ) {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
-        val hasCocoapodsPlugin = project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
+        val hasCocoapodsPlugin =
+            project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
 
         if (sentryExtension.autoInstall.enabled.get()) {
             val autoInstall = sentryExtension.autoInstall
@@ -59,25 +65,78 @@ class SentryPlugin : Plugin<Project> {
             }
         }
 
-        if (hostIsMac && !hasCocoapodsPlugin) {
-            project.logger.info("Cocoapods plugin not found. Attempting to link Sentry Cocoa framework.")
-
-            val kmpExtension = project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-            val appleTargets = kmpExtension?.appleTargets()?.toList()
-                ?: throw GradleException("Error fetching Apple targets from Kotlin Multiplatform plugin.")
-
-            CocoaFrameworkLinker(
-                logger = project.logger,
-                pathResolver = FrameworkPathResolver(project),
-                binaryLinker = FrameworkLinker(project.logger)
-            ).configure(appleTargets)
-        }
+        maybeLinkCocoaFramework(project, hasCocoapodsPlugin, hostIsMac)
     }
 
     companion object {
         internal val logger by lazy {
             LoggerFactory.getLogger(SentryPlugin::class.java)
         }
+    }
+}
+
+private fun maybeLinkCocoaFramework(
+    project: Project,
+    hasCocoapods: Boolean,
+    hostIsMac: Boolean
+) {
+    if (hostIsMac && !hasCocoapods) {
+        // Register a task graph listener so that we only configure Cocoa framework linking
+        // if at least one Apple target task is part of the requested task graph. This avoids
+        // executing the (potentially expensive) path-resolution logic when the build is only
+        // concerned with non-Apple targets such as Android.
+
+        val kmpExtension =
+            project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
+                ?: throw GradleException("Error fetching Kotlin Multiplatform extension.")
+
+        val appleTargets = kmpExtension.appleTargets().toList()
+
+        if (appleTargets.isEmpty()) {
+            project.logger.info("No Apple targets detected – skipping Sentry Cocoa framework linking setup.")
+            return
+        }
+
+        project.gradle.taskGraph.whenReady { graph ->
+            // Check which of the Kotlin/Native targets are actually in the graph
+            val activeTarget = getActiveTarget(project, appleTargets, graph)
+
+            if (activeTarget == null) {
+                project.logger.lifecycle(
+                    "No Apple compile task scheduled for this build " +
+                        "- skipping Sentry Cocoa framework linking"
+                )
+                return@whenReady
+            }
+
+            project.logger.lifecycle("Set up Sentry Cocoa linking for target: ${activeTarget.name}")
+
+            CocoaFrameworkLinker(
+                logger = project.logger,
+                pathResolver = FrameworkPathResolver(project),
+                binaryLinker = FrameworkLinker(project.logger)
+            ).configure(appleTargets = listOf(activeTarget))
+        }
+    }
+}
+
+private fun getActiveTarget(
+    project: Project,
+    appleTargets: List<KotlinNativeTarget>,
+    graph: TaskExecutionGraph
+): KotlinNativeTarget? = appleTargets.firstOrNull { target ->
+    val targetName = target.name.replaceFirstChar {
+        it.uppercase()
+    }
+    val path = if (project.path == ":") {
+        ":compileKotlin$targetName"
+    } else {
+        "${project.path}:compileKotlin$targetName"
+    }
+    try {
+        graph.hasTask(path)
+    } catch (_: Exception) {
+        false
     }
 }
 
