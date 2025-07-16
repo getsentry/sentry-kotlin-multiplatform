@@ -75,7 +75,6 @@ class SentryPlugin : Plugin<Project> {
     }
 }
 
-
 private fun maybeLinkCocoaFramework(
     project: Project,
     hasCocoapods: Boolean,
@@ -105,7 +104,7 @@ private fun maybeLinkCocoaFramework(
             if (activeTarget == null) {
                 project.logger.lifecycle(
                     "No Apple compile task scheduled for this build " +
-                            "- skipping Sentry Cocoa framework linking"
+                        "- skipping Sentry Cocoa framework linking"
                 )
                 return@whenReady
             }
@@ -155,9 +154,9 @@ internal fun Project.installSentryForKmp(
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
-                        "Cannot auto install in commonMain. " +
-                        "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                        "supports (apple, jvm, android) and add the dependency manually."
+                    "Cannot auto install in commonMain. " +
+                    "Please create an intermediate sourceSet with targets that the Sentry SDK " +
+                    "supports (apple, jvm, android) and add the dependency manually."
             )
         }
     }
