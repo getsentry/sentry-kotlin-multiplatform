@@ -91,8 +91,11 @@ class SentryPlugin : Plugin<Project> {
                     } else {
                         "${project.path}:compileKotlin$targetName"
                     }
-                    // Will throw if it doesn't exist
-                    graph.hasTask(path)
+                    try {
+                        graph.hasTask(path)
+                    } catch (e: Exception) {
+                        false
+                    }
                 }
 
                 if (activeTargets.isEmpty()) {
