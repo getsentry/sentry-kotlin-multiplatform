@@ -20,7 +20,8 @@ that can be used on Kotlin Multiplatform.
 
 | Packages                    | Maven Central                                                                                                                                                                                                
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| sentry-kotlin-multiplatform | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.sentry/sentry-kotlin-multiplatform/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.sentry/sentry-kotlin-multiplatform) 
+| sentry-kotlin-multiplatform | [![Maven Central](https://maven-badges.sml.io/sonatype-central/io.sentry/sentry-kotlin-multiplatform/badge.svg?style=flat)](https://central.sonatype.com/artifact/io.sentry/sentry-kotlin-multiplatform) 
+| sentry-kotlin-multiplatform-gradle-plugin | [![Maven Central](https://maven-badges.sml.io/sonatype-central/io.sentry/sentry-kotlin-multiplatform-gradle-plugin/badge.svg?style=flat)](https://central.sonatype.com/artifact/io.sentry/sentry-kotlin-multiplatform-gradle-plugin) 
 
 ## Supported Platforms
 
@@ -48,6 +49,7 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 | 0.12.0                           | 8.49.0 (Xcode 16.3 compatible) |
 | 0.13.0                           | 8.49.1            |
 | 0.14.0                     | 8.53.1            |
+| 0.15.0                     | 8.53.2            |
 
 ## Usage
 
