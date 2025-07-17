@@ -99,9 +99,9 @@ private fun maybeLinkCocoaFramework(
 
         project.gradle.taskGraph.whenReady { graph ->
             // Check which of the Kotlin/Native targets are actually in the graph
-            val activeTarget = getActiveTarget(project, appleTargets, graph)
+            val activeTargets = getActiveTargets(project, appleTargets, graph)
 
-            if (activeTarget == null) {
+            if (activeTargets.isEmpty()) {
                 project.logger.lifecycle(
                     "No Apple compile task scheduled for this build " +
                         "- skipping Sentry Cocoa framework linking"
@@ -109,22 +109,22 @@ private fun maybeLinkCocoaFramework(
                 return@whenReady
             }
 
-            project.logger.lifecycle("Set up Sentry Cocoa linking for target: ${activeTarget.name}")
+            project.logger.lifecycle("Set up Sentry Cocoa linking for targets: ${activeTargets.map { it.name }}")
 
             CocoaFrameworkLinker(
                 logger = project.logger,
                 pathResolver = FrameworkPathResolver(project),
                 binaryLinker = FrameworkLinker(project.logger)
-            ).configure(appleTargets = listOf(activeTarget))
+            ).configure(appleTargets = activeTargets)
         }
     }
 }
 
-private fun getActiveTarget(
+private fun getActiveTargets(
     project: Project,
     appleTargets: List<KotlinNativeTarget>,
     graph: TaskExecutionGraph
-): KotlinNativeTarget? = appleTargets.firstOrNull { target ->
+): List<KotlinNativeTarget> = appleTargets.filter { target ->
     val targetName = target.name.replaceFirstChar {
         it.uppercase()
     }
