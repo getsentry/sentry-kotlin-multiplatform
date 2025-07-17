@@ -20,7 +20,8 @@ that can be used on Kotlin Multiplatform.
 
 | Packages                    | Maven Central                                                                                                                                                                                                
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| sentry-kotlin-multiplatform | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.sentry/sentry-kotlin-multiplatform/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.sentry/sentry-kotlin-multiplatform) 
+| sentry-kotlin-multiplatform | [![Maven Central](https://maven-badges.sml.io/sonatype-central/io.sentry/sentry-kotlin-multiplatform/badge.svg?style=flat)](https://central.sonatype.com/artifact/io.sentry/sentry-kotlin-multiplatform) 
+| sentry-kotlin-multiplatform-gradle-plugin | [![Maven Central](https://maven-badges.sml.io/sonatype-central/io.sentry/sentry-kotlin-multiplatform-gradle-plugin/badge.svg?style=flat)](https://central.sonatype.com/artifact/io.sentry/sentry-kotlin-multiplatform-gradle-plugin) 
 
 ## Supported Platforms
 
