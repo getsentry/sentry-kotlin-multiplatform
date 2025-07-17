@@ -11,6 +11,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
         throw GradleException("DistZip: version name is empty")
     }
     val projectName = project.name
+    println("proj name: $projectName")
     val platforms = mapOf(
         "main" to projectName,
         "android" to "$projectName-android",
@@ -32,7 +33,10 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
     platforms.forEach { (distName, projectName) ->
         val distribution = if (distName == "main") getByName("main") else maybeCreate(distName)
         distribution.contents {
-            val basePath = "$buildPublishDir${sep}io${sep}sentry$projectName$sep$version"
+            val basePath = "${buildPublishDir}io${sep}sentry${sep}$projectName$sep$version"
+            if (File(basePath).exists().not()) {
+                throw GradleException("Artifact $distName does not exist: $basePath")
+            }
 
             // Rename the POM since craft looks for pom-default.xml
             from("$basePath/$projectName-$version.pom") {
