@@ -35,7 +35,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
             val basePath = "${buildPublishDir}io${sep}sentry${sep}$projectName$sep$version"
 
             // Rename the POM since craft looks for pom-default.xml
-            from("$basePath/$projectName-$version.pom") {
+            from("$basePath$sep$projectName-$version.pom") {
                 rename { "pom-default.xml" }
             }
 
