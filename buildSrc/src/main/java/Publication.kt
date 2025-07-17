@@ -33,9 +33,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
         val distribution = if (distName == "main") getByName("main") else maybeCreate(distName)
         distribution.contents {
             val basePath = "${buildPublishDir}io${sep}sentry${sep}$projectName$sep$version"
-            if (File(basePath).exists().not()) {
-                throw GradleException("Artifact $distName does not exist: $basePath")
-            }
 
             // Rename the POM since craft looks for pom-default.xml
             from("$basePath/$projectName-$version.pom") {
