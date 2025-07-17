@@ -11,7 +11,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
         throw GradleException("DistZip: version name is empty")
     }
     val projectName = project.name
-    println("proj name: $projectName")
     val platforms = mapOf(
         "main" to projectName,
         "android" to "$projectName-android",
