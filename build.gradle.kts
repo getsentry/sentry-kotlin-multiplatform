@@ -31,16 +31,19 @@ subprojects {
         apply<DistributionPlugin>()
 
         val sep = File.separator
+        // The path where we want publishToMavenLocal to output the artifacts to
+        val buildPublishDir = "${project.layout.buildDirectory.get().asFile.path}${sep}sentry-local-publish"
 
         configure<DistributionContainer> {
-            this.configureForMultiplatform(this@subprojects)
+            this.configureForMultiplatform(this@subprojects, buildPublishDir)
         }
 
         tasks.named("distZip").configure {
+            System.setProperty("maven.repo.local", buildPublishDir)
             this.dependsOn("publishToMavenLocal")
             this.doLast {
                 val distributionFilePath =
-                    "${this.project.buildDir}${sep}distributions${sep}${this.project.name}-${this.project.version}.zip"
+                    "${project.layout.buildDirectory}${sep}distributions${sep}${this.project.name}-${this.project.version}.zip"
                 val file = File(distributionFilePath)
                 if (!file.exists()) throw GradleException("Distribution file: $distributionFilePath does not exist")
                 if (file.length() == 0L) throw GradleException("Distribution file: $distributionFilePath is empty")

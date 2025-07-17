@@ -5,13 +5,12 @@ import java.io.File
 
 private val sep: String = File.separator
 
-fun DistributionContainer.configureForMultiplatform(project: Project) {
+fun DistributionContainer.configureForMultiplatform(project: Project, buildPublishDir: String) {
     val version = project.property("versionName").toString()
     if (version.isEmpty()) {
         throw GradleException("DistZip: version name is empty")
     }
     val projectName = project.name
-    val baseDir = "build${sep}test${sep}io${sep}sentry"
     val platforms = mapOf(
         "main" to projectName,
         "android" to "$projectName-android",
@@ -33,7 +32,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project) {
     platforms.forEach { (distName, projectName) ->
         val distribution = if (distName == "main") getByName("main") else maybeCreate(distName)
         distribution.contents {
-            val basePath = "$baseDir$sep$projectName$sep$version"
+            val basePath = "$buildPublishDir${sep}io${sep}sentry$projectName$sep$version"
 
             // Rename the POM since craft looks for pom-default.xml
             from("$basePath/$projectName-$version.pom") {
