@@ -1,13 +1,12 @@
 object Config {
     val agpVersion = "7.4.2"
-    val kotlinVersion = "2.1.21"
-    val composePluginVersion = "1.8.0"
+    val kotlinVersion = "1.9.23"
+    val composeVersion = "1.6.1"
     val gradleMavenPublishPluginVersion = "0.18.0"
 
     val multiplatform = "multiplatform"
     val cocoapods = "native.cocoapods"
     val jetpackCompose = "org.jetbrains.compose"
-    val kotlinCompose = "org.jetbrains.kotlin.plugin.compose"
     val gradleMavenPublishPlugin = "com.vanniktech.maven.publish"
     val androidGradle = "com.android.library"
     val kotlinSerializationPlugin = "plugin.serialization"
@@ -27,7 +26,7 @@ object Config {
         val detekt = "io.gitlab.arturbosch.detekt"
         val detektVersion = "1.22.0"
         val binaryCompatibility = "org.jetbrains.kotlinx.binary-compatibility-validator"
-        val binaryCompatibilityVersion = "0.18.0"
+        val binaryCompatibilityVersion = "0.13.1"
     }
 
     object Libs {
@@ -60,9 +59,9 @@ object Config {
         val ktorClientOkHttp = "io.ktor:ktor-client-okhttp:2.3.6"
         val ktorClientDarwin = "io.ktor:ktor-client-darwin:2.3.6"
 
-        val roboelectric = "org.robolectric:robolectric:4.15.1"
-        val junitKtx = "androidx.test.ext:junit-ktx:1.2.1"
-        val mockitoCore = "org.mockito:mockito-core:5.18.0"
+        val roboelectric = "org.robolectric:robolectric:4.9"
+        val junitKtx = "androidx.test.ext:junit-ktx:1.1.5"
+        val mockitoCore = "org.mockito:mockito-core:5.4.0"
     }
 
     object Android {
