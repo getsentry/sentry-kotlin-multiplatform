@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -51,6 +54,14 @@ kotlin {
         publishLibraryVariants("release")
     }
     jvm()
+    js(IR) {
+        browser()
+        binaries.library()
+    }
+    wasmJs {
+        browser()
+        binaries.library()
+    }
     iosArm64()
     iosSimulatorArm64()
     iosX64()
@@ -195,6 +206,17 @@ kotlin {
                 "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
             )
         }
+
+        val commonStub by creating {
+            dependsOn(commonMain.get())
+        }
+        val commonStubTest by creating {
+            dependsOn(commonTest.get())
+        }
+        jsMain.get().dependsOn(commonStub)
+        jsTest.get().dependsOn(commonStubTest)
+        wasmJsMain.get().dependsOn(commonStub)
+        wasmJsTest.get().dependsOn(commonStub)
     }
 }
 
