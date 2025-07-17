@@ -44,7 +44,6 @@ public abstract class SentryBaseEvent(
      * This is not thread-safe.
      */
     public var contexts: Map<String, Any> = mapOf()
-        internal set
 
     /**
      * A mutable map of breadcrumbs that led to this event.

@@ -46,7 +46,7 @@ class SentryE2ETest : BaseSentryTest() {
     @BeforeTest
     fun setup() {
         assertNotNull(authToken)
-        assertTrue(authToken.isNotEmpty())
+        assertTrue(authToken!!.isNotEmpty())
         sentryInit { options ->
             options.dsn = realDsn
             options.beforeSend = { event ->
