@@ -35,15 +35,15 @@ subprojects {
         val buildPublishDir = "${project.layout.buildDirectory.get().asFile.path}${sep}sentry-local-publish$sep"
 
         configure<DistributionContainer> {
-            this.configureForMultiplatform(this@subprojects, buildPublishDir)
+            configureForMultiplatform(this@subprojects, buildPublishDir)
         }
 
         tasks.named("distZip").configure {
             System.setProperty("maven.repo.local", buildPublishDir)
-            this.dependsOn("publishToMavenLocal")
-            this.doLast {
+            dependsOn("publishToMavenLocal")
+            doLast {
                 val distributionFilePath =
-                    "${project.layout.buildDirectory.get().asFile.path}${sep}distributions${sep}${this.project.name}-${this.project.version}.zip"
+                    "${project.layout.buildDirectory.get().asFile.path}${sep}distributions${sep}${project.name}-${project.version}.zip"
                 val file = File(distributionFilePath)
                 if (!file.exists()) throw GradleException("Distribution file: $distributionFilePath does not exist")
                 if (file.length() == 0L) throw GradleException("Distribution file: $distributionFilePath is empty")
