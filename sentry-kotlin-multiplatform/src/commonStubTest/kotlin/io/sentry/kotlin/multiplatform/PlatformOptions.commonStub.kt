@@ -4,7 +4,7 @@ import io.sentry.kotlin.multiplatform.utils.fakeDsn
 
 actual interface PlatformOptions : CommonPlatformOptions
 
-private class JsPlatformOptionsImpl : PlatformOptions {
+private class StubPlatformOptionsImpl : PlatformOptions {
     override var dsn: String? = null
     override var attachStackTrace: Boolean = true
     override var release: String? = null
@@ -38,10 +38,9 @@ private class JsPlatformOptionsImpl : PlatformOptions {
     }
 }
 
-actual fun createPlatformOptions(): PlatformOptions = JsPlatformOptionsImpl()
+actual fun createPlatformOptions(): PlatformOptions = StubPlatformOptionsImpl()
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
-    it.dsn = fakeDsn
 }
 
-actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) { /* no-op */ }
+actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) { }

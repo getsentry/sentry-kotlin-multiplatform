@@ -54,11 +54,6 @@ kotlin {
     js(IR) {
         browser()
         binaries.library()
-
-        // Disable JS test execution; commonTest already covers logic
-        testTask {
-            enabled = false
-        }
     }
     iosArm64()
     iosSimulatorArm64()
@@ -204,6 +199,15 @@ kotlin {
                 "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
             )
         }
+
+        val commonStub by creating {
+            dependsOn(commonMain.get())
+        }
+        val commonStubTest by creating {
+            dependsOn(commonTest.get())
+        }
+        jsMain.get().dependsOn(commonStub)
+        jsTest.get().dependsOn(commonStubTest)
     }
 }
 
