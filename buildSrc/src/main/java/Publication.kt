@@ -30,7 +30,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
     )
 
     platforms.forEach { (distName, projectName) ->
-        val distribution = if (distName == "main") getByName("main") else maybeCreate(distName)
+        val distribution = maybeCreate(distName)
         distribution.contents {
             val basePath = "${buildPublishDir}io${sep}sentry${sep}$projectName$sep$version"
 
