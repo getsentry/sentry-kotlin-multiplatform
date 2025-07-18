@@ -39,8 +39,16 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
                 rename { "pom-default.xml" }
             }
 
+            // Rename the main jar to ...-all.jar due to craft
+            if (distribution.name == "main") {
+                from("$basePath$sep$projectName-$version.jar") {
+                    rename { "$projectName-$version-all.jar" }
+                }
+            }
+
             from(basePath) {
                 exclude("*.pom")
+                exclude("$projectName-$version.jar")
             }
         }
     }
