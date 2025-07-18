@@ -49,7 +49,7 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 | 0.12.0                           | 8.49.0 (Xcode 16.3 compatible) |
 | 0.13.0                           | 8.49.1            |
 | 0.14.0                     | 8.53.1            |
-| 0.15.0                     | 8.53.2            |
+| 0.15.0, 0.16.0                     | 8.53.2            |
 
 ## Usage
 

@@ -26,13 +26,11 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
         "watchosarm32" to "$projectName-watchosarm32",
         "watchosarm64" to "$projectName-watchosarm64",
         "watchossimulatorarm64" to "$projectName-watchossimulatorarm64",
-        "watchosx64" to "$projectName-watchosx64",
-        "js" to "$projectName-js",
-        "wasm-js" to "$projectName-wasm-js"
+        "watchosx64" to "$projectName-watchosx64"
     )
 
     platforms.forEach { (distName, projectName) ->
-        val distribution = if (distName == "main") getByName("main") else maybeCreate(distName)
+        val distribution = maybeCreate(distName)
         distribution.contents {
             val basePath = "${buildPublishDir}io${sep}sentry${sep}$projectName$sep$version"
 
@@ -41,8 +39,23 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
                 rename { "pom-default.xml" }
             }
 
+            // Rename the main jar to ...-all.jar due to craft
+            if (distribution.name == "main") {
+                from("$basePath$sep$projectName-$version.jar") {
+                    rename { "$projectName-$version-all.jar" }
+                }
+            }
+
+            // Rename the android.aar to android-release.aar due to craft
+            if (distribution.name == "android") {
+                from("$basePath$sep$projectName-$version.aar") {
+                    rename { "$projectName-release.aar" }
+                }
+            }
+
             from(basePath) {
                 exclude("*.pom")
+                exclude("$projectName-$version.aar")
             }
         }
     }
