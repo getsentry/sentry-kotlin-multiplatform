@@ -48,7 +48,6 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
 
             from(basePath) {
                 exclude("*.pom")
-                exclude("$projectName-$version.jar")
             }
         }
     }
