@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.16.0
 
 Potentially breaking: this release bumps the used Kotlin version to `2.1.21`.
 
