@@ -49,7 +49,7 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
             // Rename the android.aar to android-release.aar due to craft
             if (distribution.name == "android") {
                 from("$basePath$sep$projectName-$version.aar") {
-                    rename { "$projectName-release-$version.aar" }
+                    rename { "$projectName-release.aar" }
                 }
             }
 
