@@ -106,6 +106,7 @@ public abstract class io/sentry/kotlin/multiplatform/SentryBaseEvent {
 	public fun getUser ()Lio/sentry/kotlin/multiplatform/protocol/User;
 	public final fun removeTag (Ljava/lang/String;)V
 	public fun setBreadcrumbs (Ljava/util/List;)V
+	public final fun setContexts (Ljava/util/Map;)V
 	public fun setDist (Ljava/lang/String;)V
 	public fun setEnvironment (Ljava/lang/String;)V
 	public fun setEventId (Lio/sentry/kotlin/multiplatform/protocol/SentryId;)V

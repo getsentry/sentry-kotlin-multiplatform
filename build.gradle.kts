@@ -11,7 +11,8 @@ plugins {
     id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
-    id(Config.jetpackCompose).version(Config.composeVersion).apply(false)
+    id(Config.jetpackCompose).version(Config.composePluginVersion).apply(false)
+    id(Config.kotlinCompose).version(Config.kotlinVersion).apply(false)
     id(Config.androidGradle).version(Config.agpVersion).apply(false)
     id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
     kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
@@ -30,16 +31,19 @@ subprojects {
         apply<DistributionPlugin>()
 
         val sep = File.separator
+        // The path where we want publishToMavenLocal to output the artifacts to
+        val buildPublishDir = "${project.layout.buildDirectory.get().asFile.path}${sep}sentry-local-publish$sep"
 
         configure<DistributionContainer> {
-            this.configureForMultiplatform(this@subprojects)
+            configureForMultiplatform(this@subprojects, buildPublishDir)
         }
 
         tasks.named("distZip").configure {
-            this.dependsOn("publishToMavenLocal")
-            this.doLast {
+            System.setProperty("maven.repo.local", buildPublishDir)
+            dependsOn("publishToMavenLocal")
+            doLast {
                 val distributionFilePath =
-                    "${this.project.buildDir}${sep}distributions${sep}${this.project.name}-${this.project.version}.zip"
+                    "${project.layout.buildDirectory.get().asFile.path}${sep}distributions${sep}${project.name}-${project.version}.zip"
                 val file = File(distributionFilePath)
                 if (!file.exists()) throw GradleException("Distribution file: $distributionFilePath does not exist")
                 if (file.length() == 0L) throw GradleException("Distribution file: $distributionFilePath is empty")

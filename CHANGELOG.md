@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+Potentially breaking: this release bumps the used Kotlin version to `2.1.21`.
+
+### Dependencies
+
+- Bump Kotlin from `1.9.23` to `2.1.21` ([#389](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/389/))
+
+### Internal
+
+- Update `distZip` task to use the locally published artifacts via `publishToMavenLocal` ([#425](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/425))
+
 ## 0.15.0
 
 ### Enhancements
