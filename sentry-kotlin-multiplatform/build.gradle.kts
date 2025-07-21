@@ -225,8 +225,8 @@ kotlin {
         }
         jsMain.get().dependsOn(commonStub)
         wasmJsMain.get().dependsOn(commonStub)
-//        wasmWasiMain.get().dependsOn(commonStub)
-//        wasmWasiTest.get().dependsOn(commonStubTest)
+        linuxMain.get().dependsOn(commonStub)
+        mingwMain.get().dependsOn(commonStub)
     }
 }
 

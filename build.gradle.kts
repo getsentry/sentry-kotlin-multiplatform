@@ -2,6 +2,7 @@ import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.zip.ZipFile
 
 plugins {
@@ -161,6 +162,13 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
 
 subprojects {
     if (project.name.contains("sentry-kotlin-multiplatform")) {
+        tasks.withType<DokkaTask>().configureEach {
+            dokkaSourceSets.configureEach {
+                if (name.endsWith("Test")) {
+                    suppress.set(true)
+                }
+            }
+        }
         apply(plugin = Config.dokka)
     }
 }
