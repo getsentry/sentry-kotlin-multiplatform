@@ -3,6 +3,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -54,25 +55,6 @@ kotlin {
         publishLibraryVariants("release")
     }
     jvm()
-    js(IR) {
-        browser()
-        binaries.library()
-        compilations.remove(compilations.getByName("test"))
-    }
-    wasmJs {
-        browser()
-        binaries.library()
-        compilations.remove(compilations.getByName("test"))
-    }
-    mingwX64 {
-        compilations.remove(compilations.getByName("test"))
-    }
-    linuxArm64 {
-        compilations.remove(compilations.getByName("test"))
-    }
-    linuxX64 {
-        compilations.remove(compilations.getByName("test"))
-    }
     iosArm64()
     iosSimulatorArm64()
     iosX64()
@@ -85,6 +67,7 @@ kotlin {
     tvosX64()
     macosX64()
     macosArm64()
+    addNoOpTargets()
 
     sourceSets {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -246,5 +229,27 @@ buildkonfig {
         buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+    }
+}
+
+private fun KotlinMultiplatformExtension.addNoOpTargets() {
+    js(IR) {
+        browser()
+        binaries.library()
+        compilations.remove(compilations.getByName("test"))
+    }
+    wasmJs {
+        browser()
+        binaries.library()
+        compilations.remove(compilations.getByName("test"))
+    }
+    mingwX64 {
+        compilations.remove(compilations.getByName("test"))
+    }
+    linuxArm64 {
+        compilations.remove(compilations.getByName("test"))
+    }
+    linuxX64 {
+        compilations.remove(compilations.getByName("test"))
     }
 }
