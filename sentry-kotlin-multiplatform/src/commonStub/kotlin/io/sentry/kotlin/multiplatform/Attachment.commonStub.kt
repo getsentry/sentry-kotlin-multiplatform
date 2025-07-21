@@ -13,37 +13,37 @@ public actual class Attachment {
     }
 
     public actual constructor(bytes: ByteArray, filename: String) {
-        this.bytes = bytes
+        this.bytes = null
         this.pathname = null
-        this.filename = filename
+        this.filename = ""
         this.contentType = null
     }
 
     public actual constructor(bytes: ByteArray, filename: String, contentType: String?) {
-        this.bytes = bytes
+        this.bytes = null
         this.pathname = null
-        this.filename = filename
-        this.contentType = contentType
+        this.filename = ""
+        this.contentType = null
     }
 
     public actual constructor(pathname: String) {
         this.bytes = null
-        this.pathname = pathname
-        this.filename = pathname.substringAfterLast('/')
+        this.pathname = null
+        this.filename = ""
         this.contentType = null
     }
 
     public actual constructor(pathname: String, filename: String) {
         this.bytes = null
-        this.pathname = pathname
-        this.filename = filename
+        this.pathname = null
+        this.filename = ""
         this.contentType = null
     }
 
     public actual constructor(pathname: String, filename: String, contentType: String?) {
         this.bytes = null
-        this.pathname = pathname
-        this.filename = filename
-        this.contentType = contentType
+        this.pathname = null
+        this.filename = ""
+        this.contentType = null
     }
 }

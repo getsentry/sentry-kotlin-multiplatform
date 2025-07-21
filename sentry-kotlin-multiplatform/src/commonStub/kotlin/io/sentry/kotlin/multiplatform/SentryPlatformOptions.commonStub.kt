@@ -8,5 +8,5 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
 
 internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
     {
-            // No-op
+        // No-op
     }
