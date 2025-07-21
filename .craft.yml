@@ -13,8 +13,9 @@ targets:
       fileReplaceeRegex: /\d+\.\d+\.\d+(-\w+(\.\d+)?)?(-SNAPSHOT)?/
       fileReplacerStr: release.aar
     kmp:
-      rootDistDirRegex: /^(?!.*(?:jvm|android|ios|watchos|tvos|macos)).*$/
+      rootDistDirRegex: /^(?!.*(?:jvm|android|ios|watchos|tvos|macos|js|wasm-js|linux|mingw)).*$/
       appleDistDirRegex: /(ios|watchos|tvos|macos)/
+      klibDistDirRegex: /(js|wasm-js|linux|mingw)/
     excludeNames: /sentry-kotlin-multiplatform-gradle-plugin.*$/
   - name: maven
     id: plugin
