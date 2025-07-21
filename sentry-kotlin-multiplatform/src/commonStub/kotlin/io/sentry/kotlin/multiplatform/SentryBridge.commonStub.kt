@@ -5,16 +5,20 @@ import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
+@Suppress("UnusedPrivateMember")
 internal actual class SentryBridge actual constructor(
     private val sentryInstance: SentryInstance
 ) {
     actual fun init(context: Context, configuration: OptionsConfiguration) {
+        // No-op
     }
 
     actual fun init(configuration: OptionsConfiguration) {
+        // No-op
     }
 
     actual fun initWithPlatformOptions(configuration: PlatformOptionsConfiguration) {
+        // No-op
     }
 
     actual fun captureMessage(message: String): SentryId {
@@ -34,15 +38,19 @@ internal actual class SentryBridge actual constructor(
     }
 
     actual fun configureScope(scopeCallback: ScopeCallback) {
+        // No-op
     }
 
     actual fun captureUserFeedback(userFeedback: UserFeedback) {
+        // No-op
     }
 
     actual fun addBreadcrumb(breadcrumb: Breadcrumb) {
+        // No-op
     }
 
     actual fun setUser(user: User?) {
+        // No-op
     }
 
     actual fun isCrashedLastRun(): Boolean {
@@ -54,5 +62,6 @@ internal actual class SentryBridge actual constructor(
     }
 
     actual fun close() {
+        // No-op
     }
 }
