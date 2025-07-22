@@ -79,7 +79,7 @@ tasks.register("validateDistributions") {
 
 private fun Project.validateKotlinMultiplatformCoreArtifacts() {
     val distributionDir = project.layout.buildDirectory.dir("distributions").get().asFile
-    val expectedNumOfFiles = 15
+    val expectedNumOfFiles = 20
     val filesList = distributionDir.listFiles()
     val actualNumOfFiles = filesList?.size ?: 0
 
@@ -96,7 +96,11 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         "macosx64", "macosarm64",
         "jvm",
         "iosx64", "iossimulatorarm64", "iosarm64",
-        "android"
+        "android",
+        "js",
+        "wasm-js",
+        "linuxx64", "linuxarm64",
+        "mingwx64"
     )
 
     val artifactPaths = buildList {

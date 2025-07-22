@@ -40,7 +40,7 @@ Every version of our Kotlin Multiplatform SDK is compiled with a specific versio
 Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table below to ensure the best compatibility and stability.
 
 | Kotlin Multiplatform SDK Version | Cocoa SDK Version |
-| -------------------------------- | ----------------- |
+|----------------------------------| ----------------- |
 | 0.6.0                            | 8.25.0            |
 | 0.7.0, 0.7.1                     | 8.26.0            |
 | 0.8.0, 0.9.0                     | 8.36.0            |
@@ -48,8 +48,8 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 | 0.11.0                           | 8.44.0            |
 | 0.12.0                           | 8.49.0 (Xcode 16.3 compatible) |
 | 0.13.0                           | 8.49.1            |
-| 0.14.0                     | 8.53.1            |
-| 0.15.0, 0.16.0                     | 8.53.2            |
+| 0.14.0                           | 8.53.1            |
+| 0.15.0, 0.16.0, 0.17.0           | 8.53.2            |
 
 ## Usage
 
