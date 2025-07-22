@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add stubs/no-op support for unsupported targets ([#426](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/426))
+
 ## 0.16.0
 
 Potentially breaking: this release bumps the used Kotlin version to `2.1.21`.

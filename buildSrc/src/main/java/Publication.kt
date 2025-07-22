@@ -26,7 +26,12 @@ fun DistributionContainer.configureForMultiplatform(project: Project, buildPubli
         "watchosarm32" to "$projectName-watchosarm32",
         "watchosarm64" to "$projectName-watchosarm64",
         "watchossimulatorarm64" to "$projectName-watchossimulatorarm64",
-        "watchosx64" to "$projectName-watchosx64"
+        "watchosx64" to "$projectName-watchosx64",
+        "js" to "$projectName-js",
+        "wasm-js" to "$projectName-wasm-js",
+        "mingwx64" to "$projectName-mingwx64",
+        "linuxarm64" to "$projectName-linuxarm64",
+        "linuxx64" to "$projectName-linuxx64"
     )
 
     platforms.forEach { (distName, projectName) ->

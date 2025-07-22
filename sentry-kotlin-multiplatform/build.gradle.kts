@@ -1,5 +1,9 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -63,6 +67,7 @@ kotlin {
     tvosX64()
     macosX64()
     macosArm64()
+    addNoOpTargets()
 
     sourceSets {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -185,8 +190,10 @@ kotlin {
 
         // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
         // if we need to use this class, we'd need to find a better way to work it out
-        targets.withType<KotlinNativeTarget>().all {
-            compilations["main"].cinterops["Sentry"].extraOpts(
+        targets.withType<KotlinNativeTarget>().matching {
+            it.konanTarget.family.isAppleFamily
+        }.forEach { target ->
+            target.compilations["main"].cinterops["Sentry"].extraOpts(
                 "-compiler-option",
                 "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
                 "-compiler-option",
@@ -195,6 +202,14 @@ kotlin {
                 "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
             )
         }
+
+        val commonStub by creating {
+            dependsOn(commonMain.get())
+        }
+        jsMain.get().dependsOn(commonStub)
+        wasmJsMain.get().dependsOn(commonStub)
+        linuxMain.get().dependsOn(commonStub)
+        mingwMain.get().dependsOn(commonStub)
     }
 }
 
@@ -214,5 +229,27 @@ buildkonfig {
         buildConfigField(STRING, "SENTRY_JAVA_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_ANDROID_VERSION", Config.Libs.sentryJavaVersion)
         buildConfigField(STRING, "SENTRY_COCOA_VERSION", Config.Libs.sentryCocoaVersion)
+    }
+}
+
+private fun KotlinMultiplatformExtension.addNoOpTargets() {
+    js(IR) {
+        browser()
+        binaries.library()
+        compilations.remove(compilations.getByName("test"))
+    }
+    wasmJs {
+        browser()
+        binaries.library()
+        compilations.remove(compilations.getByName("test"))
+    }
+    mingwX64 {
+        compilations.remove(compilations.getByName("test"))
+    }
+    linuxArm64 {
+        compilations.remove(compilations.getByName("test"))
+    }
+    linuxX64 {
+        compilations.remove(compilations.getByName("test"))
     }
 }
