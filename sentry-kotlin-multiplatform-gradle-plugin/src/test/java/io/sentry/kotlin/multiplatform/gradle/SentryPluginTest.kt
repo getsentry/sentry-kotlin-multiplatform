@@ -6,7 +6,6 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -154,9 +153,8 @@ class SentryPluginTest {
         assertTrue(commonMainConfiguration!!.dependencies.contains(sentryDependency))
     }
 
-    @OptIn(ExperimentalWasmDsl::class)
     @ParameterizedTest(name = "installSentryForKmp throws if build contains unsupported target {0}")
-    @ValueSource(strings = ["wasm", "js", "mingw", "linux", "androidNative"])
+    @ValueSource(strings = ["androidNative"])
     fun `installSentryForKmp throws if build contains any unsupported target`(unsupportedTarget: String) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
@@ -165,10 +163,6 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.apply {
             when (unsupportedTarget) {
-                "wasm" -> wasmJs()
-                "js" -> js()
-                "mingw" -> mingwX64()
-                "linux" -> linuxX64()
                 "androidNative" -> androidNativeArm64()
             }
         }

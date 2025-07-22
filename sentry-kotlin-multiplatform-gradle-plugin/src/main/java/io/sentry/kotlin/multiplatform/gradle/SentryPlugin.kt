@@ -149,14 +149,14 @@ internal fun Project.installSentryForKmp(
         return
     }
 
-    val unsupportedTargets = listOf("wasm", "js", "mingw", "linux", "androidNative")
+    val unsupportedTargets = listOf("androidNative")
     kmpExtension.targets.forEach { target ->
         if (unsupportedTargets.any { unsupported -> target.name.contains(unsupported) }) {
             throw GradleException(
                 "Unsupported target: ${target.name}. " +
                     "Cannot auto install in commonMain. " +
                     "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                    "supports (apple, jvm, android) and add the dependency manually."
+                    "supports and add the dependency manually."
             )
         }
     }
