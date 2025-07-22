@@ -99,7 +99,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         "android",
         "js",
         "wasm-js",
-        "linuxx64, linuxarm64",
+        "linuxx64", "linuxarm64",
         "mingwx64"
     )
 
