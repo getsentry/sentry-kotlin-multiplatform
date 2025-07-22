@@ -96,7 +96,11 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         "macosx64", "macosarm64",
         "jvm",
         "iosx64", "iossimulatorarm64", "iosarm64",
-        "android"
+        "android",
+        "js",
+        "wasm-js",
+        "linuxx64, linuxarm64",
+        "mingwx64"
     )
 
     val artifactPaths = buildList {
