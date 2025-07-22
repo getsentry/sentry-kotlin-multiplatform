@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixes
+
+- Gradle Plugin: allow new supported targets to be installed ([#429](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/429))
+
+## 0.17.0
+
 ### Features
 
 - Add stubs/no-op support for unsupported targets ([#426](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/426))
