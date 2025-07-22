@@ -11,7 +11,7 @@ out
 .directory
 node_modules
 local.properties
-
+.kotlin
 .externalNativeBuild
 .database
 
