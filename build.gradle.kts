@@ -79,7 +79,7 @@ tasks.register("validateDistributions") {
 
 private fun Project.validateKotlinMultiplatformCoreArtifacts() {
     val distributionDir = project.layout.buildDirectory.dir("distributions").get().asFile
-    val expectedNumOfFiles = 15
+    val expectedNumOfFiles = 20
     val filesList = distributionDir.listFiles()
     val actualNumOfFiles = filesList?.size ?: 0
 
