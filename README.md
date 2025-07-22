@@ -40,7 +40,7 @@ You can add these targets to your Kotlin Multiplatform project just like the sup
 They compile and satisfy the API surface, but **do nothing at runtime**.
 
 | Target Platform | Target preset                                     |
-|-:-:-------------|---------------------------------------------------|
+|:---------------:|---------------------------------------------------|
 | JS              | <ul><li>`js`</li></ul>                            |
 | Wasm JS         | <ul><li>`wasmJs`</li></ul>                        |
 | Linux           | <ul><li>`linuxx64`</li><li>`linuxarm64`</li></ul> |
