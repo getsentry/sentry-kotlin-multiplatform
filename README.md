@@ -15,7 +15,7 @@ us [<kbd>**Check out our open positions**</kbd>](https://sentry.io/careers/)_
 This SDK is a wrapper around different platforms such as JVM, Android, iOS, macOS, watchOS, tvOS
 that can be used on Kotlin Multiplatform.
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.23-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![KDoc link](https://img.shields.io/badge/API_Reference-KDoc-blue)](https://getsentry.github.io/sentry-kotlin-multiplatform/)
 
 | Packages                    | Maven Central                                                                                                                                                                                                
@@ -33,6 +33,18 @@ that can be used on Kotlin Multiplatform.
 |      macOS      | <ul><li>`macosArm64`</li><li>`macosX64`</ul>                                                                 |
 |     watchOS     | <ul><li>`watchosArm32`</li><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
 |      tvOS       | <ul><li>`tvosArm64`</li><li>`tvosX64`</li><li>`tvosSimulatorArm64`</li></ul>                                 |
+
+## Stubbed Platforms (No-Op Implementations)
+
+You can add these targets to your Kotlin Multiplatform project just like the supported ones.  
+They compile and satisfy the API surface, but **do nothing at runtime**.
+
+| Target Platform | Target preset                                     |
+|-:-:-------------|---------------------------------------------------|
+| JS              | <ul><li>`js`</li></ul>                            |
+| Wasm JS         | <ul><li>`wasmJs`</li></ul>                        |
+| Linux           | <ul><li>`linuxx64`</li><li>`linuxarm64`</li></ul> |
+| Windows         | <ul><li>`mingwx64`</li></ul>                      |
 
 ### Cocoa SDK Version Compatibility Table
 
