@@ -75,9 +75,12 @@ internal fun List<Long>.dropInitAddresses(
 internal fun List<Long>.dropCommonAddresses(
     commonAddresses: List<Long>
 ): List<Long> {
-    var i = commonAddresses.size
-    if (i == 0) return this
+    if (commonAddresses.isEmpty()) return this
+
+    var i = commonAddresses.lastIndex // start from last valid index
     return dropLastWhile {
-        i-- >= 0 && commonAddresses[i] == it
+        val keep = i >= 0 && commonAddresses[i] == it
+        i--
+        keep
     }
 }
