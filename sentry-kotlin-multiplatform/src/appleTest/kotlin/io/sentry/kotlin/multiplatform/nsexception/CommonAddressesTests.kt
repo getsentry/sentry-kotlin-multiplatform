@@ -17,12 +17,8 @@ package io.sentry.kotlin.multiplatform.nsexception
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
-import kotlin.test.assertTrue
 
 class CommonAddressesTests {
-
-    // MARK: - Basic Functionality Tests (Positive Cases)
-
     @Test
     fun testDropCommon() {
         val commonAddresses = listOf<Long>(5, 4, 3, 2, 1, 0)
@@ -62,8 +58,6 @@ class CommonAddressesTests {
         val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
         assertSame(addresses, withoutCommonAddresses)
     }
-
-    // MARK: - Edge Cases (Boundary Conditions)
 
     @Test
     fun testDropCommonEmptyCommon() {
@@ -111,8 +105,6 @@ class CommonAddressesTests {
         assertEquals(listOf<Long>(9, 8, 7, 6, 5, 4), withoutCommonAddresses)
     }
 
-    // MARK: - Regression Tests (Prevent IndexOutOfBoundsException)
-
     @Test
     fun testDropCommonNoIndexOutOfBounds_LargeCommonList() {
         // This test specifically targets the original bug where i-- could become -1
@@ -153,15 +145,12 @@ class CommonAddressesTests {
         assertEquals(listOf<Long>(5, 4, 3, 2, 1), withoutCommonAddresses)
     }
 
-    // MARK: - Performance and Stress Tests
-
     @Test
     fun testDropCommonLargeList() {
         val commonAddresses = (0L..999L).toList().reversed()
         val addresses = (500L..1499L).toList()
         
         val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
-        assertTrue("Result should contain elements not in common", withoutCommonAddresses.isNotEmpty())
         assertEquals(500, withoutCommonAddresses.size) // Should keep 1000-1499
     }
 
@@ -169,7 +158,7 @@ class CommonAddressesTests {
     fun testDropCommonRepeatedElements() {
         val commonAddresses = listOf<Long>(1, 1, 1, 0, 0)
         val addresses = listOf<Long>(5, 4, 1, 1, 0)
-        
+
         val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
         assertEquals(listOf<Long>(5, 4, 1, 1), withoutCommonAddresses)
     }
@@ -203,8 +192,6 @@ class CommonAddressesTests {
         val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
         assertEquals(listOf<Long>(9, 8), withoutCommonAddresses) // Should drop 3,2,1 but keep others
     }
-
-    // MARK: - Negative Test Cases
 
     @Test
     fun testDropCommonWithNegativeNumbers() {
