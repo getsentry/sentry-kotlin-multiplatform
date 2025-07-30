@@ -75,10 +75,10 @@ internal fun List<Long>.dropInitAddresses(
 internal fun List<Long>.dropCommonAddresses(
     commonAddresses: List<Long>
 ): List<Long> {
-    var i = commonAddresses.size - 1
-    if (i < 0) return this
+    var i = commonAddresses.size
+    if (i == 0) return this
 
-    return dropLastWhile { it ->
+    return dropLastWhile {
         i-- > 0 && commonAddresses[i] == it
     }
 }
