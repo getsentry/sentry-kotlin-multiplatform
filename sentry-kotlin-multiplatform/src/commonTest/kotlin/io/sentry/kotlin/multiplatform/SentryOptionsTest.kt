@@ -134,6 +134,7 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(SentryReplayOptions.Quality.MEDIUM, options.sessionReplay.quality)
         assertTrue(options.enableWatchdogTerminationTracking)
         assertFalse(options.sendDefaultPii)
+        assertNull(options.proguardUuid)
     }
 
     @Test
@@ -165,6 +166,7 @@ class SentryOptionsTest : BaseSentryTest() {
             sessionReplay.maskAllImages = false
             sessionReplay.quality = SentryReplayOptions.Quality.LOW
             sendDefaultPii = true
+            proguardUuid = "test-proguard-uuid-12345"
         }
 
         val platformOptions = createPlatformOptions()
@@ -185,6 +187,16 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(SentryLevel.ERROR, platformOptions.diagnosticLevel)
 
         platformOptions.assertPlatformSpecificOptions(options)
+    }
+
+    @Test
+    fun `GIVEN proguardUuid option WHEN set in SentryOptions THEN stores value correctly`() {
+        val options = SentryOptions()
+        val testUuid = "test-uuid-abcd-1234-efgh-5678"
+        
+        options.proguardUuid = testUuid
+        
+        assertEquals(testUuid, options.proguardUuid)
     }
 }
 
