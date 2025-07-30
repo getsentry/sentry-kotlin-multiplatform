@@ -3,8 +3,7 @@
 ## Features
 
 - Add `proguardUuid` option to `SentryOptions` ([#436](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/436))
-  - This will 
-
+  - This will propagate the `proguardUuid` value to Sentry Android
 
 ## 0.17.1
 
