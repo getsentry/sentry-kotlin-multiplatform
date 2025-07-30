@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Fix stack trace crash on Apple targets ([#434](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/434))
+
 ## 0.17.1
 
 ### Fixes
