@@ -76,7 +76,7 @@ internal fun List<Long>.dropCommonAddresses(
     commonAddresses: List<Long>
 ): List<Long> {
     if (commonAddresses.isEmpty() || this.isEmpty()) return this
-    
+
     var commonIndex = commonAddresses.size - 1
     return dropLastWhile { address ->
         if (commonIndex < 0 || commonIndex >= commonAddresses.size) {
