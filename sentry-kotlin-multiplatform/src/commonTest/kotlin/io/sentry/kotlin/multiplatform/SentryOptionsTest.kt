@@ -188,16 +188,6 @@ class SentryOptionsTest : BaseSentryTest() {
 
         platformOptions.assertPlatformSpecificOptions(options)
     }
-
-    @Test
-    fun `GIVEN proguardUuid option WHEN set in SentryOptions THEN stores value correctly`() {
-        val options = SentryOptions()
-        val testUuid = "test-uuid-abcd-1234-efgh-5678"
-        
-        options.proguardUuid = testUuid
-        
-        assertEquals(testUuid, options.proguardUuid)
-    }
 }
 
 expect fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions)

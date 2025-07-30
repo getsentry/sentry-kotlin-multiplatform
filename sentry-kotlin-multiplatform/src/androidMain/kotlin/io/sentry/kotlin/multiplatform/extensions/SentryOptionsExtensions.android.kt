@@ -20,7 +20,6 @@ internal fun SentryOptions.toAndroidSentryOptionsCallback(): (SentryAndroidOptio
     androidOptions.isAnrEnabled = kmpOptions.isAnrEnabled
     androidOptions.anrTimeoutIntervalMillis = kmpOptions.anrTimeoutIntervalMillis
 
-    // ProGuard UUID - Android specific option
     kmpOptions.proguardUuid?.let { uuid ->
         androidOptions.proguardUuid = uuid
     }
