@@ -2,12 +2,7 @@
 
 ## 0.18.0
 
-### Various fixes & improvements
-
-- Fix Sentry kmp stack trace crash on ios (#434) by @buenaflor
-- Add proguard uuid option for android (#436) by @buenaflor
-
-## Features
+### Features
 
 - Add `proguardUuid` option to `SentryOptions` ([#436](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/436))
   - This will propagate the `proguardUuid` value to Sentry Android
