@@ -7,6 +7,8 @@ import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
+import io.sentry.kotlin.multiplatform.nsexception.withCapturedStackTrace
+import io.sentry.kotlin.multiplatform.nsexception.OriginalStackTraceStore
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -75,16 +77,32 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
-        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true))
-        return SentryId(cocoaSentryId.toString())
+        // Ensure the throwable has its original stack trace captured if not already done
+        val enhancedThrowable = throwable.withCapturedStackTrace()
+        
+        try {
+            val cocoaSentryId = SentrySDK.captureException(enhancedThrowable.asNSException(true))
+            return SentryId(cocoaSentryId.toString())
+        } finally {
+            // Clean up stored stack traces to prevent memory leaks
+            OriginalStackTraceStore.cleanup(enhancedThrowable)
+        }
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
-        val cocoaSentryId = SentrySDK.captureException(
-            throwable.asNSException(true),
-            configureScopeCallback(scopeCallback)
-        )
-        return SentryId(cocoaSentryId.toString())
+        // Ensure the throwable has its original stack trace captured if not already done
+        val enhancedThrowable = throwable.withCapturedStackTrace()
+        
+        try {
+            val cocoaSentryId = SentrySDK.captureException(
+                enhancedThrowable.asNSException(true),
+                configureScopeCallback(scopeCallback)
+            )
+            return SentryId(cocoaSentryId.toString())
+        } finally {
+            // Clean up stored stack traces to prevent memory leaks
+            OriginalStackTraceStore.cleanup(enhancedThrowable)
+        }
     }
 
     actual fun captureUserFeedback(userFeedback: UserFeedback) {

@@ -38,11 +38,27 @@ internal val Throwable.causes: List<Throwable> get() = buildList {
 internal fun Throwable.getFilteredStackTraceAddresses(
     keepLastInit: Boolean = false,
     commonAddresses: List<Long> = emptyList()
-): List<Long> = getStackTraceAddresses().dropInitAddresses(
-    qualifiedClassName = this::class.qualifiedName ?: Throwable::class.qualifiedName!!,
-    stackTrace = getStackTrace(),
-    keepLast = keepLastInit
-).dropCommonAddresses(commonAddresses)
+): List<Long> {
+    // First, try to get the original captured stack trace
+    val originalStackTrace = OriginalStackTraceStore.getOriginalStackTrace(this)
+    val originalStringStackTrace = OriginalStackTraceStore.getOriginalStringStackTrace(this)
+    
+    return if (originalStackTrace != null && originalStringStackTrace != null) {
+        // Use the original captured stack trace
+        originalStackTrace.dropInitAddresses(
+            qualifiedClassName = this::class.qualifiedName ?: Throwable::class.qualifiedName!!,
+            stackTrace = originalStringStackTrace,
+            keepLast = keepLastInit
+        ).dropCommonAddresses(commonAddresses)
+    } else {
+        // Fallback to current behavior for compatibility
+        getStackTraceAddresses().dropInitAddresses(
+            qualifiedClassName = this::class.qualifiedName ?: Throwable::class.qualifiedName!!,
+            stackTrace = getStackTrace(),
+            keepLast = keepLastInit
+        ).dropCommonAddresses(commonAddresses)
+    }
+}
 
 /**
  * Returns a list containing all addresses expect for the first addresses

@@ -26,11 +26,11 @@ import kotlin.reflect.KClass
  * of the [causes][Throwable.cause] will be appended, else causes are ignored.
  */
 internal fun Throwable.asNSException(appendCausedBy: Boolean = false): NSException {
-    val returnAddresses = getFilteredStackTraceAddresses().let { addresses ->
+    val returnAddresses = getSmartFilteredStackTraceAddresses().let { addresses ->
         if (!appendCausedBy) return@let addresses
         addresses.toMutableList().apply {
             for (cause in causes) {
-                addAll(cause.getFilteredStackTraceAddresses(true, addresses))
+                addAll(cause.getSmartFilteredStackTraceAddresses(true, addresses))
             }
         }
     }.map {
