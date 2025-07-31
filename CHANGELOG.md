@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.18.0
+
+### Various fixes & improvements
+
+- Fix Sentry kmp stack trace crash on ios (#434) by @buenaflor
+- Add proguard uuid option for android (#436) by @buenaflor
 
 ## Features
 
