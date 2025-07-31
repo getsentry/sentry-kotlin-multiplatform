@@ -19,13 +19,36 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class CommonAddressesTests {
-
     @Test
     fun testDropCommon() {
         val commonAddresses = listOf<Long>(5, 4, 3, 2, 1, 0)
         val addresses = listOf<Long>(8, 7, 6, 2, 1, 0)
         val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
         assertEquals(listOf<Long>(8, 7, 6), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonPartialMatch() {
+        val commonAddresses = listOf<Long>(3, 2, 1)
+        val addresses = listOf<Long>(9, 8, 7, 2, 1)
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(9, 8, 7), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonNoMatch() {
+        val commonAddresses = listOf<Long>(5, 4, 3)
+        val addresses = listOf<Long>(9, 8, 7, 6)
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(addresses, withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonSingleElementMatch() {
+        val commonAddresses = listOf<Long>(1)
+        val addresses = listOf<Long>(5, 4, 3, 1)
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(5, 4, 3), withoutCommonAddresses)
     }
 
     @Test
@@ -36,9 +59,110 @@ class CommonAddressesTests {
     }
 
     @Test
+    fun testDropCommonEmptyAddresses() {
+        val commonAddresses = listOf<Long>(1, 2, 3)
+        val addresses = emptyList<Long>()
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertSame(addresses, withoutCommonAddresses)
+    }
+
+    @Test
     fun testDropCommonSameAddresses() {
         val addresses = listOf<Long>(0, 1, 2)
         val withoutCommonAddresses = addresses.dropCommonAddresses(addresses)
         assertEquals(emptyList(), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonLargerCommonList() {
+        val commonAddresses = listOf<Long>(5, 4, 3, 2, 1, 0)
+        val addresses = listOf<Long>(2, 1, 0)
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(emptyList(), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonLargerAddressList() {
+        val commonAddresses = listOf<Long>(2, 1, 0)
+        val addresses = listOf<Long>(9, 8, 7, 6, 5, 4, 2, 1, 0)
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(9, 8, 7, 6, 5, 4), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonNoIndexOutOfBounds_LargeCommonList() {
+        // This test specifically targets the original bug where i-- could become -1
+        val commonAddresses = (0L..26L).toList().reversed() // 27 elements: [26, 25, ..., 1, 0]
+        val addresses = listOf<Long>(30, 29, 28, 2, 1, 0)
+
+        // This should not throw IndexOutOfBoundsException
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(30, 29, 28), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonNoIndexOutOfBounds_ExactSizeMatch() {
+        // Test when commonAddresses.size equals the number of matching elements
+        val commonAddresses = listOf<Long>(4, 3, 2, 1, 0)
+        val addresses = listOf<Long>(9, 8, 7, 4, 3, 2, 1, 0)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(9, 8, 7), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonNoIndexOutOfBounds_OffByOneScenario() {
+        // Test the exact scenario that caused the original crash
+        val commonAddresses = (1L..27L).toList() // size: 27
+        val addresses = listOf<Long>(100L, 99L, 98L) + commonAddresses.takeLast(3)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(100L, 99L, 98L), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonRepeatedElements() {
+        val commonAddresses = listOf<Long>(1, 1, 1, 0, 0)
+        val addresses = listOf<Long>(5, 4, 1, 1, 0)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(5, 4, 1, 1), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonMaintainsOrder() {
+        val commonAddresses = listOf<Long>(3, 2, 1)
+        val addresses = listOf<Long>(9, 8, 7, 6, 5, 3, 2, 1)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(9, 8, 7, 6, 5), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonOutOfSequenceMatch() {
+        // Common addresses are in different order than in the target list
+        val commonAddresses = listOf<Long>(1, 3, 2) // Note: 3 and 2 are swapped
+        val addresses = listOf<Long>(9, 8, 7, 6, 2)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(9, 8, 7, 6), withoutCommonAddresses) // Should drop 2
+    }
+
+    @Test
+    fun testDropCommonMixedPositiveNegative() {
+        val commonAddresses = listOf<Long>(1, 0, -1)
+        val addresses = listOf<Long>(5, 4, 3, 1, 0, -1)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf<Long>(5, 4, 3), withoutCommonAddresses)
+    }
+
+    @Test
+    fun testDropCommonLargeNumbers() {
+        val commonAddresses = listOf(Long.MAX_VALUE - 1, Long.MAX_VALUE - 2)
+        val addresses = listOf(Long.MAX_VALUE, Long.MAX_VALUE - 1, Long.MAX_VALUE - 2)
+
+        val withoutCommonAddresses = addresses.dropCommonAddresses(commonAddresses)
+        assertEquals(listOf(Long.MAX_VALUE), withoutCommonAddresses)
     }
 }

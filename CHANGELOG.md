@@ -1,9 +1,15 @@
 # Changelog
 
+## Unreleased
+
 ## Features
 
 - Add `proguardUuid` option to `SentryOptions` ([#436](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/436))
   - This will propagate the `proguardUuid` value to Sentry Android
+
+### Fixes
+
+- Fix stack trace crash on Apple targets ([#434](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/434))
 
 ## 0.17.1
 
