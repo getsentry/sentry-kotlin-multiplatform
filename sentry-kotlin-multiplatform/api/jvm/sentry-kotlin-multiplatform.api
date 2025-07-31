@@ -180,6 +180,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getFailedRequestTargets ()Ljava/util/List;
 	public final fun getMaxAttachmentSize ()J
 	public final fun getMaxBreadcrumbs ()I
+	public final fun getProguardUuid ()Ljava/lang/String;
 	public final fun getRelease ()Ljava/lang/String;
 	public final fun getSampleRate ()Ljava/lang/Double;
 	public final fun getSdk ()Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;
@@ -210,6 +211,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setFailedRequestTargets (Ljava/util/List;)V
 	public final fun setMaxAttachmentSize (J)V
 	public final fun setMaxBreadcrumbs (I)V
+	public final fun setProguardUuid (Ljava/lang/String;)V
 	public final fun setRelease (Ljava/lang/String;)V
 	public final fun setSampleRate (Ljava/lang/Double;)V
 	public final fun setSdk (Lio/sentry/kotlin/multiplatform/protocol/SdkVersion;)V

@@ -214,6 +214,20 @@ public open class SentryOptions {
         private set
 
     /**
+     * Sets the ProGuard UUID for the app. This option is used to match ProGuard/R8/DexGuard mapping
+     * files to your app. The UUID is typically generated automatically during the build process
+     * and included in the AndroidManifest.xml file.
+     *
+     * **Platform Availability**: Android only.
+     *
+     * On non-Android platforms, this option is ignored and has no effect.
+     *
+     * For more information on ProGuard mapping files and obfuscation, see:
+     * [ProGuard & DexGuard Documentation](https://docs.sentry.io/platforms/android/enhance-errors/proguard/)
+     */
+    public var proguardUuid: String? = null
+
+    /**
      * Experimental options for new features, these options are going to be promoted to SentryOptions
      * before GA.
      *

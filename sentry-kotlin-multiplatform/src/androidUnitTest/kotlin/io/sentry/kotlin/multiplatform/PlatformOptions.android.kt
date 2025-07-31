@@ -15,6 +15,7 @@ actual interface PlatformOptions : CommonPlatformOptions {
     val attachScreenshot: Boolean
     val attachViewHierarchy: Boolean
     val sessionReplay: AndroidSentryReplayOptions
+    val proguardUuid: String?
 }
 
 class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptions) :
@@ -76,6 +77,9 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     override val sendDefaultPii: Boolean
         get() = androidOptions.isSendDefaultPii
 
+    override val proguardUuid: String?
+        get() = androidOptions.proguardUuid
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toAndroidSentryOptionsCallback().invoke(androidOptions)
     }
@@ -113,6 +117,7 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
         kmpReplayOptions.sessionSampleRate
     )
     assertEquals(androidOptions.sessionReplay.quality.name, kmpReplayOptions.quality.name)
+    assertEquals(androidOptions.proguardUuid, kmpOptions.proguardUuid)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
