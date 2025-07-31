@@ -134,6 +134,7 @@ class SentryOptionsTest : BaseSentryTest() {
         assertEquals(SentryReplayOptions.Quality.MEDIUM, options.sessionReplay.quality)
         assertTrue(options.enableWatchdogTerminationTracking)
         assertFalse(options.sendDefaultPii)
+        assertNull(options.proguardUuid)
     }
 
     @Test
@@ -165,6 +166,7 @@ class SentryOptionsTest : BaseSentryTest() {
             sessionReplay.maskAllImages = false
             sessionReplay.quality = SentryReplayOptions.Quality.LOW
             sendDefaultPii = true
+            proguardUuid = "test-proguard-uuid-12345"
         }
 
         val platformOptions = createPlatformOptions()
