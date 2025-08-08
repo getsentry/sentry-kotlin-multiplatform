@@ -1,6 +1,6 @@
 name: Blank Issue
 description: Blank Issue. Reserved for maintainers.
-labels: ["Platform: KMP"]
+labels: ["KMP"]
 body:
   - type: textarea
     id: description
