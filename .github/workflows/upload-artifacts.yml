@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-latest-xlarge
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: JDK setup
         uses: actions/setup-java@v4
