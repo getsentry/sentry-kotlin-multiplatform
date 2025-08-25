@@ -96,7 +96,7 @@ jobs:
 
       # Kover coverage currently only works for JVM
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # pin@v4
+        uses: codecov/codecov-action@fdcc8476540edceab3de004e990f80d881c6cc00 # pin@v4
         with:
           name: sentry-kotlin-multiplatform
           token: ${{ secrets.CODECOV_TOKEN }}
