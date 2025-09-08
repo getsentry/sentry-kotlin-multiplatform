@@ -1,4 +1,4 @@
-name: "Lib: sentry-kotlin-multiplatform"
+name: 'Lib: sentry-kotlin-multiplatform'
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
       - '.github/workflows/kotlin-multiplatform.yml'
       - 'kotlin-multiplatform/**'
       - 'sentry-samples/**'
-      - 'buildSrc/src/'
+      - 'buildSrc/src/**'
       - '!**/*.md'
 
 concurrency:
