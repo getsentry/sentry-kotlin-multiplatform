@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Cocoa SDK from v8.55.1 to v8.57.0 ([#468](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/468))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8570)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.55.1...8.57.0)
+
 ## 0.19.0
 
 ### Dependencies
