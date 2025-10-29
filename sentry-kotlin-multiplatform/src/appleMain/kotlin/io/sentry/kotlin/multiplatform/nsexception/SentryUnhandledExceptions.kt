@@ -20,7 +20,7 @@ import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
 private typealias InternalSentryEvent = Internal.Sentry.SentryEvent
-private typealias InternalSentrySDK = Internal.Sentry.SentrySDK
+private typealias InternalSentrySDK = Internal.Sentry.SentrySDKInternal
 private typealias InternalSentryEnvelope = Internal.Sentry.SentryEnvelope
 private typealias InternalSentryDependencyContainer = Internal.Sentry.SentryDependencyContainer
 private typealias InternalSentryEnvelopeHeader = Internal.Sentry.SentryEnvelopeHeader

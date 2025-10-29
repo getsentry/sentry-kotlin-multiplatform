@@ -87,7 +87,7 @@ class SentryE2ETest : BaseSentryTest() {
     // See: https://github.com/getsentry/sentry-kotlin-multiplatform/issues/17
 
     @Test
-    fun `capture message and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
+    fun `capture message and fetch event from Sentry`() = runTest(timeout = 60.seconds) {
         if (platform != "Apple") {
             val message = "Test running on $platform"
             val eventId = Sentry.captureMessage(message)
