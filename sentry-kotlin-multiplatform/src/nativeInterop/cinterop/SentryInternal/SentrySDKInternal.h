@@ -19,7 +19,7 @@
 #import <SentryEnvelope.h>
 #import <SentryHub.h>
 
-@interface SentrySDK : NSObject
+@interface SentrySDKInternal : NSObject
 
 + (void)storeEnvelope:(SentryEnvelope *_Nonnull)envelope;
 + (SentryHub *_Nonnull)currentHub;
