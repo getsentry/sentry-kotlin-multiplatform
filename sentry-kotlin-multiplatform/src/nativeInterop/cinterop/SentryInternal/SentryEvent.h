@@ -24,6 +24,4 @@
 
 @property (nonatomic, assign) BOOL isFatalEvent;
 
-@property (nonatomic, strong) SentryId *eventId;
-
 @end

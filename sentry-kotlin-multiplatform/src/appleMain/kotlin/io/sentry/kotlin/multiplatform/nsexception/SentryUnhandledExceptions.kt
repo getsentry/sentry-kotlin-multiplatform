@@ -21,10 +21,7 @@ import platform.Foundation.NSNumber
 
 private typealias InternalSentryEvent = Internal.Sentry.SentryEvent
 private typealias InternalSentrySDK = Internal.Sentry.SentrySDKInternal
-private typealias InternalSentryEnvelope = Internal.Sentry.SentryEnvelope
 private typealias InternalSentryDependencyContainer = Internal.Sentry.SentryDependencyContainer
-private typealias InternalSentryEnvelopeHeader = Internal.Sentry.SentryEnvelopeHeader
-private typealias InternalSentryEnvelopeItem = Internal.Sentry.SentryEnvelopeItem
 private typealias InternalSentryThreadInspector = Internal.Sentry.SentryThreadInspector
 
 private typealias CocoapodsSentryEvent = cocoapods.Sentry.SentryEvent
@@ -33,6 +30,9 @@ private typealias CocoapodsSentryStacktrace = cocoapods.Sentry.SentryStacktrace
 private typealias CocoapodsSentryException = cocoapods.Sentry.SentryException
 private typealias CocoapodsSentryMechanism = cocoapods.Sentry.SentryMechanism
 private typealias CocoapodsSentryThread = cocoapods.Sentry.SentryThread
+private typealias CocoapodsSentryEnvelope = cocoapods.Sentry.SentryEnvelope
+private typealias CocoapodsSentryEnvelopeHeader = cocoapods.Sentry.SentryEnvelopeHeader
+private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeItem
 
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
@@ -57,7 +57,7 @@ public fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook 
     val envelope = throwable.asSentryEnvelope()
     // The envelope will be persisted, so we can safely terminate afterwards.
     // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409
-    InternalSentrySDK.storeEnvelope(envelope)
+    InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
     CocoapodsSentrySDK.configureScope { scope ->
         scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
     }
@@ -71,20 +71,20 @@ internal const val KOTLIN_CRASH_TAG = "nsexceptionkt.kotlin_crashed"
 /**
  * Converts `this` [Throwable] to a [SentryEnvelope].
  */
-internal fun Throwable.asSentryEnvelope(): InternalSentryEnvelope {
+private fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope {
     val event = asSentryEvent() as InternalSentryEvent
     val preparedEvent = InternalSentrySDK.currentHub().let { hub ->
         hub.getClient()
             ?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isFatalEvent = true)
     } ?: event
-    val item = InternalSentryEnvelopeItem(preparedEvent)
+    val item = CocoapodsSentryEnvelopeItem(event = preparedEvent as cocoapods.Sentry.SentryEvent)
     // TODO: pass traceState when enabling performance monitoring for KMP SDK
-    val header = InternalSentryEnvelopeHeader(preparedEvent.eventId, null)
-    return InternalSentryEnvelope(header, listOf(item))
+    val header = CocoapodsSentryEnvelopeHeader(id = preparedEvent.eventId)
+    return CocoapodsSentryEnvelope(header, listOf(item))
 }
 
 /**
- * Converts `this` [Throwable] to a [SentryEvent].
+ * Converts `this` [Throwable] to a [cocoapods.Sentry.SentryEvent].
  */
 @Suppress("UnnecessaryOptInAnnotation")
 private fun Throwable.asSentryEvent(): CocoapodsSentryEvent =
@@ -110,7 +110,7 @@ private fun Throwable.asSentryEvent(): CocoapodsSentryEvent =
     }
 
 /**
- * Converts `this` [NSException] to a [SentryException].
+ * Converts `this` [NSException] to a [io.sentry.kotlin.multiplatform.protocol.SentryException].
  */
 private fun NSException.asSentryException(
     threadId: NSNumber?
