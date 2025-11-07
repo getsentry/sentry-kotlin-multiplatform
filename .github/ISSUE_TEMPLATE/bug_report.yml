@@ -3,6 +3,17 @@ description: Tell us about something that's not working the way we (probably) in
 labels: ["KMP", "Bug"]
 body:
   - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      description: Which framework are you using?
+      options:
+        - Kotlin Multiplatform
+        - Compose Multiplatform
+    validations:
+      required: true
+
+  - type: dropdown
     id: environment
     attributes:
       label: Platform
