@@ -55,7 +55,6 @@ internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentry
  * @see wrapUnhandledExceptionHook
  */
 public fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
-    // Get the crash reporter and its exception handler
     val crashReporter = InternalSentryDependencyContainer.sharedInstance().crashReporter
     val handler = crashReporter.uncaughtExceptionHandler
 
