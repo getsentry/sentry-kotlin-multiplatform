@@ -5,10 +5,13 @@ cd $(dirname "$0")/../
 config_file='buildSrc/src/main/java/Config.kt'
 podspec_file='sentry-kotlin-multiplatform/sentry_kotlin_multiplatform.podspec'
 plugin_properties_file='sentry-kotlin-multiplatform-gradle-plugin/gradle.properties'
+sample_podspec_file='sentry-samples/kmp-app-cocoapods/shared/shared.podspec'
+sample_ios_app_dir='sentry-samples/kmp-app-cocoapods/iosApp'
 
 config_content=$(cat $config_file)
 podspec_content=$(cat $podspec_file)
 plugin_properties_content=$(cat $plugin_properties_file)
+sample_podspec_content=$(cat $sample_podspec_file)
 
 config_regex='(sentryCocoaVersion *= *)"([0-9\.]+)"'
 podspec_regex="('Sentry', *)'([0-9\.]+)'"
@@ -39,6 +42,14 @@ fi
 plugin_properties_whole_match=${BASH_REMATCH[0]}
 plugin_properties_var_name=${BASH_REMATCH[1]}
 
+if ! [[ $sample_podspec_content =~ $podspec_regex ]]; then
+    echo "Failed to find the Cocoa version in $sample_podspec_file"
+    exit 1
+fi
+
+sample_podspec_whole_match=${BASH_REMATCH[0]}
+sample_podspec_var_name=${BASH_REMATCH[1]}
+
 case $1 in
 get-version)
     # We only require to return the version number of one of the files
@@ -59,6 +70,14 @@ set-version)
     # Update the version in the plugin properties file
     newValue="${plugin_properties_var_name}$2"
     echo "${plugin_properties_content/${plugin_properties_whole_match}/$newValue}" >$plugin_properties_file
+
+    # Update the version in the sample podspec file
+    newValue="${sample_podspec_var_name}'$2'"
+    echo "${sample_podspec_content/${sample_podspec_whole_match}/$newValue}" >$sample_podspec_file
+
+    # Run pod update in the sample iOS app directory to update Podfile.lock
+    echo "Running pod update in $sample_ios_app_dir..."
+    (cd $sample_ios_app_dir && pod update)
     ;;
 *)
     echo "Unknown argument $1"
