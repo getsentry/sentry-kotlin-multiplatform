@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+- Improve iOS crash reports by adding scope data ([#491](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/491))
+
 ### Dependencies
 
 - Bump Java SDK from v8.25.0 to v8.27.1 ([#487](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/487))
