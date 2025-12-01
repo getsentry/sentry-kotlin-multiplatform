@@ -16,6 +16,7 @@ package io.sentry.kotlin.multiplatform.nsexception
 
 import Internal.Sentry.NSExceptionKt_SentryCrashStackCursorFromNSException
 import Internal.Sentry.kSentryLevelFatal
+import kotlinx.cinterop.invoke
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
@@ -54,12 +55,23 @@ internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentry
  * @see wrapUnhandledExceptionHook
  */
 public fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
-    val envelope = throwable.asSentryEnvelope()
-    // The envelope will be persisted, so we can safely terminate afterwards.
-    // https://github.com/getsentry/sentry-cocoa/blob/678172142ac1d10f5ed7978f69d16ab03e801057/Sources/Sentry/SentryClient.m#L409
-    InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
-    CocoapodsSentrySDK.configureScope { scope ->
-        scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
+    // Get the crash reporter and its exception handler
+    val crashReporter = InternalSentryDependencyContainer.sharedInstance().crashReporter
+    val handler = crashReporter.uncaughtExceptionHandler
+
+    if (handler != null) {
+        // This will:
+        // 1. Write a crash report to disk with ALL synced scope data
+        // 2. Include tags, user, context, breadcrumbs, etc.
+        // 3. The crash will be sent on next app launch
+        handler.invoke(throwable.asNSException())
+    } else {
+        // Fallback to current approach if handler not available
+        val envelope = throwable.asSentryEnvelope()
+        InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
+        CocoapodsSentrySDK.configureScope { scope ->
+            scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
+        }
     }
 }
 

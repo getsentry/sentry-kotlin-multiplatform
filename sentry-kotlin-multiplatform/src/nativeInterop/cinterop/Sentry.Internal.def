@@ -2,4 +2,4 @@ language = Objective-C
 headers = SentryClient.h SentryEvent.h SentryDebugImageProvider.h SentryHub.h SentryScope.h \
           SentryCrashMonitor_NSException.h SentryCrashMonitor_NSException+NSExceptionKt.h \
           SentryCrashStackCursor.h SentryDependencyContainer.h SentryHook.h SentrySDKInternal.h \
-          SentryStacktraceBuilder.h SentryThreadInspector.h PrivateSentrySDKOnly.h \
+          SentryStacktraceBuilder.h SentryThreadInspector.h PrivateSentrySDKOnly.h SentryCrash.h \
