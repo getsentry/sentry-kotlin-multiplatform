@@ -1,27 +1,27 @@
 name: Update Dependencies
 
 on:
-  # Run every day.
   schedule:
     - cron: '0 3 * * *'
-  # And on on every PR merge so we get the updated dependencies ASAP, and to make sure the changelog doesn't conflict.gi
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request: # temporary until we merge the PR
 
 jobs:
   cocoa:
-    uses: getsentry/github-workflows/.github/workflows/updater.yml@v3
-    with:
-      path: scripts/update-cocoa.sh
-      name: Cocoa SDK
-    secrets:
-      api-token: ${{ secrets.CI_DEPLOY_KEY }}
+    runs-on: macos-latest
+    steps:
+      - uses: getsentry/github-workflows/updater@v3
+        with:
+          path: scripts/update-cocoa.sh
+          name: Cocoa SDK
+          api-token: ${{ secrets.CI_DEPLOY_KEY }}
 
   java:
-    uses: getsentry/github-workflows/.github/workflows/updater.yml@v3
-    with:
-      path: scripts/update-java.sh
-      name: Java SDK
-    secrets:
-      api-token: ${{ secrets.CI_DEPLOY_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: getsentry/github-workflows/updater@v3
+        with:
+          path: scripts/update-java.sh
+          name: Java SDK
+          api-token: ${{ secrets.CI_DEPLOY_KEY }}
