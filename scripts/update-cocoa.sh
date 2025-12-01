@@ -77,7 +77,7 @@ set-version)
 
     # Run pod update in the sample iOS app directory to update Podfile.lock
     echo "Running pod update in $sample_ios_app_dir..."
-    (cd $sample_ios_app_dir && pod update --no-repo-update)
+    (cd $sample_ios_app_dir && pod update)
     ;;
 *)
     echo "Unknown argument $1"
