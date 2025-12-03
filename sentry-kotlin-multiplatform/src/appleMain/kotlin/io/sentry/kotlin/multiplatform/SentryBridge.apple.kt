@@ -1,11 +1,12 @@
 package io.sentry.kotlin.multiplatform
 
 import Internal.Sentry.PrivateSentrySDKOnly
+import Internal.Sentry.kSentryLevelError
 import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
-import io.sentry.kotlin.multiplatform.nsexception.asNSException
+import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
@@ -75,15 +76,22 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
-        val cocoaSentryId = SentrySDK.captureException(throwable.asNSException(true))
+        val event = throwable.asSentryEvent(
+            level = kSentryLevelError,
+            isHandled = true,
+            markThreadAsCrashed = false
+        )
+        val cocoaSentryId = SentrySDK.captureEvent(event)
         return SentryId(cocoaSentryId.toString())
     }
 
     actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
-        val cocoaSentryId = SentrySDK.captureException(
-            throwable.asNSException(true),
-            configureScopeCallback(scopeCallback)
+        val event = throwable.asSentryEvent(
+            level = kSentryLevelError,
+            isHandled = true,
+            markThreadAsCrashed = false
         )
+        val cocoaSentryId = SentrySDK.captureEvent(event, configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
 
