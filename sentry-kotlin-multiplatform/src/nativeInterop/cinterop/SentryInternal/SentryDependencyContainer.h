@@ -18,11 +18,13 @@
 
 #import <Foundation/Foundation.h>
 #import <SentryDebugImageProvider.h>
+#import <SentryCrash.h>
 
 @interface SentryDependencyContainer : NSObject
 
 + (nonnull instancetype)sharedInstance;
 
 @property (nonatomic, strong, nonnull) SentryDebugImageProvider *debugImageProvider;
+@property (nonatomic, strong, nonnull) SentryCrash *crashReporter;
 
 @end
