@@ -28,4 +28,3 @@
 @property (nonatomic, strong, nonnull) SentryCrash *crashReporter;
 
 @end
-
