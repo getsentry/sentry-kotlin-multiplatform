@@ -63,9 +63,9 @@ public fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook 
         // 1. Write a crash report to disk with ALL synced scope data
         // 2. Include tags, user, context, breadcrumbs, etc.
         // 3. The crash will be sent on next app launch
-        handler.invoke(throwable.asNSException())
+        handler.invoke(throwable.asNSException(appendCausedBy = true))
     } else {
-        // Fallback to current approach if handler not available
+        // Fallback to old approach if handler not available
         val envelope = throwable.asSentryEnvelope()
         InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
         CocoapodsSentrySDK.configureScope { scope ->
