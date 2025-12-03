@@ -5,7 +5,7 @@
 ### Features
 
 - Improve iOS crash reports by adding scope data ([#491](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/491))
- - ⚠️ This change will most likely affect issue grouping as Sentry now properly symbolicates Kotlin iOS exceptions
+ - ⚠️ This change will most likely affect issue grouping as Sentry now properly symbolicates Kotlin iOS crashes
 
 ### Dependencies
 
