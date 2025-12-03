@@ -75,6 +75,10 @@ set-version)
     newValue="${sample_podspec_var_name}'$2'"
     echo "${sample_podspec_content/${sample_podspec_whole_match}/$newValue}" >$sample_podspec_file
 
+    # Generate dummy framework first (required for pod update to work)
+    echo "Generating dummy framework for shared module..."
+    ./gradlew :sentry-samples:kmp-app-cocoapods:shared:generateDummyFramework
+
     # Run pod update in the sample iOS app directory to update Podfile.lock
     echo "Running pod update in $sample_ios_app_dir..."
     (cd $sample_ios_app_dir && pod update)
