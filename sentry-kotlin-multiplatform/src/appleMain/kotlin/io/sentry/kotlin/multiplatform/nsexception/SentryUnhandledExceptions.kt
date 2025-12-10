@@ -16,6 +16,7 @@ package io.sentry.kotlin.multiplatform.nsexception
 
 import Internal.Sentry.NSExceptionKt_SentryCrashStackCursorFromNSException
 import Internal.Sentry.kSentryLevelFatal
+import io.sentry.kotlin.multiplatform.CocoaSentryLevel
 import kotlinx.cinterop.invoke
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
@@ -96,19 +97,29 @@ private fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope {
 
 /**
  * Converts `this` [Throwable] to a [cocoapods.Sentry.SentryEvent].
+ *
+ * @param level The Sentry level (e.g., kSentryLevelFatal for crashes, kSentryLevelError for handled)
+ * @param isHandled Whether this is a handled exception (false for crashes, true for captured exceptions)
+ * @param markThreadAsCrashed Whether to mark the current thread as crashed (true for crashes, false for handled)
  */
 @Suppress("UnnecessaryOptInAnnotation")
-private fun Throwable.asSentryEvent(): CocoapodsSentryEvent =
-    CocoapodsSentryEvent(kSentryLevelFatal).apply {
+internal fun Throwable.asSentryEvent(
+    level: CocoaSentryLevel = kSentryLevelFatal,
+    isHandled: Boolean = false,
+    markThreadAsCrashed: Boolean = true
+): CocoapodsSentryEvent =
+    CocoapodsSentryEvent(level).apply {
         @Suppress("UNCHECKED_CAST")
         val threads =
             threadInspector?.getCurrentThreadsWithStackTrace() as List<CocoapodsSentryThread>?
         this.threads = threads
         val currentThread = threads?.firstOrNull { it.current?.boolValue ?: false }?.apply {
-            setCrashed(NSNumber(true))
-            // Crashed threads shouldn't have a stacktrace, the thread_id should be set on the exception instead
-            // https://develop.sentry.dev/sdk/event-payloads/threads/
-            stacktrace = null
+            if (markThreadAsCrashed) {
+                setCrashed(NSNumber(true))
+                // Crashed threads shouldn't have a stacktrace, the thread_id should be set on the exception instead
+                // https://develop.sentry.dev/sdk/event-payloads/threads/
+                stacktrace = null
+            }
         }
         debugMeta = threads?.let {
             InternalSentryDependencyContainer.sharedInstance().debugImageProvider.getDebugImagesForThreads(
@@ -117,18 +128,19 @@ private fun Throwable.asSentryEvent(): CocoapodsSentryEvent =
         }
         exceptions = this@asSentryEvent
             .let { throwable -> throwable.causes.asReversed() + throwable }
-            .map { it.asNSException().asSentryException(currentThread?.threadId) }
+            .map { it.asNSException().asSentryException(currentThread?.threadId, isHandled) }
     }
 
 /**
  * Converts `this` [NSException] to a [io.sentry.kotlin.multiplatform.protocol.SentryException].
  */
 private fun NSException.asSentryException(
-    threadId: NSNumber?
+    threadId: NSNumber?,
+    isHandled: Boolean = false
 ): CocoapodsSentryException = CocoapodsSentryException(reason ?: "", name ?: "Throwable").apply {
     this.threadId = threadId
     mechanism = CocoapodsSentryMechanism("generic").apply {
-        setHandled(NSNumber(false))
+        setHandled(NSNumber(isHandled))
     }
     stacktrace = threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
         val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)

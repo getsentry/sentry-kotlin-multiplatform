@@ -1,11 +1,17 @@
 # Changelog
 
-## 0.22.0
+## Unreleased
+
+⚠️ This release will affect issue grouping for iOS events as Sentry now captures correct stacktraces for manually captured and crashed iOS events.
 
 ### Features
 
 - Improve iOS crash reports by adding scope data ([#491](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/491))
- - ⚠️ This change will most likely affect issue grouping as Sentry now properly symbolicates Kotlin iOS crashes
+- Improve stacktrace of manually captured exceptions on iOS ([#493](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/493))
+
+## 0.22.0
+
+### Features
 
 ### Dependencies
 
@@ -169,6 +175,7 @@ Potentially breaking: this release bumps the used Kotlin version to `2.1.21`.
 ### Features
 
 - Add experimental session replay options to common code ([#275](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/275))
+
 ```kotlin
 Sentry.init { options ->
   // Adjust these values for production
@@ -176,6 +183,7 @@ Sentry.init { options ->
   options.sessionReplay.sessionSampleRate = 1.0
 }
 ```
+
 - Add `Sentry.isEnabled()` API to common code ([#273](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/273))
 - Add `enableWatchdogTerminationTracking` in common options ([#281](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/281))
 - Add `diagnosticLevel` in common options ([#287](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/287))
@@ -213,12 +221,13 @@ Sentry.init { options ->
   - Enables auto installing of the required Sentry Cocoa SDK with Cocoapods (if Cocoapods plugin is enabled)
   - Configures linking for SPM (needed if you want to compile a dynamic framework with `isStatic = false`)
   - Configure via the `sentryKmp` configuration block in your build file
+
 ```kotlin
 // Example configuration in build.gradle.kts
 sentryKmp {
   // Disable auto installing the KMP SDK to commonMain
   autoInstall.commonMain.enabled = false
-} 
+}
 ```
 
 ### Dependencies
@@ -236,7 +245,7 @@ sentryKmp {
 ### Features
 
 - New Sentry KMP Gradle plugin ([#230](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/230))
-  - Install via `plugins { id("io.sentry.kotlin.multiplatform.gradle") version "{version}" }`  
+  - Install via `plugins { id("io.sentry.kotlin.multiplatform.gradle") version "{version}" }`
   - Enables auto installing of the KMP SDK to commonMain (if all targets are supported)
   - Enables auto installing of the required Sentry Cocoa SDK with Cocoapods (if Cocoapods plugin is enabled)
   - Configures linking for SPM (needed if you want to compile a dynamic framework)
@@ -266,6 +275,7 @@ sentryKmp {
   - This allows you to initialize the SDK with platform-specific options that may not be available in the common code of the KMP SDK yet.
 
 Usage:
+
 ```kotlin
 // build.gradle.kts
 kotlin {
@@ -284,7 +294,7 @@ fun init() {
 expect fun platformOptionsConfiguration(): PlatformOptionsConfiguration
 
 // iOS
-actual fun createPlatformOptions(): PlatformOptionsConfiguration = { 
+actual fun createPlatformOptions(): PlatformOptionsConfiguration = {
     dsn = "your_dsn"
     release = "1.0.0"
     // ...
@@ -366,8 +376,8 @@ pod("Sentry") {
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#710)
   - [diff](https://github.com/getsentry/sentry-java/compare/6.33.1...7.1.0)
 - Bump Cocoa SDK from v8.4.0 to v8.17.1 ([#158](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/163))
-    - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8172)
-    - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.4.0...8.17.2)
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8172)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.4.0...8.17.2)
 - Bump Kotlin version from v1.8.0 to v1.9.21 ([#146](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/146)
 
 ## 0.3.0
@@ -405,7 +415,7 @@ pod("Sentry") {
 
 ## 0.1.1
 
-### Fixes 
+### Fixes
 
 - fix: beforeSend dropping events if not set in options ([#79](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/79))
 
@@ -442,15 +452,14 @@ pod("Sentry") {
 
 ### Features
 
- - JVM, Android, iOS, macOS, watchOS, tvOS integration
- - Sentry init and close
- - Capture Message
- - Capture Exception with proper stack traces
- - Custom unhandled exception handler on Cocoa to properly catch crashes and the stacktrace
- - Scope configuration globally and locally
- - User Feedback
- - Attachments to Scope
- - Screenshots option for Android and iOS
- - Add beforeBreadcrumb hook
- - Kotlin Multiplatform Sample project
-
+- JVM, Android, iOS, macOS, watchOS, tvOS integration
+- Sentry init and close
+- Capture Message
+- Capture Exception with proper stack traces
+- Custom unhandled exception handler on Cocoa to properly catch crashes and the stacktrace
+- Scope configuration globally and locally
+- User Feedback
+- Attachments to Scope
+- Screenshots option for Android and iOS
+- Add beforeBreadcrumb hook
+- Kotlin Multiplatform Sample project
