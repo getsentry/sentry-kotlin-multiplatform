@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.23.0
 
 ⚠️ This release will affect issue grouping for iOS events as Sentry now captures correct stacktraces for manually captured and crashed iOS events.
 
