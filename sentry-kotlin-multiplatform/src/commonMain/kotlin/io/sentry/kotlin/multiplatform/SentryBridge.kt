@@ -28,6 +28,8 @@ internal expect class SentryBridge(sentryInstance: SentryInstance = SentryPlatfo
 
     fun setUser(user: User?)
 
+    fun logger(): SentryLoggerApi
+
     fun isCrashedLastRun(): Boolean
 
     fun isEnabled(): Boolean

@@ -53,6 +53,10 @@ internal actual class SentryBridge actual constructor(
         // No-op
     }
 
+    actual fun logger(): SentryLoggerApi {
+        return NoOpSentryLogger
+    }
+
     actual fun isCrashedLastRun(): Boolean {
         return false
     }

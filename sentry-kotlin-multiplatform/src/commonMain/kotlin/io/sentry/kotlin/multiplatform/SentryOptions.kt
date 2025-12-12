@@ -227,6 +227,8 @@ public open class SentryOptions {
      */
     public var proguardUuid: String? = null
 
+    public var enableLogs: Boolean = false
+
     /**
      * Experimental options for new features, these options are going to be promoted to SentryOptions
      * before GA.

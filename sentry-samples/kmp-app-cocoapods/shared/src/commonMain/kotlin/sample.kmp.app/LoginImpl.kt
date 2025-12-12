@@ -14,6 +14,7 @@ object LoginImpl {
      * or an IllegalArgumentException that crashes the app.
      */
     fun login(username: String? = null) {
+        Sentry.logger().info("User tries to login with username: $username")
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {

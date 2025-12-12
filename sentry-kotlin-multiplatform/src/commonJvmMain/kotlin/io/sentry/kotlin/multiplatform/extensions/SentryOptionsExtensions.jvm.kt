@@ -33,6 +33,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.sampleRate = kmpOptions.sampleRate
     jvmOptions.tracesSampleRate = kmpOptions.tracesSampleRate
     jvmOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toJvmSentryLevel())
+    jvmOptions.logs.isEnabled = kmpOptions.enableLogs
     jvmOptions.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         if (kmpOptions.beforeBreadcrumb == null) {
             jvmBreadcrumb

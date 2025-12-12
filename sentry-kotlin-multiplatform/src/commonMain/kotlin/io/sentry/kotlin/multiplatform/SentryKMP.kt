@@ -141,6 +141,25 @@ public object Sentry {
     }
 
     /**
+     * Returns the Sentry logger API for sending structured logs.
+     *
+     * On JVM, this returns the Java SDK's ILoggerApi directly (via typealias),
+     * meaning calls go directly to the Java implementation with zero wrapper overhead.
+     *
+     * Usage:
+     * ```
+     * Sentry.logger().info("A simple log message")
+     * Sentry.logger().error("A %s log message", "formatted")
+     * Sentry.logger().log(SentryLogLevel.DEBUG, "Log at specific level")
+     * ```
+     *
+     * @return The logger API for sending structured logs
+     */
+    public fun logger(): SentryLoggerApi {
+        return loggerFactory()
+    }
+
+    /**
      * Returns true if the app crashed during last run.
      */
     public fun isCrashedLastRun(): Boolean {

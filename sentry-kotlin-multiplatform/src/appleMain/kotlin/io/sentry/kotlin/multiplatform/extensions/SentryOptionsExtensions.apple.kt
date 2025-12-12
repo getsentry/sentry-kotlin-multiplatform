@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import cocoapods.Sentry.SentryHttpStatusCodeRange
+import cocoapods.Sentry.experimental
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
@@ -34,6 +35,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
     cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
     cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel()
+    cocoaOptions.experimental().setEnableLogs(kmpOptions.enableLogs)
     kmpOptions.sampleRate?.let {
         cocoaOptions.sampleRate = NSNumber(double = it)
     }
