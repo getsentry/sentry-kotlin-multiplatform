@@ -33,7 +33,14 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.sampleRate = kmpOptions.sampleRate
     jvmOptions.tracesSampleRate = kmpOptions.tracesSampleRate
     jvmOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toJvmSentryLevel())
-    jvmOptions.logs.isEnabled = kmpOptions.enableLogs
+    jvmOptions.logs.isEnabled = kmpOptions.logs.enabled
+    kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
+        jvmOptions.logs.setBeforeSend { jvmLog ->
+            val delegate = jvmLog.asSentryLogDelegate()
+            val result = kmpBeforeSend(delegate)
+            if (result != null) jvmLog else null
+        }
+    }
     jvmOptions.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         if (kmpOptions.beforeBreadcrumb == null) {
             jvmBreadcrumb
@@ -41,7 +48,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
             kmpOptions.beforeBreadcrumb?.invoke(jvmBreadcrumb.toKmpBreadcrumb())?.toJvmBreadcrumb()
         }
     }
-    jvmOptions.setBeforeSend { jvmSentryEvent, hint ->
+    jvmOptions.setBeforeSend { jvmSentryEvent, _ ->
         if (kmpOptions.beforeSend == null) {
             jvmSentryEvent
         } else {

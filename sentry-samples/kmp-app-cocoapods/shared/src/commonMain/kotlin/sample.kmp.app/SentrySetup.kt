@@ -44,11 +44,19 @@ private fun optionsConfiguration(): OptionsConfiguration {
         it.attachViewHierarchy = true
         it.release = "kmp-release@0.0.1"
         it.debug = true
-        it.enableLogs = true
+        it.logs.enabled = true
         it.failedRequestStatusCodes = listOf(HttpStatusCodeRange(400, 599))
         it.failedRequestTargets = listOf("httpbin.org")
         it.sessionReplay.onErrorSampleRate = 1.0
         it.sessionReplay.sessionSampleRate = 1.0
+        it.logs.enabled = true
+        it.logs.beforeSend = { log ->
+            if (log.attributes["dont send log"]?.value == true) {
+                null
+            } else {
+                log
+            }
+        }
         it.beforeBreadcrumb = { breadcrumb ->
             breadcrumb.message = "Add message before every breadcrumb"
             breadcrumb

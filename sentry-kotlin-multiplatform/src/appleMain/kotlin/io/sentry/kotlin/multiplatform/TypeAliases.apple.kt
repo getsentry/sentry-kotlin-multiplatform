@@ -23,3 +23,4 @@ internal typealias CocoaUserFeedback = SentryUserFeedback
 internal typealias CocoaSentryEvent = SentryEvent
 internal typealias CocoaMessage = SentryMessage
 internal typealias CocoaSentryException = SentryException
+internal typealias CocoaSentryLogger = cocoapods.Sentry.SentryLogger

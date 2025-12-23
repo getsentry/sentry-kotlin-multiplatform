@@ -1,4 +1,4 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.log
 
 /**
  * The log level for Sentry structured logs.

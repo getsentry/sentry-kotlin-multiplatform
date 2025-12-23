@@ -1,16 +1,19 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.SentryLogEventAttributeValue
+import io.sentry.SentryOptions
 import io.sentry.logger.ILoggerApi
 import io.sentry.kotlin.multiplatform.extensions.toJvmSentryLogLevel
+import io.sentry.kotlin.multiplatform.log.SentryLogLevel
+import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
 
 /**
- * JVM implementation of [SentryLoggerApi] that wraps the Java SDK's [ILoggerApi].
+ * JVM implementation of [io.sentry.kotlin.multiplatform.log.SentryLoggerApi] that wraps the Java SDK's [ILoggerApi].
  *
  * This is a thin wrapper that delegates all calls to the underlying Java logger,
  * converting KMP types to Java types as needed.
  */
 internal class JvmSentryLogger(private val jvmLogger: ILoggerApi) : SentryLoggerApi {
-
     override fun trace(message: String?, vararg args: Any?) {
         jvmLogger.trace(message, *args)
     }

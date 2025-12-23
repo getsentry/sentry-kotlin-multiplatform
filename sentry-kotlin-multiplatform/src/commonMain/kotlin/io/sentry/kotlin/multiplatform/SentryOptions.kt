@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLogOptions
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 
@@ -227,7 +228,8 @@ public open class SentryOptions {
      */
     public var proguardUuid: String? = null
 
-    public var enableLogs: Boolean = false
+    /** Options for Sentry structured logs. */
+    public var logs: SentryLogOptions = SentryLogOptions()
 
     /**
      * Experimental options for new features, these options are going to be promoted to SentryOptions

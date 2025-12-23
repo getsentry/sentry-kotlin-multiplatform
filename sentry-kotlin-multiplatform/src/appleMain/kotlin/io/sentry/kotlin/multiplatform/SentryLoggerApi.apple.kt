@@ -1,16 +1,13 @@
 package io.sentry.kotlin.multiplatform
 
-import cocoapods.Sentry.SentrySDK
+import io.sentry.kotlin.multiplatform.log.SentryLogLevel
+import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
 
 /**
- * Apple platform implementation of [SentryLoggerApi] that wraps the Cocoa SDK's SentryLogger.
- *
- * This implementation mirrors the Java SDK behavior by:
- * - Formatting messages using Java-style format specifiers (%s, %d, etc.)
- * - Adding sentry.message.template and sentry.message.parameter.X attributes
+ * Apple platform implementation of [io.sentry.kotlin.multiplatform.log.SentryLoggerApi] that delegates calls
+ * to the Cocoa SDK's SentryLogger.
  */
-internal class CocoaSentryLogger(private val cocoaLogger: cocoapods.Sentry.SentryLogger) : SentryLoggerApi {
-
+internal class CocoaSentryLoggerDelegate(private val cocoaLogger: CocoaSentryLogger) : SentryLoggerApi {
     override fun trace(message: String?, vararg args: Any?) {
         if (message == null) return
         val attributes = buildAttributes(message, args)
@@ -95,7 +92,7 @@ internal class CocoaSentryLogger(private val cocoaLogger: cocoapods.Sentry.Sentr
     }
 
     /**
-     * Builds the attributes map mirroring Java SDK behavior:
+     * Builds the attributes map:
      * - sentry.message.template: The original template string
      * - sentry.message.parameter.0, .1, etc.: The parameter values
      */
@@ -103,11 +100,8 @@ internal class CocoaSentryLogger(private val cocoaLogger: cocoapods.Sentry.Sentr
         if (args.isEmpty()) return emptyMap()
 
         val attributes = mutableMapOf<Any?, Any>()
-
-        // Add the message template (like Java SDK does)
         attributes["sentry.message.template"] = template
 
-        // Add each parameter with its index (like Java SDK does)
         args.forEachIndexed { index, arg ->
             val value = arg ?: "null"
             attributes["sentry.message.parameter.$index"] = value
@@ -115,8 +109,4 @@ internal class CocoaSentryLogger(private val cocoaLogger: cocoapods.Sentry.Sentr
 
         return attributes
     }
-}
-
-internal actual fun loggerFactory(): SentryLoggerApi {
-    return CocoaSentryLogger(SentrySDK.logger())
 }

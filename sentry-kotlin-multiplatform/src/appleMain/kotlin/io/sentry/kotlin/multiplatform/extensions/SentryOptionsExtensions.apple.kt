@@ -35,7 +35,16 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
     cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
     cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel()
-    cocoaOptions.experimental().setEnableLogs(kmpOptions.enableLogs)
+    cocoaOptions.experimental().setEnableLogs(kmpOptions.logs.enabled)
+    kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
+        cocoaOptions.setBeforeSendLog { cocoaLog ->
+            cocoaLog?.let {
+                val delegate = it.asSentryLogDelegate()
+                val result = kmpBeforeSend(delegate)
+                if (result != null) cocoaLog else null
+            }
+        }
+    }
     kmpOptions.sampleRate?.let {
         cocoaOptions.sampleRate = NSNumber(double = it)
     }

@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -156,7 +157,7 @@ public object Sentry {
      * @return The logger API for sending structured logs
      */
     public fun logger(): SentryLoggerApi {
-        return loggerFactory()
+        return bridge.logger()
     }
 
     /**

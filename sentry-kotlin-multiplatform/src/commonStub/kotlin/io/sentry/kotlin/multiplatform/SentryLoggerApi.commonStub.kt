@@ -1,7 +1,10 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLogLevel
+import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
+
 /**
- * No-op implementation of [SentryLoggerApi] for stub/unsupported platforms.
+ * No-op implementation of [io.sentry.kotlin.multiplatform.log.SentryLoggerApi] for stub/unsupported platforms.
  */
 internal class NoOpSentryLogger : SentryLoggerApi {
     override fun trace(message: String?, vararg args: Any?) {
@@ -31,8 +34,4 @@ internal class NoOpSentryLogger : SentryLoggerApi {
     override fun log(level: SentryLogLevel, message: String?, vararg args: Any?) {
         // No-op
     }
-}
-
-internal actual fun loggerFactory(): SentryLoggerApi {
-    return NoOpSentryLogger()
 }

@@ -14,6 +14,9 @@ import io.sentry.protocol.Message
 import io.sentry.protocol.SentryException
 import io.sentry.protocol.SentryId
 import io.sentry.protocol.User
+import io.sentry.SentryAttributeType
+import io.sentry.SentryLogEvent
+import io.sentry.SentryLogLevel
 
 internal typealias JvmSentryLevel = SentryLevel
 internal typealias JvmUser = User
@@ -29,3 +32,6 @@ internal typealias JvmMessage = Message
 internal typealias JvmSentryException = SentryException
 internal typealias JvmContexts = Contexts
 internal typealias JvmSentryReplayQuality = SentryReplayOptions.SentryReplayQuality
+internal typealias JvmSentryAttributeType = SentryAttributeType
+internal typealias JvmSentryLog = SentryLogEvent
+internal typealias JvmSentryLogLevel = SentryLogLevel

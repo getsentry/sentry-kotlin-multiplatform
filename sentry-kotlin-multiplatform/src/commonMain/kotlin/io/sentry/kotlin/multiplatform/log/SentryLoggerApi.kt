@@ -1,4 +1,6 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.log
+
+import io.sentry.kotlin.multiplatform.SentryAttributes
 
 /**
  * API for sending structured logs to Sentry.
@@ -21,7 +23,7 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun trace(message: String?, vararg args: Any?)
+    public fun trace(message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 
     /**
      * Logs a message at DEBUG level.
@@ -29,7 +31,7 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun debug(message: String?, vararg args: Any?)
+    public fun debug(message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 
     /**
      * Logs a message at INFO level.
@@ -37,7 +39,7 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun info(message: String?, vararg args: Any?)
+    public fun info(message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 
     /**
      * Logs a message at WARN level.
@@ -45,7 +47,7 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun warn(message: String?, vararg args: Any?)
+    public fun warn(message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 
     /**
      * Logs a message at ERROR level.
@@ -53,7 +55,7 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun error(message: String?, vararg args: Any?)
+    public fun error(message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 
     /**
      * Logs a message at FATAL level.
@@ -61,7 +63,7 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun fatal(message: String?, vararg args: Any?)
+    public fun fatal(message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 
     /**
      * Logs a message at the specified level.
@@ -70,7 +72,5 @@ public interface SentryLoggerApi {
      * @param message The message template (supports %s, %d, etc. format specifiers)
      * @param args Arguments to substitute into the message template
      */
-    public fun log(level: SentryLogLevel, message: String?, vararg args: Any?)
+    public fun log(level: SentryLogLevel, message: String?, vararg args: Any?, attributes: SentryAttributes = SentryAttributes())
 }
-
-internal expect fun loggerFactory(): SentryLoggerApi

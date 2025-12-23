@@ -4,6 +4,7 @@ import io.sentry.Sentry
 import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
+import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -12,6 +13,8 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 internal expect fun SentryPlatformOptions.prepareForInitBridge()
 
 internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
+    private val logger by lazy { JvmSentryLogger(Sentry.logger()) }
+
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         init(configuration)
     }
@@ -69,7 +72,7 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
 
 
     actual fun logger(): SentryLoggerApi {
-        return JvmSentryLogger(Sentry.logger())
+        return logger
     }
 
     actual fun isCrashedLastRun(): Boolean {
