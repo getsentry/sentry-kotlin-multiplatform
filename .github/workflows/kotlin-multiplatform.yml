@@ -7,7 +7,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/kotlin-multiplatform.yml'
-      - 'kotlin-multiplatform/**'
+      - 'sentry-kotlin-multiplatform/**'
       - 'sentry-samples/**'
       - 'buildSrc/src/**'
       - '!**/*.md'
