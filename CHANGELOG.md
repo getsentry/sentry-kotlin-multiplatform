@@ -6,6 +6,12 @@
 
 - Fix UserFeedback not being sent on iOS ([#503](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/503))
 
+### Dependencies
+
+- Bump Java SDK from v8.27.1 to v8.29.0 ([#500](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/500))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8290)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.27.1...8.29.0)
+
 ## 0.23.0
 
 ⚠️ This release will affect issue grouping for iOS events as Sentry now captures correct stacktraces for manually captured and crashed iOS events.
