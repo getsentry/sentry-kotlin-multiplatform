@@ -21,7 +21,7 @@ class SentryFrameworkArchitectureTest {
         fun cocoaVersions(): List<Arguments> = listOf(
             Arguments.of("8.37.0"),
             Arguments.of("8.38.0"),
-            Arguments.of("8.57.3"),
+            Arguments.of("8.57.3")
 //            Arguments.of("latest"),
             // TODO: Latest is already v9 which is currently failing - let's fix this when we bump to v9
         )
