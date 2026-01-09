@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Fix UserFeedback not being sent on iOS ([#503](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/503))
+
 ## 0.23.0
 
 ⚠️ This release will affect issue grouping for iOS events as Sentry now captures correct stacktraces for manually captured and crashed iOS events.
