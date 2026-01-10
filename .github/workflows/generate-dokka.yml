@@ -20,7 +20,7 @@
 #      url: ${{ steps.deployment.outputs.page_url }}
 #    steps:
 #      - name: Checkout
-#        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v2
+#        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # v2
 #
 #      - name: set up JDK 11
 #        uses: actions/setup-java@v4
