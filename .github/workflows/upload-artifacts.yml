@@ -8,6 +8,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   archive-distribution:
     runs-on: macos-latest-xlarge
