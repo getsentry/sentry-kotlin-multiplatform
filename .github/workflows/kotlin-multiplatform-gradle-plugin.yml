@@ -28,7 +28,7 @@ jobs:
         working-directory: sentry-kotlin-multiplatform-gradle-plugin
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6 # v6 # v2
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: JDK setup
         uses: actions/setup-java@v5
