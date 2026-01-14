@@ -7,10 +7,6 @@ on:
     branches:
       - main
 
-
-permissions:
-  contents: write
-  pull-requests: write
 jobs:
   cocoa:
     uses: getsentry/github-workflows/.github/workflows/updater.yml@v2
