@@ -265,7 +265,7 @@ class BaseSentryLoggerTest {
 /**
  * Test implementation of [BaseSentryLogger] that captures all logs for verification.
  */
-private class TestSentryLogger : BaseSentryLogger() {
+private class TestSentryLogger : BaseSentryLogger(::DefaultSentryLogBuilder) {
     data class CapturedLog(val level: SentryLogLevel, val formatted: FormattedLog)
 
     val logs = mutableListOf<CapturedLog>()
