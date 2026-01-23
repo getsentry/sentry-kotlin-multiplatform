@@ -371,6 +371,9 @@ public abstract interface class io/sentry/kotlin/multiplatform/log/SentryLogBuil
 	public abstract fun message (Ljava/lang/String;[Ljava/lang/Object;)V
 }
 
+public abstract interface annotation class io/sentry/kotlin/multiplatform/log/SentryLogDsl : java/lang/annotation/Annotation {
+}
+
 public final class io/sentry/kotlin/multiplatform/log/SentryLogLevel : java/lang/Enum {
 	public static final field DEBUG Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
 	public static final field ERROR Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
