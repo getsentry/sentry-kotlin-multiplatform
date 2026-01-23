@@ -1,11 +1,10 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.kotlin.multiplatform.log.DefaultSentryLogEventBuilder
-import io.sentry.kotlin.multiplatform.log.SentryLogEventBuilder
-import io.sentry.kotlin.multiplatform.log.SentryLogger
+import io.sentry.kotlin.multiplatform.CocoaSentryLogger
+import io.sentry.kotlin.multiplatform.SentryAttributes
 
 /**
- * Apple platform implementation of [io.sentry.kotlin.multiplatform.log.SentryLogger] that delegates calls
+ * Apple platform implementation of [SentryLogger] that delegates calls
  * to the Cocoa SDK's SentryLogger.
  */
 internal class CocoaSentryLoggerDelegate(private val cocoaLogger: CocoaSentryLogger) : SentryLogger {

@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.kotlin.multiplatform.SentryAttribute
+import io.sentry.kotlin.multiplatform.SentryAttributeValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -76,7 +76,7 @@ class SentryLogOptionsTest {
     fun `beforeSend modifies attributes`() {
         val options = SentryLogOptions()
         options.beforeSend = {
-            it.attributes.setAttribute(SentryAttribute.string("custom", "value"))
+            it.attributes.setAttribute(SentryAttributeValue.string("custom", "value"))
             it
         }
 

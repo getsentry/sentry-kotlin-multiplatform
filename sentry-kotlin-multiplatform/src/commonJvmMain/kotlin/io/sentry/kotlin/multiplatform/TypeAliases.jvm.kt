@@ -20,7 +20,6 @@ import io.sentry.SentryLogLevel
 import io.sentry.SentryAttributes
 
 internal typealias JvmSentryLevel = SentryLevel
-internal typealias JvmSentryAttributes = SentryAttributes
 internal typealias JvmUser = User
 internal typealias JvmScope = Scope
 internal typealias JvmIScope = IScope
@@ -37,3 +36,4 @@ internal typealias JvmSentryReplayQuality = SentryReplayOptions.SentryReplayQual
 internal typealias JvmSentryAttributeType = SentryAttributeType
 internal typealias JvmSentryLog = SentryLogEvent
 internal typealias JvmSentryLogLevel = SentryLogLevel
+internal typealias JvmSentryAttributes = SentryAttributes

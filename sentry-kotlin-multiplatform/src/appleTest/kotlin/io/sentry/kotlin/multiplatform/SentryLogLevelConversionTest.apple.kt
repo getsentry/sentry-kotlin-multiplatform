@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.extensions.toCocoaSentryLogLevel
-import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLogLevel
+import io.sentry.kotlin.multiplatform.log.toCocoaSentryLogLevel
+import io.sentry.kotlin.multiplatform.log.toKmpSentryLogLevel
 import io.sentry.kotlin.multiplatform.log.SentryLogLevel
 import kotlin.test.Test
 import kotlin.test.assertEquals

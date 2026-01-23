@@ -1,14 +1,12 @@
-package io.sentry.kotlin.multiplatform.extensions
+package io.sentry.kotlin.multiplatform.log
 
+import kotlinx.cinterop.convert
+import platform.Foundation.NSNumber
 import cocoapods.Sentry.SentryLogLevel as CocoaSentryLogLevel
 import cocoapods.Sentry.SentryLog as CocoaSentryLog
 import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
-import io.sentry.kotlin.multiplatform.SentryAttribute as KmpSentryAttribute
-import io.sentry.kotlin.multiplatform.log.SentryLog
-import io.sentry.kotlin.multiplatform.log.SentryLogLevel
-import io.sentry.kotlin.multiplatform.protocol.SentryId
+import io.sentry.kotlin.multiplatform.SentryAttributeValue as KmpSentryAttribute
 import platform.Foundation.timeIntervalSince1970
-import platform.Foundation.timeIntervalSinceNow
 
 /**
  * Wraps a Cocoa SentryLog, delegating all mutations directly to it.
@@ -29,7 +27,9 @@ internal class CocoaSentryLogDelegate(private val cocoaLog: CocoaSentryLog) : Se
 
     override var severityNumber: Int?
         get() = cocoaLog.severityNumber()?.intValue
-        set(value) { cocoaLog.setSeverityNumber(value?.toLong()) }
+        set(value) {
+            value?.let { cocoaLog.setSeverityNumber(NSNumber(int = it)) }
+        }
 
     override val attributes: KmpSentryAttributes = CocoaSentryAttributesDelegate(cocoaLog)
 }
@@ -67,7 +67,7 @@ internal fun CocoaSentryLog.asSentryLogDelegate(): SentryLog = CocoaSentryLogDel
 /**
  * Converts Cocoa SDK's [CocoaSentryLogLevel] to KMP [SentryLogLevel].
  */
-internal fun CocoaSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (this) {
+internal fun CocoaSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (this.convert<Int>()) {
     0 -> SentryLogLevel.TRACE
     1 -> SentryLogLevel.DEBUG
     2 -> SentryLogLevel.INFO
@@ -81,11 +81,11 @@ internal fun CocoaSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (t
  * Converts KMP's [SentryLogLevel] to Cocoa SDK's [CocoaSentryLogLevel].
  */
 internal fun SentryLogLevel.toCocoaSentryLogLevel(): CocoaSentryLogLevel = when (this) {
-    SentryLogLevel.TRACE -> 0
-    SentryLogLevel.DEBUG -> 1
-    SentryLogLevel.INFO -> 2
-    SentryLogLevel.WARN -> 3
-    SentryLogLevel.ERROR -> 4
-    SentryLogLevel.FATAL -> 5
+    SentryLogLevel.TRACE -> 0.convert()
+    SentryLogLevel.DEBUG -> 1.convert()
+    SentryLogLevel.INFO -> 2.convert()
+    SentryLogLevel.WARN -> 3.convert()
+    SentryLogLevel.ERROR -> 4.convert()
+    SentryLogLevel.FATAL -> 5.convert()
 }
 

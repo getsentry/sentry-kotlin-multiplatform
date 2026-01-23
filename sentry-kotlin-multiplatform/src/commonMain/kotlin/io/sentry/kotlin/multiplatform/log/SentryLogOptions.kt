@@ -4,7 +4,7 @@ package io.sentry.kotlin.multiplatform.log
  * Options for Sentry structured logs.
  */
 public class SentryLogOptions {
-    /** Whether logs are enabled. */
+    /** Whether logs feature is enabled. */
     public var enabled: Boolean = false
 
     /**

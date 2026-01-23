@@ -1,9 +1,5 @@
 package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.kotlin.multiplatform.SentryAttributes
-import io.sentry.kotlin.multiplatform.log.SentryLogEventBuilder
-import io.sentry.kotlin.multiplatform.log.SentryLogLevel
-
 /**
  * API for sending structured logs to Sentry.
  *

@@ -4,6 +4,7 @@ import io.sentry.Sentry
 import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
+import io.sentry.kotlin.multiplatform.log.JvmSentryLogger
 import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId

@@ -3,7 +3,6 @@ package io.sentry.kotlin.multiplatform
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -13,7 +12,7 @@ class SentryAttributesTest {
     @Test
     fun `setAttribute adds entry and get retrieves it`() {
         val attrs = SentryAttributes()
-        val attr = SentryAttribute.string("key", "value")
+        val attr = SentryAttributeValue.string("key", "value")
 
         attrs.setAttribute(attr)
 
@@ -23,7 +22,7 @@ class SentryAttributesTest {
     @Test
     fun `removeAttribute removes entry`() {
         val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttribute.string("key", "value"))
+        attrs.setAttribute(SentryAttributeValue.string("key", "value"))
 
         attrs.removeAttribute("key")
 
@@ -34,8 +33,8 @@ class SentryAttributesTest {
     fun `setAttributes from list adds all entries`() {
         val attrs = SentryAttributes()
         val list = listOf(
-            SentryAttribute.string("a", "1"),
-            SentryAttribute.int("b", 2)
+            SentryAttributeValue.string("a", "1"),
+            SentryAttributeValue.int("b", 2)
         )
 
         attrs.setAttributes(list)
@@ -48,8 +47,8 @@ class SentryAttributesTest {
     fun `setAttributes from map adds all entries`() {
         val attrs = SentryAttributes()
         val map = mapOf(
-            "x" to SentryAttribute.double("x", 1.5),
-            "y" to SentryAttribute.boolean("y", false)
+            "x" to SentryAttributeValue.double("x", 1.5),
+            "y" to SentryAttributeValue.boolean("y", false)
         )
 
         attrs.setAttributes(map)
@@ -61,7 +60,7 @@ class SentryAttributesTest {
     @Test
     fun `contains returns true for existing key`() {
         val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttribute.string("exists", "yes"))
+        attrs.setAttribute(SentryAttributeValue.string("exists", "yes"))
 
         assertTrue("exists" in attrs)
     }
@@ -76,7 +75,7 @@ class SentryAttributesTest {
     @Test
     fun `typed getters return null for wrong type`() {
         val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttribute.string("key", "text"))
+        attrs.setAttribute(SentryAttributeValue.string("key", "text"))
 
         assertNull(attrs.getInt("key"))
         assertNull(attrs.getDouble("key"))
@@ -94,8 +93,8 @@ class SentryAttributesTest {
     @Test
     fun `of from list creates SentryAttributes with entries`() {
         val list = listOf(
-            SentryAttribute.string("name", "test"),
-            SentryAttribute.int("count", 5)
+            SentryAttributeValue.string("name", "test"),
+            SentryAttributeValue.int("count", 5)
         )
 
         val attrs = SentryAttributes.of(list)
@@ -107,7 +106,7 @@ class SentryAttributesTest {
     @Test
     fun `of from map creates SentryAttributes with entries`() {
         val map = mapOf(
-            "enabled" to SentryAttribute.boolean("enabled", true)
+            "enabled" to SentryAttributeValue.boolean("enabled", true)
         )
 
         val attrs = SentryAttributes.of(map)
@@ -118,8 +117,8 @@ class SentryAttributesTest {
     @Test
     fun `setAttribute replaces existing entry with same key`() {
         val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttribute.string("key", "old"))
-        attrs.setAttribute(SentryAttribute.string("key", "new"))
+        attrs.setAttribute(SentryAttributeValue.string("key", "old"))
+        attrs.setAttribute(SentryAttributeValue.string("key", "new"))
 
         assertEquals("new", attrs.getString("key"))
     }

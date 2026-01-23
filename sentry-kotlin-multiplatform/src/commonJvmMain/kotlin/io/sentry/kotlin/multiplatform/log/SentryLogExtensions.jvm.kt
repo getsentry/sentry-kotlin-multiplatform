@@ -1,15 +1,12 @@
-package io.sentry.kotlin.multiplatform.extensions
+package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.Sentry
 import io.sentry.SentryLogEventAttributeValue
 import io.sentry.kotlin.multiplatform.JvmSentryAttributeType
 import io.sentry.kotlin.multiplatform.JvmSentryAttributes
 import io.sentry.kotlin.multiplatform.JvmSentryLog
 import io.sentry.kotlin.multiplatform.JvmSentryLogLevel
 import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
-import io.sentry.kotlin.multiplatform.SentryAttribute as KmpSentryAttribute
-import io.sentry.kotlin.multiplatform.log.SentryLog
-import io.sentry.kotlin.multiplatform.log.SentryLogLevel
+import io.sentry.kotlin.multiplatform.SentryAttributeValue as KmpSentryAttribute
 
 /**
  * Wraps a JVM SentryLog, delegating all mutations directly to it.
@@ -56,10 +53,10 @@ private class JvmSentryAttributesDelegate(private val jvmLog: JvmSentryLog) : Km
     private fun setAttributesFromCollection(attributes: Collection<KmpSentryAttribute>) {
         for (attribute in attributes) {
             val jvmType = when (attribute) {
-                is KmpSentryAttribute.StringAttribute -> JvmSentryAttributeType.STRING
-                is KmpSentryAttribute.IntAttribute -> JvmSentryAttributeType.INTEGER
-                is KmpSentryAttribute.DoubleAttribute -> JvmSentryAttributeType.DOUBLE
-                is KmpSentryAttribute.BooleanAttribute -> JvmSentryAttributeType.BOOLEAN
+                is KmpSentryAttribute.StringAttributeValue -> JvmSentryAttributeType.STRING
+                is KmpSentryAttribute.IntAttributeValue -> JvmSentryAttributeType.INTEGER
+                is KmpSentryAttribute.DoubleAttributeValue -> JvmSentryAttributeType.DOUBLE
+                is KmpSentryAttribute.BooleanAttributeValue -> JvmSentryAttributeType.BOOLEAN
             }
             jvmLog.setAttribute(attribute.key, SentryLogEventAttributeValue(jvmType, attribute.value))
         }
@@ -101,13 +98,10 @@ internal fun JvmSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (thi
  * 
  * This is needed for the Java SDK's SentryLogParameters.create method.
  */
-internal fun KmpSentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes = JvmSentryAttributes().apply {
-        forEach { attribute ->
-            when (attribute) {
-                is KmpSentryAttribute.StringAttribute -> put(attribute.key, attribute.value as String)
-                is KmpSentryAttribute.IntAttribute -> put(attribute.key, attribute.value as Int)
-                is KmpSentryAttribute.DoubleAttribute -> put(attribute.key, attribute.value as Double)
-                is KmpSentryAttribute.BooleanAttribute -> put(attribute.key, attribute.value as Boolean)
-            }
-        }
+internal fun KmpSentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes {
+    val map = mutableMapOf<String, Any>()
+    forEach { attribute ->
+        map[attribute.key] = attribute.value
     }
+    return JvmSentryAttributes.fromMap(map)
+}

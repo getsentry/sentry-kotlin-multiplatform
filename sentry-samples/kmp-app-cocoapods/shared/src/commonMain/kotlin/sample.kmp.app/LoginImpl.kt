@@ -5,16 +5,24 @@ import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class InvalidUsernameException(message: String) : Exception(message)
 
 object LoginImpl {
     /**
-     * login() throws a either checked InvalidUsernameException
+     * login() throws either a checked InvalidUsernameException
      * or an IllegalArgumentException that crashes the app.
      */
+    @OptIn(ExperimentalUuidApi::class)
     fun login(username: String? = null) {
-        Sentry.logger().info("User tries to login with username: $username")
+        Sentry.logger.info {
+            message("User tries to login with username: %s and id %s", username, Uuid.random().toString())
+            attributes {
+                this["test-attribute"] = "test-value"
+            }
+        }
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
