@@ -19,10 +19,6 @@ internal val DefaultSentryLogBuilderFactory: SentryLogBuilderFactory = ::Default
 internal class DefaultSentryLogBuilder : SentryLogBuilder {
     private val formatRegex = Regex("%%|%s")
 
-    // ========================
-    // Raw access
-    // ========================
-
     override var template: String? = null
         private set
 
@@ -30,10 +26,6 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
         private set
 
     override val customAttributes: SentryAttributes = SentryAttributes.empty()
-
-    // ========================
-    // DSL methods
-    // ========================
 
     override fun message(body: String) {
         template = body
@@ -51,13 +43,9 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
         }
     }
 
-    override fun attributes(block: SentryAttributes.() -> Unit) {
+    override fun attributes(block: @SentryLogDsl SentryAttributes.() -> Unit) {
         customAttributes.block()
     }
-
-    // ========================
-    // Formatted output
-    // ========================
 
     override fun buildFormatted(): FormattedLog? {
         val tmpl = template ?: return null
@@ -98,7 +86,6 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
     ): SentryAttributes {
         val result = SentryAttributes.empty()
 
-        // Add template info if there are args
         if (args.isNotEmpty()) {
             result["sentry.message.template"] = template
             args.forEachIndexed { index, arg ->
@@ -106,7 +93,6 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
             }
         }
 
-        // Merge custom attributes
         customAttributes.forEach { (key, value) ->
             result[key] = value
         }

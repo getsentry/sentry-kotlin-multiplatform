@@ -22,6 +22,7 @@ internal typealias SentryLogBuilderFactory = () -> SentryLogBuilder
  * - [attributes] with a prebuilt [SentryAttributes] merges those attributes
  * - Multiple calls merge into the same set; duplicate keys use the last value
  */
+@SentryLogDsl
 public interface SentryLogBuilder {
     /**
      * The message template, or null if not set.
@@ -67,7 +68,7 @@ public interface SentryLogBuilder {
      * }
      * ```
      */
-    public fun attributes(block: SentryAttributes.() -> Unit)
+    public fun attributes(block: @SentryLogDsl SentryAttributes.() -> Unit)
 
     /**
      * Builds a formatted log entry with message substitution done.
