@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -29,7 +29,7 @@ internal expect class SentryBridge(sentryInstance: SentryInstance = SentryPlatfo
 
     fun setUser(user: User?)
 
-    fun logger(): SentryLoggerApi
+    fun logger(): SentryLogger
 
     fun isCrashedLastRun(): Boolean
 

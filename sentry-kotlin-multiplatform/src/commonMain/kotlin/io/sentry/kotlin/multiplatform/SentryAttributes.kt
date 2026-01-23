@@ -34,6 +34,22 @@ public open class SentryAttributes {
     /** Returns true if an attribute with the given key exists. */
     public operator fun contains(key: String): Boolean = entries.containsKey(key)
 
+    public operator fun set(key: String, value: String) {
+        setAttribute(SentryAttribute.StringAttribute(key, value))
+    }
+    
+    public operator fun set(key: String, value: Int) {
+        setAttribute(SentryAttribute.IntAttribute(key, value))
+    }
+    
+    public operator fun set(key: String, value: Double) {
+        setAttribute(SentryAttribute.DoubleAttribute(key, value))
+    }
+    
+    public operator fun set(key: String, value: Boolean) {
+        setAttribute(SentryAttribute.BooleanAttribute(key, value))
+    }
+    
     /** Gets a String value by key, or null if not found or wrong type. */
     public fun getString(key: String): String? = getTyped<SentryAttribute.StringAttribute>(key)?.value as? String
 
@@ -45,6 +61,17 @@ public open class SentryAttributes {
 
     /** Gets a Boolean value by key, or null if not found or wrong type. */
     public fun getBoolean(key: String): Boolean? = getTyped<SentryAttribute.BooleanAttribute>(key)?.value as? Boolean
+
+    /** Returns true if there are no attributes. */
+    public fun isEmpty(): Boolean = entries.isEmpty()
+
+    /** Returns true if there are attributes. */
+    public fun isNotEmpty(): Boolean = entries.isNotEmpty()
+
+    /** Iterates over all attributes. */
+    public fun forEach(action: (SentryAttribute) -> Unit) {
+        entries.values.forEach(action)
+    }
 
     @Suppress("UNCHECKED_CAST")
     private inline fun <reified T : SentryAttribute> getTyped(key: String): T? {

@@ -17,8 +17,10 @@ import io.sentry.protocol.User
 import io.sentry.SentryAttributeType
 import io.sentry.SentryLogEvent
 import io.sentry.SentryLogLevel
+import io.sentry.SentryAttributes
 
 internal typealias JvmSentryLevel = SentryLevel
+internal typealias JvmSentryAttributes = SentryAttributes
 internal typealias JvmUser = User
 internal typealias JvmScope = Scope
 internal typealias JvmIScope = IScope

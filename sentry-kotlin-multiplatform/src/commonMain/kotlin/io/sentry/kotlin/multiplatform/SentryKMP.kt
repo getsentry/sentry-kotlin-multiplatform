@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -142,24 +142,17 @@ public object Sentry {
     }
 
     /**
-     * Returns the Sentry logger API for sending structured logs.
-     *
-     * On JVM, this returns the Java SDK's ILoggerApi directly (via typealias),
-     * meaning calls go directly to the Java implementation with zero wrapper overhead.
+     * The Sentry logger API for sending structured logs.
      *
      * Usage:
      * ```
-     * Sentry.logger().info("A simple log message")
-     * Sentry.logger().error("A %s log message", "formatted")
-     * Sentry.logger().log(SentryLogLevel.DEBUG, "Log at specific level")
+     * Sentry.logger.info("A simple log message")
+     * Sentry.logger.error("A %s log message", "formatted")
      * ```
-     *
-     * @return The logger API for sending structured logs
      */
-    public fun logger(): SentryLoggerApi {
-        return bridge.logger()
-    }
-
+    public val logger: SentryLogger
+        get() = bridge.logger()
+    
     /**
      * Returns true if the app crashed during last run.
      */

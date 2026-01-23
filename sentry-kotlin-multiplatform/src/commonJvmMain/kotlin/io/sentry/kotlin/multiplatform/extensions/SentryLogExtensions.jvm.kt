@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.Sentry
 import io.sentry.SentryLogEventAttributeValue
 import io.sentry.kotlin.multiplatform.JvmSentryAttributeType
+import io.sentry.kotlin.multiplatform.JvmSentryAttributes
 import io.sentry.kotlin.multiplatform.JvmSentryLog
 import io.sentry.kotlin.multiplatform.JvmSentryLogLevel
 import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
@@ -13,8 +14,10 @@ import io.sentry.kotlin.multiplatform.log.SentryLogLevel
 /**
  * Wraps a JVM SentryLog, delegating all mutations directly to it.
  * This avoids conversion overhead - changes go straight to the underlying JVM log.
+ * 
+ * This is needed for the native beforeSendLog callback.
  */
-private class JvmSentryLogWrapper(private val jvmLog: JvmSentryLog) : SentryLog(
+private class JvmSentryLogDelegate(private val jvmLog: JvmSentryLog) : SentryLog(
     timestamp = jvmLog.timestamp,
     level = jvmLog.level.toKmpSentryLogLevel(),
     body = jvmLog.body,
@@ -36,6 +39,8 @@ private class JvmSentryLogWrapper(private val jvmLog: JvmSentryLog) : SentryLog(
 
 /**
  * Wraps JVM log attributes, delegating mutations directly.
+ * 
+ * This is needed for the native beforeSendLog callback.
  */
 private class JvmSentryAttributesDelegate(private val jvmLog: JvmSentryLog) : KmpSentryAttributes() {
     override fun setAttribute(attribute: KmpSentryAttribute) = setAttributesFromCollection(listOf(attribute))
@@ -64,7 +69,7 @@ private class JvmSentryAttributesDelegate(private val jvmLog: JvmSentryLog) : Km
 /**
  * Returns a [SentryLog] delegate that forwards all mutations to this JVM log.
  */
-internal fun JvmSentryLog.asSentryLogDelegate(): SentryLog = JvmSentryLogWrapper(this)
+internal fun JvmSentryLog.asSentryLogDelegate(): SentryLog = JvmSentryLogDelegate(this)
 
 /**
  * Converts KMP [SentryLogLevel] to Java SDK's [JvmSentryLogLevel].
@@ -84,10 +89,25 @@ internal fun SentryLogLevel.toJvmSentryLogLevel(): JvmSentryLogLevel = when (thi
  */
 internal fun JvmSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (this) {
     JvmSentryLogLevel.TRACE -> SentryLogLevel.TRACE
-        JvmSentryLogLevel.DEBUG -> SentryLogLevel.DEBUG
+    JvmSentryLogLevel.DEBUG -> SentryLogLevel.DEBUG
     JvmSentryLogLevel.INFO -> SentryLogLevel.INFO
-        JvmSentryLogLevel.WARN -> SentryLogLevel.WARN
-        JvmSentryLogLevel.ERROR -> SentryLogLevel.ERROR
-        JvmSentryLogLevel.FATAL -> SentryLogLevel.FATAL
-    
+    JvmSentryLogLevel.WARN -> SentryLogLevel.WARN
+    JvmSentryLogLevel.ERROR -> SentryLogLevel.ERROR
+    JvmSentryLogLevel.FATAL -> SentryLogLevel.FATAL
 }
+
+/**
+ * Converts KMP [KmpSentryAttributes] to Java SDK's [JvmSentryAttributes].
+ * 
+ * This is needed for the Java SDK's SentryLogParameters.create method.
+ */
+internal fun KmpSentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes = JvmSentryAttributes().apply {
+        forEach { attribute ->
+            when (attribute) {
+                is KmpSentryAttribute.StringAttribute -> put(attribute.key, attribute.value as String)
+                is KmpSentryAttribute.IntAttribute -> put(attribute.key, attribute.value as Int)
+                is KmpSentryAttribute.DoubleAttribute -> put(attribute.key, attribute.value as Double)
+                is KmpSentryAttribute.BooleanAttribute -> put(attribute.key, attribute.value as Boolean)
+            }
+        }
+    }

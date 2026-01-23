@@ -4,7 +4,7 @@ import io.sentry.Sentry
 import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
-import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -71,7 +71,7 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
     }
 
 
-    actual fun logger(): SentryLoggerApi {
+    actual fun logger(): SentryLogger {
         return logger
     }
 

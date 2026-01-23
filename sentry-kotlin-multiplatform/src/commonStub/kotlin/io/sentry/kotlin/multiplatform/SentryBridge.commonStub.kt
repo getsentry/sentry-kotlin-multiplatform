@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.log.SentryLoggerApi
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -54,7 +54,7 @@ internal actual class SentryBridge actual constructor(
         // No-op
     }
 
-    actual fun logger(): SentryLoggerApi {
+    actual fun logger(): SentryLogger {
         return NoOpSentryLogger
     }
 
