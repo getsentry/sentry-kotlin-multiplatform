@@ -11,48 +11,48 @@ public interface SentryLogger {
     /**
      * Logs a message at [SentryLogLevel.TRACE] level.
      *
-     * @param message The message template (supports %s, %d, etc. format specifiers)
-     * @param args Arguments to substitute into the message template
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      */
     public fun trace(message: String, vararg args: Any?)
 
     /**
      * Logs a message at [SentryLogLevel.DEBUG] level.
      *
-     * @param message The message template (supports %s, %d, etc. format specifiers)
-     * @param args Arguments to substitute into the message template
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      */
     public fun debug(message: String, vararg args: Any?)
 
     /**
      * Logs a message at [SentryLogLevel.INFO] level.
      *
-     * @param message The message template (supports %s, %d, etc. format specifiers)
-     * @param args Arguments to substitute into the message template
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      */
     public fun info(message: String, vararg args: Any?)
 
     /**
      * Logs a message at [SentryLogLevel.WARN] level.
      *
-     * @param message The message template (supports %s, %d, etc. format specifiers)
-     * @param args Arguments to substitute into the message template
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      */
     public fun warn(message: String, vararg args: Any?)
 
     /**
      * Logs a message at [SentryLogLevel.ERROR] level.
      *
-     * @param message The message template (supports %s, %d, etc. format specifiers)
-     * @param args Arguments to substitute into the message template
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      */
     public fun error(message: String, vararg args: Any?)
 
     /**
      * Logs a message at [SentryLogLevel.FATAL] level.
      *
-     * @param message The message template (supports %s, %d, etc. format specifiers)
-     * @param args Arguments to substitute into the message template
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      */
     public fun fatal(message: String, vararg args: Any?)
 
@@ -70,9 +70,9 @@ public interface SentryLogger {
      * }
      * ```
      *
-     * @param block A lambda with [SentryLogEventBuilder] receiver to configure the log entry
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun trace(block: SentryLogEventBuilder.() -> Unit)
+    public fun trace(block: SentryLogBuilder.() -> Unit)
 
     /**
      * Logs a message at [SentryLogLevel.DEBUG] level using a DSL builder.
@@ -88,9 +88,9 @@ public interface SentryLogger {
      * }
      * ```
      *
-     * @param block A lambda with [SentryLogEventBuilder] receiver to configure the log entry
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun debug(block: SentryLogEventBuilder.() -> Unit)
+    public fun debug(block: SentryLogBuilder.() -> Unit)
 
     /**
      * Logs a message at [SentryLogLevel.INFO] level using a DSL builder.
@@ -106,9 +106,9 @@ public interface SentryLogger {
      * }
      * ```
      *
-     * @param block A lambda with [SentryLogEventBuilder] receiver to configure the log entry
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun info(block: SentryLogEventBuilder.() -> Unit)
+    public fun info(block: SentryLogBuilder.() -> Unit)
 
     /**
      * Logs a message at [SentryLogLevel.WARN] level using a DSL builder.
@@ -116,7 +116,7 @@ public interface SentryLogger {
      * Example:
      * ```
      * logger.warn {
-     *     message("API rate limit at %d%% for client %s", usagePercent, clientId)
+     *     message("API rate limit at %s%% for client %s", usagePercent, clientId)
      *     attributes {
      *         this["rate_limit.current"] = currentRequests
      *         this["rate_limit.max"] = maxRequests
@@ -125,9 +125,9 @@ public interface SentryLogger {
      * }
      * ```
      *
-     * @param block A lambda with [SentryLogEventBuilder] receiver to configure the log entry
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun warn(block: SentryLogEventBuilder.() -> Unit)
+    public fun warn(block: SentryLogBuilder.() -> Unit)
 
     /**
      * Logs a message at [SentryLogLevel.ERROR] level using a DSL builder.
@@ -144,9 +144,9 @@ public interface SentryLogger {
      * }
      * ```
      *
-     * @param block A lambda with [SentryLogEventBuilder] receiver to configure the log entry
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun error(block: SentryLogEventBuilder.() -> Unit)
+    public fun error(block: SentryLogBuilder.() -> Unit)
 
     /**
      * Logs a message at [SentryLogLevel.FATAL] level using a DSL builder.
@@ -163,7 +163,7 @@ public interface SentryLogger {
      * }
      * ```
      *
-     * @param block A lambda with [SentryLogEventBuilder] receiver to configure the log entry
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun fatal(block: SentryLogEventBuilder.() -> Unit)
+    public fun fatal(block: SentryLogBuilder.() -> Unit)
 }

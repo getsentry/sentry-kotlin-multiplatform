@@ -10,5 +10,5 @@ public open class SentryLog(
     public open var level: SentryLogLevel,
     public open var body: String,
     public open var severityNumber: Int? = null,
-    public open val attributes: SentryAttributes = SentryAttributes()
+    public open val attributes: SentryAttributes = SentryAttributes.empty()
 )

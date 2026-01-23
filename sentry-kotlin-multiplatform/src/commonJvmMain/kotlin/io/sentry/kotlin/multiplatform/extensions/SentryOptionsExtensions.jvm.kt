@@ -3,7 +3,8 @@ package io.sentry.kotlin.multiplatform.extensions
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.log.asSentryLogDelegate
+import io.sentry.kotlin.multiplatform.log.updateFrom
+import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
     it.applyJvmBaseOptions(this)
@@ -37,9 +38,17 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.logs.isEnabled = kmpOptions.logs.enabled
     kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
         jvmOptions.logs.setBeforeSend { jvmLog ->
-            val delegate = jvmLog.asSentryLogDelegate()
-            val result = kmpBeforeSend(delegate)
-            if (result != null) jvmLog else null
+            val kmpLog = jvmLog.toKmpSentryLog()
+
+            // Save original attributes to detect changes made by the user's callback
+            val originalAttributes = kmpLog.attributes.copy()
+            val result = kmpBeforeSend(kmpLog)
+            if (result != null) {
+                jvmLog.updateFrom(kmpLog, originalAttributes)
+                jvmLog
+            } else {
+                null
+            }
         }
     }
     jvmOptions.setBeforeBreadcrumb { jvmBreadcrumb, _ ->

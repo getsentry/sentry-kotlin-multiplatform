@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import io.sentry.kotlin.multiplatform.log.SentryLogEventBuilder
+import io.sentry.kotlin.multiplatform.log.SentryLogBuilder
 import io.sentry.kotlin.multiplatform.log.SentryLogger
 
 /**
@@ -31,27 +31,27 @@ internal class NoOpSentryLogger : SentryLogger {
         // No-op
     }
 
-    override fun trace(block: SentryLogEventBuilder.() -> Unit) {
+    override fun trace(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }
 
-    override fun debug(block: SentryLogEventBuilder.() -> Unit) {
+    override fun debug(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }
 
-    override fun info(block: SentryLogEventBuilder.() -> Unit) {
+    override fun info(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }
 
-    override fun warn(block: SentryLogEventBuilder.() -> Unit) {
+    override fun warn(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }
 
-    override fun error(block: SentryLogEventBuilder.() -> Unit) {
+    override fun error(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }
 
-    override fun fatal(block: SentryLogEventBuilder.() -> Unit) {
+    override fun fatal(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }
 }

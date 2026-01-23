@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLog
+import io.sentry.kotlin.multiplatform.log.SentryLogLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
@@ -10,6 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SentryIntegrationTest : BaseSentryTest() {
@@ -288,4 +291,261 @@ class SentryIntegrationTest : BaseSentryTest() {
         assertEquals(expectedNumberValue, actualNumberValue)
         assertEquals(expectedCollectionValue, actualCollectionValue)
     }
+
+    // region Logger Tests
+
+    private fun initWithLogCapture(
+        enabled: Boolean = true,
+        beforeSend: ((SentryLog) -> SentryLog?)? = null
+    ): MutableList<SentryLog> {
+        val capturedLogs = mutableListOf<SentryLog>()
+        sentryInit {
+            it.dsn = fakeDsn
+            it.logs.enabled = enabled
+            it.logs.beforeSend = beforeSend ?: { log ->
+                capturedLogs.add(log)
+                log
+            }
+        }
+        return capturedLogs
+    }
+
+    @Test
+    fun `logger sends logs at different levels`() {
+        val capturedLogs = initWithLogCapture()
+
+        Sentry.logger.trace("trace")
+        Sentry.logger.debug("debug")
+        Sentry.logger.info("info")
+        Sentry.logger.warn("warn")
+        Sentry.logger.error("error")
+        Sentry.logger.fatal("fatal")
+
+        assertEquals(6, capturedLogs.size)
+
+        val expectedLevels = listOf(
+            SentryLogLevel.TRACE,
+            SentryLogLevel.DEBUG,
+            SentryLogLevel.INFO,
+            SentryLogLevel.WARN,
+            SentryLogLevel.ERROR,
+            SentryLogLevel.FATAL
+        )
+        val expectedBodies = listOf("trace", "debug", "info", "warn", "error", "fatal")
+
+        capturedLogs.forEachIndexed { index, log ->
+            assertEquals(expectedLevels[index], log.level)
+            assertEquals(expectedBodies[index], log.body)
+        }
+    }
+
+    @Test
+    fun `logger with template and args formats message`() {
+        val capturedLogs = initWithLogCapture()
+
+        Sentry.logger.info("User %s logged in from %s", "alice", "192.168.1.1")
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+        assertEquals("User alice logged in from 192.168.1.1", log.body)
+        assertEquals("User %s logged in from %s", log.attributes["sentry.message.template"]?.stringOrNull)
+        assertEquals("alice", log.attributes["sentry.message.parameter.0"]?.stringOrNull)
+        assertEquals("192.168.1.1", log.attributes["sentry.message.parameter.1"]?.stringOrNull)
+    }
+
+    @Test
+    fun `logger DSL with simple message works`() {
+        val capturedLogs = initWithLogCapture()
+
+        Sentry.logger.info {
+            message("DSL message")
+        }
+
+        assertEquals(1, capturedLogs.size)
+        assertEquals("DSL message", capturedLogs[0].body)
+    }
+
+    @Test
+    fun `logger DSL with template and args formats message`() {
+        val capturedLogs = initWithLogCapture()
+
+        Sentry.logger.info {
+            message("User %s logged in from %s", "alice", "192.168.1.1")
+        }
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+        assertEquals("User alice logged in from 192.168.1.1", log.body)
+        assertEquals("User %s logged in from %s", log.attributes["sentry.message.template"]?.stringOrNull)
+        assertEquals("alice", log.attributes["sentry.message.parameter.0"]?.stringOrNull)
+        assertEquals("192.168.1.1", log.attributes["sentry.message.parameter.1"]?.stringOrNull)
+    }
+
+    @Test
+    fun `logger DSL with attributes adds custom attributes`() {
+        val capturedLogs = initWithLogCapture()
+
+        Sentry.logger.error {
+            message("Database error")
+            attributes {
+                this["db.name"] = "users"
+                this["db.operation"] = "SELECT"
+                this["db.success"] = true
+            }
+        }
+        
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+        assertEquals("Database error", log.body)
+        assertEquals("users", log.attributes["db.name"]?.stringOrNull)
+        assertEquals("SELECT", log.attributes["db.operation"]?.stringOrNull)
+    }
+
+    @Test
+    fun `logs beforeSend returning null drops the log`() {
+        var beforeSendCallCount = 0
+        initWithLogCapture(beforeSend = {
+            beforeSendCallCount++
+            null
+        })
+
+        Sentry.logger.info("this should be dropped")
+        Sentry.logger.error("this too")
+
+        assertEquals(2, beforeSendCallCount)
+    }
+
+    @Test
+    fun `logs beforeSend can modify log body`() {
+        val capturedLogs = mutableListOf<SentryLog>()
+        initWithLogCapture(beforeSend = { log ->
+            log.body = "modified: ${log.body}"
+            capturedLogs.add(log)
+            log
+        })
+
+        Sentry.logger.info("original")
+
+        assertEquals(1, capturedLogs.size)
+        assertEquals("modified: original", capturedLogs[0].body)
+    }
+
+    @Test
+    fun `logger does not send logs when logs disabled`() {
+        val capturedLogs = initWithLogCapture(enabled = false)
+
+        Sentry.logger.info("this should not be captured")
+
+        assertEquals(0, capturedLogs.size)
+    }
+
+    @Test
+    fun `logs beforeSend preserves native SDK attributes when modifying log body`() {
+        val capturedLogs = mutableListOf<SentryLog>()
+        initWithLogCapture(beforeSend = { log ->
+            log.body = "modified: ${log.body}"
+            capturedLogs.add(log)
+            log
+        })
+
+        Sentry.logger.info("User %s logged in", "alice")
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+
+        assertEquals("modified: User alice logged in", log.body)
+        assertEquals("User %s logged in", log.attributes["sentry.message.template"]?.stringOrNull)
+        assertEquals("alice", log.attributes["sentry.message.parameter.0"]?.stringOrNull)
+    }
+
+    @Test
+    fun `logs beforeSend can add new attributes while preserving native SDK attributes`() {
+        val capturedLogs = mutableListOf<SentryLog>()
+        initWithLogCapture(beforeSend = { log ->
+            log.attributes["custom.attr"] = "custom-value"
+            capturedLogs.add(log)
+            log
+        })
+
+        Sentry.logger.info("Processing %s", "request-123")
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+
+        assertEquals("custom-value", log.attributes["custom.attr"]?.stringOrNull)
+        assertEquals("Processing %s", log.attributes["sentry.message.template"]?.stringOrNull)
+        assertEquals("request-123", log.attributes["sentry.message.parameter.0"]?.stringOrNull)
+    }
+
+    @Test
+    fun `logs beforeSend can remove user-added attributes`() {
+        val capturedLogs = mutableListOf<SentryLog>()
+        initWithLogCapture(beforeSend = { log ->
+            log.attributes.remove("user.key")
+            capturedLogs.add(log)
+            log
+        })
+
+        Sentry.logger.info {
+            message("Test message")
+            attributes {
+                this["user.key"] = "user-value"
+            }
+        }
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+
+        assertNull(log.attributes["user.key"])
+    }
+
+    @Test
+    fun `logs beforeSend can modify existing attributes`() {
+        val capturedLogs = mutableListOf<SentryLog>()
+        initWithLogCapture(beforeSend = { log ->
+            log.attributes["user.key"] = "modified-value"
+            capturedLogs.add(log)
+            log
+        })
+
+        Sentry.logger.info {
+            message("Test message")
+            attributes {
+                this["user.key"] = "original-value"
+            }
+        }
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+
+        assertEquals("modified-value", log.attributes["user.key"]?.stringOrNull)
+    }
+
+    @Test
+    fun `logs beforeSend preserves native SDK attributes when adding and modifying attributes`() {
+        val capturedLogs = mutableListOf<SentryLog>()
+        initWithLogCapture(beforeSend = { log ->
+            log.attributes["new.attr"] = "new-value"
+            log.attributes["user.key"] = "modified"
+            capturedLogs.add(log)
+            log
+        })
+
+        Sentry.logger.info {
+            message("User %s action", "bob")
+            attributes {
+                this["user.key"] = "original"
+            }
+        }
+
+        assertEquals(1, capturedLogs.size)
+        val log = capturedLogs[0]
+
+        assertEquals("new-value", log.attributes["new.attr"]?.stringOrNull)
+        assertEquals("modified", log.attributes["user.key"]?.stringOrNull)
+        assertEquals("User %s action", log.attributes["sentry.message.template"]?.stringOrNull)
+        assertEquals("bob", log.attributes["sentry.message.parameter.0"]?.stringOrNull)
+    }
+
+    // endregion
 }

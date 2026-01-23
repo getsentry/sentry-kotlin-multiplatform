@@ -1,14 +1,10 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.kotlin.multiplatform.log.toCocoaSentryLogLevel
-import io.sentry.kotlin.multiplatform.log.toKmpSentryLogLevel
-import io.sentry.kotlin.multiplatform.log.SentryLogLevel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-/** Tests for Apple/Cocoa log level conversion functions. */
-class SentryLogLevelConversionTestApple {
-
+/** Tests for Apple/Cocoa log level conversion functions in SentryLogConverters.apple.kt. */
+class SentryLogConvertersTest {
     @Test
     fun `TRACE converts to Cocoa value 0 and back`() {
         val kmp = SentryLogLevel.TRACE
@@ -80,4 +76,3 @@ class SentryLogLevelConversionTestApple {
         }
     }
 }
-

@@ -1,14 +1,11 @@
-package io.sentry.kotlin.multiplatform
+package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.kotlin.multiplatform.log.toJvmSentryLogLevel
-import io.sentry.kotlin.multiplatform.log.toKmpSentryLogLevel
-import io.sentry.kotlin.multiplatform.log.SentryLogLevel
+import io.sentry.kotlin.multiplatform.JvmSentryLogLevel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-/** Tests for JVM log level conversion functions. */
-class SentryLogLevelConversionTestJvm {
-
+/** Tests for JVM log level conversion functions in SentryLogConverters.jvm.kt. */
+class SentryLogConvertersTest {
     @Test
     fun `TRACE converts to JVM and back`() {
         val kmp = SentryLogLevel.TRACE
@@ -72,4 +69,3 @@ class SentryLogLevelConversionTestJvm {
         }
     }
 }
-

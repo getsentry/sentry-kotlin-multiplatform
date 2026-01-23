@@ -10,117 +10,215 @@ import kotlin.test.assertTrue
 class SentryAttributesTest {
 
     @Test
-    fun `setAttribute adds entry and get retrieves it`() {
-        val attrs = SentryAttributes()
-        val attr = SentryAttributeValue.string("key", "value")
+    fun `set and get string value`() {
+        val attrs = SentryAttributes.empty()
 
-        attrs.setAttribute(attr)
+        attrs["key"] = "value"
 
-        assertEquals(attr, attrs["key"])
+        assertEquals("value", attrs["key"]?.stringOrNull)
     }
 
     @Test
-    fun `removeAttribute removes entry`() {
-        val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttributeValue.string("key", "value"))
+    fun `set and get int value stores as Long`() {
+        val attrs = SentryAttributes.empty()
 
-        attrs.removeAttribute("key")
+        attrs["count"] = 42
+
+        assertEquals(42L, attrs["count"]?.longOrNull)
+    }
+
+    @Test
+    fun `set and get long value`() {
+        val attrs = SentryAttributes.empty()
+        val longValue = 9223372036854775807L
+
+        attrs["timestamp"] = longValue
+
+        assertEquals(longValue, attrs["timestamp"]?.longOrNull)
+    }
+
+    @Test
+    fun `set and get double value`() {
+        val attrs = SentryAttributes.empty()
+
+        attrs["price"] = 19.99
+
+        assertEquals(19.99, attrs["price"]?.doubleOrNull)
+    }
+
+    @Test
+    fun `set and get boolean value`() {
+        val attrs = SentryAttributes.empty()
+
+        attrs["enabled"] = true
+
+        assertEquals(true, attrs["enabled"]?.booleanOrNull)
+    }
+
+    @Test
+    fun `remove removes entry`() {
+        val attrs = SentryAttributes.empty()
+        attrs["key"] = "value"
+
+        attrs.remove("key")
 
         assertNull(attrs["key"])
     }
 
     @Test
-    fun `setAttributes from list adds all entries`() {
-        val attrs = SentryAttributes()
-        val list = listOf(
-            SentryAttributeValue.string("a", "1"),
-            SentryAttributeValue.int("b", 2)
-        )
-
-        attrs.setAttributes(list)
-
-        assertEquals("1", attrs.getString("a"))
-        assertEquals(2, attrs.getInt("b"))
-    }
-
-    @Test
-    fun `setAttributes from map adds all entries`() {
-        val attrs = SentryAttributes()
-        val map = mapOf(
-            "x" to SentryAttributeValue.double("x", 1.5),
-            "y" to SentryAttributeValue.boolean("y", false)
-        )
-
-        attrs.setAttributes(map)
-
-        assertEquals(1.5, attrs.getDouble("x"))
-        assertEquals(false, attrs.getBoolean("y"))
-    }
-
-    @Test
     fun `contains returns true for existing key`() {
-        val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttributeValue.string("exists", "yes"))
+        val attrs = SentryAttributes.empty()
+        attrs["exists"] = "yes"
 
         assertTrue("exists" in attrs)
     }
 
     @Test
     fun `contains returns false for missing key`() {
-        val attrs = SentryAttributes()
+        val attrs = SentryAttributes.empty()
 
         assertFalse("missing" in attrs)
     }
 
     @Test
     fun `typed getters return null for wrong type`() {
-        val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttributeValue.string("key", "text"))
+        val attrs = SentryAttributes.empty()
+        attrs["key"] = "text"
 
-        assertNull(attrs.getInt("key"))
-        assertNull(attrs.getDouble("key"))
-        assertNull(attrs.getBoolean("key"))
+        assertNull(attrs["key"]?.longOrNull)
+        assertNull(attrs["key"]?.doubleOrNull)
+        assertNull(attrs["key"]?.booleanOrNull)
     }
 
     @Test
     fun `typed getters return null for missing key`() {
-        val attrs = SentryAttributes()
+        val attrs = SentryAttributes.empty()
 
-        assertNull(attrs.getString("missing"))
-        assertNull(attrs.getInt("missing"))
-    }
-
-    @Test
-    fun `of from list creates SentryAttributes with entries`() {
-        val list = listOf(
-            SentryAttributeValue.string("name", "test"),
-            SentryAttributeValue.int("count", 5)
-        )
-
-        val attrs = SentryAttributes.of(list)
-
-        assertEquals("test", attrs.getString("name"))
-        assertEquals(5, attrs.getInt("count"))
+        assertNull(attrs["missing"]?.stringOrNull)
+        assertNull(attrs["missing"]?.longOrNull)
     }
 
     @Test
     fun `of from map creates SentryAttributes with entries`() {
         val map = mapOf(
-            "enabled" to SentryAttributeValue.boolean("enabled", true)
+            "name" to SentryAttributeValue.string("test"),
+            "count" to SentryAttributeValue.long(5)
         )
 
         val attrs = SentryAttributes.of(map)
 
-        assertEquals(true, attrs.getBoolean("enabled"))
+        assertEquals("test", attrs["name"]?.stringOrNull)
+        assertEquals(5L, attrs["count"]?.longOrNull)
     }
 
     @Test
-    fun `setAttribute replaces existing entry with same key`() {
-        val attrs = SentryAttributes()
-        attrs.setAttribute(SentryAttributeValue.string("key", "old"))
-        attrs.setAttribute(SentryAttributeValue.string("key", "new"))
+    fun `set replaces existing entry with same key`() {
+        val attrs = SentryAttributes.empty()
+        attrs["key"] = "old"
+        attrs["key"] = "new"
 
-        assertEquals("new", attrs.getString("key"))
+        assertEquals("new", attrs["key"]?.stringOrNull)
+    }
+
+    @Test
+    fun `Int and Long both stored as LongValue`() {
+        val attrs = SentryAttributes.empty()
+        attrs["fromInt"] = 42
+        attrs["fromLong"] = 42L
+
+        // Both should be stored as Long
+        assertEquals(42L, attrs["fromInt"]?.longOrNull)
+        assertEquals(42L, attrs["fromLong"]?.longOrNull)
+    }
+
+    @Test
+    fun `forEach iterates over all entries`() {
+        val attrs = SentryAttributes.empty()
+        attrs["a"] = "1"
+        attrs["b"] = 2
+
+        val keys = mutableListOf<String>()
+        attrs.forEach { (key, _) -> keys.add(key) }
+
+        assertEquals(2, keys.size)
+        assertTrue("a" in keys)
+        assertTrue("b" in keys)
+    }
+
+    @Test
+    fun `size returns correct count`() {
+        val attrs = SentryAttributes.empty()
+        attrs["a"] = "1"
+        attrs["b"] = 2
+
+        assertEquals(2, attrs.size)
+    }
+
+    @Test
+    fun `isEmpty returns true for empty attributes`() {
+        val attrs = SentryAttributes.empty()
+
+        assertTrue(attrs.isEmpty())
+    }
+
+    @Test
+    fun `isEmpty returns false for non-empty attributes`() {
+        val attrs = SentryAttributes.empty()
+        attrs["key"] = "value"
+
+        assertFalse(attrs.isEmpty())
+    }
+
+    @Test
+    fun `copy creates independent copy of attributes`() {
+        val original = SentryAttributes.empty()
+        original["key1"] = "value1"
+        original["key2"] = 42L
+
+        val copy = original.copy()
+
+        assertEquals("value1", copy["key1"]?.stringOrNull)
+        assertEquals(42L, copy["key2"]?.longOrNull)
+    }
+
+    @Test
+    fun `copy is independent from original - modifying copy does not affect original`() {
+        val original = SentryAttributes.empty()
+        original["key1"] = "value1"
+
+        val copy = original.copy()
+        copy["key1"] = "modified"
+        copy["key2"] = "new"
+
+        assertEquals("value1", original["key1"]?.stringOrNull)
+        assertNull(original["key2"])
+
+        assertEquals("modified", copy["key1"]?.stringOrNull)
+        assertEquals("new", copy["key2"]?.stringOrNull)
+    }
+
+    @Test
+    fun `copy is independent from original - modifying original does not affect copy`() {
+        val original = SentryAttributes.empty()
+        original["key1"] = "value1"
+
+        val copy = original.copy()
+        original["key1"] = "modified"
+        original["key2"] = "new"
+
+        assertEquals("value1", copy["key1"]?.stringOrNull)
+        assertNull(copy["key2"])
+
+        assertEquals("modified", original["key1"]?.stringOrNull)
+        assertEquals("new", original["key2"]?.stringOrNull)
+    }
+
+    @Test
+    fun `copy of empty attributes creates empty copy`() {
+        val original = SentryAttributes.empty()
+        val copy = original.copy()
+
+        assertTrue(copy.isEmpty())
+        assertEquals(0, copy.size)
     }
 }
-

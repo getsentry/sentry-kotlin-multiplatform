@@ -1,31 +1,48 @@
 package io.sentry.kotlin.multiplatform
 
-
-
 /**
- * Represents a typed attribute with a key-value pair.
+ * Represents a typed attribute value.
+ * 
+ * Used as the value type in [SentryAttributes] map.
+ * 
+ * Supported types per the Sentry logs spec:
+ * - String
+ * - Boolean
+ * - Long (64-bit signed integer)
+ * - Double (64-bit floating point)
  */
 public sealed class SentryAttributeValue(
-    public val key: String,
     public val value: Any
 ) {
-    public class StringAttributeValue(key: String, value: String) : SentryAttributeValue(key, value)
-    public class IntAttributeValue(key: String, value: Int) : SentryAttributeValue(key, value)
-    public class DoubleAttributeValue(key: String, value: Double) : SentryAttributeValue(key, value)
-    public class BooleanAttributeValue(key: String, value: Boolean) : SentryAttributeValue(key, value)
+    public class StringValue(value: String) : SentryAttributeValue(value)
+    public class LongValue(value: Long) : SentryAttributeValue(value)
+    public class DoubleValue(value: Double) : SentryAttributeValue(value)
+    public class BooleanValue(value: Boolean) : SentryAttributeValue(value)
 
-    /** Convenience factory methods for creating attributes. */
-    public companion object Companion {
-        /** Creates a string attribute. */
-        public fun string(key: String, value: String): StringAttributeValue = StringAttributeValue(key, value)
+    /** Returns the String value, or null if this is not a [StringValue]. */
+    public val stringOrNull: String? get() = (this as? StringValue)?.value as? String
 
-        /** Creates an integer attribute. */
-        public fun int(key: String, value: Int): IntAttributeValue = IntAttributeValue(key, value)
+    /** Returns the Long value, or null if this is not a [LongValue]. */
+    public val longOrNull: Long? get() = (this as? LongValue)?.value as? Long
 
-        /** Creates a double attribute. */
-        public fun double(key: String, value: Double): DoubleAttributeValue = DoubleAttributeValue(key, value)
+    /** Returns the Double value, or null if this is not a [DoubleValue]. */
+    public val doubleOrNull: Double? get() = (this as? DoubleValue)?.value as? Double
 
-        /** Creates a boolean attribute. */
-        public fun boolean(key: String, value: Boolean): BooleanAttributeValue = BooleanAttributeValue(key, value)
+    /** Returns the Boolean value, or null if this is not a [BooleanValue]. */
+    public val booleanOrNull: Boolean? get() = (this as? BooleanValue)?.value as? Boolean
+
+    /** Convenience factory methods for creating attribute values. */
+    public companion object {
+        /** Creates a string value. */
+        public fun string(value: String): StringValue = StringValue(value)
+
+        /** Creates a 64-bit integer value. */
+        public fun long(value: Long): LongValue = LongValue(value)
+
+        /** Creates a double value. */
+        public fun double(value: Double): DoubleValue = DoubleValue(value)
+
+        /** Creates a boolean value. */
+        public fun boolean(value: Boolean): BooleanValue = BooleanValue(value)
     }
 }

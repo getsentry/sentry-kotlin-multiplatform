@@ -5,7 +5,8 @@ import cocoapods.Sentry.experimental
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.log.asSentryLogDelegate
+import io.sentry.kotlin.multiplatform.log.updateFrom
+import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 
@@ -40,9 +41,16 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
         cocoaOptions.setBeforeSendLog { cocoaLog ->
             cocoaLog?.let {
-                val delegate = it.asSentryLogDelegate()
-                val result = kmpBeforeSend(delegate)
-                if (result != null) cocoaLog else null
+                val kmpLog = it.toKmpSentryLog()
+                // Save original attributes to detect changes made by the user's callback
+                val originalAttributes = kmpLog.attributes.copy()
+                val result = kmpBeforeSend(kmpLog)
+                if (result != null) {
+                    it.updateFrom(kmpLog, originalAttributes)
+                    cocoaLog
+                } else {
+                    null
+                }
             }
         }
     }

@@ -6,7 +6,7 @@ import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
-import io.sentry.kotlin.multiplatform.log.CocoaSentryLoggerDelegate
+import io.sentry.kotlin.multiplatform.log.CocoaSentryLoggerAdapter
 import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
@@ -48,7 +48,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
 }
 
 internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
-    private val logger by lazy { CocoaSentryLoggerDelegate(SentrySDK.logger()) }
+    private val logger by lazy { CocoaSentryLoggerAdapter(SentrySDK.logger()) }
 
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         init(configuration)
