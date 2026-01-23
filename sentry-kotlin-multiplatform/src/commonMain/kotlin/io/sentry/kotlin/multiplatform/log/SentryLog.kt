@@ -4,6 +4,8 @@ import io.sentry.kotlin.multiplatform.SentryAttributes
 
 /**
  * Represents a structured log entry.
+ *
+ * This is used to be able to modify logs within [SentryLogOptions.beforeSend].
  */
 public open class SentryLog(
     public open val timestamp: Double,

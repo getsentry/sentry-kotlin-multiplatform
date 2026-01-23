@@ -1,6 +1,8 @@
 package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryAttributeValue
+import io.sentry.kotlin.multiplatform.SentryAttributes
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -23,6 +25,9 @@ object LoginImpl {
                 this["test-attribute"] = "test-value"
             }
         }
+        mutableMapOf<String, String>(
+            "another-attribute" to "another-value"
+        )
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
