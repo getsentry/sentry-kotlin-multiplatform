@@ -49,5 +49,37 @@ public class SentryAttributes private constructor(
         public fun of(attributes: Map<String, SentryAttributeValue>): SentryAttributes {
             return SentryAttributes(attributes.toMutableMap())
         }
+
+        /**
+         * Creates a [SentryAttributes] collection from the given key-value pairs.
+         *
+         * Supported value types: [String], [Int], [Long], [Float], [Double], [Boolean].
+         * Unsupported types are silently ignored.
+         *
+         * Example:
+         * ```
+         * SentryAttributes.of(
+         *     "username" to "john",
+         *     "count" to 42,
+         *     "enabled" to true
+         * )
+         * ```
+         */
+        public fun of(vararg pairs: Pair<String, Any?>): SentryAttributes {
+            val attrs = empty()
+            for ((key, value) in pairs) {
+                when (value) {
+                    is String -> attrs[key] = value
+                    is Int -> attrs[key] = value
+                    is Long -> attrs[key] = value
+                    is Float -> attrs[key] = value
+                    is Double -> attrs[key] = value
+                    is Boolean -> attrs[key] = value
+                    // Silently ignore unsupported types
+                    // TODO: log a warning when we add debug logging support
+                }
+            }
+            return attrs
+        }
     }
 }

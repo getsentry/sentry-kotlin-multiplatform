@@ -23,9 +23,6 @@ object LoginImpl {
                 this["test-attribute"] = "test-value"
             }
         }
-        mutableMapOf<String, String>(
-            "another-attribute" to "another-value"
-        )
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
