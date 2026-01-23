@@ -2,8 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 /**
  * A type-safe mutable map of attribute key-value pairs.
- * 
- * Supports type-safe setters for primitives. Use properties on [SentryAttributeValue]
+ * * Supports type-safe setters for primitives. Use properties on [SentryAttributeValue]
  * (e.g., `stringOrNull`, `longOrNull`) to extract typed values.
  */
 public class SentryAttributes private constructor(

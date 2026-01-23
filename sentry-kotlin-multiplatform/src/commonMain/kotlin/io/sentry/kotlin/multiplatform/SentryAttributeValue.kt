@@ -2,10 +2,8 @@ package io.sentry.kotlin.multiplatform
 
 /**
  * Represents a typed attribute value.
- * 
- * Used as the value type in [SentryAttributes] map.
- * 
- * Supported types per the Sentry logs spec:
+ * * Used as the value type in [SentryAttributes] map.
+ * * Supported types per the Sentry logs spec:
  * - String
  * - Boolean
  * - Long (64-bit signed integer)

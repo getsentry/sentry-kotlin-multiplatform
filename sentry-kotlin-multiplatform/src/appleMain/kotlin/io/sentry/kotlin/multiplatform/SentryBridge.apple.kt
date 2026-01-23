@@ -137,7 +137,7 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
             }
         }
     }
-    
+
     actual fun logger(): SentryLogger {
         return logger
     }

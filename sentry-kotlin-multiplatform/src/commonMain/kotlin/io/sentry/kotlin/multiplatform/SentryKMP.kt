@@ -152,7 +152,7 @@ public object Sentry {
      */
     public val logger: SentryLogger
         get() = bridge.logger()
-    
+
     /**
      * Returns true if the app crashed during last run.
      */

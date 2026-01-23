@@ -69,7 +69,6 @@ public interface SentryLogBuilder {
      */
     public fun attributes(block: SentryAttributes.() -> Unit)
 
-
     /**
      * Builds a formatted log entry with message substitution done.
      *

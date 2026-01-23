@@ -5,8 +5,8 @@ import cocoapods.Sentry.experimental
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
-import io.sentry.kotlin.multiplatform.log.updateFrom
 import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
+import io.sentry.kotlin.multiplatform.log.updateFrom
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 

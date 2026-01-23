@@ -1,12 +1,12 @@
 package io.sentry.kotlin.multiplatform.log
 
 import io.sentry.SentryLogEventAttributeValue
-import io.sentry.kotlin.multiplatform.JvmSentryAttributes
 import io.sentry.kotlin.multiplatform.JvmSentryAttributeType
+import io.sentry.kotlin.multiplatform.JvmSentryAttributes
 import io.sentry.kotlin.multiplatform.JvmSentryLog
 import io.sentry.kotlin.multiplatform.JvmSentryLogLevel
-import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
 import io.sentry.kotlin.multiplatform.SentryAttributeValue as KmpSentryAttributeValue
+import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
 
 /**
  * Converts KMP [SentryLogLevel] to Java SDK's [JvmSentryLogLevel].
@@ -34,8 +34,7 @@ internal fun JvmSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (thi
 
 /**
  * Converts KMP [KmpSentryAttributes] to Java SDK's [JvmSentryAttributes].
- * 
- * This is needed for the Java SDK's SentryLogParameters.create method.
+ * * This is needed for the Java SDK's SentryLogParameters.create method.
  */
 internal fun KmpSentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes {
     val map = mutableMapOf<String, Any>()

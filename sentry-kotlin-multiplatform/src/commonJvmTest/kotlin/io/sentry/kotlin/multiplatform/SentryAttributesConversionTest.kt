@@ -76,7 +76,7 @@ class SentryAttributesConversionTest {
     @Test
     fun `int converts to long`() {
         val kmpAttrs = SentryAttributes.empty()
-        kmpAttrs["int_value"] = 42  // Int gets stored as Long
+        kmpAttrs["int_value"] = 42 // Int gets stored as Long
 
         val jvmAttrs = kmpAttrs.toJvmSentryAttributes()
 

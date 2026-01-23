@@ -82,12 +82,86 @@ public final class io/sentry/kotlin/multiplatform/Sentry {
 	public final fun close ()V
 	public final fun configureScope (Lkotlin/jvm/functions/Function1;)V
 	public final fun crash ()V
+	public final fun getLogger ()Lio/sentry/kotlin/multiplatform/log/SentryLogger;
 	public final fun init (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)V
 	public final fun init (Lkotlin/jvm/functions/Function1;)V
 	public final fun initWithPlatformOptions (Lkotlin/jvm/functions/Function1;)V
 	public final fun isCrashedLastRun ()Z
 	public final fun isEnabled ()Z
 	public final fun setUser (Lio/sentry/kotlin/multiplatform/protocol/User;)V
+}
+
+public abstract class io/sentry/kotlin/multiplatform/SentryAttributeValue {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/SentryAttributeValue$Companion;
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBooleanOrNull ()Ljava/lang/Boolean;
+	public final fun getDoubleOrNull ()Ljava/lang/Double;
+	public final fun getLongOrNull ()Ljava/lang/Long;
+	public final fun getStringOrNull ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Object;
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributeValue$BooleanValue : io/sentry/kotlin/multiplatform/SentryAttributeValue {
+	public fun <init> (Z)V
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributeValue$Companion {
+	public final fun boolean (Z)Lio/sentry/kotlin/multiplatform/SentryAttributeValue$BooleanValue;
+	public final fun double (D)Lio/sentry/kotlin/multiplatform/SentryAttributeValue$DoubleValue;
+	public final fun long (J)Lio/sentry/kotlin/multiplatform/SentryAttributeValue$LongValue;
+	public final fun string (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SentryAttributeValue$StringValue;
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributeValue$DoubleValue : io/sentry/kotlin/multiplatform/SentryAttributeValue {
+	public fun <init> (D)V
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributeValue$LongValue : io/sentry/kotlin/multiplatform/SentryAttributeValue {
+	public fun <init> (J)V
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributeValue$StringValue : io/sentry/kotlin/multiplatform/SentryAttributeValue {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributes : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
+	public static final field Companion Lio/sentry/kotlin/multiplatform/SentryAttributes$Companion;
+	public synthetic fun <init> (Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clear ()V
+	public final fun containsKey (Ljava/lang/Object;)Z
+	public fun containsKey (Ljava/lang/String;)Z
+	public fun containsValue (Lio/sentry/kotlin/multiplatform/SentryAttributeValue;)Z
+	public final fun containsValue (Ljava/lang/Object;)Z
+	public final fun copy ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+	public final fun entrySet ()Ljava/util/Set;
+	public final fun get (Ljava/lang/Object;)Lio/sentry/kotlin/multiplatform/SentryAttributeValue;
+	public final synthetic fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun get (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SentryAttributeValue;
+	public fun getEntries ()Ljava/util/Set;
+	public fun getKeys ()Ljava/util/Set;
+	public fun getSize ()I
+	public fun getValues ()Ljava/util/Collection;
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun put (Ljava/lang/String;Lio/sentry/kotlin/multiplatform/SentryAttributeValue;)Lio/sentry/kotlin/multiplatform/SentryAttributeValue;
+	public fun putAll (Ljava/util/Map;)V
+	public final fun remove (Ljava/lang/Object;)Lio/sentry/kotlin/multiplatform/SentryAttributeValue;
+	public final synthetic fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SentryAttributeValue;
+	public final fun set (Ljava/lang/String;D)V
+	public final fun set (Ljava/lang/String;F)V
+	public final fun set (Ljava/lang/String;I)V
+	public final fun set (Ljava/lang/String;J)V
+	public final fun set (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun set (Ljava/lang/String;Z)V
+	public final fun size ()I
+	public final fun values ()Ljava/util/Collection;
+}
+
+public final class io/sentry/kotlin/multiplatform/SentryAttributes$Companion {
+	public final fun empty ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+	public final fun of (Ljava/util/Map;)Lio/sentry/kotlin/multiplatform/SentryAttributes;
 }
 
 public abstract class io/sentry/kotlin/multiplatform/SentryBaseEvent {
@@ -181,6 +255,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getExperimental ()Lio/sentry/kotlin/multiplatform/SentryOptions$ExperimentalOptions;
 	public final fun getFailedRequestStatusCodes ()Ljava/util/List;
 	public final fun getFailedRequestTargets ()Ljava/util/List;
+	public final fun getLogs ()Lio/sentry/kotlin/multiplatform/log/SentryLogOptions;
 	public final fun getMaxAttachmentSize ()J
 	public final fun getMaxBreadcrumbs ()I
 	public final fun getProguardUuid ()Ljava/lang/String;
@@ -212,6 +287,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setEnvironment (Ljava/lang/String;)V
 	public final fun setFailedRequestStatusCodes (Ljava/util/List;)V
 	public final fun setFailedRequestTargets (Ljava/util/List;)V
+	public final fun setLogs (Lio/sentry/kotlin/multiplatform/log/SentryLogOptions;)V
 	public final fun setMaxAttachmentSize (J)V
 	public final fun setMaxBreadcrumbs (I)V
 	public final fun setProguardUuid (Ljava/lang/String;)V
@@ -263,6 +339,71 @@ public final class io/sentry/kotlin/multiplatform/SentryReplayOptions$Quality : 
 	public final fun getSizeScale ()F
 	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/SentryReplayOptions$Quality;
 	public static fun values ()[Lio/sentry/kotlin/multiplatform/SentryReplayOptions$Quality;
+}
+
+public final class io/sentry/kotlin/multiplatform/log/FormattedLog {
+	public fun <init> (Ljava/lang/String;Lio/sentry/kotlin/multiplatform/SentryAttributes;)V
+	public final fun getAttributes ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+	public final fun getBody ()Ljava/lang/String;
+}
+
+public class io/sentry/kotlin/multiplatform/log/SentryLog {
+	public fun <init> (DLio/sentry/kotlin/multiplatform/log/SentryLogLevel;Ljava/lang/String;Ljava/lang/Integer;Lio/sentry/kotlin/multiplatform/SentryAttributes;)V
+	public synthetic fun <init> (DLio/sentry/kotlin/multiplatform/log/SentryLogLevel;Ljava/lang/String;Ljava/lang/Integer;Lio/sentry/kotlin/multiplatform/SentryAttributes;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getAttributes ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+	public fun getBody ()Ljava/lang/String;
+	public fun getLevel ()Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public fun getSeverityNumber ()Ljava/lang/Integer;
+	public fun getTimestamp ()D
+	public fun setBody (Ljava/lang/String;)V
+	public fun setLevel (Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;)V
+	public fun setSeverityNumber (Ljava/lang/Integer;)V
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/log/SentryLogBuilder {
+	public abstract fun attributes (Lio/sentry/kotlin/multiplatform/SentryAttributes;)V
+	public abstract fun attributes (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun buildFormatted ()Lio/sentry/kotlin/multiplatform/log/FormattedLog;
+	public abstract fun getArgs ()[Ljava/lang/Object;
+	public abstract fun getCustomAttributes ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+	public abstract fun getTemplate ()Ljava/lang/String;
+	public abstract fun message (Ljava/lang/String;)V
+	public abstract fun message (Ljava/lang/String;[Ljava/lang/Object;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/log/SentryLogLevel : java/lang/Enum {
+	public static final field DEBUG Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static final field ERROR Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static final field FATAL Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static final field INFO Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static final field TRACE Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static final field WARN Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+	public static fun values ()[Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;
+}
+
+public final class io/sentry/kotlin/multiplatform/log/SentryLogOptions {
+	public fun <init> ()V
+	public final fun getBeforeSend ()Lkotlin/jvm/functions/Function1;
+	public final fun getEnabled ()Z
+	public final fun setBeforeSend (Lkotlin/jvm/functions/Function1;)V
+	public final fun setEnabled (Z)V
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/log/SentryLogger {
+	public abstract fun debug (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun debug (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun error (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun error (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun fatal (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun fatal (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun info (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun info (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun trace (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun trace (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun warn (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun warn (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb {

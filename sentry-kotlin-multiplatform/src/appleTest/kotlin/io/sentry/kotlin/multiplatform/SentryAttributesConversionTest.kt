@@ -76,7 +76,7 @@ class SentryAttributesConversionTest {
     @Test
     fun `int converts to long`() {
         val attrs = SentryAttributes.empty()
-        attrs["int_value"] = 42  // Int gets stored as Long
+        attrs["int_value"] = 42 // Int gets stored as Long
 
         val map = attrs.toCocoaMap()
 

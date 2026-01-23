@@ -55,7 +55,7 @@ internal actual class SentryBridge actual constructor(
     }
 
     actual fun logger(): SentryLogger {
-        return NoOpSentryLogger
+        return NoOpSentryLogger()
     }
 
     actual fun isCrashedLastRun(): Boolean {

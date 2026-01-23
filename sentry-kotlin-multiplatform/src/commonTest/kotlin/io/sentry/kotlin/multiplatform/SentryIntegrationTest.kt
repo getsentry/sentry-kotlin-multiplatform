@@ -393,7 +393,7 @@ class SentryIntegrationTest : BaseSentryTest() {
                 this["db.success"] = true
             }
         }
-        
+
         assertEquals(1, capturedLogs.size)
         val log = capturedLogs[0]
         assertEquals("Database error", log.body)

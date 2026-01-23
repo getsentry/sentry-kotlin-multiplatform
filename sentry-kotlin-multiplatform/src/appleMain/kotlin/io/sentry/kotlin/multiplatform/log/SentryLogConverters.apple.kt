@@ -1,11 +1,11 @@
 package io.sentry.kotlin.multiplatform.log
 
-import cocoapods.Sentry.SentryLog as CocoaSentryLog
-import cocoapods.Sentry.SentryLogLevel as CocoaSentryLogLevel
-import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 import platform.Foundation.timeIntervalSince1970
+import cocoapods.Sentry.SentryLog as CocoaSentryLog
+import cocoapods.Sentry.SentryLogLevel as CocoaSentryLogLevel
+import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
 
 /**
  * Converts Cocoa SDK's [CocoaSentryLogLevel] to KMP [SentryLogLevel].
@@ -37,12 +37,12 @@ internal fun SentryLogLevel.toCocoaSentryLogLevel(): CocoaSentryLogLevel = when 
  * After the callback, changes are applied back via [updateFrom].
  */
 internal fun CocoaSentryLog.toKmpSentryLog(): SentryLog = SentryLog(
-        timestamp = timestamp().timeIntervalSince1970,
-        level = level().toKmpSentryLogLevel(),
-        body = body(),
-        severityNumber = severityNumber()?.intValue,
-        attributes = toKmpSentryAttributes()
-    )
+    timestamp = timestamp().timeIntervalSince1970,
+    level = level().toKmpSentryLogLevel(),
+    body = body(),
+    severityNumber = severityNumber()?.intValue,
+    attributes = toKmpSentryAttributes()
+)
 
 /**
  * Updates this Cocoa SentryLog from a KMP SentryLog.

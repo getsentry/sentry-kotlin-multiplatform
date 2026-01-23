@@ -71,7 +71,6 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         Sentry.setUser(user?.toJvmUser())
     }
 
-
     actual fun logger(): SentryLogger {
         return logger
     }
