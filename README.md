@@ -67,6 +67,7 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 | 0.21.0                     | 8.57.1            |
 | 0.22.0                     | 8.57.3            |
 | 0.23.0                     | 8.57.3            |
+| 0.23.1                     | 8.57.3            |
 
 ## Usage
 
