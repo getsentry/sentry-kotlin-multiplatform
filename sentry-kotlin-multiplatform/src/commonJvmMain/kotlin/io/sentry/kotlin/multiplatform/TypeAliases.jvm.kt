@@ -4,8 +4,12 @@ import io.sentry.Attachment
 import io.sentry.Breadcrumb
 import io.sentry.IScope
 import io.sentry.Scope
+import io.sentry.SentryAttributeType
+import io.sentry.SentryAttributes
 import io.sentry.SentryEvent
 import io.sentry.SentryLevel
+import io.sentry.SentryLogEvent
+import io.sentry.SentryLogLevel
 import io.sentry.SentryOptions
 import io.sentry.SentryReplayOptions
 import io.sentry.UserFeedback
@@ -29,3 +33,7 @@ internal typealias JvmMessage = Message
 internal typealias JvmSentryException = SentryException
 internal typealias JvmContexts = Contexts
 internal typealias JvmSentryReplayQuality = SentryReplayOptions.SentryReplayQuality
+internal typealias JvmSentryAttributeType = SentryAttributeType
+internal typealias JvmSentryLog = SentryLogEvent
+internal typealias JvmSentryLogLevel = SentryLogLevel
+internal typealias JvmSentryAttributes = SentryAttributes

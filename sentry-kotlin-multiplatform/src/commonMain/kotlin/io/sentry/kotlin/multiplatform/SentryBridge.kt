@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -27,6 +28,8 @@ internal expect class SentryBridge(sentryInstance: SentryInstance = SentryPlatfo
     fun addBreadcrumb(breadcrumb: Breadcrumb)
 
     fun setUser(user: User?)
+
+    fun logger(): SentryLogger
 
     fun isCrashedLastRun(): Boolean
 

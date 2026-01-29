@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -139,6 +140,18 @@ public object Sentry {
     public fun setUser(user: User?) {
         bridge.setUser(user)
     }
+
+    /**
+     * The Sentry logger API for sending structured logs.
+     *
+     * Usage:
+     * ```
+     * Sentry.logger.info("A simple log message")
+     * Sentry.logger.error("A %s log message", "formatted")
+     * ```
+     */
+    public val logger: SentryLogger
+        get() = bridge.logger()
 
     /**
      * Returns true if the app crashed during last run.
