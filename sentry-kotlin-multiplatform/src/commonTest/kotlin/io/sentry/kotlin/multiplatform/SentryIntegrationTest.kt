@@ -440,7 +440,7 @@ class SentryIntegrationTest : BaseSentryTest() {
     }
 
     @Test
-    fun `logs beforeSend can add modify and remove attributes while preserving native SDK attributes`() {
+    fun `logs beforeSend can add modify and remove attributes`() {
         val capturedLogs = mutableListOf<SentryLog>()
         initWithLogCapture(beforeSend = { log ->
             log.body = "modified: ${log.body}"
@@ -472,7 +472,6 @@ class SentryIntegrationTest : BaseSentryTest() {
 
     @Test
     fun `logs beforeSend receives native SDK attributes`() {
-        val capturedLogs = mutableListOf<SentryLog>()
         initWithLogCapture(beforeSend = { log ->
             assertNotNull(log.attributes["sentry.sdk.name"])
             null
