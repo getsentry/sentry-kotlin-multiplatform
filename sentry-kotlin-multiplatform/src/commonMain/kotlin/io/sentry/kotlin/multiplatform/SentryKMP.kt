@@ -146,8 +146,24 @@ public object Sentry {
      *
      * Usage:
      * ```
-     * Sentry.logger.info("A simple log message")
-     * Sentry.logger.error("A %s log message", "formatted")
+     * // Simple API (without attributes)
+     * Sentry.logger.info("User logged in")
+     * Sentry.logger.warn("Rate limit reached for %s", endpoint)
+     *
+     * // Simple API with attributes (without template strings)
+     * Sentry.logger.error("Failed to process payment") {
+     *     this["orderId"] = "order_123"
+     *     this["amount"] = 99.99
+     * }
+     *
+     * // Builder API for full control
+     * Sentry.logger.fatal {
+     *     message("Database connection pool exhausted for %s", dbHost)
+     *     attributes {
+     *         this["database"] = "users"
+     *         this["activeConnections"] = 100
+     *     }
+     * }
      * ```
      */
     public val logger: SentryLogger
