@@ -19,10 +19,10 @@ object LoginImpl {
     @OptIn(ExperimentalUuidApi::class)
     fun login(username: String? = null) {
         // Variant A: Simple message with varargs
-        Sentry.logger.info("User tries to login with username: %s and id %s", username, Uuid.random().toString())
+        Sentry.logger.info("Login request received for user: %s (session %s)", username, Uuid.random().toString())
 
         // Variant B: Message with inline attributes lambda
-        Sentry.logger.info("User login attempt") {
+        Sentry.logger.info("Looking up credentials for user") {
             this["username"] = username ?: "null"
             this["login-id"] = Uuid.random().toString()
             this["attempt-count"] = 1
@@ -32,15 +32,15 @@ object LoginImpl {
 
         // Variant C: Full DSL builder with message() and attributes()
         Sentry.logger.info {
-            message("User tries to login with username: %s and id %s", username, Uuid.random().toString())
+            message("Authenticating user: %s against identity provider %s", username, "sentry-auth")
             attributes {
-                this["test-attribute"] = "test-value"
+                this["auth-method"] = "password"
             }
         }
 
         // Variant C: DSL builder with plain message (no template)
         Sentry.logger.warn {
-            message("Login validation starting")
+            message("Password policy check: account may be rate-limited soon")
         }
 
         // Variant C: DSL builder with prebuilt SentryAttributes
@@ -49,13 +49,13 @@ object LoginImpl {
             "version" to 2
         )
         Sentry.logger.debug {
-            message("Prebuilt attributes test for user: %s", username)
+            message("Session token generated for user: %s", username)
             attributes(prebuiltAttrs)
         }
 
         // Variant C: DSL builder with multiple attributes blocks (they merge)
         Sentry.logger.trace {
-            message("Detailed trace log")
+            message("Writing login audit trail entry")
             attributes {
                 this["step"] = "pre-validation"
             }
