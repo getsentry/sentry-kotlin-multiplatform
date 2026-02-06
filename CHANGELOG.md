@@ -19,8 +19,8 @@ Sentry.logger.error("Failed to process payment") {
 Sentry.logger.fatal {
     message("Database connection pool exhausted for %s", dbHost)
     attributes {
-        set("database", "users")
-        set("activeConnections", 100)
+        this["database"] = "users"
+        this["activeConnections"] = 100
     }
 }
 ```
