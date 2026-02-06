@@ -48,7 +48,7 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
 }
 
 internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
-    private val logger = CocoaSentryLoggerAdapter()
+    private val logger = CocoaSentryLoggerAdapter(SentrySDK::logger)
 
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         init(configuration)

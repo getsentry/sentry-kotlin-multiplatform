@@ -10,10 +10,11 @@ import io.sentry.logger.SentryLogParameters
  * implements [sendLog] to adapt and forward formatted logs to the Java SDK.
  */
 internal class JvmSentryLoggerAdapter(
-    private val jvmLogger: ILoggerApi,
+    private val jvmLoggerProvider: () -> ILoggerApi,
     logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory
 ) : BaseSentryLogger(logBuilderFactory) {
     override fun sendLog(level: SentryLogLevel, formatted: FormattedLog) {
+        val jvmLogger = jvmLoggerProvider()
         val jvmLevel = level.toJvmSentryLogLevel()
         if (formatted.attributes.isEmpty()) {
             jvmLogger.log(jvmLevel, formatted.body)

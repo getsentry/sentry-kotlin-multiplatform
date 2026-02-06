@@ -97,16 +97,8 @@ private fun JvmSentryLog.updateAttributesFrom(
     modifiedKmpAttributes: KmpSentryAttributes,
     originalKmpAttributes: KmpSentryAttributes
 ) {
-    // Collect keys from both original and modified KMP attributes
-    val originalKeys = mutableSetOf<String>()
-    originalKmpAttributes.forEach { (key, _) -> originalKeys.add(key) }
-
-    val modifiedKeys = mutableSetOf<String>()
-    modifiedKmpAttributes.forEach { (key, _) -> modifiedKeys.add(key) }
-
     // Remove attributes that were deleted by the user (present in original but not in modified)
-    val deletedKeys = originalKeys - modifiedKeys
-    deletedKeys.forEach { key ->
+    (originalKmpAttributes.keys - modifiedKmpAttributes.keys).forEach { key ->
         attributes?.remove(key)
     }
 

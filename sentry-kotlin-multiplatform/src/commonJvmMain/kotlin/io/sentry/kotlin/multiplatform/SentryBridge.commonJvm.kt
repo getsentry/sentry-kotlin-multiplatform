@@ -14,7 +14,7 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 internal expect fun SentryPlatformOptions.prepareForInitBridge()
 
 internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
-    private val logger by lazy { JvmSentryLoggerAdapter(Sentry.logger()) }
+    private val logger = JvmSentryLoggerAdapter(Sentry::logger)
 
     actual fun init(context: Context, configuration: OptionsConfiguration) {
         init(configuration)

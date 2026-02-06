@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform.log
 
+import cocoapods.Sentry.SentryStructuredLogAttribute
+import io.sentry.kotlin.multiplatform.SentryAttributeValue
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 import platform.Foundation.timeIntervalSince1970
@@ -54,7 +56,7 @@ internal fun CocoaSentryLog.toKmpSentryLog(): SentryLog = SentryLog(
 internal fun CocoaSentryLog.updateFrom(kmpLog: SentryLog, originalKmpAttributes: KmpSentryAttributes) {
     setBody(kmpLog.body)
     setLevel(kmpLog.level.toCocoaSentryLogLevel())
-    kmpLog.severityNumber?.let { setSeverityNumber(NSNumber(int = it)) }
+    setSeverityNumber(kmpLog.severityNumber?.let { NSNumber(int = it) })
     updateAttributesFrom(kmpLog.attributes, originalKmpAttributes)
 }
 
@@ -63,25 +65,19 @@ internal fun CocoaSentryLog.updateFrom(kmpLog: SentryLog, originalKmpAttributes:
  */
 private fun CocoaSentryLog.toKmpSentryAttributes(): KmpSentryAttributes {
     val kmpAttributes = KmpSentryAttributes.empty()
-    attributes().forEach { (key, value) ->
-        val keyStr = key as? String ?: return@forEach
-        when (value) {
-            is String -> kmpAttributes[keyStr] = value
-            is Boolean -> kmpAttributes[keyStr] = value
-            is NSNumber -> {
-                // NSNumber could be integer or floating point
-                val doubleValue = value.doubleValue
-                if (doubleValue == doubleValue.toLong().toDouble()) {
-                    // It's an integer type - store as Long
-                    kmpAttributes[keyStr] = value.longValue
-                } else {
-                    kmpAttributes[keyStr] = doubleValue
-                }
-            }
-            is Long -> kmpAttributes[keyStr] = value
-            is Double -> kmpAttributes[keyStr] = value
+    attributes()
+        .mapNotNull { (key, value) ->
+            (key as? String)?.let { it to (value as? SentryStructuredLogAttribute) }
         }
-    }
+        .forEach { (key, attribute) ->
+            attribute ?: return@forEach
+            when (attribute.type()) {
+                "string" -> kmpAttributes[key] = attribute.value() as String
+                "boolean" -> kmpAttributes[key] = (attribute.value() as NSNumber).boolValue
+                "integer" -> kmpAttributes[key] = (attribute.value() as NSNumber).longValue
+                "double" -> kmpAttributes[key] = (attribute.value() as NSNumber).doubleValue
+            }
+        }
     return kmpAttributes
 }
 
@@ -98,7 +94,12 @@ private fun CocoaSentryLog.updateAttributesFrom(
     (originalKmpAttributes.keys - modifiedKmpAttributes.keys).forEach { mergedAttributes.remove(it) }
 
     modifiedKmpAttributes.forEach { (key, attrValue) ->
-        mergedAttributes[key] = attrValue.value
+        mergedAttributes[key] = when (attrValue) {
+            is SentryAttributeValue.LongValue -> SentryStructuredLogAttribute(integer = attrValue.value as Long)
+            is SentryAttributeValue.DoubleValue -> SentryStructuredLogAttribute(double = attrValue.value as Double)
+            is SentryAttributeValue.StringValue -> SentryStructuredLogAttribute(string = attrValue.value as String)
+            is SentryAttributeValue.BooleanValue -> SentryStructuredLogAttribute(boolean = attrValue.value as Boolean)
+        }
     }
 
     setAttributes(mergedAttributes)
