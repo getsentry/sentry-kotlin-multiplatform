@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform.log
 
-import cocoapods.Sentry.SentryLogger as CocoaSentryLogger
 import io.sentry.kotlin.multiplatform.SentryAttributes
+import cocoapods.Sentry.SentryLogger as CocoaSentryLogger
 
 /**
  * Adapter that bridges KMP [SentryLogger] to the Cocoa SDK's [CocoaSentryLogger].
