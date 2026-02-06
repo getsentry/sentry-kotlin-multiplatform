@@ -7,7 +7,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/kotlin-multiplatform.yml'
-      - 'kotlin-multiplatform/**'
+      - 'sentry-kotlin-multiplatform/**'
       - 'sentry-samples/**'
       - 'buildSrc/src/**'
       - '!**/*.md'
@@ -96,7 +96,7 @@ jobs:
 
       # Kover coverage currently only works for JVM
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # pin@v4
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # pin@v4
         with:
           name: sentry-kotlin-multiplatform
           token: ${{ secrets.CODECOV_TOKEN }}
