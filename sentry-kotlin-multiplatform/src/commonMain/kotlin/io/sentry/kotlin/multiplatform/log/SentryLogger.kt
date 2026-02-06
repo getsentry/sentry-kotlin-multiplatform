@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform.log
 
+import io.sentry.kotlin.multiplatform.SentryAttributes
+
 /**
  * API for sending structured logs to Sentry.
  *
@@ -57,11 +59,107 @@ public interface SentryLogger {
     public fun fatal(message: String, vararg args: Any?)
 
     /**
+     * Logs a message at [SentryLogLevel.TRACE] level with inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.trace("Executing SQL query") {
+     *     this["db.name"] = "users"
+     *     this["db.operation"] = "SELECT"
+     * }
+     * ```
+     *
+     * @param message The log message
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun trace(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.DEBUG] level with inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.debug("Cache lookup for key") {
+     *     this["cache.key"] = cacheKey
+     *     this["cache.hit"] = true
+     * }
+     * ```
+     *
+     * @param message The log message
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun debug(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.INFO] level with inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.info("User authenticated successfully") {
+     *     this["auth.method"] = "oauth2"
+     *     this["user.id"] = userId
+     * }
+     * ```
+     *
+     * @param message The log message
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun info(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.WARN] level with inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.warn("Rate limit reached for endpoint") {
+     *     this["endpoint"] = "/api/results/"
+     *     this["isEnterprise"] = false
+     * }
+     * ```
+     *
+     * @param message The log message
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.ERROR] level with inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.error("Failed to process payment") {
+     *     this["orderId"] = "order_123"
+     *     this["amount"] = 99.99
+     * }
+     * ```
+     *
+     * @param message The log message
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun error(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.FATAL] level with inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.fatal("Database connection pool exhausted") {
+     *     this["database"] = "users"
+     *     this["activeConnections"] = 100
+     * }
+     * ```
+     *
+     * @param message The log message
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun fatal(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
      * Logs a message at [SentryLogLevel.TRACE] level using a DSL builder.
      *
      * Example:
      * ```
-     * logger.trace {
+     * Sentry.logger.trace {
      *     message("Executing SQL query: %s", query)
      *     attributes {
      *         this["db.name"] = "users"
@@ -79,7 +177,7 @@ public interface SentryLogger {
      *
      * Example:
      * ```
-     * logger.debug {
+     * Sentry.logger.debug {
      *     message("Cache %s for key: %s", if (hit) "hit" else "miss", cacheKey)
      *     attributes {
      *         this["cache.size"] = cache.size
@@ -97,7 +195,7 @@ public interface SentryLogger {
      *
      * Example:
      * ```
-     * logger.info {
+     * Sentry.logger.info {
      *     message("User %s successfully authenticated", user.email)
      *     attributes {
      *         this["auth.method"] = "oauth2"
@@ -115,7 +213,7 @@ public interface SentryLogger {
      *
      * Example:
      * ```
-     * logger.warn {
+     * Sentry.logger.warn {
      *     message("API rate limit at %s%% for client %s", usagePercent, clientId)
      *     attributes {
      *         this["rate_limit.current"] = currentRequests
@@ -134,7 +232,7 @@ public interface SentryLogger {
      *
      * Example:
      * ```
-     * logger.error {
+     * Sentry.logger.error {
      *     message("Failed to process payment for order %s: %s", orderId, error.message)
      *     attributes {
      *         this["order.amount"] = amount
@@ -153,7 +251,7 @@ public interface SentryLogger {
      *
      * Example:
      * ```
-     * logger.fatal {
+     * Sentry.logger.fatal {
      *     message("Database connection pool exhausted, shutting down service")
      *     attributes {
      *         this["db.host"] = dbHost

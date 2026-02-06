@@ -10,6 +10,7 @@ import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
 /**
  * Converts Cocoa SDK's [CocoaSentryLogLevel] to KMP [SentryLogLevel].
  */
+@Suppress("MagicNumber")
 internal fun CocoaSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (this.convert<Int>()) {
     0 -> SentryLogLevel.TRACE
     1 -> SentryLogLevel.DEBUG
@@ -23,6 +24,7 @@ internal fun CocoaSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel = when (t
 /**
  * Converts KMP's [SentryLogLevel] to Cocoa SDK's [CocoaSentryLogLevel].
  */
+@Suppress("MagicNumber")
 internal fun SentryLogLevel.toCocoaSentryLogLevel(): CocoaSentryLogLevel = when (this) {
     SentryLogLevel.TRACE -> 0.convert()
     SentryLogLevel.DEBUG -> 1.convert()
@@ -84,34 +86,17 @@ private fun CocoaSentryLog.toKmpSentryAttributes(): KmpSentryAttributes {
 }
 
 /**
- * Updates this Cocoa log's attributes from KMP attributes, merging with existing attributes.
- * Only applies changes (additions, modifications, deletions) made by the user in beforeSendLog.
- * Preserves original Cocoa attributes that weren't convertible to KMP or weren't modified.
- *
- * @param modifiedKmpAttributes The KMP attributes after the user's beforeSendLog callback.
- * @param originalKmpAttributes The KMP attributes before the callback, used to detect changes.
+ * Applies attribute changes from the beforeSendLog callback back to this Cocoa log.
  */
 private fun CocoaSentryLog.updateAttributesFrom(
     modifiedKmpAttributes: KmpSentryAttributes,
     originalKmpAttributes: KmpSentryAttributes
 ) {
-    // Start with the current Cocoa attributes (preserves unconvertible types)
     val mergedAttributes = attributes().toMutableMap()
 
-    // Collect keys from both original and modified KMP attributes
-    val originalKeys = mutableSetOf<String>()
-    originalKmpAttributes.forEach { (key, _) -> originalKeys.add(key) }
+    // Remove attributes deleted by the user (present in original but not in modified)
+    (originalKmpAttributes.keys - modifiedKmpAttributes.keys).forEach { mergedAttributes.remove(it) }
 
-    val modifiedKeys = mutableSetOf<String>()
-    modifiedKmpAttributes.forEach { (key, _) -> modifiedKeys.add(key) }
-
-    // Remove attributes that were deleted by the user (present in original but not in modified)
-    val deletedKeys = originalKeys - modifiedKeys
-    deletedKeys.forEach { key ->
-        mergedAttributes.remove(key)
-    }
-
-    // Add or update attributes from the modified KMP attributes
     modifiedKmpAttributes.forEach { (key, attrValue) ->
         mergedAttributes[key] = attrValue.value
     }

@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.log.SentryLogBuilder
+import io.sentry.kotlin.multiplatform.log.SentryLogDsl
 import io.sentry.kotlin.multiplatform.log.SentryLogger
 
 /**
@@ -28,6 +29,30 @@ internal class NoOpSentryLogger : SentryLogger {
     }
 
     override fun fatal(message: String, vararg args: Any?) {
+        // No-op
+    }
+
+    override fun trace(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun debug(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun info(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun error(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun fatal(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
         // No-op
     }
 

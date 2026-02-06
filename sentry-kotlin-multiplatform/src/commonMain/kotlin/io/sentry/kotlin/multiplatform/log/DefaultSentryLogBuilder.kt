@@ -64,7 +64,7 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
      * Use %% to produce a literal percent sign.
      */
     private fun formatMessage(template: String, args: Array<out Any?>): String {
-        if (args.isEmpty()) return template
+        if (!template.contains('%')) return template
 
         var argIndex = 0
         return formatRegex.replace(template) { match ->

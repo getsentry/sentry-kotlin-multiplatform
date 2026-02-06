@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased
+
+- Add structured logs support ([#509](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/509))
+
+```kotlin
+// Simple API (without attributes)
+Sentry.logger.info("User logged in")
+Sentry.logger.warn("Rate limit reached for %s", endpoint)
+
+// Simple API with attributes (without template strings)
+Sentry.logger.error("Failed to process payment") {
+    set("orderId", "order_123")
+    set("amount", 99.99)
+}
+
+// Builder API for full control
+Sentry.logger.fatal {
+    message("Database connection pool exhausted for %s", dbHost)
+    attributes {
+        set("database", "users")
+        set("activeConnections", 100)
+    }
+}
+```
+
 ## 0.23.0
 
 ⚠️ This release will affect issue grouping for iOS events as Sentry now captures correct stacktraces for manually captured and crashed iOS events.

@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.kotlin.multiplatform.CocoaSentryLogger
+import cocoapods.Sentry.SentrySDK
 import io.sentry.kotlin.multiplatform.SentryAttributes
 
 /**
@@ -8,12 +8,15 @@ import io.sentry.kotlin.multiplatform.SentryAttributes
  *
  * Extends [BaseSentryLogger] which handles all builder logic. This class only
  * implements [sendLog] to adapt and forward formatted logs to the Cocoa SDK.
+ *
+ * Fetches [SentrySDK.logger] on each call to ensure the reference stays valid
+ * across Sentry close/re-init cycles.
  */
 internal class CocoaSentryLoggerAdapter(
-    private val cocoaLogger: CocoaSentryLogger,
     logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory
 ) : BaseSentryLogger(logBuilderFactory) {
     override fun sendLog(level: SentryLogLevel, formatted: FormattedLog) {
+        val cocoaLogger = SentrySDK.logger()
         val attributes = formatted.attributes.toCocoaMap()
         when (level) {
             SentryLogLevel.TRACE -> cocoaLogger.trace(formatted.body, attributes)

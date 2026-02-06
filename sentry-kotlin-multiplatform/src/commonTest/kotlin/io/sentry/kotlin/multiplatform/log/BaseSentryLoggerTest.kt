@@ -206,6 +206,131 @@ class BaseSentryLoggerTest {
     }
 
     // ========================
+    // Simple API with attributes tests
+    // ========================
+
+    @Test
+    fun `trace with message and attributes calls sendLog with TRACE level`() {
+        val logger = TestSentryLogger()
+
+        logger.trace("test message") {
+            set("key", "value")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.TRACE, logger.logs[0].level)
+        assertEquals("test message", logger.logs[0].formatted.body)
+    }
+
+    @Test
+    fun `debug with message and attributes calls sendLog with DEBUG level`() {
+        val logger = TestSentryLogger()
+
+        logger.debug("test message") {
+            set("key", "value")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.DEBUG, logger.logs[0].level)
+    }
+
+    @Test
+    fun `info with message and attributes calls sendLog with INFO level`() {
+        val logger = TestSentryLogger()
+
+        logger.info("test message") {
+            set("key", "value")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.INFO, logger.logs[0].level)
+    }
+
+    @Test
+    fun `warn with message and attributes calls sendLog with WARN level`() {
+        val logger = TestSentryLogger()
+
+        logger.warn("test message") {
+            set("key", "value")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.WARN, logger.logs[0].level)
+    }
+
+    @Test
+    fun `error with message and attributes calls sendLog with ERROR level`() {
+        val logger = TestSentryLogger()
+
+        logger.error("test message") {
+            set("key", "value")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.ERROR, logger.logs[0].level)
+    }
+
+    @Test
+    fun `fatal with message and attributes calls sendLog with FATAL level`() {
+        val logger = TestSentryLogger()
+
+        logger.fatal("test message") {
+            set("key", "value")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.FATAL, logger.logs[0].level)
+    }
+
+    @Test
+    fun `message with attributes includes custom attributes`() {
+        val logger = TestSentryLogger()
+
+        logger.info("Rate limit reached") {
+            set("endpoint", "/api/results/")
+            set("isEnterprise", false)
+        }
+
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals("Rate limit reached", logger.logs[0].formatted.body)
+        assertEquals("/api/results/", attrs["endpoint"]?.stringOrNull)
+        assertEquals(false, attrs["isEnterprise"]?.booleanOrNull)
+    }
+
+    @Test
+    fun `message with attributes supports all attribute types`() {
+        val logger = TestSentryLogger()
+
+        logger.error("Failed to process payment") {
+            set("orderId", "order_123")
+            set("amount", 99.99)
+            set("retries", 3)
+            set("isRetryable", true)
+        }
+
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals("order_123", attrs["orderId"]?.stringOrNull)
+        assertEquals(99.99, attrs["amount"]?.doubleOrNull)
+        assertEquals(3L, attrs["retries"]?.longOrNull)
+        assertEquals(true, attrs["isRetryable"]?.booleanOrNull)
+    }
+
+    @Test
+    fun `message with attributes has no template attributes`() {
+        val logger = TestSentryLogger()
+
+        logger.fatal("Database connection pool exhausted") {
+            set("database", "users")
+            set("activeConnections", 100)
+        }
+
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals(null, attrs["sentry.message.template"])
+        assertEquals("users", attrs["database"]?.stringOrNull)
+        assertEquals(100L, attrs["activeConnections"]?.longOrNull)
+    }
+
+    // ========================
     // Edge cases
     // ========================
 

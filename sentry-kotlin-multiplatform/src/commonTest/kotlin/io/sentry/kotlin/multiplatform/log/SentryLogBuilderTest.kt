@@ -8,11 +8,6 @@ import kotlin.test.assertTrue
 
 /** Tests for [DefaultSentryLogBuilder] DSL builder. */
 class SentryLogBuilderTest {
-
-    // ========================
-    // Raw access tests
-    // ========================
-
     @Test
     fun `message with body sets plain template`() {
         val builder = DefaultSentryLogBuilder()
@@ -275,10 +270,6 @@ class SentryLogBuilderTest {
         assertEquals("No placeholders", result?.attributes?.get("sentry.message.template")?.stringOrNull)
         assertEquals("unused", result?.attributes?.get("sentry.message.parameter.0")?.stringOrNull)
     }
-
-    // ========================
-    // Formatting edge cases
-    // ========================
 
     @Test
     fun `buildFormatted handles empty string message`() {

@@ -1,5 +1,7 @@
 package io.sentry.kotlin.multiplatform.log
 
+import io.sentry.kotlin.multiplatform.SentryAttributes
+
 /**
  * Base implementation of [SentryLogger] that handles builder logic.
  *
@@ -36,6 +38,19 @@ internal abstract class BaseSentryLogger(
     override fun fatal(message: String, vararg args: Any?) =
         logSimple(message, args, SentryLogLevel.FATAL)
 
+    override fun trace(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
+        logSimpleWithAttributes(message, attributes, SentryLogLevel.TRACE)
+    override fun debug(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
+        logSimpleWithAttributes(message, attributes, SentryLogLevel.DEBUG)
+    override fun info(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
+        logSimpleWithAttributes(message, attributes, SentryLogLevel.INFO)
+    override fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
+        logSimpleWithAttributes(message, attributes, SentryLogLevel.WARN)
+    override fun error(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
+        logSimpleWithAttributes(message, attributes, SentryLogLevel.ERROR)
+    override fun fatal(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
+        logSimpleWithAttributes(message, attributes, SentryLogLevel.FATAL)
+
     override fun trace(block: SentryLogBuilder.() -> Unit) =
         logWithBuilder(block, SentryLogLevel.TRACE)
     override fun debug(block: SentryLogBuilder.() -> Unit) =
@@ -49,10 +64,20 @@ internal abstract class BaseSentryLogger(
     override fun fatal(block: SentryLogBuilder.() -> Unit) =
         logWithBuilder(block, SentryLogLevel.FATAL)
 
+    @Suppress("SpreadOperator")
     private fun logSimple(message: String, args: Array<out Any?>, level: SentryLogLevel) =
         logWithBuilder({
             if (args.isEmpty()) message(message) else message(message, *args)
         }, level)
+
+    private fun logSimpleWithAttributes(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+        level: SentryLogLevel
+    ) = logWithBuilder({
+        message(message)
+        attributes(attributes)
+    }, level)
 
     private inline fun logWithBuilder(block: SentryLogBuilder.() -> Unit, level: SentryLogLevel) {
         val formatted = logBuilderFactory().apply(block).buildFormatted() ?: return
