@@ -1,6 +1,7 @@
 package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryAttributes
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -17,10 +18,49 @@ object LoginImpl {
      */
     @OptIn(ExperimentalUuidApi::class)
     fun login(username: String? = null) {
+        // Variant A: Simple message with varargs
+        Sentry.logger.info("User tries to login with username: %s and id %s", username, Uuid.random().toString())
+
+        // Variant B: Message with inline attributes lambda
+        Sentry.logger.info("User login attempt") {
+            this["username"] = username ?: "null"
+            this["login-id"] = Uuid.random().toString()
+            this["attempt-count"] = 1
+            this["is-retry"] = false
+            this["latency-ms"] = 23.5
+        }
+
+        // Variant C: Full DSL builder with message() and attributes()
         Sentry.logger.info {
             message("User tries to login with username: %s and id %s", username, Uuid.random().toString())
             attributes {
                 this["test-attribute"] = "test-value"
+            }
+        }
+
+        // Variant C: DSL builder with plain message (no template)
+        Sentry.logger.warn {
+            message("Login validation starting")
+        }
+
+        // Variant C: DSL builder with prebuilt SentryAttributes
+        val prebuiltAttrs = SentryAttributes.of(
+            "source" to "login-form",
+            "version" to 2
+        )
+        Sentry.logger.debug {
+            message("Prebuilt attributes test for user: %s", username)
+            attributes(prebuiltAttrs)
+        }
+
+        // Variant C: DSL builder with multiple attributes blocks (they merge)
+        Sentry.logger.trace {
+            message("Detailed trace log")
+            attributes {
+                this["step"] = "pre-validation"
+            }
+            attributes {
+                this["component"] = "auth"
             }
         }
         try {
