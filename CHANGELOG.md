@@ -11,8 +11,8 @@ Sentry.logger.warn("Rate limit reached for %s", endpoint)
 
 // Simple API with attributes (without template strings)
 Sentry.logger.error("Failed to process payment") {
-    set("orderId", "order_123")
-    set("amount", 99.99)
+    this["orderId"] = "order_123"
+    this["amount"] = 99.99
 }
 
 // Builder API for full control
