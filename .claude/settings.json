@@ -1,0 +1,66 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(pwd:*)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(wc:*)",
+      "Bash(tree:*)",
+
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git tag:*)",
+      "Bash(git stash list:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git fetch:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git blame:*)",
+
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run logs:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh api:*)",
+
+      "Bash(./gradlew tasks:*)",
+      "Bash(./gradlew dependencies:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew clean:*)",
+      "Bash(./gradlew test:*)",
+      "Bash(./gradlew detekt:*)",
+      "Bash(./gradlew spotlessKotlinCheck:*)",
+      "Bash(./gradlew spotlessApply:*)",
+      "Bash(./gradlew apiCheck:*)",
+      "Bash(./gradlew koverXmlReport:*)",
+      "Bash(./gradlew dokkaHtmlMultiModule:*)",
+      "Bash(./gradlew publishToMavenLocal:*)",
+      "Bash(./gradlew --stop:*)",
+      "Bash(make:*)",
+
+      "WebFetch(domain:docs.sentry.io)",
+      "WebFetch(domain:develop.sentry.dev)",
+      "WebFetch(domain:kotlinlang.org)",
+      "WebFetch(domain:developer.android.com)",
+      "WebFetch(domain:docs.github.com)",
+      "WebFetch(domain:cli.github.com)",
+
+      "Skill(sentry-skills:agents-md)"
+    ],
+    "deny": []
+  }
+}
