@@ -95,7 +95,8 @@ private fun CocoaSentryLog.updateAttributesFrom(
 
     modifiedKmpAttributes.forEach { (key, attrValue) ->
         mergedAttributes[key] = when (attrValue) {
-            is SentryAttributeValue.LongValue -> SentryStructuredLogAttribute(integer = (attrValue.value as Long).convert())
+            is SentryAttributeValue.LongValue ->
+                SentryStructuredLogAttribute(integer = (attrValue.value as Long).convert())
             is SentryAttributeValue.DoubleValue -> SentryStructuredLogAttribute(double = attrValue.value as Double)
             is SentryAttributeValue.StringValue -> SentryStructuredLogAttribute(string = attrValue.value as String)
             is SentryAttributeValue.BooleanValue -> SentryStructuredLogAttribute(boolean = attrValue.value as Boolean)
