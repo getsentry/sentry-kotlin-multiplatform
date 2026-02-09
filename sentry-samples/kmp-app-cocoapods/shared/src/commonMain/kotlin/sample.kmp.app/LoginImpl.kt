@@ -30,6 +30,12 @@ object LoginImpl {
             this["latency-ms"] = 23.5
         }
 
+        // Variant D: Message with varargs AND inline attributes lambda
+        Sentry.logger.info("User %s login attempt from %s", username, "mobile-app") {
+            this["attempt-count"] = 1
+            this["is-retry"] = false
+        }
+
         // Variant C: Full DSL builder with message() and attributes()
         Sentry.logger.info {
             message("Authenticating user: %s against identity provider %s", username, "sentry-auth")

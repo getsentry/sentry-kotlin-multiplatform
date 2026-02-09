@@ -6,8 +6,6 @@ import io.sentry.kotlin.multiplatform.SentryAttributes
  * API for sending structured logs to Sentry.
  *
  * This interface provides methods to log messages at different severity levels.
- * Each platform (JVM, Apple, etc.) provides its own implementation that wraps
- * the native SDK's logging functionality.
  */
 public interface SentryLogger {
     /**
@@ -121,6 +119,108 @@ public interface SentryLogger {
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
     public fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.TRACE] level with template parameters and inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.trace("Executing SQL query: %s", query) {
+     *     this["db.name"] = "users"
+     *     this["db.operation"] = "SELECT"
+     * }
+     * ```
+     *
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun trace(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.DEBUG] level with template parameters and inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.debug("Cache %s for key: %s", status, cacheKey) {
+     *     this["cache.size"] = cache.size
+     *     this["cache.ttl"] = ttlSeconds
+     * }
+     * ```
+     *
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun debug(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.INFO] level with template parameters and inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.info("User %s authenticated via %s", userId, method) {
+     *     this["auth.method"] = "oauth2"
+     *     this["user.id"] = userId
+     * }
+     * ```
+     *
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun info(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.WARN] level with template parameters and inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.warn("Rate limit at %s%% for endpoint %s", usage, endpoint) {
+     *     this["endpoint"] = "/api/results/"
+     *     this["isEnterprise"] = false
+     * }
+     * ```
+     *
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun warn(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.ERROR] level with template parameters and inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.error("Failed to process order %s: %s", orderId, error) {
+     *     this["orderId"] = "order_123"
+     *     this["amount"] = 99.99
+     * }
+     * ```
+     *
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun error(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at [SentryLogLevel.FATAL] level with template parameters and inline attributes.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.fatal("Connection pool exhausted on %s", dbHost) {
+     *     this["database"] = "users"
+     *     this["activeConnections"] = 100
+     * }
+     * ```
+     *
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun fatal(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
 
     /**
      * Logs a message at [SentryLogLevel.ERROR] level with inline attributes.

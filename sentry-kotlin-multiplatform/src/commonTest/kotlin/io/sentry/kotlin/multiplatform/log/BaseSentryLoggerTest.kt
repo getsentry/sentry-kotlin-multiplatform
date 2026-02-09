@@ -330,9 +330,98 @@ class BaseSentryLoggerTest {
         assertEquals(100L, attrs["activeConnections"]?.longOrNull)
     }
 
-    // ========================
-    // Edge cases
-    // ========================
+    @Test
+    fun `trace with args and attributes calls sendLog with TRACE level`() {
+        val logger = TestSentryLogger()
+
+        logger.trace("User %s logged in", "alice") {
+            set("region", "us-east")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.TRACE, logger.logs[0].level)
+        assertEquals("User alice logged in", logger.logs[0].formatted.body)
+        assertEquals("us-east", logger.logs[0].formatted.attributes["region"]?.stringOrNull)
+    }
+
+    @Test
+    fun `debug with args and attributes calls sendLog with DEBUG level`() {
+        val logger = TestSentryLogger()
+
+        logger.debug("Cache %s for key: %s", "hit", "user_123") {
+            set("ttl", 300)
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.DEBUG, logger.logs[0].level)
+        assertEquals("Cache hit for key: user_123", logger.logs[0].formatted.body)
+    }
+
+    @Test
+    fun `info with args and attributes calls sendLog with INFO level`() {
+        val logger = TestSentryLogger()
+
+        logger.info("User %s authenticated", "bob") {
+            set("method", "oauth2")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.INFO, logger.logs[0].level)
+    }
+
+    @Test
+    fun `warn with args and attributes calls sendLog with WARN level`() {
+        val logger = TestSentryLogger()
+
+        logger.warn("Rate limit at %s%%", 80) {
+            set("endpoint", "/api")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.WARN, logger.logs[0].level)
+    }
+
+    @Test
+    fun `error with args and attributes calls sendLog with ERROR level`() {
+        val logger = TestSentryLogger()
+
+        logger.error("Failed order %s", "order_123") {
+            set("retries", 3)
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.ERROR, logger.logs[0].level)
+    }
+
+    @Test
+    fun `fatal with args and attributes calls sendLog with FATAL level`() {
+        val logger = TestSentryLogger()
+
+        logger.fatal("Pool exhausted on %s", "db-primary") {
+            set("connections", 100)
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.FATAL, logger.logs[0].level)
+    }
+
+    @Test
+    fun `message with args and attributes includes template and custom attributes`() {
+        val logger = TestSentryLogger()
+
+        logger.info("User %s performed %s", "alice", "checkout") {
+            set("orderId", "order_456")
+            set("amount", 49.99)
+        }
+
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals("User alice performed checkout", logger.logs[0].formatted.body)
+        assertEquals("User %s performed %s", attrs["sentry.message.template"]?.stringOrNull)
+        assertEquals("alice", attrs["sentry.message.parameter.0"]?.stringOrNull)
+        assertEquals("checkout", attrs["sentry.message.parameter.1"]?.stringOrNull)
+        assertEquals("order_456", attrs["orderId"]?.stringOrNull)
+        assertEquals(49.99, attrs["amount"]?.doubleOrNull)
+    }
 
     @Test
     fun `builder without message does not call sendLog`() {

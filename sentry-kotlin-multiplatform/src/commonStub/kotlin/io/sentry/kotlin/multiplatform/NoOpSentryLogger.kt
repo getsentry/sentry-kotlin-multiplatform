@@ -56,6 +56,30 @@ internal class NoOpSentryLogger : SentryLogger {
         // No-op
     }
 
+    override fun trace(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun debug(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun info(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun warn(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun error(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
+    override fun fatal(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+        // No-op
+    }
+
     override fun trace(block: SentryLogBuilder.() -> Unit) {
         // No-op
     }

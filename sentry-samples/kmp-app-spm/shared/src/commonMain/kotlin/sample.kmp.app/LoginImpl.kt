@@ -15,6 +15,12 @@ object LoginImpl {
      *
      */
     fun login(username: String? = null) {
+        // Message with varargs AND inline attributes
+        Sentry.logger.info("Login attempt for user: %s", username) {
+            this["source"] = "login-form"
+            this["platform"] = Platform().platform
+        }
+
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {

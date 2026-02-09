@@ -398,21 +398,27 @@ public final class io/sentry/kotlin/multiplatform/log/SentryLogOptions {
 public abstract interface class io/sentry/kotlin/multiplatform/log/SentryLogger {
 	public abstract fun debug (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun debug (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun debug (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun debug (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun error (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun error (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun error (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun error (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun fatal (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun fatal (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun fatal (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun fatal (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun info (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun info (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun info (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun info (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun trace (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun trace (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun trace (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun trace (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun warn (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun warn (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun warn (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun warn (Lkotlin/jvm/functions/Function1;)V
 }
 
