@@ -5,17 +5,14 @@
 - Add structured logs support ([#509](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/509))
 
 ```kotlin
-// Simple API (without attributes)
-Sentry.logger.info("User logged in")
-Sentry.logger.warn("Rate limit reached for %s", endpoint)
-
-// Simple API with attributes (without template strings)
-Sentry.logger.error("Failed to process payment") {
-    this["orderId"] = "order_123"
-    this["amount"] = 99.99
+// Simple API
+Sentry.logger.warn("Rate limit reached for %s", endpoint) {
+  this["currentRequests"] = 120
+  this["limit"] = 100
+  this["retryAfterSeconds"] = 60
 }
 
-// Builder API for full control
+// Full DSL
 Sentry.logger.fatal {
     message("Database connection pool exhausted for %s", dbHost)
     attributes {

@@ -18,10 +18,10 @@ object LoginImpl {
      */
     @OptIn(ExperimentalUuidApi::class)
     fun login(username: String? = null) {
-        // Variant A: Simple message with varargs
+        // Simple message with varargs
         Sentry.logger.info("Login request received for user: %s (session %s)", username, Uuid.random().toString())
 
-        // Variant B: Message with inline attributes lambda
+        // Message with inline attributes lambda
         Sentry.logger.info("Looking up credentials for user") {
             this["username"] = username ?: "null"
             this["login-id"] = Uuid.random().toString()
@@ -30,13 +30,13 @@ object LoginImpl {
             this["latency-ms"] = 23.5
         }
 
-        // Variant D: Message with varargs AND inline attributes lambda
+        // Message with varargs AND inline attributes lambda
         Sentry.logger.info("User %s login attempt from %s", username, "mobile-app") {
             this["attempt-count"] = 1
             this["is-retry"] = false
         }
 
-        // Variant C: Full DSL builder with message() and attributes()
+        // Full DSL builder with message() and attributes()
         Sentry.logger.info {
             message("Authenticating user: %s against identity provider %s", username, "sentry-auth")
             attributes {
@@ -44,12 +44,12 @@ object LoginImpl {
             }
         }
 
-        // Variant C: DSL builder with plain message (no template)
+        // DSL builder with plain message (no template)
         Sentry.logger.warn {
             message("Password policy check: account may be rate-limited soon")
         }
 
-        // Variant C: DSL builder with prebuilt SentryAttributes
+        // DSL builder with prebuilt SentryAttributes
         val prebuiltAttrs = SentryAttributes.of(
             "source" to "login-form",
             "version" to 2
@@ -59,7 +59,7 @@ object LoginImpl {
             attributes(prebuiltAttrs)
         }
 
-        // Variant C: DSL builder with multiple attributes blocks (they merge)
+        // DSL builder with multiple attributes blocks (they merge)
         Sentry.logger.trace {
             message("Writing login audit trail entry")
             attributes {
@@ -69,6 +69,7 @@ object LoginImpl {
                 this["component"] = "auth"
             }
         }
+
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
