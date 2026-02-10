@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add structured logs support ([#509](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/509))
+
+```kotlin
+// Simple API
+Sentry.logger.warn("Rate limit reached for %s", endpoint) {
+  this["currentRequests"] = 120
+  this["limit"] = 100
+  this["retryAfterSeconds"] = 60
+}
+
+// Full DSL
+Sentry.logger.fatal {
+    message("Database connection pool exhausted for %s", dbHost)
+    attributes {
+        this["database"] = "users"
+        this["activeConnections"] = 100
+    }
+}
+```
+
 ## 0.23.1
 
 ### Fixes

@@ -1,19 +1,75 @@
 package sample.kmp.app
 
 import io.sentry.kotlin.multiplatform.Sentry
+import io.sentry.kotlin.multiplatform.SentryAttributes
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class InvalidUsernameException(message: String) : Exception(message)
 
 object LoginImpl {
     /**
-     * login() throws a either checked InvalidUsernameException
+     * login() throws either a checked InvalidUsernameException
      * or an IllegalArgumentException that crashes the app.
      */
+    @OptIn(ExperimentalUuidApi::class)
     fun login(username: String? = null) {
+        // Simple message with varargs
+        Sentry.logger.info("Login request received for user: %s (session %s)", username, Uuid.random().toString())
+
+        // Message with inline attributes lambda
+        Sentry.logger.info("Looking up credentials for user") {
+            this["username"] = username ?: "null"
+            this["login-id"] = Uuid.random().toString()
+            this["attempt-count"] = 1
+            this["is-retry"] = false
+            this["latency-ms"] = 23.5
+        }
+
+        // Message with varargs AND inline attributes lambda
+        Sentry.logger.info("User %s login attempt from %s", username, "mobile-app") {
+            this["attempt-count"] = 1
+            this["is-retry"] = false
+        }
+
+        // Full DSL builder with message() and attributes()
+        Sentry.logger.info {
+            message("Authenticating user: %s against identity provider %s", username, "sentry-auth")
+            attributes {
+                this["auth-method"] = "password"
+            }
+        }
+
+        // DSL builder with plain message (no template)
+        Sentry.logger.warn {
+            message("Password policy check: account may be rate-limited soon")
+        }
+
+        // DSL builder with prebuilt SentryAttributes
+        val prebuiltAttrs = SentryAttributes.of(
+            "source" to "login-form",
+            "version" to 2
+        )
+        Sentry.logger.debug {
+            message("Session token generated for user: %s", username)
+            attributes(prebuiltAttrs)
+        }
+
+        // DSL builder with multiple attributes blocks (they merge)
+        Sentry.logger.trace {
+            message("Writing login audit trail entry")
+            attributes {
+                this["step"] = "pre-validation"
+            }
+            attributes {
+                this["component"] = "auth"
+            }
+        }
+
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {

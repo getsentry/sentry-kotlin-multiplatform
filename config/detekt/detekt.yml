@@ -27,6 +27,9 @@ complexity:
       "**/Scope.kt",
       "**/JvmScopeProvider.kt",
       "**/Breadcrumb.kt",
+      "**/SentryLogger.kt",
+      "**/BaseSentryLogger.kt",
+      "**/NoOpSentryLogger.kt",
     ]
   LongMethod:
     excludes:

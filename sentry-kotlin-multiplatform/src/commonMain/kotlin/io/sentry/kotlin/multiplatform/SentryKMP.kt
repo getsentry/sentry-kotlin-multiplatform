@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import io.sentry.kotlin.multiplatform.log.SentryLogger
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -139,6 +140,34 @@ public object Sentry {
     public fun setUser(user: User?) {
         bridge.setUser(user)
     }
+
+    /**
+     * The Sentry logger API for sending structured logs.
+     *
+     * Usage:
+     * ```
+     * // Simple API (without attributes)
+     * Sentry.logger.info("User logged in")
+     * Sentry.logger.warn("Rate limit reached for %s", endpoint)
+     *
+     * // Simple API with attributes (without template strings)
+     * Sentry.logger.error("Failed to process payment") {
+     *     this["orderId"] = "order_123"
+     *     this["amount"] = 99.99
+     * }
+     *
+     * // Builder API for full control
+     * Sentry.logger.fatal {
+     *     message("Database connection pool exhausted for %s", dbHost)
+     *     attributes {
+     *         this["database"] = "users"
+     *         this["activeConnections"] = 100
+     *     }
+     * }
+     * ```
+     */
+    public val logger: SentryLogger
+        get() = bridge.logger()
 
     /**
      * Returns true if the app crashed during last run.
