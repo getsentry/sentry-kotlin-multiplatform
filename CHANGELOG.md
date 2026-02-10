@@ -6,7 +6,14 @@
 
 - Add structured logs support ([#509](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/509))
 
+Read the [full documentation](https://docs.sentry.io/platforms/kotlin/guides/kotlin-multiplatform/logs) for more details.
+
 ```kotlin
+Sentry.init {
+    it.dsn = "YOUR_DSN"
+    // Enable logs to be sent to Sentry
+    it.logs.enabled = true
+}
 // Simple API
 Sentry.logger.warn("Rate limit reached for %s", endpoint) {
   this["currentRequests"] = 120
