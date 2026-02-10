@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+### Features
+
 - Add structured logs support ([#509](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/509))
 
 ```kotlin
