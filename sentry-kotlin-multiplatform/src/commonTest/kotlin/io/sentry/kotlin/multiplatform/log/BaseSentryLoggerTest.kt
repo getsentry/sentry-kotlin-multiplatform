@@ -97,6 +97,116 @@ class BaseSentryLoggerTest {
     }
 
     // ========================
+    // Base log with level, message, args, attributes tests
+    // ========================
+
+    @Test
+    fun `log with level and message args and attributes calls sendLog correctly`() {
+        val logger = TestSentryLogger()
+
+        logger.log(SentryLogLevel.WARN, "User %s performed %s", "alice", "checkout") {
+            set("orderId", "order_456")
+        }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.WARN, logger.logs[0].level)
+        assertEquals("User alice performed checkout", logger.logs[0].formatted.body)
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals("User %s performed %s", attrs["sentry.message.template"]?.stringOrNull)
+        assertEquals("order_456", attrs["orderId"]?.stringOrNull)
+    }
+
+    @Test
+    fun `log with level supports all levels`() {
+        val logger = TestSentryLogger()
+
+        SentryLogLevel.entries.forEach { level ->
+            logger.log(level, "msg") {
+                set("key", "value")
+            }
+        }
+
+        assertEquals(SentryLogLevel.entries.size, logger.logs.size)
+        SentryLogLevel.entries.forEachIndexed { index, level ->
+            assertEquals(level, logger.logs[index].level)
+        }
+    }
+
+    // ========================
+    // Base log with DSL builder tests
+    // ========================
+
+    @Test
+    fun `log with level and builder calls sendLog with correct level`() {
+        val logger = TestSentryLogger()
+
+        logger.log(SentryLogLevel.INFO) { message("test") }
+
+        assertEquals(1, logger.logs.size)
+        assertEquals(SentryLogLevel.INFO, logger.logs[0].level)
+        assertEquals("test", logger.logs[0].formatted.body)
+    }
+
+    @Test
+    fun `log with level and builder supports all levels`() {
+        val logger = TestSentryLogger()
+
+        SentryLogLevel.entries.forEach { level ->
+            logger.log(level) { message("msg") }
+        }
+
+        assertEquals(SentryLogLevel.entries.size, logger.logs.size)
+        SentryLogLevel.entries.forEachIndexed { index, level ->
+            assertEquals(level, logger.logs[index].level)
+        }
+    }
+
+    @Test
+    fun `log with level and builder formats message with args`() {
+        val logger = TestSentryLogger()
+
+        logger.log(SentryLogLevel.WARN) {
+            message("User %s performed %s", "alice", "checkout")
+        }
+
+        assertEquals("User alice performed checkout", logger.logs[0].formatted.body)
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals("User %s performed %s", attrs["sentry.message.template"]?.stringOrNull)
+        assertEquals("alice", attrs["sentry.message.parameter.0"]?.stringOrNull)
+        assertEquals("checkout", attrs["sentry.message.parameter.1"]?.stringOrNull)
+    }
+
+    @Test
+    fun `log with level and builder includes custom attributes`() {
+        val logger = TestSentryLogger()
+
+        logger.log(SentryLogLevel.ERROR) {
+            message("test")
+            attributes {
+                this["key"] = "value"
+                this["count"] = 42
+            }
+        }
+
+        val attrs = logger.logs[0].formatted.attributes
+        assertEquals("value", attrs["key"]?.stringOrNull)
+        assertEquals(42L, attrs["count"]?.longOrNull)
+    }
+
+    @Test
+    fun `log with level and builder without message does not call sendLog`() {
+        val logger = TestSentryLogger()
+
+        logger.log(SentryLogLevel.INFO) {
+            attributes {
+                this["key"] = "value"
+            }
+        }
+
+        assertTrue(logger.logs.isEmpty())
+    }
+
+    // ========================
     // Builder API tests
     // ========================
 

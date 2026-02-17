@@ -9,6 +9,35 @@ import io.sentry.kotlin.multiplatform.SentryAttributes
  */
 public interface SentryLogger {
     /**
+     * Logs a message at a specific level.
+     *
+     * @param level The log level
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
+     * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
+     */
+    public fun log(level: SentryLogLevel, message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+
+    /**
+     * Logs a message at a specific level using a DSL builder.
+     *
+     * Example:
+     * ```
+     * Sentry.logger.log(SentryLogLevel.INFO) {
+     *     message("User %s authenticated via %s", userId, method)
+     *     attributes {
+     *         this["auth.method"] = "oauth2"
+     *         this["user.id"] = userId
+     *     }
+     * }
+     * ```
+     *
+     * @param level The log level
+     * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
+     */
+    public fun log(level: SentryLogLevel, block: SentryLogBuilder.() -> Unit)
+
+    /**
      * Logs a message at [SentryLogLevel.TRACE] level.
      *
      * @param message The message template (use %s for substitution, %% for literal %)

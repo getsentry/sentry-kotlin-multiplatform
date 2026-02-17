@@ -409,6 +409,8 @@ public abstract interface class io/sentry/kotlin/multiplatform/log/SentryLogger 
 	public abstract fun info (Ljava/lang/String;[Ljava/lang/Object;)V
 	public abstract fun info (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun info (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun log (Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun log (Lio/sentry/kotlin/multiplatform/log/SentryLogLevel;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun trace (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun trace (Ljava/lang/String;[Ljava/lang/Object;)V
 	public abstract fun trace (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
