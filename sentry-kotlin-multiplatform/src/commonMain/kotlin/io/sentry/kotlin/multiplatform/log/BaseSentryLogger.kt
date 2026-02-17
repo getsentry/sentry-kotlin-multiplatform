@@ -64,6 +64,9 @@ internal abstract class BaseSentryLogger(
     override fun fatal(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
         logWithParams(SentryLogLevel.FATAL, message, args, attributes)
 
+    override fun log(level: SentryLogLevel, message: String, vararg args: Any?) =
+        logWithParams(level, message, args)
+
     @Suppress("SpreadOperator")
     override fun log(level: SentryLogLevel, message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
         logWithParams(level, message, args, attributes)

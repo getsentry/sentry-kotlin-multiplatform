@@ -14,6 +14,15 @@ public interface SentryLogger {
      * @param level The log level
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
+     */
+    public fun log(level: SentryLogLevel, message: String, vararg args: Any?)
+
+    /**
+     * Logs a message at a specific level with inline attributes.
+     *
+     * @param level The log level
+     * @param message The message template (use %s for substitution, %% for literal %)
+     * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
     public fun log(level: SentryLogLevel, message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)

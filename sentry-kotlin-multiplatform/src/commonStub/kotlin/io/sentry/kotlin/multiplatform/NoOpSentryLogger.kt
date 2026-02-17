@@ -81,6 +81,10 @@ internal class NoOpSentryLogger : SentryLogger {
         // No-op
     }
 
+    override fun log(level: SentryLogLevel, message: String, vararg args: Any?) {
+        // No-op
+    }
+
     override fun log(level: SentryLogLevel, message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
         // No-op
     }
