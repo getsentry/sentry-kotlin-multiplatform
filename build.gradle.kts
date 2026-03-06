@@ -228,6 +228,14 @@ val detektProjectBaseline by tasks.registering(io.gitlab.arturbosch.detekt.Detek
     detektExcludes()
 }
 
+subprojects {
+    tasks.withType<AbstractTestTask>().configureEach {
+        if (System.getenv("CI") != "true") {
+            filter.excludeTestsMatching("*E2E*")
+        }
+    }
+}
+
 // Configure tasks so it is also run for the plugin
 tasks.getByName("detekt") {
     gradle.includedBuild("sentry-kotlin-multiplatform-gradle-plugin").task(":detekt")

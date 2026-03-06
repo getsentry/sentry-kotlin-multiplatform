@@ -1,9 +1,12 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import cocoapods.Sentry.SentryHttpStatusCodeRange
+import cocoapods.Sentry.experimental
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
+import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
+import io.sentry.kotlin.multiplatform.log.updateFrom
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 
@@ -34,6 +37,23 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
     cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
     cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel()
+    cocoaOptions.experimental().setEnableLogs(kmpOptions.logs.enabled)
+    kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
+        cocoaOptions.setBeforeSendLog { cocoaLog ->
+            cocoaLog?.let {
+                val kmpLog = it.toKmpSentryLog()
+                // Save original attributes to detect changes made by the user's callback
+                val originalAttributes = kmpLog.attributes.copy()
+                val result = kmpBeforeSend(kmpLog)
+                if (result != null) {
+                    it.updateFrom(kmpLog, originalAttributes)
+                    cocoaLog
+                } else {
+                    null
+                }
+            }
+        }
+    }
     kmpOptions.sampleRate?.let {
         cocoaOptions.sampleRate = NSNumber(double = it)
     }

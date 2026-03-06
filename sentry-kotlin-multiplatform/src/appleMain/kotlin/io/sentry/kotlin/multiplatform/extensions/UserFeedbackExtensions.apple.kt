@@ -7,8 +7,8 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 internal fun UserFeedback.toCocoaUserFeedback(): CocoaUserFeedback {
     val sentryId = CocoaSentryId(sentryId.toString())
     return CocoaUserFeedback(sentryId).apply {
-        comments = this@toCocoaUserFeedback.comments.toString()
-        email = this@toCocoaUserFeedback.email.toString()
-        name = this@toCocoaUserFeedback.name.toString()
+        this@toCocoaUserFeedback.comments?.let { setComments(it) }
+        this@toCocoaUserFeedback.email?.let { setEmail(it) }
+        this@toCocoaUserFeedback.name?.let { setName(it) }
     }
 }

@@ -1,5 +1,56 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Java SDK from v8.31.0 to v8.34.1 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8341)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.31.0...8.34.1)
+
+## 0.24.0
+
+### Features
+
+- Add structured logs support ([#509](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/509))
+
+Read the [full documentation](https://docs.sentry.io/platforms/kotlin/guides/kotlin-multiplatform/logs) for more details.
+
+```kotlin
+Sentry.init {
+    it.dsn = "YOUR_DSN"
+    // Enable logs to be sent to Sentry
+    it.logs.enabled = true
+}
+// Simple API
+Sentry.logger.warn("Rate limit reached for %s", endpoint) {
+  this["currentRequests"] = 120
+  this["limit"] = 100
+  this["retryAfterSeconds"] = 60
+}
+
+// Full DSL
+Sentry.logger.fatal {
+    message("Database connection pool exhausted for %s", dbHost)
+    attributes {
+        this["database"] = "users"
+        this["activeConnections"] = 100
+    }
+}
+```
+
+## 0.23.1
+
+### Fixes
+
+- Fix UserFeedback not being sent on iOS ([#503](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/503))
+
+### Dependencies
+
+- Bump Java SDK from v8.27.1 to v8.31.0 ([#507](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/507))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8310)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.27.1...8.31.0)
+
 ## 0.23.0
 
 ⚠️ This release will affect issue grouping for iOS events as Sentry now captures correct stacktraces for manually captured and crashed iOS events.
