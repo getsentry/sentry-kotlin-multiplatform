@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Java SDK from v8.31.0 to v8.34.1 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8341)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.31.0...8.34.1)
+
 ## 0.24.0
 
 ### Features
