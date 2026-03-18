@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+### Features
+
+- Add generic log APIs with explicit level parameter ([#520](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/520))
+
+```kotlin
+// New APIs:
+// Simple message
+Sentry.logger.log(SentryLogLevel.INFO, "User logged in")
+
+// Message with parameters
+Sentry.logger.log(SentryLogLevel.WARN, "Rate limit reached for %s", endpoint)
+
+// Message with parameters and attributes
+Sentry.logger.log(SentryLogLevel.ERROR, "Failed to process %s", request) {
+    this["error.code"] = 500
+    this["retry"] = true
+}
+
+// Full DSL
+Sentry.logger.log(SentryLogLevel.FATAL) {
+    message("Database connection pool exhausted for %s", dbHost)
+    attributes {
+        this["database"] = "users"
+        this["activeConnections"] = 100
+    }
+}
+```
+
 ### Dependencies
 
 - Bump Java SDK from v8.31.0 to v8.36.0 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529), [#532](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/532))
