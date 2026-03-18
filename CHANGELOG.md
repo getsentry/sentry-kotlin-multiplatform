@@ -30,6 +30,10 @@ Sentry.logger.log(SentryLogLevel.FATAL) {
 }
 ```
 
+### Enhancements
+
+- Support `proguardUuid` option on JVM target in addition to Android ([#533](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/533))
+
 ### Dependencies
 
 - Bump Java SDK from v8.31.0 to v8.36.0 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529), [#532](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/532))
