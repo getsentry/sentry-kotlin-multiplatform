@@ -15,7 +15,6 @@ actual interface PlatformOptions : CommonPlatformOptions {
     val attachScreenshot: Boolean
     val attachViewHierarchy: Boolean
     val sessionReplay: AndroidSentryReplayOptions
-    val proguardUuid: String?
 }
 
 class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptions) :

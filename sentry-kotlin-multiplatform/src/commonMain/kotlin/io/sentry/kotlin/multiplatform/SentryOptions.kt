@@ -219,9 +219,9 @@ public open class SentryOptions {
      * files to your app. The UUID is typically generated automatically during the build process
      * and included in the AndroidManifest.xml file.
      *
-     * **Platform Availability**: Android only.
+     * **Platform Availability**: JVM and Android.
      *
-     * On non-Android platforms, this option is ignored and has no effect.
+     * On non-JVM platforms, this option is ignored and has no effect.
      *
      * For more information on ProGuard mapping files and obfuscation, see:
      * [ProGuard & DexGuard Documentation](https://docs.sentry.io/platforms/android/enhance-errors/proguard/)
