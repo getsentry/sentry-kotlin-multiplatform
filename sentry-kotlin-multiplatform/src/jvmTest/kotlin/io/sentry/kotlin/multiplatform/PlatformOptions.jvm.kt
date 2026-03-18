@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.extensions.toJvmSentryOptionsCallback
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
+import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions
 
@@ -49,6 +50,9 @@ class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : Platfo
     override val sendDefaultPii: Boolean
         get() = jvmOptions.isSendDefaultPii
 
+    override val proguardUuid: String?
+        get() = jvmOptions.proguardUuid
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toJvmSentryOptionsCallback().invoke(jvmOptions)
     }
@@ -57,7 +61,7 @@ class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : Platfo
 actual fun createPlatformOptions(): PlatformOptions = SentryJvmOptionsWrapper(JvmSentryOptions())
 
 actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) {
-    // no-op
+    assertEquals(proguardUuid, kmpOptions.proguardUuid)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
