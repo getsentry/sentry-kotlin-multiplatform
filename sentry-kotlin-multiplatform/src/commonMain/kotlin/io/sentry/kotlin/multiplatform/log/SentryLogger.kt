@@ -25,7 +25,12 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun log(level: SentryLogLevel, message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun log(
+        level: SentryLogLevel,
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit
+    )
 
     /**
      * Logs a message at a specific level using a DSL builder.
