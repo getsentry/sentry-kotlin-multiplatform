@@ -39,6 +39,9 @@ Sentry.logger.log(SentryLogLevel.FATAL) {
 - Bump Java SDK from v8.31.0 to v8.36.0 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529), [#532](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/532))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8360)
   - [diff](https://github.com/getsentry/sentry-java/compare/8.31.0...8.36.0)
+- Bump Cocoa SDK from v8.57.3 to v8.58.2
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8582)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.57.3...8.58.2)
 
 ## 0.24.0
 
