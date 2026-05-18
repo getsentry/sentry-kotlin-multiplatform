@@ -13,6 +13,8 @@ actual interface PlatformOptions : CommonPlatformOptions {
 
 open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) :
     PlatformOptions {
+    private var cachedEnableUnhandledCppExceptionMonitoring = true
+
     override val dsn: String?
         get() = cocoaOptions.dsn
 
@@ -53,7 +55,7 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
         get() = cocoaOptions.enableWatchdogTerminationTracking
 
     override val enableUnhandledCppExceptionMonitoring: Boolean
-        get() = isUnhandledCppExceptionMonitoringEnabled()
+        get() = cachedEnableUnhandledCppExceptionMonitoring
 
     override val diagnosticLevel: SentryLevel
         get() = cocoaOptions.diagnosticLevel.toKmpSentryLevel()!!
@@ -66,6 +68,7 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
+        cachedEnableUnhandledCppExceptionMonitoring = options.enableUnhandledCppExceptionMonitoring
     }
 }
 
