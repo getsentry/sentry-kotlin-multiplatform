@@ -68,10 +68,12 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
-        cacheAppliedOptions()
+        cacheAppliedUnhandledCppExceptionMonitoring()
     }
 
-    protected fun cacheAppliedOptions() {
+    protected fun cacheAppliedUnhandledCppExceptionMonitoring() {
+        // This KMP-only option is applied through an internal global, not Cocoa options.
+        // Snapshot it after apply so each test wrapper keeps its own applied value.
         cachedEnableUnhandledCppExceptionMonitoring = isUnhandledCppExceptionMonitoringEnabled()
     }
 }
