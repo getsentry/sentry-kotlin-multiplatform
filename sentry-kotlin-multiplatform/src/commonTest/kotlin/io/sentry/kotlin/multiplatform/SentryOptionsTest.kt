@@ -133,6 +133,7 @@ class SentryOptionsTest : BaseSentryTest() {
         assertTrue(options.sessionReplay.maskAllImages)
         assertEquals(SentryReplayOptions.Quality.MEDIUM, options.sessionReplay.quality)
         assertTrue(options.enableWatchdogTerminationTracking)
+        assertTrue(options.enableUnhandledCppExceptionMonitoring)
         assertFalse(options.sendDefaultPii)
         assertNull(options.proguardUuid)
     }
@@ -160,6 +161,7 @@ class SentryOptionsTest : BaseSentryTest() {
             isAnrEnabled = false
             anrTimeoutIntervalMillis = 1000L
             enableWatchdogTerminationTracking = false
+            enableUnhandledCppExceptionMonitoring = false
             sessionReplay.onErrorSampleRate = 0.5
             sessionReplay.sessionSampleRate = 0.5
             sessionReplay.maskAllText = false

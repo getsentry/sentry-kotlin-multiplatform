@@ -8,6 +8,7 @@ import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions {
     val enableWatchdogTerminationTracking: Boolean
+    val enableUnhandledCppExceptionMonitoring: Boolean
 }
 
 open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) :
@@ -51,6 +52,9 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
     override val enableWatchdogTerminationTracking: Boolean
         get() = cocoaOptions.enableWatchdogTerminationTracking
 
+    override val enableUnhandledCppExceptionMonitoring: Boolean
+        get() = isUnhandledCppExceptionMonitoringEnabled()
+
     override val diagnosticLevel: SentryLevel
         get() = cocoaOptions.diagnosticLevel.toKmpSentryLevel()!!
 
@@ -78,6 +82,7 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
 
     val appleOptions = this
     assertEquals(appleOptions.enableWatchdogTerminationTracking, kmpOptions.enableWatchdogTerminationTracking)
+    assertEquals(appleOptions.enableUnhandledCppExceptionMonitoring, kmpOptions.enableUnhandledCppExceptionMonitoring)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
