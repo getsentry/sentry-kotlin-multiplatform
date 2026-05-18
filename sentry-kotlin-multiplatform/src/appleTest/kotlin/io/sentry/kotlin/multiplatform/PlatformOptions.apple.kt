@@ -68,11 +68,11 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
-        cacheAppliedOptions(options)
+        cacheAppliedOptions()
     }
 
-    protected fun cacheAppliedOptions(options: SentryOptions) {
-        cachedEnableUnhandledCppExceptionMonitoring = options.enableUnhandledCppExceptionMonitoring
+    protected fun cacheAppliedOptions() {
+        cachedEnableUnhandledCppExceptionMonitoring = isUnhandledCppExceptionMonitoringEnabled()
     }
 }
 

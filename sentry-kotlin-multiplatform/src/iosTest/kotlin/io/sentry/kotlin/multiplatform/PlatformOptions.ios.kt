@@ -30,7 +30,7 @@ class SentryIosOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) : Se
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toIosOptionsConfiguration().invoke(cocoaOptions)
-        cacheAppliedOptions(options)
+        cacheAppliedOptions()
     }
 }
 
