@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add C++ exception monitor option ([#554](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/554))
+
 ## 0.26.0
 
 ### Dependencies
