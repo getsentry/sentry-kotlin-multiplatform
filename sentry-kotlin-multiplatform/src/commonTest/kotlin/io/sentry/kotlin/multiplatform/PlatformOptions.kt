@@ -15,6 +15,7 @@ interface CommonPlatformOptions {
     val sampleRate: Double?
     val tracesSampleRate: Double?
     val sendDefaultPii: Boolean
+    val proguardUuid: String?
 
     fun applyFromOptions(options: SentryOptions)
 }

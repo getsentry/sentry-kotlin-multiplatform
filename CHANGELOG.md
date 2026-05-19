@@ -4,9 +4,60 @@
 
 ### Dependencies
 
-- Bump Java SDK from v8.31.0 to v8.34.1 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529))
-  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8341)
-  - [diff](https://github.com/getsentry/sentry-java/compare/8.31.0...8.34.1)
+- Bump Java SDK from v8.40.0 to v8.41.0 ([#552](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/552))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8410)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.40.0...8.41.0)
+
+## 0.26.0
+
+### Dependencies
+
+- Bump Cocoa SDK from v8.57.3 to v8.58.2 ([#550](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/550))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#8582)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.57.3...8.58.2)
+- Bump Java SDK from v8.36.0 to v8.40.0 ([#549](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/549))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8400)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.36.0...8.40.0)
+
+## 0.25.0
+
+### Features
+
+- Add generic log APIs with explicit level parameter ([#520](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/520))
+
+```kotlin
+// New APIs:
+// Simple message
+Sentry.logger.log(SentryLogLevel.INFO, "User logged in")
+
+// Message with parameters
+Sentry.logger.log(SentryLogLevel.WARN, "Rate limit reached for %s", endpoint)
+
+// Message with parameters and attributes
+Sentry.logger.log(SentryLogLevel.ERROR, "Failed to process %s", request) {
+    this["error.code"] = 500
+    this["retry"] = true
+}
+
+// Full DSL
+Sentry.logger.log(SentryLogLevel.FATAL) {
+    message("Database connection pool exhausted for %s", dbHost)
+    attributes {
+        this["database"] = "users"
+        this["activeConnections"] = 100
+    }
+}
+```
+
+### Enhancements
+
+- Support `proguardUuid` option on JVM target in addition to Android ([#533](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/533))
+
+### Dependencies
+
+- Bump Java SDK from v8.31.0 to v8.36.0 ([#529](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/529), [#532](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/532))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8360)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.31.0...8.36.0)
 
 ## 0.24.0
 

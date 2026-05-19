@@ -67,4 +67,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
             }
         }
     }
+    kmpOptions.proguardUuid?.let { uuid ->
+        jvmOptions.proguardUuid = uuid
+    }
 }

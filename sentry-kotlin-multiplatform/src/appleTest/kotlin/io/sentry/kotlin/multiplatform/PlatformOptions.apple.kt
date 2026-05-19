@@ -57,6 +57,9 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
     override val sendDefaultPii: Boolean
         get() = cocoaOptions.sendDefaultPii
 
+    override val proguardUuid: String?
+        get() = null // Not supported on Apple platforms
+
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
     }

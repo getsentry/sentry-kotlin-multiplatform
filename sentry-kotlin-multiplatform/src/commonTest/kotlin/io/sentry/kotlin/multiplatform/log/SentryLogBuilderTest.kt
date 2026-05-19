@@ -8,6 +8,9 @@ import kotlin.test.assertTrue
 
 /** Tests for [DefaultSentryLogBuilder] DSL builder. */
 class SentryLogBuilderTest {
+
+    // region Message configuration
+
     @Test
     fun `message with body sets plain template`() {
         val builder = DefaultSentryLogBuilder()
@@ -67,6 +70,20 @@ class SentryLogBuilderTest {
     }
 
     @Test
+    fun `message with null arg preserves null in args array`() {
+        val builder = DefaultSentryLogBuilder()
+
+        builder.message("Value is %s", null)
+
+        assertEquals(1, builder.args.size)
+        assertNull(builder.args[0])
+    }
+
+    // endregion
+
+    // region Attributes configuration
+
+    @Test
     fun `attributes with prebuilt merges into builder`() {
         val builder = DefaultSentryLogBuilder()
         val prebuilt = SentryAttributes.empty()
@@ -122,16 +139,6 @@ class SentryLogBuilderTest {
     }
 
     @Test
-    fun `message with null arg preserves null in args array`() {
-        val builder = DefaultSentryLogBuilder()
-
-        builder.message("Value is %s", null)
-
-        assertEquals(1, builder.args.size)
-        assertNull(builder.args[0])
-    }
-
-    @Test
     fun `customAttributes is empty by default`() {
         val builder = DefaultSentryLogBuilder()
 
@@ -153,9 +160,9 @@ class SentryLogBuilderTest {
         assertEquals("also yes", builder.customAttributes["inline"]?.stringOrNull)
     }
 
-    // ========================
-    // Formatted output tests
-    // ========================
+    // endregion
+
+    // region buildFormatted - basic behavior
 
     @Test
     fun `buildFormatted returns null when no message set`() {
@@ -227,6 +234,10 @@ class SentryLogBuilderTest {
         assertEquals("prod", result?.attributes?.get("env")?.stringOrNull)
     }
 
+    // endregion
+
+    // region buildFormatted - arg types and null handling
+
     @Test
     fun `buildFormatted handles null args as string null`() {
         val builder = DefaultSentryLogBuilder()
@@ -237,6 +248,40 @@ class SentryLogBuilderTest {
         assertEquals("Value is null", result?.body)
         assertEquals("null", result?.attributes?.get("sentry.message.parameter.0")?.stringOrNull)
     }
+
+    @Test
+    fun `buildFormatted handles numeric args`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("Int: %s, Long: %s, Double: %s", 42, 123456789L, 3.14159)
+
+        val result = builder.buildFormatted()
+
+        assertEquals("Int: 42, Long: 123456789, Double: 3.14159", result?.body)
+    }
+
+    @Test
+    fun `buildFormatted handles boolean args`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("Enabled: %s, Disabled: %s", true, false)
+
+        val result = builder.buildFormatted()
+
+        assertEquals("Enabled: true, Disabled: false", result?.body)
+    }
+
+    @Test
+    fun `buildFormatted handles mixed null and non-null args`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("A: %s, B: %s, C: %s", "value", null, "other")
+
+        val result = builder.buildFormatted()
+
+        assertEquals("A: value, B: null, C: other", result?.body)
+    }
+
+    // endregion
+
+    // region buildFormatted - percent and placeholder edge cases
 
     @Test
     fun `buildFormatted handles double percent as literal percent`() {
@@ -270,6 +315,60 @@ class SentryLogBuilderTest {
         assertEquals("No placeholders", result?.attributes?.get("sentry.message.template")?.stringOrNull)
         assertEquals("unused", result?.attributes?.get("sentry.message.parameter.0")?.stringOrNull)
     }
+
+    @Test
+    fun `buildFormatted handles multiple consecutive placeholders`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("%s%s%s", "a", "b", "c")
+
+        val result = builder.buildFormatted()
+
+        assertEquals("abc", result?.body)
+    }
+
+    @Test
+    fun `buildFormatted handles multiple consecutive percent signs`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("100%% complete, %%%% done")
+
+        val result = builder.buildFormatted()
+
+        assertEquals("100% complete, %% done", result?.body)
+    }
+
+    @Test
+    fun `buildFormatted handles placeholder at start`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("%s is the value", "42")
+
+        val result = builder.buildFormatted()
+
+        assertEquals("42 is the value", result?.body)
+    }
+
+    @Test
+    fun `buildFormatted handles placeholder at end`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("The value is %s", "42")
+
+        val result = builder.buildFormatted()
+
+        assertEquals("The value is 42", result?.body)
+    }
+
+    @Test
+    fun `buildFormatted handles only placeholder`() {
+        val builder = DefaultSentryLogBuilder()
+        builder.message("%s", "hello")
+
+        val result = builder.buildFormatted()
+
+        assertEquals("hello", result?.body)
+    }
+
+    // endregion
+
+    // region buildFormatted - empty and special strings
 
     @Test
     fun `buildFormatted handles empty string message`() {
@@ -363,83 +462,5 @@ class SentryLogBuilderTest {
         assertEquals("Value: \t\n\r\\\"'", result?.body)
     }
 
-    @Test
-    fun `buildFormatted handles multiple consecutive placeholders`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("%s%s%s", "a", "b", "c")
-
-        val result = builder.buildFormatted()
-
-        assertEquals("abc", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles multiple consecutive percent signs`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("100%% complete, %%%% done")
-
-        val result = builder.buildFormatted()
-
-        assertEquals("100% complete, %% done", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles placeholder at start`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("%s is the value", "42")
-
-        val result = builder.buildFormatted()
-
-        assertEquals("42 is the value", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles placeholder at end`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("The value is %s", "42")
-
-        val result = builder.buildFormatted()
-
-        assertEquals("The value is 42", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles only placeholder`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("%s", "hello")
-
-        val result = builder.buildFormatted()
-
-        assertEquals("hello", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles numeric args`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("Int: %s, Long: %s, Double: %s", 42, 123456789L, 3.14159)
-
-        val result = builder.buildFormatted()
-
-        assertEquals("Int: 42, Long: 123456789, Double: 3.14159", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles boolean args`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("Enabled: %s, Disabled: %s", true, false)
-
-        val result = builder.buildFormatted()
-
-        assertEquals("Enabled: true, Disabled: false", result?.body)
-    }
-
-    @Test
-    fun `buildFormatted handles mixed null and non-null args`() {
-        val builder = DefaultSentryLogBuilder()
-        builder.message("A: %s, B: %s, C: %s", "value", null, "other")
-
-        val result = builder.buildFormatted()
-
-        assertEquals("A: value, B: null, C: other", result?.body)
-    }
+    // endregion
 }

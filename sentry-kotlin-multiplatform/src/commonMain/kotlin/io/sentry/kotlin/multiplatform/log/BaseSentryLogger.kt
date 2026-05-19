@@ -26,69 +26,83 @@ internal abstract class BaseSentryLogger(
     protected abstract fun sendLog(level: SentryLogLevel, formatted: FormattedLog)
 
     override fun trace(message: String, vararg args: Any?) =
-        log(SentryLogLevel.TRACE, message, args)
+        logWithParams(SentryLogLevel.TRACE, message, args)
     override fun debug(message: String, vararg args: Any?) =
-        log(SentryLogLevel.DEBUG, message, args)
+        logWithParams(SentryLogLevel.DEBUG, message, args)
     override fun info(message: String, vararg args: Any?) =
-        log(SentryLogLevel.INFO, message, args)
+        logWithParams(SentryLogLevel.INFO, message, args)
     override fun warn(message: String, vararg args: Any?) =
-        log(SentryLogLevel.WARN, message, args)
+        logWithParams(SentryLogLevel.WARN, message, args)
     override fun error(message: String, vararg args: Any?) =
-        log(SentryLogLevel.ERROR, message, args)
+        logWithParams(SentryLogLevel.ERROR, message, args)
     override fun fatal(message: String, vararg args: Any?) =
-        log(SentryLogLevel.FATAL, message, args)
+        logWithParams(SentryLogLevel.FATAL, message, args)
 
     override fun trace(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.TRACE, message, attributes = attributes)
+        logWithParams(SentryLogLevel.TRACE, message, attributes = attributes)
     override fun debug(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.DEBUG, message, attributes = attributes)
+        logWithParams(SentryLogLevel.DEBUG, message, attributes = attributes)
     override fun info(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.INFO, message, attributes = attributes)
+        logWithParams(SentryLogLevel.INFO, message, attributes = attributes)
     override fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.WARN, message, attributes = attributes)
+        logWithParams(SentryLogLevel.WARN, message, attributes = attributes)
     override fun error(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.ERROR, message, attributes = attributes)
+        logWithParams(SentryLogLevel.ERROR, message, attributes = attributes)
     override fun fatal(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.FATAL, message, attributes = attributes)
+        logWithParams(SentryLogLevel.FATAL, message, attributes = attributes)
 
     override fun trace(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.TRACE, message, args, attributes)
+        logWithParams(SentryLogLevel.TRACE, message, args, attributes)
     override fun debug(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.DEBUG, message, args, attributes)
+        logWithParams(SentryLogLevel.DEBUG, message, args, attributes)
     override fun info(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.INFO, message, args, attributes)
+        logWithParams(SentryLogLevel.INFO, message, args, attributes)
     override fun warn(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.WARN, message, args, attributes)
+        logWithParams(SentryLogLevel.WARN, message, args, attributes)
     override fun error(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.ERROR, message, args, attributes)
+        logWithParams(SentryLogLevel.ERROR, message, args, attributes)
     override fun fatal(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) =
-        log(SentryLogLevel.FATAL, message, args, attributes)
+        logWithParams(SentryLogLevel.FATAL, message, args, attributes)
 
-    override fun trace(block: SentryLogBuilder.() -> Unit) =
-        log(block, SentryLogLevel.TRACE)
-    override fun debug(block: SentryLogBuilder.() -> Unit) =
-        log(block, SentryLogLevel.DEBUG)
-    override fun info(block: SentryLogBuilder.() -> Unit) =
-        log(block, SentryLogLevel.INFO)
-    override fun warn(block: SentryLogBuilder.() -> Unit) =
-        log(block, SentryLogLevel.WARN)
-    override fun error(block: SentryLogBuilder.() -> Unit) =
-        log(block, SentryLogLevel.ERROR)
-    override fun fatal(block: SentryLogBuilder.() -> Unit) =
-        log(block, SentryLogLevel.FATAL)
+    override fun log(level: SentryLogLevel, message: String, vararg args: Any?) =
+        logWithParams(level, message, args)
 
     @Suppress("SpreadOperator")
-    private fun log(
+    override fun log(
+        level: SentryLogLevel,
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit
+    ) = logWithParams(level, message, args, attributes)
+
+    override fun log(level: SentryLogLevel, block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, level)
+
+    override fun trace(block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, SentryLogLevel.TRACE)
+    override fun debug(block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, SentryLogLevel.DEBUG)
+    override fun info(block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, SentryLogLevel.INFO)
+    override fun warn(block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, SentryLogLevel.WARN)
+    override fun error(block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, SentryLogLevel.ERROR)
+    override fun fatal(block: SentryLogBuilder.() -> Unit) =
+        logWithBuilder(block, SentryLogLevel.FATAL)
+
+    @Suppress("SpreadOperator")
+    private fun logWithParams(
         level: SentryLogLevel,
         message: String,
         args: Array<out Any?> = emptyArray(),
         attributes: (@SentryLogDsl SentryAttributes.() -> Unit)? = null
-    ) = log({
+    ) = logWithBuilder({
         if (args.isEmpty()) message(message) else message(message, *args)
         attributes?.let { attributes(it) }
     }, level)
 
-    private inline fun log(block: SentryLogBuilder.() -> Unit, level: SentryLogLevel) {
+    private inline fun logWithBuilder(block: SentryLogBuilder.() -> Unit, level: SentryLogLevel) {
         val formatted = logBuilderFactory().apply(block).buildFormatted() ?: return
         sendLog(level, formatted)
     }
