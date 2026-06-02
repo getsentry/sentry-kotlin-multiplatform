@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-latest-xlarge
+    runs-on: macos-15-xlarge
     defaults:
       run:
         working-directory: sentry-kotlin-multiplatform-gradle-plugin

@@ -15,7 +15,7 @@ jobs:
     with:
       path: scripts/update-cocoa.sh
       name: Cocoa SDK
-      runs-on: macos-latest
+      runs-on: macos-15
     secrets:
       api-token: ${{ secrets.CI_DEPLOY_KEY }}
 
