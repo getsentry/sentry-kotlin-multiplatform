@@ -8,10 +8,13 @@ import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions {
     val enableWatchdogTerminationTracking: Boolean
+    val enableUnhandledCppExceptionMonitoring: Boolean
 }
 
 open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) :
     PlatformOptions {
+    private var cachedEnableUnhandledCppExceptionMonitoring = true
+
     override val dsn: String?
         get() = cocoaOptions.dsn
 
@@ -51,6 +54,9 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
     override val enableWatchdogTerminationTracking: Boolean
         get() = cocoaOptions.enableWatchdogTerminationTracking
 
+    override val enableUnhandledCppExceptionMonitoring: Boolean
+        get() = cachedEnableUnhandledCppExceptionMonitoring
+
     override val diagnosticLevel: SentryLevel
         get() = cocoaOptions.diagnosticLevel.toKmpSentryLevel()!!
 
@@ -62,6 +68,13 @@ open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOption
 
     override fun applyFromOptions(options: SentryOptions) {
         options.toCocoaOptionsConfiguration().invoke(cocoaOptions)
+        cacheAppliedUnhandledCppExceptionMonitoring()
+    }
+
+    protected fun cacheAppliedUnhandledCppExceptionMonitoring() {
+        // This KMP-only option is applied through an internal global, not Cocoa options.
+        // Snapshot it after apply so each test wrapper keeps its own applied value.
+        cachedEnableUnhandledCppExceptionMonitoring = isUnhandledCppExceptionMonitoringEnabled()
     }
 }
 
@@ -78,6 +91,7 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
 
     val appleOptions = this
     assertEquals(appleOptions.enableWatchdogTerminationTracking, kmpOptions.enableWatchdogTerminationTracking)
+    assertEquals(appleOptions.enableUnhandledCppExceptionMonitoring, kmpOptions.enableUnhandledCppExceptionMonitoring)
 }
 
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {

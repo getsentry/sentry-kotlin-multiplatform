@@ -187,6 +187,19 @@ public open class SentryOptions {
     public var enableWatchdogTerminationTracking: Boolean = true
 
     /**
+     * Whether to enable Cocoa's unhandled C++ exception monitoring on Apple targets.
+     *
+     * **Default**: Enabled.
+     *
+     * **Platform Availability**: Cocoa.
+     *
+     * Disabling this can help Kotlin/Native unhandled exceptions, especially crashes triggered from
+     * Compose Multiplatform callbacks, reach the KMP unhandled exception hook instead of being
+     * reported as Kotlin/Native's internal `ExceptionObjHolderImpl` C++ exception.
+     */
+    public var enableUnhandledCppExceptionMonitoring: Boolean = true
+
+    /**
      * The options for session replay.
      * Currently available for **Android** and **iOS**.
      */
