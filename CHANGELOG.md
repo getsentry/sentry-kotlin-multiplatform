@@ -7,6 +7,12 @@
 - Add C++ exception monitor option ([#554](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/554))
   - **Compose Multiplatform**: It is highly recommended to disable C++ monitoring (`options.enableUnhandledCppExceptionMonitoring = false`) on Apple targets. Unhandled Kotlin exceptions from CMP can be reported as generic C++ crashes (`ExceptionObjHolderImpl`) instead of useful Kotlin stack traces when C++ monitoring is enabled.
 
+### Dependencies
+
+- Bump Java SDK from v8.40.0 to v8.41.0 ([#552](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/552))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8410)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.40.0...8.41.0)
+
 ## 0.26.0
 
 ### Dependencies
