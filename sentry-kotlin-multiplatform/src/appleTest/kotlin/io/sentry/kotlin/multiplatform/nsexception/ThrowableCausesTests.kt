@@ -18,7 +18,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ThrowableCausesTests {
-
     @Test
     fun testNoCauses() {
         assert(Throwable().causes.isEmpty())
@@ -39,7 +38,9 @@ class ThrowableCausesTests {
         assertEquals(listOf(cause2, cause1), throwable.causes)
     }
 
-    private class MyThrowable(override val message: String?) : Throwable() {
+    private class MyThrowable(
+        override val message: String?,
+    ) : Throwable() {
         override var cause: Throwable? = null
     }
 

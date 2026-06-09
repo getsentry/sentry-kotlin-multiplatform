@@ -9,6 +9,7 @@ import kotlin.test.BeforeTest
 actual abstract class BaseSentryTest {
     actual val platform: String = "Android"
     actual val authToken: String? = System.getenv("SENTRY_AUTH_TOKEN")
+
     actual fun sentryInit(optionsConfiguration: OptionsConfiguration) {
         Sentry.init(optionsConfiguration)
     }

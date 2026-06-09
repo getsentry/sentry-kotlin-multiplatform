@@ -38,14 +38,20 @@ public actual class SentryEvent actual constructor() : SentryBaseEvent() {
         val cocoaFingerprint =
             cocoaSentryEvent.fingerprint()?.toMutableList() as? MutableList<String>
         val cocoaSentryExceptions =
-            cocoaSentryEvent.exceptions?.map { (it as CocoaSentryException).toKmpSentryException() }
+            cocoaSentryEvent.exceptions
+                ?.map { (it as CocoaSentryException).toKmpSentryException() }
                 ?.toMutableList()
         val cocoaContexts =
             cocoaSentryEvent.context?.mapKeys { it.key as String }?.mapValues { it.value as Any }
-        val cocoaBreadcrumbs = cocoaSentryEvent.breadcrumbs?.mapNotNull { it as? CocoaBreadcrumb }
-            ?.map { it.toKmpBreadcrumb() }?.toMutableList()
+        val cocoaBreadcrumbs =
+            cocoaSentryEvent.breadcrumbs
+                ?.mapNotNull { it as? CocoaBreadcrumb }
+                ?.map { it.toKmpBreadcrumb() }
+                ?.toMutableList()
         val cocoaTags =
-            cocoaSentryEvent.tags?.mapKeys { it.key as String }?.mapValues { it.value as String }
+            cocoaSentryEvent.tags
+                ?.mapKeys { it.key as String }
+                ?.mapValues { it.value as String }
                 ?.toMutableMap()
 
         cocoaFingerprint?.let { fingerprint = it }

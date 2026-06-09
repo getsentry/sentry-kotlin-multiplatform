@@ -1,6 +1,5 @@
 import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
-import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.zip.ZipFile
@@ -18,7 +17,8 @@ plugins {
     id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
     kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
     id(Config.QualityPlugins.kover).version(Config.QualityPlugins.koverVersion).apply(false)
-    id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion)
+    id(Config.QualityPlugins.binaryCompatibility)
+        .version(Config.QualityPlugins.binaryCompatibilityVersion)
         .apply(false)
 }
 
@@ -52,18 +52,17 @@ subprojects {
         }
 
         afterEvaluate {
-            val platformDists = project.tasks.filter { task ->
-                task.name.matches(Regex("(.*)DistZip"))
-            }.toTypedArray()
+            val platformDists =
+                project.tasks
+                    .filter { task ->
+                        task.name.matches(Regex("(.*)DistZip"))
+                    }.toTypedArray()
             project.tasks.getByName("distZip").finalizedBy(*platformDists)
 
+            // signing is done when uploading files to MC
+            // via gpg:sign-and-deploy-file (release.kts); disabled here via
+            // the RELEASE_SIGNING_ENABLED Gradle property (see gradle.properties)
             apply<MavenPublishPlugin>()
-
-            configure<MavenPublishPluginExtension> {
-                // signing is done when uploading files to MC
-                // via gpg:sign-and-deploy-file (release.kts)
-                releaseSigningEnabled = false
-            }
         }
     }
 }
@@ -78,7 +77,11 @@ tasks.register("validateDistributions") {
 }
 
 private fun Project.validateKotlinMultiplatformCoreArtifacts() {
-    val distributionDir = project.layout.buildDirectory.dir("distributions").get().asFile
+    val distributionDir =
+        project.layout.buildDirectory
+            .dir("distributions")
+            .get()
+            .asFile
     val expectedNumOfFiles = 20
     val filesList = distributionDir.listFiles()
     val actualNumOfFiles = filesList?.size ?: 0
@@ -90,34 +93,46 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
     }
 
     val baseFileName = "sentry-kotlin-multiplatform"
-    val platforms = listOf(
-        "watchosx64", "watchossimulatorarm64", "watchosarm64", "watchosarm32",
-        "tvosx64", "tvossimulatorarm64", "tvosarm64",
-        "macosx64", "macosarm64",
-        "jvm",
-        "iosx64", "iossimulatorarm64", "iosarm64",
-        "android",
-        "js",
-        "wasm-js",
-        "linuxx64", "linuxarm64",
-        "mingwx64"
-    )
-
-    val artifactPaths = buildList {
-        add(distributionDir.resolve("$baseFileName-$version.zip"))
-        addAll(
-            platforms.map { platform ->
-                distributionDir.resolve("$baseFileName-$platform-$version.zip")
-            }
+    val platforms =
+        listOf(
+            "watchosx64",
+            "watchossimulatorarm64",
+            "watchosarm64",
+            "watchosarm32",
+            "tvosx64",
+            "tvossimulatorarm64",
+            "tvosarm64",
+            "macosx64",
+            "macosarm64",
+            "jvm",
+            "iosx64",
+            "iossimulatorarm64",
+            "iosarm64",
+            "android",
+            "js",
+            "wasm-js",
+            "linuxx64",
+            "linuxarm64",
+            "mingwx64",
         )
-    }
 
-    val commonRequiredEntries = listOf(
-        "javadoc",
-        "sources",
-        "module",
-        "pom-default.xml"
-    )
+    val artifactPaths =
+        buildList {
+            add(distributionDir.resolve("$baseFileName-$version.zip"))
+            addAll(
+                platforms.map { platform ->
+                    distributionDir.resolve("$baseFileName-$platform-$version.zip")
+                },
+            )
+        }
+
+    val commonRequiredEntries =
+        listOf(
+            "javadoc",
+            "sources",
+            "module",
+            "pom-default.xml",
+        )
 
     artifactPaths.forEach { artifactFile ->
         if (!artifactFile.exists()) {
@@ -128,7 +143,12 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         }
 
         ZipFile(artifactFile).use { zip ->
-            val entries = zip.entries().asSequence().map { it.name }.toList()
+            val entries =
+                zip
+                    .entries()
+                    .asSequence()
+                    .map { it.name }
+                    .toList()
 
             commonRequiredEntries.forEach { requiredEntry ->
                 if (entries.none { it.contains(requiredEntry) }) {
@@ -146,7 +166,9 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     val expectedNumOfKlibFiles = 3
                     val actualKlibFiles = entries.count { it.contains("klib") }
                     if (actualKlibFiles != expectedNumOfKlibFiles) {
-                        throw GradleException("❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles")
+                        throw GradleException(
+                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles",
+                        )
                     } else {
                         println("✅ Found $expectedNumOfKlibFiles klib files in ${artifactFile.name}")
                     }
@@ -197,7 +219,7 @@ val detektBaselineFilePath = "$rootDir/config/detekt/baseline.xml"
 
 detekt {
     buildUponDefaultConfig = true
-    config = files(detektConfigFilePath)
+    config.setFrom(files(detektConfigFilePath))
     baseline = file(detektBaselineFilePath)
 }
 

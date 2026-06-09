@@ -18,7 +18,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ThrowableNameTests {
-
     private class MyThrowable : Throwable()
 
     @Test

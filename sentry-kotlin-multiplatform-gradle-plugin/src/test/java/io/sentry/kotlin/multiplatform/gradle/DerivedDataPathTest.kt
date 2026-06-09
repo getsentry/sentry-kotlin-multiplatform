@@ -22,24 +22,26 @@ class DerivedDataPathTest {
         execOperations = mockk()
         parameters = mockk()
 
-        valueSource = object : DerivedDataPathValueSource() {
-            override val execOperations: ExecOperations = this@DerivedDataPathTest.execOperations
-            override fun getParameters(): Parameters {
-                return this@DerivedDataPathTest.parameters
+        valueSource =
+            object : DerivedDataPathValueSource() {
+                override val execOperations: ExecOperations = this@DerivedDataPathTest.execOperations
+
+                override fun getParameters(): Parameters = this@DerivedDataPathTest.parameters
             }
-        }
     }
 
     @Test
     fun `obtain should return correct derived data path`() {
-        val xcodebuildOutput = """
+        val xcodebuildOutput =
+            """
             Build settings for action build and target MyTarget:
                 BUILD_DIR = /DerivedData/Example/Build/Products
-        """.trimIndent()
+            """.trimIndent()
 
-        every { parameters.xcodeprojPath } returns mockk {
-            every { get() } returns "/path/to/project.xcodeproj"
-        }
+        every { parameters.xcodeprojPath } returns
+            mockk {
+                every { get() } returns "/path/to/project.xcodeproj"
+            }
 
         every { execOperations.exec(any()) } answers {
             val execSpecLambda = it.invocation.args[0] as Action<ExecSpec>
@@ -73,9 +75,10 @@ class DerivedDataPathTest {
     fun `obtain should return null when BUILD_DIR is not found`() {
         val xcodebuildOutput = "Some output without BUILD_DIR"
 
-        every { parameters.xcodeprojPath } returns mockk {
-            every { get() } returns "/path/to/project.xcodeproj"
-        }
+        every { parameters.xcodeprojPath } returns
+            mockk {
+                every { get() } returns "/path/to/project.xcodeproj"
+            }
 
         every { execOperations.exec(any()) } answers {
             val execSpecLambda = it.invocation.args[0] as Action<ExecSpec>
