@@ -23,18 +23,19 @@ class CocoaFrameworkLinkerTest {
     @Test
     fun `framework linking succeeds for static Framework binary`() {
         val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        val appleTargets = listOf(
-            kmpExtension.iosSimulatorArm64(),
-            kmpExtension.iosArm64(),
-            kmpExtension.watchosArm32(),
-            kmpExtension.watchosSimulatorArm64(),
-            kmpExtension.watchosX64(),
-            kmpExtension.macosArm64(),
-            kmpExtension.macosX64(),
-            kmpExtension.tvosArm64(),
-            kmpExtension.tvosSimulatorArm64(),
-            kmpExtension.tvosX64()
-        )
+        val appleTargets =
+            listOf(
+                kmpExtension.iosSimulatorArm64(),
+                kmpExtension.iosArm64(),
+                kmpExtension.watchosArm32(),
+                kmpExtension.watchosSimulatorArm64(),
+                kmpExtension.watchosX64(),
+                kmpExtension.macosArm64(),
+                kmpExtension.macosX64(),
+                kmpExtension.tvosArm64(),
+                kmpExtension.tvosSimulatorArm64(),
+                kmpExtension.tvosX64(),
+            )
         appleTargets.forEach {
             it.binaries.framework {
                 baseName = "MyFramework"
@@ -55,18 +56,19 @@ class CocoaFrameworkLinkerTest {
     @Test
     fun `framework linking succeeds for dynamic Framework binary`() {
         val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        val appleTargets = listOf(
-            kmpExtension.iosSimulatorArm64(),
-            kmpExtension.iosArm64(),
-            kmpExtension.watchosArm32(),
-            kmpExtension.watchosSimulatorArm64(),
-            kmpExtension.watchosX64(),
-            kmpExtension.macosArm64(),
-            kmpExtension.macosX64(),
-            kmpExtension.tvosArm64(),
-            kmpExtension.tvosSimulatorArm64(),
-            kmpExtension.tvosX64()
-        )
+        val appleTargets =
+            listOf(
+                kmpExtension.iosSimulatorArm64(),
+                kmpExtension.iosArm64(),
+                kmpExtension.watchosArm32(),
+                kmpExtension.watchosSimulatorArm64(),
+                kmpExtension.watchosX64(),
+                kmpExtension.macosArm64(),
+                kmpExtension.macosX64(),
+                kmpExtension.tvosArm64(),
+                kmpExtension.tvosSimulatorArm64(),
+                kmpExtension.tvosX64(),
+            )
         appleTargets.forEach {
             it.binaries.framework {
                 baseName = "MyFramework"
@@ -87,18 +89,19 @@ class CocoaFrameworkLinkerTest {
     @Test
     fun `framework linking succeeds for TestExecutable binary`() {
         val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        val appleTargets = listOf(
-            kmpExtension.iosSimulatorArm64(),
-            kmpExtension.iosArm64(),
-            kmpExtension.watchosArm32(),
-            kmpExtension.watchosSimulatorArm64(),
-            kmpExtension.watchosX64(),
-            kmpExtension.macosArm64(),
-            kmpExtension.macosX64(),
-            kmpExtension.tvosArm64(),
-            kmpExtension.tvosSimulatorArm64(),
-            kmpExtension.tvosX64()
-        )
+        val appleTargets =
+            listOf(
+                kmpExtension.iosSimulatorArm64(),
+                kmpExtension.iosArm64(),
+                kmpExtension.watchosArm32(),
+                kmpExtension.watchosSimulatorArm64(),
+                kmpExtension.watchosX64(),
+                kmpExtension.macosArm64(),
+                kmpExtension.macosX64(),
+                kmpExtension.tvosArm64(),
+                kmpExtension.tvosSimulatorArm64(),
+                kmpExtension.tvosX64(),
+            )
         appleTargets.forEach {
             it.binaries.framework {
                 baseName = "MyFramework"
@@ -129,22 +132,19 @@ class CocoaFrameworkLinkerTest {
             }
         }
 
-        fun getSut(): CocoaFrameworkLinker {
-            return CocoaFrameworkLinker(
+        fun getSut(): CocoaFrameworkLinker =
+            CocoaFrameworkLinker(
                 project.logger,
                 FrameworkPathResolver(project, strategies = listOf(FakeStrategy())),
-                FrameworkLinker(project.logger)
+                FrameworkLinker(project.logger),
             )
-        }
     }
 }
 
 // We don't really care what the strategy exactly does in this test
 // The strategies themselves are tested independently
 private class FakeStrategy : FrameworkResolutionStrategy {
-    override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
-        return FrameworkPaths(static = staticPath, dynamic = dynamicPath)
-    }
+    override fun resolvePaths(architectures: Set<String>): FrameworkPaths = FrameworkPaths(static = staticPath, dynamic = dynamicPath)
 }
 
 private const val staticPath = "/path/to/static/Sentry.xcframework"

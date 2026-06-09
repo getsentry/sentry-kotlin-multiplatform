@@ -47,19 +47,21 @@ class SentryOptionsTest : BaseSentryTest() {
             configuration.invoke(options)
         }
 
-        val expectedBreadcrumb = Breadcrumb().apply {
-            message = "changed message"
-            type = "changed type"
-            category = "changed category"
-            setData(mutableMapOf("data1" to 12, "data2" to "value", "key" to "value"))
-        }
+        val expectedBreadcrumb =
+            Breadcrumb().apply {
+                message = "changed message"
+                type = "changed type"
+                category = "changed category"
+                setData(mutableMapOf("data1" to 12, "data2" to "value", "key" to "value"))
+            }
 
-        val breadcrumb = Breadcrumb().apply {
-            message = "another message"
-            type = "another type"
-            category = "another category"
-            setData(mutableMapOf("data1" to 12, "data2" to "value"))
-        }
+        val breadcrumb =
+            Breadcrumb().apply {
+                message = "another message"
+                type = "another type"
+                category = "another category"
+                setData(mutableMapOf("data1" to 12, "data2" to "value"))
+            }
 
         mockInit {
             it.beforeBreadcrumb = { breadcrumb ->
@@ -140,36 +142,37 @@ class SentryOptionsTest : BaseSentryTest() {
 
     @Test
     fun `GIVEN non-default SentryOptions WHEN options initialized THEN applies values to native options`() {
-        val options = SentryOptions().apply {
-            dsn = fakeDsn
-            attachStackTrace = false
-            release = "release"
-            debug = true
-            environment = "environment"
-            dist = "dist"
-            enableAutoSessionTracking = false
-            sessionTrackingIntervalMillis = 1000L
-            diagnosticLevel = SentryLevel.ERROR
-            maxBreadcrumbs = 10
-            maxAttachmentSize = 100L
-            sampleRate = 0.5
-            tracesSampleRate = 0.5
-            attachScreenshot = true
-            attachViewHierarchy = true
-            enableAppHangTracking = false
-            appHangTimeoutIntervalMillis = 1000L
-            isAnrEnabled = false
-            anrTimeoutIntervalMillis = 1000L
-            enableWatchdogTerminationTracking = false
-            enableUnhandledCppExceptionMonitoring = false
-            sessionReplay.onErrorSampleRate = 0.5
-            sessionReplay.sessionSampleRate = 0.5
-            sessionReplay.maskAllText = false
-            sessionReplay.maskAllImages = false
-            sessionReplay.quality = SentryReplayOptions.Quality.LOW
-            sendDefaultPii = true
-            proguardUuid = "test-proguard-uuid-12345"
-        }
+        val options =
+            SentryOptions().apply {
+                dsn = fakeDsn
+                attachStackTrace = false
+                release = "release"
+                debug = true
+                environment = "environment"
+                dist = "dist"
+                enableAutoSessionTracking = false
+                sessionTrackingIntervalMillis = 1000L
+                diagnosticLevel = SentryLevel.ERROR
+                maxBreadcrumbs = 10
+                maxAttachmentSize = 100L
+                sampleRate = 0.5
+                tracesSampleRate = 0.5
+                attachScreenshot = true
+                attachViewHierarchy = true
+                enableAppHangTracking = false
+                appHangTimeoutIntervalMillis = 1000L
+                isAnrEnabled = false
+                anrTimeoutIntervalMillis = 1000L
+                enableWatchdogTerminationTracking = false
+                enableUnhandledCppExceptionMonitoring = false
+                sessionReplay.onErrorSampleRate = 0.5
+                sessionReplay.sessionSampleRate = 0.5
+                sessionReplay.maskAllText = false
+                sessionReplay.maskAllImages = false
+                sessionReplay.quality = SentryReplayOptions.Quality.LOW
+                sendDefaultPii = true
+                proguardUuid = "test-proguard-uuid-12345"
+            }
 
         val platformOptions = createPlatformOptions()
         platformOptions.applyFromOptions(options)

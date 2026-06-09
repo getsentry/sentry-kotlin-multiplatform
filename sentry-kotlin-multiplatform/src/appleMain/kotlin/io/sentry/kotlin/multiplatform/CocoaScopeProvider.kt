@@ -9,7 +9,9 @@ import io.sentry.kotlin.multiplatform.extensions.toMutableMap
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
-internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
+internal class CocoaScopeProvider(
+    private val scope: CocoaScope,
+) : Scope {
     /*
      This bridge exposes private Cocoa SDK API to fetch internal properties such as user, level, etc.
      We need this in order to return properties because the Cocoa SDK doesn't implement getters.
@@ -62,11 +64,17 @@ internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
         scope.clearBreadcrumbs()
     }
 
-    private fun setContextForPrimitiveValues(key: String, value: Any) {
+    private fun setContextForPrimitiveValues(
+        key: String,
+        value: Any,
+    ) {
         scope.setContextValue(mapOf("value" to value), key)
     }
 
-    override fun setContext(key: String, value: Any) {
+    override fun setContext(
+        key: String,
+        value: Any,
+    ) {
         try {
             (value as? Map<Any?, Any>)?.let {
                 scope.setContextValue(it, key)
@@ -76,27 +84,45 @@ internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
         }
     }
 
-    override fun setContext(key: String, value: String) {
+    override fun setContext(
+        key: String,
+        value: String,
+    ) {
         setContextForPrimitiveValues(key, value)
     }
 
-    override fun setContext(key: String, value: Boolean) {
+    override fun setContext(
+        key: String,
+        value: Boolean,
+    ) {
         setContextForPrimitiveValues(key, value)
     }
 
-    override fun setContext(key: String, value: Number) {
+    override fun setContext(
+        key: String,
+        value: Number,
+    ) {
         setContextForPrimitiveValues(key, value)
     }
 
-    override fun setContext(key: String, value: Char) {
+    override fun setContext(
+        key: String,
+        value: Char,
+    ) {
         setContextForPrimitiveValues(key, value)
     }
 
-    override fun setContext(key: String, value: Array<*>) {
+    override fun setContext(
+        key: String,
+        value: Array<*>,
+    ) {
         setContextForPrimitiveValues(key, value)
     }
 
-    override fun setContext(key: String, value: Collection<*>) {
+    override fun setContext(
+        key: String,
+        value: Collection<*>,
+    ) {
         setContextForPrimitiveValues(key, value)
     }
 
@@ -104,7 +130,10 @@ internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
         scope.removeContextForKey(key)
     }
 
-    override fun setTag(key: String, value: String) {
+    override fun setTag(
+        key: String,
+        value: String,
+    ) {
         scope.setTagValue(value, key)
     }
 
@@ -112,7 +141,10 @@ internal class CocoaScopeProvider(private val scope: CocoaScope) : Scope {
         scope.removeTagForKey(key)
     }
 
-    override fun setExtra(key: String, value: String) {
+    override fun setExtra(
+        key: String,
+        value: String,
+    ) {
         scope.setExtraValue(value, key)
     }
 

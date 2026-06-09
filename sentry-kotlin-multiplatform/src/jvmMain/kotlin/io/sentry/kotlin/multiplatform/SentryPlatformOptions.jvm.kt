@@ -12,5 +12,4 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
     }
 }
 
-internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
-    toJvmSentryOptionsCallback()
+internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration = toJvmSentryOptionsCallback()

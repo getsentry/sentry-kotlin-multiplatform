@@ -8,6 +8,8 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
  */
 expect class BreadcrumbConfigurator() {
     val originalBreadcrumb: Breadcrumb
+
     fun applyOptions(optionsConfiguration: OptionsConfiguration): Breadcrumb?
+
     fun applyOptions(options: SentryOptions = SentryOptions()): Breadcrumb?
 }
