@@ -11,6 +11,7 @@ plugins {
     id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
     kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
+    id(Config.spmForKmp).version(Config.spmForKmpVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composePluginVersion).apply(false)
     id(Config.kotlinCompose).version(Config.kotlinVersion).apply(false)
     id(Config.androidGradle).version(Config.agpVersion).apply(false)

@@ -1,16 +1,16 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin(Config.multiplatform)
-    kotlin(Config.cocoapods)
+    id(Config.spmForKmp)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
@@ -57,18 +57,27 @@ kotlin {
         publishLibraryVariants("release")
     }
     jvm()
-    iosArm64()
-    iosSimulatorArm64()
-    iosX64()
-    watchosSimulatorArm64()
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    tvosSimulatorArm64()
-    tvosArm64()
-    tvosX64()
-    macosX64()
-    macosArm64()
+
+    // Apple targets are declared once here and reused for the spm4Kmp swiftPackageConfig below.
+    // TODO(spm4Kmp): watchosArm32 (armv7k) is temporarily disabled. spm4Kmp 1.9.2 has no
+    // watchosArm32 entry in its AppleCompileTarget enum, so it cannot generate the exported
+    // `cocoapods.Sentry` cinterop for it. K/N cinterop itself supports armv7k, so this is purely a
+    // plugin gap (reported upstream). Re-add it to this list once the plugin adds armv7k support
+    // (or via a manual header cinterop fallback).
+    val appleTargets =
+        listOf(
+            iosArm64(),
+            iosSimulatorArm64(),
+            iosX64(),
+            watchosArm64(),
+            watchosX64(),
+            watchosSimulatorArm64(),
+            tvosArm64(),
+            tvosX64(),
+            tvosSimulatorArm64(),
+            macosX64(),
+            macosArm64(),
+        )
     addNoOpTargets()
 
     sourceSets {
@@ -153,59 +162,49 @@ kotlin {
         macosTest.get().dependsOn(commonTvWatchMacOsTest)
         watchosTest.get().dependsOn(commonTvWatchMacOsTest)
 
-        cocoapods {
-            summary = "Official Sentry SDK Kotlin Multiplatform"
-            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
-            version = "0.0.1"
-
-            pod(Config.Libs.sentryCocoa) {
-                version = Config.Libs.sentryCocoaVersion
-                extraOpts += listOf("-compiler-option", "-fmodules")
+        appleTargets.forEach { target ->
+            target.swiftPackageConfig(cinteropName = "sentryCocoa") {
+                // Restore the legacy Kotlin CocoaPods `cocoapods.Sentry.*` import prefix so
+                // published klib symbols stay identical and consumers keep building unchanged.
+                packageDependencyPrefix = "cocoapods"
+                minIos = Config.Cocoa.iosDeploymentTarget
+                minMacos = Config.Cocoa.osxDeploymentTarget
+                minTvos = Config.Cocoa.tvosDeploymentTarget
+                minWatchos = Config.Cocoa.watchosDeploymentTarget
+                // KT-41709 workaround forwarded to the exported-product cinterop: Sentry classes
+                // containing "Meta" in their name (e.g. SentryMechanismMeta) are otherwise declared
+                // twice. extraOpts is passed straight to cinterop (unlike compilerOpts, which only
+                // populates the generated def's clang flags). https://youtrack.jetbrains.com/issue/KT-41709
+                extraOpts =
+                    listOf(
+                        "-compiler-option",
+                        "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
+                        "-compiler-option",
+                        "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
+                        "-compiler-option",
+                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable",
+                    )
+                dependency {
+                    remotePackageVersion(
+                        url = uri("https://github.com/getsentry/sentry-cocoa.git"),
+                        version = Config.Libs.sentryCocoaVersion,
+                        products = {
+                            add("Sentry", exportToKotlin = true)
+                        },
+                    )
+                }
             }
 
-            ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
-            osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
-            tvos.deploymentTarget = Config.Cocoa.tvosDeploymentTarget
-            watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
-        }
-
-        listOf(
-            iosArm64(),
-            iosX64(),
-            iosSimulatorArm64(),
-            watchosArm32(),
-            watchosArm64(),
-            watchosX64(),
-            watchosSimulatorArm64(),
-            tvosArm64(),
-            tvosX64(),
-            tvosSimulatorArm64(),
-            macosX64(),
-            macosArm64()
-        ).forEach {
-            it.compilations.getByName("main") {
+            // The private `Sentry.Internal` cinterop uses self-contained, Foundation-only headers
+            // (private Sentry API redeclared as standalone ObjC interfaces); its symbols resolve at
+            // link time against the Sentry framework above, so it is independent of how that
+            // framework is delivered (CocoaPods vs SwiftPM) and can stay unchanged.
+            target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
                 }
             }
         }
-
-        // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
-        // if we need to use this class, we'd need to find a better way to work it out
-        targets
-            .withType<KotlinNativeTarget>()
-            .matching {
-                it.konanTarget.family.isAppleFamily
-            }.forEach { target ->
-                target.compilations["main"].cinterops["Sentry"].extraOpts(
-                    "-compiler-option",
-                    "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                    "-compiler-option",
-                    "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                    "-compiler-option",
-                    "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
-                )
-            }
 
         val commonStub by creating {
             dependsOn(commonMain.get())
