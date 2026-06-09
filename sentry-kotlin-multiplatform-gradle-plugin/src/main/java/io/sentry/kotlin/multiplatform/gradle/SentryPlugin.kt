@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,13 +12,16 @@ import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
+import java.net.URI
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
 internal const val AUTO_INSTALL_EXTENSION_NAME = "autoInstall"
 internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
+internal const val SPM4KMP_AUTO_INSTALL_EXTENSION_NAME = "spm"
 internal const val COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME = "commonMain"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
+internal const val SPM4KMP_PLUGIN_ID = "io.github.frankois944.spmForKmp"
 
 @Suppress("unused")
 class SentryPlugin : Plugin<Project> {
@@ -36,9 +40,20 @@ class SentryPlugin : Plugin<Project> {
                 sentryExtension.autoInstall.cocoapods
             )
             project.extensions.add(
+                SPM4KMP_AUTO_INSTALL_EXTENSION_NAME,
+                sentryExtension.autoInstall.spm,
+            )
+            project.extensions.add(
                 COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME,
                 sentryExtension.autoInstall.commonMain
             )
+
+            // spm4Kmp consumes its swiftPackageConfig during the configuration phase (before
+            // afterEvaluate), so the Sentry package must be registered as soon as the spm4Kmp plugin
+            // is applied rather than in executeConfiguration's afterEvaluate.
+            project.plugins.withId(SPM4KMP_PLUGIN_ID) {
+                project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
+            }
 
             afterEvaluate {
                 executeConfiguration(project)
@@ -52,6 +67,7 @@ class SentryPlugin : Plugin<Project> {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
         val hasCocoapodsPlugin =
             project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
+        val hasSpm4KmpPlugin = project.plugins.hasPlugin(SPM4KMP_PLUGIN_ID)
 
         if (sentryExtension.autoInstall.enabled.get()) {
             val autoInstall = sentryExtension.autoInstall
@@ -63,9 +79,19 @@ class SentryPlugin : Plugin<Project> {
             if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
                 project.installSentryForCocoapods(autoInstall.cocoapods)
             }
+
+            // The spm4Kmp install is wired in apply() via plugins.withId, which fires regardless of
+            // plugin application order, so it is intentionally not invoked here. hasSpm4KmpPlugin is
+            // only used below to skip the manual DerivedData linker.
         }
 
-        maybeLinkCocoaFramework(project, hasCocoapodsPlugin, hostIsMac)
+        // When CocoaPods or spm4Kmp provide the Sentry framework, they also handle linking, so the
+        // manual DerivedData-based linker is only needed as a fallback for plain SPM users.
+        maybeLinkCocoaFramework(
+            project,
+            frameworkProvidedExternally = hasCocoapodsPlugin || hasSpm4KmpPlugin,
+            hostIsMac,
+        )
     }
 
     companion object {
@@ -77,10 +103,10 @@ class SentryPlugin : Plugin<Project> {
 
 private fun maybeLinkCocoaFramework(
     project: Project,
-    hasCocoapods: Boolean,
+    frameworkProvidedExternally: Boolean,
     hostIsMac: Boolean
 ) {
-    if (hostIsMac && !hasCocoapods) {
+    if (hostIsMac && !frameworkProvidedExternally) {
         // Register a task graph listener so that we only configure Cocoa framework linking
         // if at least one Apple target task is part of the requested task graph. This avoids
         // executing the (potentially expensive) path-resolution logic when the build is only
@@ -184,6 +210,55 @@ internal fun Project.installSentryForCocoapods(
                 version = cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
                 linkOnly = true
                 extraOpts += listOf("-compiler-option", "-fmodules")
+            }
+        }
+    }
+}
+
+internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
+private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
+
+/**
+ * Adds the Sentry Cocoa Swift package to every Apple target via the spm4Kmp DSL so consumers don't
+ * have to declare it themselves. Idempotent: skips any target that already has a [SENTRY_COCOA_CINTEROP_NAME]
+ * cinterop (e.g. a user-defined Sentry config) and re-running is a no-op.
+ */
+internal fun Project.installSentryForSpm4Kmp(
+    autoInstall: AutoInstallExtension,
+    hostIsMac: Boolean = HostManager.hostIsMac,
+) {
+    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
+    if (kmpExtension !is KotlinMultiplatformExtension || !hostIsMac) {
+        logger.info("Skipping spm4Kmp installation.")
+        return
+    }
+
+    kmpExtension.appleTargets().configureEach { target ->
+        if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
+            return@configureEach
+        }
+
+        val mainCompilation = target.compilations.findByName("main")
+        if (mainCompilation?.cinterops?.findByName(SENTRY_COCOA_CINTEROP_NAME) != null) {
+            logger.info(
+                "Sentry Cocoa Swift package already configured for ${target.name}. " +
+                    "Skipping spm4Kmp auto installation.",
+            )
+            return@configureEach
+        }
+
+        target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
+            dependency {
+                remotePackageVersion(
+                    url = URI(SENTRY_COCOA_GIT_URL),
+                    version = autoInstall.spm.sentryCocoaVersion.get(),
+                    products = {
+                        // exportToKotlin defaults to false (link only). The published KMP SDK klib
+                        // already contains the Sentry cinterop bindings, so consumers only need the
+                        // framework available at link time.
+                        add("Sentry")
+                    },
+                )
             }
         }
     }
