@@ -59,16 +59,12 @@ kotlin {
     jvm()
 
     // Apple targets are declared once here and reused for the spm4Kmp swiftPackageConfig below.
-    // TODO(spm4Kmp): watchosArm32 (armv7k) is temporarily disabled. spm4Kmp 1.9.2 has no
-    // watchosArm32 entry in its AppleCompileTarget enum, so it cannot generate the exported
-    // `cocoapods.Sentry` cinterop for it. K/N cinterop itself supports armv7k, so this is purely a
-    // plugin gap (reported upstream). Re-add it to this list once the plugin adds armv7k support
-    // (or via a manual header cinterop fallback).
     val appleTargets =
         listOf(
             iosArm64(),
             iosSimulatorArm64(),
             iosX64(),
+            watchosArm32(),
             watchosArm64(),
             watchosX64(),
             watchosSimulatorArm64(),
