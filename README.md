@@ -77,6 +77,38 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 
 For detailed usage, check out the [Kotlin Multiplatform Documentation](https://docs.sentry.io/platforms/kotlin-multiplatform/).
 
+### Apple linking via spm4Kmp (Gradle plugin)
+
+If you apply the [spm4Kmp](https://github.com/frankois944/spm4Kmp) plugin (`io.github.frankois944.spmForKmp`)
+alongside the Sentry Kotlin Multiplatform Gradle plugin, the matching Sentry Cocoa version is added to
+your Apple targets automatically — you don't need to declare the Sentry Swift package yourself:
+
+```kotlin
+plugins {
+    kotlin("multiplatform")
+    id("io.github.frankois944.spmForKmp")
+    id("io.sentry.kotlin.multiplatform.gradle")
+}
+```
+
+You can override the version or opt out (for example if you configure the Sentry Swift package
+manually):
+
+```kotlin
+sentryKmp {
+    autoInstall {
+        spm {
+            // enabled = false // opt out of the automatic Sentry Cocoa Swift package
+            // sentryCocoaVersion = "8.58.2" // override the default version
+        }
+    }
+}
+```
+
+Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
+Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for
+plain SPM-in-Xcode setups.
+
 ## Samples
 
 For detailed information on how to build and run the samples, check out our `README.md` in the

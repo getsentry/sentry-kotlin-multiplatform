@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform.gradle
 
 import io.sentry.BuildConfig
 import org.gradle.api.GradleException
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -65,6 +66,14 @@ class SentryPluginTest {
     }
 
     @Test
+    fun `extension spm is created correctly`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        assertNotNull(project.extensions.getByName("spm"))
+    }
+
+    @Test
     fun `plugin applies extensions correctly`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
@@ -73,6 +82,7 @@ class SentryPluginTest {
         assertNotNull(project.extensions.getByName("linker"))
         assertNotNull(project.extensions.getByName("autoInstall"))
         assertNotNull(project.extensions.getByName("cocoapods"))
+        assertNotNull(project.extensions.getByName("spm"))
         assertNotNull(project.extensions.getByName("commonMain"))
     }
 
@@ -237,6 +247,65 @@ class SentryPluginTest {
 
         val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
         assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "custom version")
+    }
+
+    @Test
+    fun `default cocoa version is set in spm extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val spmExtension = project.extensions.getByName("spm") as Spm4KmpAutoInstallExtension
+        assertEquals(BuildConfig.SentryCocoaVersion, spmExtension.sentryCocoaVersion.get())
+    }
+
+    @Test
+    fun `custom cocoa version overrides default in spm extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstallExtension = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstallExtension.spm.sentryCocoaVersion.set("9.9.9")
+
+        assertEquals("9.9.9", autoInstallExtension.spm.sentryCocoaVersion.get())
+    }
+
+    @Test
+    fun `install Sentry Swift package via spm4Kmp when plugin is applied`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
+
+        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
+
+        // spm4Kmp keys per-target config as "<cinteropName>_<TargetCapitalized>" in its container.
+        val swiftPackages =
+            project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+    }
+
+    @Test
+    fun `do not install Sentry Swift package when spm auto install is disabled`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstall.spm.enabled.set(false)
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
+
+        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
+
+        val swiftPackages =
+            project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
     }
 
     @Test
