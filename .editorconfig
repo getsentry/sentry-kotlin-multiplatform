@@ -1,0 +1,8 @@
+root = true
+
+[*.{kt,kts}]
+# ktlint 1.x enables stricter naming rules by default. The codebase relies on
+# backtick-wrapped test function names and constant-style vals that predate
+# these rules, so keep them disabled to match existing conventions.
+ktlint_standard_function-naming = disabled
+ktlint_standard_property-naming = disabled

@@ -9,5 +9,5 @@ public enum class SentryLogLevel {
     INFO,
     WARN,
     ERROR,
-    FATAL
+    FATAL,
 }

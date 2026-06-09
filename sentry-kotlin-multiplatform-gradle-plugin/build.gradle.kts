@@ -1,5 +1,5 @@
-import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -37,7 +37,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.withType<KotlinCompile> { kotlinOptions { jvmTarget = JavaVersion.VERSION_11.toString() } }
+tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
 
 gradlePlugin {
     plugins {
@@ -48,10 +48,9 @@ gradlePlugin {
     }
 }
 
-val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
 // signing is done when uploading files to MC
-// via gpg:sign-and-deploy-file (release.kts)
-publish.releaseSigningEnabled = false
+// via gpg:sign-and-deploy-file (release.kts); disabled here via
+// the RELEASE_SIGNING_ENABLED Gradle property (see gradle.properties)
 
 tasks.named("distZip") {
     dependsOn("publishToMavenLocal")
@@ -94,12 +93,12 @@ buildConfig {
     buildConfigField(
         "String",
         "SentryCocoaVersion",
-        provider { "\"${project.property("sentryCocoaVersion")}\"" }
+        provider { "\"${project.property("sentryCocoaVersion")}\"" },
     )
     buildConfigField(
         "String",
         "SentryKmpVersion",
-        provider { "\"${project.property("versionName")}\"" }
+        provider { "\"${project.property("versionName")}\"" },
     )
 }
 

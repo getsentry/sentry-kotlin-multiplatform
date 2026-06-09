@@ -7,12 +7,14 @@ import kotlin.test.assertEquals
 class ApplyKmpEventTest {
     @Test
     fun `native release is not set if kmp release has same value`() {
-        val nativeEvent = FakeSentryEvent().apply {
-            releaseName = "1.0.0"
-        }
-        val kmpEvent = SentryEvent().apply {
-            release = "1.0.0"
-        }
+        val nativeEvent =
+            FakeSentryEvent().apply {
+                releaseName = "1.0.0"
+            }
+        val kmpEvent =
+            SentryEvent().apply {
+                release = "1.0.0"
+            }
 
         nativeEvent.applyKmpEvent(kmpEvent)
 
@@ -21,12 +23,14 @@ class ApplyKmpEventTest {
 
     @Test
     fun `native dist is not set if kmp dist has same value`() {
-        val nativeEvent = FakeSentryEvent().apply {
-            dist = "randomDist"
-        }
-        val kmpEvent = SentryEvent().apply {
-            dist = "randomDist"
-        }
+        val nativeEvent =
+            FakeSentryEvent().apply {
+                dist = "randomDist"
+            }
+        val kmpEvent =
+            SentryEvent().apply {
+                dist = "randomDist"
+            }
 
         nativeEvent.applyKmpEvent(kmpEvent)
 
@@ -35,12 +39,14 @@ class ApplyKmpEventTest {
 
     @Test
     fun `native release is set if kmp release has different value`() {
-        val nativeEvent = FakeSentryEvent().apply {
-            releaseName = "1.0.0"
-        }
-        val kmpEvent = SentryEvent().apply {
-            release = "7.0.0"
-        }
+        val nativeEvent =
+            FakeSentryEvent().apply {
+                releaseName = "1.0.0"
+            }
+        val kmpEvent =
+            SentryEvent().apply {
+                release = "7.0.0"
+            }
 
         nativeEvent.applyKmpEvent(kmpEvent)
 
@@ -49,12 +55,14 @@ class ApplyKmpEventTest {
 
     @Test
     fun `native dist is set if kmp dist has different value`() {
-        val nativeEvent = FakeSentryEvent().apply {
-            dist = "randomDist"
-        }
-        val kmpEvent = SentryEvent().apply {
-            dist = "differentDist"
-        }
+        val nativeEvent =
+            FakeSentryEvent().apply {
+                dist = "randomDist"
+            }
+        val kmpEvent =
+            SentryEvent().apply {
+                dist = "differentDist"
+            }
 
         nativeEvent.applyKmpEvent(kmpEvent)
 

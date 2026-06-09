@@ -17,8 +17,9 @@ actual interface PlatformOptions : CommonPlatformOptions {
     val sessionReplay: AndroidSentryReplayOptions
 }
 
-class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptions) :
-    PlatformOptions {
+class SentryAndroidOptionsWrapper(
+    private val androidOptions: SentryAndroidOptions,
+) : PlatformOptions {
     override val dsn: String?
         get() = androidOptions.dsn
 
@@ -84,8 +85,7 @@ class SentryAndroidOptionsWrapper(private val androidOptions: SentryAndroidOptio
     }
 }
 
-actual fun createPlatformOptions(): PlatformOptions =
-    SentryAndroidOptionsWrapper(SentryAndroidOptions())
+actual fun createPlatformOptions(): PlatformOptions = SentryAndroidOptionsWrapper(SentryAndroidOptions())
 
 actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptions) {
     val androidOptions = this
@@ -99,35 +99,36 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
         kmpReplayOptions.maskAllText,
         androidOptions.sessionReplay.maskViewClasses,
         androidOptions.sessionReplay.unmaskViewClasses,
-        AndroidSentryReplayOptions.TEXT_VIEW_CLASS_NAME
+        AndroidSentryReplayOptions.TEXT_VIEW_CLASS_NAME,
     )
     assertViewClassMasking(
         kmpReplayOptions.maskAllImages,
         androidOptions.sessionReplay.maskViewClasses,
         androidOptions.sessionReplay.unmaskViewClasses,
-        AndroidSentryReplayOptions.IMAGE_VIEW_CLASS_NAME
+        AndroidSentryReplayOptions.IMAGE_VIEW_CLASS_NAME,
     )
     assertEquals(
         androidOptions.sessionReplay.onErrorSampleRate,
-        kmpReplayOptions.onErrorSampleRate
+        kmpReplayOptions.onErrorSampleRate,
     )
     assertEquals(
         androidOptions.sessionReplay.sessionSampleRate,
-        kmpReplayOptions.sessionSampleRate
+        kmpReplayOptions.sessionSampleRate,
     )
     assertEquals(androidOptions.sessionReplay.quality.name, kmpReplayOptions.quality.name)
     assertEquals(androidOptions.proguardUuid, kmpOptions.proguardUuid)
 }
 
-actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
-    it.dsn = fakeDsn
-}
+actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
+    {
+        it.dsn = fakeDsn
+    }
 
 private fun assertViewClassMasking(
     kmpMaskAll: Boolean,
     maskViewClasses: Collection<String>,
     unmaskViewClasses: Collection<String>,
-    viewClassName: String
+    viewClassName: String,
 ) {
     if (kmpMaskAll) {
         assertContains(maskViewClasses, viewClassName)

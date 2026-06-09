@@ -2,10 +2,37 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>MaxLineLength:ManualFrameworkPathSearchValueSource.kt$ManualFrameworkPathSearchValueSource$abstract</ID>
+    <ID>MaxLineLength:SentryAttributes.kt$SentryAttributes.Companion$public</ID>
+    <ID>MaxLineLength:SentryLogConverters.apple.kt$is SentryAttributeValue.BooleanValue -> SentryStructuredLogAttribute(boolean = attrValue.value as Boolean)</ID>
+    <ID>MaxLineLength:SentryPlatformOptions.android.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
+    <ID>MaxLineLength:SentryPlatformOptions.ios.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
+    <ID>MaxLineLength:SentryPlatformOptions.jvm.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
+    <ID>MaxLineLength:SentryPlatformOptions.tvwatchmacos.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
     <ID>SwallowedException:CocoaScopeProvider.kt$CocoaScopeProvider$e: Throwable</ID>
     <ID>SwallowedException:SentryLevel.kt$SentryLevel.Companion$throwable: Throwable</ID>
     <ID>TooGenericExceptionCaught:CocoaScopeProvider.kt$CocoaScopeProvider$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:SentryLevel.kt$SentryLevel.Companion$throwable: Throwable</ID>
     <ID>TooGenericExceptionThrown:SentryKMP.kt$Sentry$throw RuntimeException("Uncaught Exception from Kotlin Multiplatform.")</ID>
+    <ID>UndocumentedPublicClass:Attachment.kt$Attachment$Companion</ID>
+    <ID>UndocumentedPublicClass:Breadcrumb.kt$Breadcrumb$Companion</ID>
+    <ID>UndocumentedPublicClass:HttpStatusCodeRange.kt$HttpStatusCodeRange$Companion</ID>
+    <ID>UndocumentedPublicClass:SentryAttributes.kt$SentryAttributes$Companion</ID>
+    <ID>UndocumentedPublicClass:SentryId.kt$SentryId$Companion</ID>
+    <ID>UndocumentedPublicProperty:SentryLevel.kt$SentryLevel$DEBUG : SentryLevel</ID>
+    <ID>UndocumentedPublicProperty:SentryLevel.kt$SentryLevel$ERROR : SentryLevel</ID>
+    <ID>UndocumentedPublicProperty:SentryLevel.kt$SentryLevel$FATAL : SentryLevel</ID>
+    <ID>UndocumentedPublicProperty:SentryLevel.kt$SentryLevel$INFO : SentryLevel</ID>
+    <ID>UndocumentedPublicProperty:SentryLevel.kt$SentryLevel$WARNING : SentryLevel</ID>
+    <ID>UndocumentedPublicProperty:SentryLogLevel.kt$SentryLogLevel$DEBUG</ID>
+    <ID>UndocumentedPublicProperty:SentryLogLevel.kt$SentryLogLevel$ERROR</ID>
+    <ID>UndocumentedPublicProperty:SentryLogLevel.kt$SentryLogLevel$FATAL</ID>
+    <ID>UndocumentedPublicProperty:SentryLogLevel.kt$SentryLogLevel$INFO</ID>
+    <ID>UndocumentedPublicProperty:SentryLogLevel.kt$SentryLogLevel$TRACE</ID>
+    <ID>UndocumentedPublicProperty:SentryLogLevel.kt$SentryLogLevel$WARN</ID>
+    <ID>UnusedPrivateProperty:Attachment.kt$Attachment$bytes: ByteArray</ID>
+    <ID>UnusedPrivateProperty:Attachment.kt$Attachment$contentType: String?</ID>
+    <ID>UnusedPrivateProperty:Attachment.kt$Attachment$filename: String</ID>
+    <ID>UnusedPrivateProperty:Attachment.kt$Attachment$pathname: String</ID>
   </CurrentIssues>
 </SmellBaseline>

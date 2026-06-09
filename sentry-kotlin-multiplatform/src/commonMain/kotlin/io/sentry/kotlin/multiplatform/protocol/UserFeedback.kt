@@ -3,7 +3,7 @@ package io.sentry.kotlin.multiplatform.protocol
 /** UserFeedback adds additional information about what happened to an event. */
 public data class UserFeedback(
     /** The Sentry event ID */
-    val sentryId: SentryId
+    val sentryId: SentryId,
 ) {
     /** The user's name */
     var name: String? = null
