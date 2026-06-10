@@ -221,19 +221,18 @@ val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/
 val copyWatchosSimulatorSentryFramework =
     tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
         dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
-        from(
-            sentryCocoaScratchDir.map { scratch ->
-                val xcframework = scratch.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework").asFile
-                val slice =
-                    checkNotNull(
-                        xcframework.listFiles()?.singleOrNull {
-                            it.name.startsWith("watchos") && it.name.endsWith("-simulator")
-                        }
-                    ) { "watchOS simulator slice not found in $xcframework" }
-                slice.resolve("Sentry.framework")
-            }
-        )
-        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
+        // The xcframework only exists once the compile task above has resolved the Swift
+        // package, so the slice must be selected with a pattern instead of listing the
+        // directory, which Gradle would do while computing task dependencies.
+        from(sentryCocoaScratchDir.map { it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework") }) {
+            include("watchos-*-simulator/Sentry.framework/**")
+        }
+        // Strip the slice directory segment so the framework lands directly in the products dir.
+        eachFile {
+            relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
+        }
+        includeEmptyDirs = false
+        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release") })
     }
 tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
