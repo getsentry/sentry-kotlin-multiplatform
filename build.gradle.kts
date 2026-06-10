@@ -113,7 +113,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             "wasm-js",
             "linuxx64",
             "linuxarm64",
-            "mingwx64",
+            "mingwx64"
         )
 
     val artifactPaths =
@@ -122,7 +122,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             addAll(
                 platforms.map { platform ->
                     distributionDir.resolve("$baseFileName-$platform-$version.zip")
-                },
+                }
             )
         }
 
@@ -131,7 +131,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             "javadoc",
             "sources",
             "module",
-            "pom-default.xml",
+            "pom-default.xml"
         )
 
     artifactPaths.forEach { artifactFile ->
@@ -167,7 +167,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     val actualKlibFiles = entries.count { it.contains("klib") }
                     if (actualKlibFiles != expectedNumOfKlibFiles) {
                         throw GradleException(
-                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles",
+                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles"
                         )
                     } else {
                         println("✅ Found $expectedNumOfKlibFiles klib files in ${artifactFile.name}")
@@ -199,18 +199,37 @@ subprojects {
     }
 }
 
+// Keep ktlint 1.x on the pre-1.0 formatting conventions (see .editorconfig for the
+// rationale). Spotless does not reliably forward the ij_* properties from
+// .editorconfig to ktlint, so pass them explicitly.
+val ktlintEditorConfigOverride =
+    mapOf(
+        "ktlint_code_style" to "intellij_idea",
+        "ij_kotlin_allow_trailing_comma" to "false",
+        "ij_kotlin_allow_trailing_comma_on_call_site" to "false",
+        "ktlint_standard_argument-list-wrapping" to "disabled",
+        "ktlint_standard_chain-method-continuation" to "disabled",
+        "ktlint_standard_class-signature" to "disabled",
+        "ktlint_standard_condition-wrapping" to "disabled",
+        "ktlint_standard_function-expression-body" to "disabled",
+        "ktlint_standard_function-signature" to "disabled",
+        "ktlint_standard_multiline-expression-wrapping" to "disabled",
+        "ktlint_standard_function-naming" to "disabled",
+        "ktlint_standard_property-naming" to "disabled"
+    )
+
 spotless {
     lineEndings = LineEnding.UNIX
 
     kotlin {
         target("**/*.kt")
         targetExclude("**/generated/**/*.kt")
-        ktlint()
+        ktlint().editorConfigOverride(ktlintEditorConfigOverride)
     }
     kotlinGradle {
         target("**/*.kts")
         targetExclude("**/generated/**/*.kts")
-        ktlint()
+        ktlint().editorConfigOverride(ktlintEditorConfigOverride)
     }
 }
 

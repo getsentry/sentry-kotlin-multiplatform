@@ -93,12 +93,12 @@ buildConfig {
     buildConfigField(
         "String",
         "SentryCocoaVersion",
-        provider { "\"${project.property("sentryCocoaVersion")}\"" },
+        provider { "\"${project.property("sentryCocoaVersion")}\"" }
     )
     buildConfigField(
         "String",
         "SentryKmpVersion",
-        provider { "\"${project.property("versionName")}\"" },
+        provider { "\"${project.property("versionName")}\"" }
     )
 }
 

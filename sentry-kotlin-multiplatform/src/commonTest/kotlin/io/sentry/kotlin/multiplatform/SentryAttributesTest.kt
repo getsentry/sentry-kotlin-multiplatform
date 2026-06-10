@@ -8,6 +8,7 @@ import kotlin.test.assertTrue
 
 /** Tests for [SentryAttributes] collection operations. */
 class SentryAttributesTest {
+
     @Test
     fun `set and get string value`() {
         val attrs = SentryAttributes.empty()
@@ -99,11 +100,10 @@ class SentryAttributesTest {
 
     @Test
     fun `of from map creates SentryAttributes with entries`() {
-        val map =
-            mapOf(
-                "name" to SentryAttributeValue.string("test"),
-                "count" to SentryAttributeValue.long(5),
-            )
+        val map = mapOf(
+            "name" to SentryAttributeValue.string("test"),
+            "count" to SentryAttributeValue.long(5)
+        )
 
         val attrs = SentryAttributes.of(map)
 

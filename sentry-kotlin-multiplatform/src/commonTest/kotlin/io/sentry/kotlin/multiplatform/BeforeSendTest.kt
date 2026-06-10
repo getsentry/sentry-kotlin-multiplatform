@@ -10,6 +10,7 @@ import kotlin.test.assertTrue
 
 /** Tests that verify if the beforeSend hook correctly modifies events */
 class BeforeSendTest {
+
     @Test
     fun `beforeSend drops event`() {
         val options = SentryOptions()
@@ -129,12 +130,11 @@ class BeforeSendTest {
 
     @Test
     fun `beforeSend modifies user`() {
-        val expected =
-            User().apply {
-                id = "test"
-                username = "username"
-                email = "email"
-            }
+        val expected = User().apply {
+            id = "test"
+            username = "username"
+            email = "email"
+        }
 
         val options = SentryOptions()
         options.beforeSend = {
@@ -218,12 +218,11 @@ class BeforeSendTest {
             it
         }
 
-        val event =
-            options.beforeSend?.invoke(
-                SentryEvent().apply {
-                    contexts = mapOf("test" to "test")
-                },
-            )
+        val event = options.beforeSend?.invoke(
+            SentryEvent().apply {
+                contexts = mapOf("test" to "test")
+            }
+        )
 
         assertEquals(contexts, event?.contexts)
     }
@@ -237,12 +236,11 @@ class BeforeSendTest {
             it
         }
 
-        val event =
-            options.beforeSend?.invoke(
-                SentryEvent().apply {
-                    exceptions = listOf(SentryException("test"))
-                },
-            )
+        val event = options.beforeSend?.invoke(
+            SentryEvent().apply {
+                exceptions = listOf(SentryException("test"))
+            }
+        )
 
         assertEquals(exceptions, event?.exceptions)
     }

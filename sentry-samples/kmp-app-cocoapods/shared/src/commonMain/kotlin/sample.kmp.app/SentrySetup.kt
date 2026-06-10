@@ -14,8 +14,8 @@ fun configureSentryScope() {
         it.addAttachment(
             Attachment(
                 "This is a shared text attachment".encodeToByteArray(),
-                "shared.log",
-            ),
+                "shared.log"
+            )
         )
     }
 }
@@ -35,8 +35,8 @@ fun initializeSentry(useNativeOptions: Boolean = false) {
 expect fun createPlatformOptionsConfiguration(): PlatformOptionsConfiguration
 
 /** Returns a shared options configuration */
-private fun optionsConfiguration(): OptionsConfiguration =
-    {
+private fun optionsConfiguration(): OptionsConfiguration {
+    return {
         it.dsn = "https://83f281ded2844eda83a8a413b080dbb9@o447951.ingest.sentry.io/5903800"
         it.attachStackTrace = true
         it.attachThreads = true
@@ -68,3 +68,4 @@ private fun optionsConfiguration(): OptionsConfiguration =
             }
         }
     }
+}

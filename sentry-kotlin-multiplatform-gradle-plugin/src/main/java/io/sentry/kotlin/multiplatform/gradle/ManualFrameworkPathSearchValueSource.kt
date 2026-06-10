@@ -7,7 +7,8 @@ import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
 
-abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, ManualFrameworkPathSearchValueSource.Parameters> {
+abstract class ManualFrameworkPathSearchValueSource :
+    ValueSource<String?, ManualFrameworkPathSearchValueSource.Parameters> {
     interface Parameters : ValueSourceParameters {
         val frameworkType: Property<FrameworkType>
         val basePathToSearch: Property<String>
@@ -30,42 +31,40 @@ abstract class ManualFrameworkPathSearchValueSource : ValueSource<String?, Manua
      */
     private fun findFrameworkWithFindCommand(
         frameworkType: FrameworkType,
-        basePathToSearch: String,
+        basePathToSearch: String
     ): String? {
         val stdOutput = ByteArrayOutputStream()
         val errOutput = ByteArrayOutputStream()
 
         val xcFrameworkName =
             if (frameworkType == FrameworkType.STATIC) "Sentry.xcframework" else "Sentry-Dynamic.xcframework"
-        val execResult =
-            execOperations.exec {
-                it.commandLine(
-                    "bash",
-                    "-c",
-                    "find $basePathToSearch " +
-                        "-name $xcFrameworkName " +
-                        "-exec stat -f \"%m %N\" {} \\; | " +
-                        "sort -nr | " +
-                        "cut -d' ' -f2-",
-                )
-                it.standardOutput = stdOutput
-                it.errorOutput = errOutput
-                it.isIgnoreExitValue = true
-            }
+        val execResult = execOperations.exec {
+            it.commandLine(
+                "bash",
+                "-c",
+                "find $basePathToSearch " +
+                    "-name $xcFrameworkName " +
+                    "-exec stat -f \"%m %N\" {} \\; | " +
+                    "sort -nr | " +
+                    "cut -d' ' -f2-"
+            )
+            it.standardOutput = stdOutput
+            it.errorOutput = errOutput
+            it.isIgnoreExitValue = true
+        }
 
         val stringOutput = stdOutput.toString("UTF-8")
         return if (execResult.exitValue == 0) {
             if (stringOutput.lineSequence().firstOrNull().isNullOrEmpty()) {
                 null
             } else {
-                stringOutput
-                    .lineSequence()
+                stringOutput.lineSequence()
                     .first()
             }
         } else {
             logger.warn(
                 "Manual search failed to find $xcFrameworkName in $basePathToSearch. " +
-                    "Error output: ${errOutput.toString(Charsets.UTF_8)}",
+                    "Error output: ${errOutput.toString(Charsets.UTF_8)}"
             )
             null
         }

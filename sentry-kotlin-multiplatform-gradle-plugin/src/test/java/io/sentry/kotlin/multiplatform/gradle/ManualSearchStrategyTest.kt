@@ -27,7 +27,7 @@ class ManualSearchStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `should return static path when framework exists`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
         val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture.first()))
@@ -43,7 +43,7 @@ class ManualSearchStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `should return dynamic path when framework exists`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("somewhere/hidden/Sentry-Dynamic.xcframework").createDirectories()
         val archDirectory = Files.createDirectory(xcframeworkPath.resolve(expectedArchitecture.first()))
@@ -59,7 +59,7 @@ class ManualSearchStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `should return most recently used path when multiple framework exists`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath1 = dir.resolve("somewhere/hidden/Sentry.xcframework").createDirectories()
         Files.createDirectory(xcframeworkPath1.resolve(expectedArchitecture.first()))
@@ -88,10 +88,9 @@ class ManualSearchStrategyTest {
 
     companion object {
         @JvmStatic
-        fun architectureMappingProvider() =
-            SentryCocoaFrameworkArchitectures.all
-                .map { Arguments.of(it) }
-                .toList()
+        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all
+            .map { Arguments.of(it) }
+            .toList()
     }
 
     private class Fixture {

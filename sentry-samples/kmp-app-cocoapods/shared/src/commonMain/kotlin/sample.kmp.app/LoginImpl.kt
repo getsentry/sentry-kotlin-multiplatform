@@ -9,9 +9,7 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class InvalidUsernameException(
-    message: String,
-) : Exception(message)
+class InvalidUsernameException(message: String) : Exception(message)
 
 object LoginImpl {
     /**
@@ -52,11 +50,10 @@ object LoginImpl {
         }
 
         // DSL builder with prebuilt SentryAttributes
-        val prebuiltAttrs =
-            SentryAttributes.of(
-                "source" to "login-form",
-                "version" to 2,
-            )
+        val prebuiltAttrs = SentryAttributes.of(
+            "source" to "login-form",
+            "version" to 2
+        )
         Sentry.logger.debug {
             message("Session token generated for user: %s", username)
             attributes(prebuiltAttrs)
@@ -76,27 +73,24 @@ object LoginImpl {
         try {
             validateUsername(username)
         } catch (exception: InvalidUsernameException) {
-            val sentryId =
-                Sentry.captureException(exception) {
-                    val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
-                    breadcrumb.setData("touch event", "on login")
-                    it.addBreadcrumb(breadcrumb)
-                    it.setContext("Login", "Failed with Invalid Username")
-                    it.setTag("login", "failed auth")
-                    it.level = SentryLevel.WARNING
-                    val user =
-                        User().apply {
-                            this.username = "John Doe"
-                            this.email = "john@doe.com"
-                        }
-                    it.user = user
+            val sentryId = Sentry.captureException(exception) {
+                val breadcrumb = Breadcrumb.debug("this is a test breadcrumb")
+                breadcrumb.setData("touch event", "on login")
+                it.addBreadcrumb(breadcrumb)
+                it.setContext("Login", "Failed with Invalid Username")
+                it.setTag("login", "failed auth")
+                it.level = SentryLevel.WARNING
+                val user = User().apply {
+                    this.username = "John Doe"
+                    this.email = "john@doe.com"
                 }
-            val userFeedback =
-                UserFeedback(sentryId).apply {
-                    name = "John Doe"
-                    email = "john@doe.com"
-                    comments = "I had an error during login on ${Platform().platform}"
-                }
+                it.user = user
+            }
+            val userFeedback = UserFeedback(sentryId).apply {
+                name = "John Doe"
+                email = "john@doe.com"
+                comments = "I had an error during login on ${Platform().platform}"
+            }
             Sentry.captureUserFeedback(userFeedback)
         } catch (exception: IllegalArgumentException) {
             throw exception
