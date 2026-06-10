@@ -7,6 +7,7 @@ import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 import io.sentry.kotlin.multiplatform.log.updateFrom
+import io.sentry.kotlin.multiplatform.setEnableUnhandledCppExceptionMonitoring
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 
@@ -37,6 +38,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
     cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
     cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel()
+    setEnableUnhandledCppExceptionMonitoring(kmpOptions.enableUnhandledCppExceptionMonitoring)
     cocoaOptions.experimental().setEnableLogs(kmpOptions.logs.enabled)
     kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
         cocoaOptions.setBeforeSendLog { cocoaLog ->
