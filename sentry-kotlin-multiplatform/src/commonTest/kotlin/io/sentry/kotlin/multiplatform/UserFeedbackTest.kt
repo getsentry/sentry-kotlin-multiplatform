@@ -6,6 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class UserFeedbackTest {
+
     private val sentryIdString = "dcebada57d794590a6da3d1977eed58a"
 
     @Test

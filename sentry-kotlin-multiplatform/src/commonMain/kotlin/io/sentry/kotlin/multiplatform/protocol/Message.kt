@@ -16,5 +16,5 @@ public data class Message(
      * The formatted message. If `message` and `params` are given, Sentry will attempt to backfill
      * `formatted` if empty.
      */
-    public var formatted: String? = null,
+    public var formatted: String? = null
 )

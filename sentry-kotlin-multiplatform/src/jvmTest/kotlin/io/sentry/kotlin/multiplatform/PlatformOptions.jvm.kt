@@ -7,9 +7,7 @@ import kotlin.test.assertEquals
 
 actual interface PlatformOptions : CommonPlatformOptions
 
-class SentryJvmOptionsWrapper(
-    private val jvmOptions: JvmSentryOptions,
-) : PlatformOptions {
+class SentryJvmOptionsWrapper(private val jvmOptions: JvmSentryOptions) : PlatformOptions {
     override val dsn: String?
         get() = jvmOptions.dsn
 
@@ -66,7 +64,6 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
     assertEquals(proguardUuid, kmpOptions.proguardUuid)
 }
 
-actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
-    {
-        it.dsn = fakeDsn
-    }
+actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
+    it.dsn = fakeDsn
+}

@@ -2,13 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>MaxLineLength:ManualFrameworkPathSearchValueSource.kt$ManualFrameworkPathSearchValueSource$abstract</ID>
     <ID>MaxLineLength:SentryAttributes.kt$SentryAttributes.Companion$public</ID>
-    <ID>MaxLineLength:SentryLogConverters.apple.kt$is SentryAttributeValue.BooleanValue -> SentryStructuredLogAttribute(boolean = attrValue.value as Boolean)</ID>
-    <ID>MaxLineLength:SentryPlatformOptions.android.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
-    <ID>MaxLineLength:SentryPlatformOptions.ios.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
-    <ID>MaxLineLength:SentryPlatformOptions.jvm.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
-    <ID>MaxLineLength:SentryPlatformOptions.tvwatchmacos.kt$internal actual fun SentryOptions.toPlatformOptionsConfiguration(): PlatformOptionsConfiguration</ID>
     <ID>SwallowedException:CocoaScopeProvider.kt$CocoaScopeProvider$e: Throwable</ID>
     <ID>SwallowedException:SentryLevel.kt$SentryLevel.Companion$throwable: Throwable</ID>
     <ID>TooGenericExceptionCaught:CocoaScopeProvider.kt$CocoaScopeProvider$e: Throwable</ID>

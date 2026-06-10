@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class BaseSentryLoggerTest {
+
     // region Simple message API (level-specific)
 
     @Test
@@ -496,12 +497,7 @@ class BaseSentryLoggerTest {
         assertEquals(1, logger.logs.size)
         assertEquals(SentryLogLevel.TRACE, logger.logs[0].level)
         assertEquals("User alice logged in", logger.logs[0].formatted.body)
-        assertEquals(
-            "us-east",
-            logger.logs[0]
-                .formatted.attributes["region"]
-                ?.stringOrNull,
-        )
+        assertEquals("us-east", logger.logs[0].formatted.attributes["region"]?.stringOrNull)
     }
 
     @Test
@@ -633,9 +629,9 @@ class BaseSentryLoggerTest {
                 SentryLogLevel.INFO,
                 SentryLogLevel.WARN,
                 SentryLogLevel.ERROR,
-                SentryLogLevel.FATAL,
+                SentryLogLevel.FATAL
             ),
-            logger.logs.map { it.level },
+            logger.logs.map { it.level }
         )
     }
 
@@ -646,17 +642,11 @@ class BaseSentryLoggerTest {
  * Test implementation of [BaseSentryLogger] that captures all logs for verification.
  */
 private class TestSentryLogger : BaseSentryLogger(::DefaultSentryLogBuilder) {
-    data class CapturedLog(
-        val level: SentryLogLevel,
-        val formatted: FormattedLog,
-    )
+    data class CapturedLog(val level: SentryLogLevel, val formatted: FormattedLog)
 
     val logs = mutableListOf<CapturedLog>()
 
-    override fun sendLog(
-        level: SentryLogLevel,
-        formatted: FormattedLog,
-    ) {
+    override fun sendLog(level: SentryLogLevel, formatted: FormattedLog) {
         logs.add(CapturedLog(level, formatted))
     }
 }

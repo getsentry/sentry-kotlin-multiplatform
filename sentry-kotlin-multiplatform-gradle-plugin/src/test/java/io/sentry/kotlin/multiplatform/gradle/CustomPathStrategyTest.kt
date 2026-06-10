@@ -25,7 +25,7 @@ class CustomPathStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `should return static path when framework is Sentry xcframework`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("Sentry.xcframework")
         Files.createDirectory(xcframeworkPath)
@@ -42,7 +42,7 @@ class CustomPathStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `should return dynamic path when framework is Sentry xcframework`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path,
+        @TempDir dir: Path
     ) {
         val xcframeworkPath = dir.resolve("Sentry-Dynamic.xcframework")
         Files.createDirectory(xcframeworkPath)
@@ -72,9 +72,7 @@ class CustomPathStrategyTest {
     }
 
     @Test
-    fun `should return NONE when framework has invalid name`(
-        @TempDir dir: Path,
-    ) {
+    fun `should return NONE when framework has invalid name`(@TempDir dir: Path) {
         val xcframeworkPath = dir.resolve("Invalid.xcframework")
         val sut = fixture.getSut(xcframeworkPath.absolutePathString())
 
@@ -85,10 +83,9 @@ class CustomPathStrategyTest {
 
     companion object {
         @JvmStatic
-        fun architectureMappingProvider() =
-            SentryCocoaFrameworkArchitectures.all
-                .map { Arguments.of(it) }
-                .toList()
+        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all
+            .map { Arguments.of(it) }
+            .toList()
     }
 
     private class Fixture {

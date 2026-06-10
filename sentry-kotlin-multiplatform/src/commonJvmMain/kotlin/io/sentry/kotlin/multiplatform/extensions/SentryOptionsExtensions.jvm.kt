@@ -6,14 +6,13 @@ import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 import io.sentry.kotlin.multiplatform.log.updateFrom
 
-internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit =
-    {
-        it.applyJvmBaseOptions(this)
+internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
+    it.applyJvmBaseOptions(this)
 
-        sdk?.packages?.forEach { sdkPackage ->
-            it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
-        }
+    sdk?.packages?.forEach { sdkPackage ->
+        it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
     }
+}
 
 /**
  * Applies the given base SentryOptions to this JvmSentryOption

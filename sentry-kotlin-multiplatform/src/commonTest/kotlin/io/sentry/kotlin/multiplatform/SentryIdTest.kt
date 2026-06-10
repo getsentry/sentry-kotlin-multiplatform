@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SentryIdTest {
+
     @Test
     fun `SentryId with valid uuid string returns valid SentryId string`() {
         val uuidString = "ec81a720-b6f6-4efc-9d74-6627a09157c1"

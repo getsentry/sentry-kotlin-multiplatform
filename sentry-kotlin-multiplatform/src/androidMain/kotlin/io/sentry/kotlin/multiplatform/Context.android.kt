@@ -37,7 +37,7 @@ internal class SentryContextProvider : ContentProvider() {
         projection: Array<out String>?,
         selection: String?,
         selectionArgs: Array<out String>?,
-        sortOrder: String?,
+        sortOrder: String?
     ): Cursor? {
         error("Not allowed.")
     }
@@ -46,18 +46,11 @@ internal class SentryContextProvider : ContentProvider() {
         error("Not allowed.")
     }
 
-    override fun insert(
-        uri: Uri,
-        values: ContentValues?,
-    ): Uri? {
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
         error("Not allowed.")
     }
 
-    override fun delete(
-        uri: Uri,
-        selection: String?,
-        selectionArgs: Array<out String>?,
-    ): Int {
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
         error("Not allowed.")
     }
 
@@ -65,7 +58,7 @@ internal class SentryContextProvider : ContentProvider() {
         uri: Uri,
         values: ContentValues?,
         selection: String?,
-        selectionArgs: Array<out String>?,
+        selectionArgs: Array<out String>?
     ): Int {
         error("Not allowed.")
     }

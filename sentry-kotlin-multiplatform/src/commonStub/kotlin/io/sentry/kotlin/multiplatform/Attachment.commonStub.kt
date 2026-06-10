@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 public actual class Attachment {
+
     public actual val bytes: ByteArray?
     public actual val contentType: String?
     public actual val pathname: String?

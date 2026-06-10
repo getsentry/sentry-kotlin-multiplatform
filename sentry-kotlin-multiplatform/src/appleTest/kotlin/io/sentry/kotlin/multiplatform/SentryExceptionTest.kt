@@ -11,47 +11,46 @@ class SentryExceptionTest {
     private val type = "type"
     private val threadId = 1
 
-    private fun getCocoaSentryException(): CocoaSentryException = CocoaSentryException(value = value, type = type)
+    private fun getCocoaSentryException(): CocoaSentryException {
+        return CocoaSentryException(value = value, type = type)
+    }
 
-    private fun getKmpSentryException(threadId: Long? = this.threadId.toLong()): SentryException =
-        SentryException(value = value, type = type, threadId = threadId)
+    private fun getKmpSentryException(threadId: Long? = this.threadId.toLong()): SentryException {
+        return SentryException(value = value, type = type, threadId = threadId)
+    }
 
     @Test
     fun `SentryException ThreadId NSNumber long conversion`() {
-        val cocoaSentryException =
-            getCocoaSentryException().apply {
-                threadId = NSNumber(long = this@SentryExceptionTest.threadId.convert())
-            }
+        val cocoaSentryException = getCocoaSentryException().apply {
+            threadId = NSNumber(long = this@SentryExceptionTest.threadId.convert())
+        }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
     }
 
     @Test
     fun `SentryException ThreadId NSNumber longLong conversion`() {
-        val cocoaSentryException =
-            getCocoaSentryException().apply {
-                threadId = NSNumber(longLong = this@SentryExceptionTest.threadId.convert())
-            }
+        val cocoaSentryException = getCocoaSentryException().apply {
+            threadId = NSNumber(longLong = this@SentryExceptionTest.threadId.convert())
+        }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
     }
 
     @Test
     fun `SentryException ThreadId NSNumber int conversion`() {
-        val cocoaSentryException =
-            getCocoaSentryException().apply {
-                threadId = NSNumber(int = this@SentryExceptionTest.threadId.convert())
-            }
+        val cocoaSentryException = getCocoaSentryException().apply {
+            threadId = NSNumber(int = this@SentryExceptionTest.threadId.convert())
+        }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
     }
 
     @Test
     fun `SentryException ThreadId NSNumber short conversion`() {
-        val cocoaSentryException =
-            getCocoaSentryException().apply {
-                threadId = NSNumber(short = this@SentryExceptionTest.threadId.convert())
-            }
+        val cocoaSentryException = getCocoaSentryException().apply {
+            threadId = NSNumber(short = this@SentryExceptionTest.threadId.convert())
+        }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
     }
