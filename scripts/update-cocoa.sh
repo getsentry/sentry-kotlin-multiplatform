@@ -68,6 +68,9 @@ set-version)
     # Run pod update in the sample iOS app directory to update Podfile.lock
     echo "Running pod update in $sample_ios_app_dir..."
     (cd $sample_ios_app_dir && pod update)
+
+    # The SPM sample needs no update: it gets Sentry Cocoa through the Gradle plugin's
+    # spm4Kmp auto-install, which is versioned from the two files above.
     ;;
 *)
     echo "Unknown argument $1"
