@@ -212,6 +212,33 @@ kotlin {
     }
 }
 
+// spm4Kmp 1.9.3 compiles watchosSimulatorArm64 with `--triple aarch64-apple-watchos-simulator`
+// (1.9.2 used `arm64`), and SwiftPM does not treat `aarch64` as `arm64` when matching binary
+// xcframework slices, so Sentry.framework is never copied into the build products directory and
+// the cinterop definition task fails with "Module map file not found for module: Sentry".
+// Copy the watchOS simulator slice there manually until spm4Kmp maps this target back to `arm64`.
+val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
+val copyWatchosSimulatorSentryFramework =
+    tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
+        dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
+        from(
+            sentryCocoaScratchDir.map { scratch ->
+                val xcframework = scratch.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework").asFile
+                val slice =
+                    checkNotNull(
+                        xcframework.listFiles()?.singleOrNull {
+                            it.name.startsWith("watchos") && it.name.endsWith("-simulator")
+                        }
+                    ) { "watchOS simulator slice not found in $xcframework" }
+                slice.resolve("Sentry.framework")
+            }
+        )
+        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
+    }
+tasks
+    .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
+    .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
+
 // The js/wasmJs/linux/mingw targets ship as no-op stubs and run no tests. Kotlin
 // 2.2.20's shared `web` source set wires their test compilations to commonTest, whose
 // Ktor dependency has no wasm (and limited native) variants, which breaks dependency
