@@ -104,7 +104,7 @@ class SentryE2ETest : BaseSentryTest() {
     }
 
     @Test
-    fun `capture exception and fetch event from Sentry`() = runTest(timeout = 30.seconds) {
+    fun `capture exception and fetch event from Sentry`() = runTest(timeout = 60.seconds) {
         if (platform != "Apple") {
             val exceptionMessage = "Test exception on platform $platform"
             val eventId =
