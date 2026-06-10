@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Internal
+
+- Build the Apple SDK against Sentry Cocoa via SwiftPM (spm4Kmp) instead of the Kotlin CocoaPods plugin ([#557](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/557))
+  - The published klibs keep the `cocoapods.Sentry` import prefix, so no changes are required for consumers
+
 ### Dependencies
 
 - Bump Kotlin from `2.1.21` to `2.2.21` and Gradle from `8.6` to `8.13` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
