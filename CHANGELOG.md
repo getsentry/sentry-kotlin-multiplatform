@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Kotlin from `2.1.21` to `2.2.21` and Gradle from `8.6` to `8.13` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
+  - Also bumps AGP to `8.7.3` and `compileSdk` to 35
+
 ## 0.27.0
 
 ### Features
