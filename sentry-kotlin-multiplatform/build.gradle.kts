@@ -58,7 +58,6 @@ kotlin {
     }
     jvm()
 
-    // Apple targets are declared once here and reused for the spm4Kmp swiftPackageConfig below.
     val appleTargets =
         listOf(
             iosArm64(),
@@ -160,17 +159,16 @@ kotlin {
 
         appleTargets.forEach { target ->
             target.swiftPackageConfig(cinteropName = "sentryCocoa") {
-                // Restore the legacy Kotlin CocoaPods `cocoapods.Sentry.*` import prefix so
-                // published klib symbols stay identical and consumers keep building unchanged.
+                // Keep the legacy Kotlin CocoaPods `cocoapods.Sentry.*` import prefix so
+                // published klib symbols stay identical.
                 packageDependencyPrefix = "cocoapods"
                 minIos = Config.Cocoa.iosDeploymentTarget
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
-                // KT-41709 workaround forwarded to the exported-product cinterop: Sentry classes
-                // containing "Meta" in their name (e.g. SentryMechanismMeta) are otherwise declared
-                // twice. extraOpts is passed straight to cinterop (unlike compilerOpts, which only
-                // populates the generated def's clang flags). https://youtrack.jetbrains.com/issue/KT-41709
+                // KT-41709: Sentry classes with "Meta" in the name (e.g. SentryMechanismMeta) are
+                // otherwise declared twice. Must be extraOpts — compilerOpts only populates the
+                // generated def's clang flags. https://youtrack.jetbrains.com/issue/KT-41709
                 extraOpts =
                     listOf(
                         "-compiler-option",
@@ -191,10 +189,8 @@ kotlin {
                 }
             }
 
-            // The private `Sentry.Internal` cinterop uses self-contained, Foundation-only headers
-            // (private Sentry API redeclared as standalone ObjC interfaces); its symbols resolve at
-            // link time against the Sentry framework above, so it is independent of how that
-            // framework is delivered (CocoaPods vs SwiftPM) and can stay unchanged.
+            // The private `Sentry.Internal` cinterop has self-contained headers; its symbols
+            // resolve at link time against the Sentry framework regardless of how it is delivered.
             target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
@@ -221,9 +217,8 @@ val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/
 val copyWatchosSimulatorSentryFramework =
     tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
         dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
-        // The xcframework only exists once the compile task above has resolved the Swift
-        // package, so the slice must be selected with a pattern instead of listing the
-        // directory, which Gradle would do while computing task dependencies.
+        // Select the slice with a pattern: the xcframework doesn't exist yet when Gradle
+        // computes task dependencies, only after the compile task resolves the Swift package.
         from(sentryCocoaScratchDir.map { it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework") }) {
             include("watchos-*-simulator/Sentry.framework/**")
         }
