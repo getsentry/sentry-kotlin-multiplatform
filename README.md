@@ -105,6 +105,11 @@ sentryKmp {
 }
 ```
 
+> [!NOTE]
+> The Sentry Swift package is registered as soon as the Apple targets are created, so place the
+> `sentryKmp { }` block **before** the `kotlin { }` block — otherwise the opt-out and version
+> override have no effect.
+
 Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
 Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for
 plain SPM-in-Xcode setups.
