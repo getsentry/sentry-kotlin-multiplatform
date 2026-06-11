@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.github.frankois944.spmForKmp.swiftPackageConfig
 import io.sentry.BuildConfig
 import org.gradle.api.GradleException
 import org.gradle.api.NamedDomainObjectContainer
@@ -289,6 +290,7 @@ class SentryPluginTest {
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+        assertTrue(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
     @Test
@@ -326,6 +328,66 @@ class SentryPluginTest {
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+    }
+
+    @Test
+    fun `do not install Sentry Swift package when a user-defined per-target config exists`() {
+        Assumptions.assumeTrue(HostManager.hostIsMac)
+
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        // A consumer-defined Sentry Swift package config that exists before the Sentry plugin is
+        // applied. spm4Kmp keys it as "sentryCocoa_IosArm64" in its container — the auto-install
+        // must detect it there (no Kotlin cinterop exists at configuration time).
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
+    }
+
+    @Test
+    fun `do not install Sentry Swift package when a user-defined global config exists`() {
+        Assumptions.assumeTrue(HostManager.hostIsMac)
+
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        // Old-style (non target-scoped) spm4Kmp config registered directly under "sentryCocoa".
+        val swiftPackages =
+            project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        swiftPackages.create(SENTRY_COCOA_CINTEROP_NAME)
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
+
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
+    }
+
+    @Test
+    fun `do not install Sentry Swift package when global auto install is disabled`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstall.enabled.set(false)
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
+
+        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
+
+        val swiftPackages =
+            project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
     }
 
     @Test
