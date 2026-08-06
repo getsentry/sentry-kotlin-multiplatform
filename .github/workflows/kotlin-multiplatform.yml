@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build-apple:
-    runs-on: macos-latest-xlarge
+    runs-on: macos-15-xlarge
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -46,7 +46,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   build-apple-samples:
-    runs-on: macos-latest-xlarge
+    runs-on: macos-15-xlarge
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -102,7 +102,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   test-samples:
-    runs-on: macos-latest-xlarge
+    runs-on: macos-15-xlarge
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
