@@ -1,7 +1,7 @@
 
 # Sentry Kotlin Multiplatform Samples
 
-This contains three samples of Kotlin Multiplatform projects showcasing the Sentry Kotlin Multiplatform SDK usage.
+This contains two samples of Kotlin Multiplatform projects showcasing the Sentry Kotlin Multiplatform SDK usage.
 - Sample 1: Android, iOS with Cocoapods, Desktop with Jetpack Compose
 - Sample 2: Android, iOS with Swift Package Manager, Desktop with Jetpack Compose
 
