@@ -437,6 +437,24 @@ class SentryPluginTest {
     }
 
     @Test
+    fun `Sentry spm4Kmp configuration is detected per Apple target`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstall.spm.enabled.set(false)
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+        kmpExtension.iosSimulatorArm64()
+
+        assertTrue(project.isSentryConfiguredViaSpm4Kmp("iosArm64"))
+        assertFalse(project.isSentryConfiguredViaSpm4Kmp("iosSimulatorArm64"))
+    }
+
+    @Test
     fun `do not install Sentry pod if host is not mac`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
