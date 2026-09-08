@@ -73,8 +73,8 @@ class SentryFrameworkArchitectureTest {
 
             assert(foundMatch) {
                 "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
-                xcFramework.listFiles()
-                    ?.map { file -> file.name }
+                    xcFramework.listFiles()
+                        ?.map { file -> file.name }
                 }"
             }
         }
@@ -126,8 +126,8 @@ class SentryFrameworkArchitectureTest {
 
             assert(foundMatch) {
                 "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
-                xcFramework.listFiles()
-                    ?.map { file -> file.name }
+                    xcFramework.listFiles()
+                        ?.map { file -> file.name }
                 }"
             }
         }
