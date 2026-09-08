@@ -52,7 +52,7 @@ listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEa
         attributes {
             attribute(
                 TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE,
-                JavaVersion.VERSION_17.majorVersion.toInt(),
+                JavaVersion.VERSION_17.majorVersion.toInt()
             )
         }
     }

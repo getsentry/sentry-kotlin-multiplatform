@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 @Suppress("UnnecessaryAbstractClass")
 abstract class Spm4KmpAutoInstallExtension
-    @Inject
-    constructor(
-        project: Project
-    ) {
-        private val objects = project.objects
+@Inject
+constructor(
+    project: Project
+) {
+    private val objects = project.objects
 
     /**
      * Enable auto-installation of the Sentry Cocoa SDK Swift package via spm4Kmp.
