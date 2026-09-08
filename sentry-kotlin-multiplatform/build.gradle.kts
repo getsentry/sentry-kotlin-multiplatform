@@ -232,8 +232,7 @@ configurations
     }
 tasks
     .matching { task ->
-        val capitalizedTargets = noOpStubTargets.map { it.replaceFirstChar(Char::uppercase) }
-        capitalizedTargets.any { task.name.contains(it) } &&
+        noOpStubTargets.any { task.name.contains(it, ignoreCase = true) } &&
             (task.name.startsWith("compileTestKotlin") || task.name.endsWith("Test"))
     }.configureEach {
         enabled = false
