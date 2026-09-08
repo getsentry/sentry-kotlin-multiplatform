@@ -77,7 +77,7 @@ kotlin {
             tvosX64(),
             tvosSimulatorArm64(),
             macosX64(),
-            macosArm64(),
+            macosArm64()
         )
     addNoOpTargets()
 
@@ -182,7 +182,7 @@ kotlin {
                         "-compiler-option",
                         "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
                         "-compiler-option",
-                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable",
+                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
                     )
                 dependency {
                     remotePackageVersion(
@@ -190,7 +190,7 @@ kotlin {
                         version = Config.Libs.sentryCocoaVersion,
                         products = {
                             add("Sentry", exportToKotlin = true)
-                        },
+                        }
                     )
                 }
             }
