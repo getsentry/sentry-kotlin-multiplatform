@@ -391,67 +391,11 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `Sentry is not considered configured via spm4Kmp when the plugin is missing`() {
+    fun `framework is considered externally provided when spm4Kmp plugin is applied`() {
         val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-
-        assertFalse(project.isSentryConfiguredViaSpm4Kmp())
-    }
-
-    @Test
-    fun `Sentry is not considered configured via spm4Kmp when spm auto install is disabled`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
-        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        autoInstall.spm.enabled.set(false)
-
-        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        kmpExtension.iosArm64()
-
-        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
-
-        // The fallback linker must stay active for consumers that apply spm4Kmp for other Swift
-        // packages but provide Sentry via Xcode or the linker extension.
-        assertFalse(project.isSentryConfiguredViaSpm4Kmp())
-    }
-
-    @Test
-    fun `Sentry is considered configured via spm4Kmp after the Swift package is installed`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("io.github.frankois944.spmForKmp")
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-
-        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-
-        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        kmpExtension.iosArm64()
-
-        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
-
-        assertTrue(project.isSentryConfiguredViaSpm4Kmp())
-    }
-
-    @Test
-    fun `Sentry spm4Kmp configuration is detected per Apple target`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("io.github.frankois944.spmForKmp")
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-
-        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        autoInstall.spm.enabled.set(false)
-
-        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
-        kmpExtension.iosSimulatorArm64()
-
-        assertTrue(project.isSentryConfiguredViaSpm4Kmp("iosArm64"))
-        assertFalse(project.isSentryConfiguredViaSpm4Kmp("iosSimulatorArm64"))
+        assertTrue(project.hasExternalCocoaFrameworkProvider())
     }
 
     @Test
