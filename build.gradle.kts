@@ -164,11 +164,28 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
                     artifactFile.name.contains("tvos", ignoreCase = true) -> {
-                    val expectedNumOfKlibFiles = 3
-                    val actualKlibFiles = entries.count { it.contains("klib") }
-                    if (actualKlibFiles != expectedNumOfKlibFiles) {
+                    // The main klib plus one per cinterop on Apple targets: the Sentry framework
+                    // bindings, its internal headers, and the Swift bridge spm4Kmp always creates.
+                    val expectedCinteropKlibs =
+                        listOf(
+                            "cinterop-Sentry.klib",
+                            "cinterop-Sentry.Internal.klib",
+                            "cinterop-SentryCocoa.klib"
+                        )
+                    val klibFiles = entries.filter { it.endsWith(".klib") }
+                    val missingKlibs =
+                        expectedCinteropKlibs.filterNot { expected ->
+                            klibFiles.any { it.endsWith(expected) }
+                        }
+                    if (missingKlibs.isNotEmpty()) {
                         throw GradleException(
-                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles"
+                            "❌ Missing klib files $missingKlibs in ${artifactFile.name}"
+                        )
+                    }
+                    val expectedNumOfKlibFiles = expectedCinteropKlibs.size + 1
+                    if (klibFiles.size != expectedNumOfKlibFiles) {
+                        throw GradleException(
+                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found ${klibFiles.size}"
                         )
                     } else {
                         println("✅ Found $expectedNumOfKlibFiles klib files in ${artifactFile.name}")
