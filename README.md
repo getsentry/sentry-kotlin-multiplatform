@@ -110,6 +110,13 @@ sentryKmp {
 > `sentryKmp { }` block **before** the `kotlin { }` block — otherwise the opt-out (including the
 > global `autoInstall.enabled` flag) and version override have no effect.
 
+> [!IMPORTANT]
+> If you declare the Sentry Swift package yourself inside a target (for example
+> `iosArm64 { swiftPackageConfig(cinteropName = "sentryCocoa") { ... } }`), you must opt out as shown
+> above. That block runs after the auto-install has already registered the package, so both
+> declarations end up in the same spm4Kmp config and SwiftPM fails on the duplicate `sentry-cocoa`
+> dependency.
+
 Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
 Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for
 plain SPM-in-Xcode setups.

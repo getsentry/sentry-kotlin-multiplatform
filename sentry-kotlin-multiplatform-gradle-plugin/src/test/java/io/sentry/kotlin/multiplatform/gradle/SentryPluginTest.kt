@@ -251,7 +251,7 @@ class SentryPluginTest {
 
         val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
         assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "custom version")
-        assertTrue(project.hasExternalCocoaFrameworkProvider())
+        assertEquals("CocoaPods", project.externalCocoaFrameworkProvider())
     }
 
     @Test
@@ -348,7 +348,7 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
-        assertFalse(project.hasExternalCocoaFrameworkProvider())
+        assertNull(project.externalCocoaFrameworkProvider())
     }
 
     @Test
@@ -370,7 +370,7 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
-        assertTrue(project.hasExternalCocoaFrameworkProvider())
+        assertEquals("spm4Kmp", project.externalCocoaFrameworkProvider())
     }
 
     @Test
@@ -398,7 +398,7 @@ class SentryPluginTest {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
 
-        assertFalse(project.hasExternalCocoaFrameworkProvider())
+        assertNull(project.externalCocoaFrameworkProvider())
     }
 
     @Test
@@ -407,7 +407,7 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
-        assertFalse(project.hasExternalCocoaFrameworkProvider())
+        assertNull(project.externalCocoaFrameworkProvider())
     }
 
     @Test
@@ -419,7 +419,7 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
 
-        assertFalse(project.hasExternalCocoaFrameworkProvider())
+        assertNull(project.externalCocoaFrameworkProvider())
     }
 
     @Test
