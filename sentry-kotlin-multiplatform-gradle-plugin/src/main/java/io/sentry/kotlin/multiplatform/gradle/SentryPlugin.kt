@@ -51,14 +51,23 @@ class SentryPlugin : Plugin<Project> {
                 sentryExtension.autoInstall.commonMain
             )
 
-            // spm4Kmp consumes its swiftPackageConfig container in its own afterEvaluate, which can
-            // run before executeConfiguration's afterEvaluate depending on plugin application order,
-            // so the Sentry package must be registered eagerly rather than in afterEvaluate. The
-            // nested withId makes this robust to plugin application order: the install only runs
-            // once both the spm4Kmp and Kotlin Multiplatform plugins are present.
-            project.plugins.withId(SPM4KMP_PLUGIN_ID) {
+            // spm4Kmp reads its swiftPackageConfig container in a single afterEvaluate registered
+            // while it is being applied, and Gradle runs afterEvaluate actions in registration
+            // order. So when spm4Kmp isn't applied yet, whatever we register here still runs before
+            // it reads the container, and the install can wait until afterEvaluate — where the
+            // sentryKmp { } block and any user-defined Swift package config are final no matter
+            // where the build script puts them. Once spm4Kmp is already applied its action is
+            // queued ahead of ours, leaving no choice but to register as each target is created,
+            // before the rest of the build script has been read.
+            if (plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
                 project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN_ID) {
                     project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
+                }
+            } else {
+                afterEvaluate {
+                    if (plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
+                        project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
+                    }
                 }
             }
 
@@ -100,10 +109,11 @@ class SentryPlugin : Plugin<Project> {
     }
 
     /**
-     * The Sentry Swift package is registered with spm4Kmp as soon as each Apple target is created
-     * (inside the `kotlin { }` block), so an auto-install opt-out configured after that block is
-     * read too late to take effect. By afterEvaluate both states are final, so a disabled flag
-     * combined with the registration marker means the opt-out was silently ignored — warn instead.
+     * When spm4Kmp is applied before this plugin, the Sentry Swift package has to be registered as
+     * each Apple target is created (inside the `kotlin { }` block), so an opt-out configured after
+     * that block is read too late to take effect. By afterEvaluate both states are final, so a
+     * disabled flag combined with the registration marker means the opt-out was silently
+     * ignored — warn instead.
      */
     private fun warnOnLateSpmAutoInstallOptOut(
         project: Project,
@@ -114,8 +124,9 @@ class SentryPlugin : Plugin<Project> {
         if (spmAutoInstalled && spmOptedOut) {
             project.logger.warn(
                 "The Sentry Cocoa Swift package was already registered with spm4Kmp before the " +
-                    "auto-install was disabled. Place the sentryKmp { } block before the " +
-                    "kotlin { } block for the opt-out to take effect."
+                    "auto-install was disabled, because the spm4Kmp plugin is applied before the " +
+                    "Sentry plugin. Apply the Sentry plugin first, or place the sentryKmp { } " +
+                    "block before the kotlin { } block, for the opt-out to take effect."
             )
         }
     }
@@ -347,7 +358,8 @@ internal const val SPM_AUTO_INSTALLED_MARKER = "io.sentry.kotlin.multiplatform.s
  * ("SentryCocoa"), so checking the compilation's cinterops would never match a spm4Kmp-managed
  * config.
  *
- * Only sees configs registered before [targetName] was created — see [installSentryForSpm4Kmp].
+ * On the eager path this only sees configs registered before [targetName] was created — see
+ * [installSentryForSpm4Kmp].
  */
 private fun Project.hasSentrySwiftPackageConfig(targetName: String): Boolean {
     val swiftPackageConfigs =
@@ -364,12 +376,13 @@ private fun Project.hasSentrySwiftPackageConfig(targetName: String): Boolean {
  * have to declare it themselves. Re-running is a no-op, and a [SENTRY_COCOA_CINTEROP_NAME] config
  * that already exists when the Apple targets are created is left untouched.
  *
- * A user config registered *inside* the target block (`iosArm64 { swiftPackageConfig(...) }`) is not
- * detected, because this runs on target creation and Gradle invokes that block afterwards. spm4Kmp's
- * `swiftPackageConfig` uses `maybeCreate`, so the user config then lands on the object registered
- * here and sentry-cocoa ends up declared twice in the generated Package.swift, which SwiftPM
- * rejects. Such setups have to opt out via `sentryKmp { autoInstall { spm { enabled = false } } }`
- * placed before the `kotlin { }` block.
+ * When this runs from afterEvaluate every config is final, so a user's own is always detected. When
+ * spm4Kmp forces the eager path it runs on target creation instead, and a config registered *inside*
+ * the target block (`iosArm64 { swiftPackageConfig(...) }`) cannot be seen, because Gradle invokes
+ * that block afterwards. spm4Kmp's `swiftPackageConfig` uses `maybeCreate`, so the user config then
+ * lands on the object registered here and sentry-cocoa ends up declared twice in the generated
+ * Package.swift, which SwiftPM rejects. Those setups have to opt out via
+ * `sentryKmp { autoInstall { spm { enabled = false } } }` before the `kotlin { }` block.
  */
 internal fun Project.installSentryForSpm4Kmp(
     autoInstall: AutoInstallExtension,

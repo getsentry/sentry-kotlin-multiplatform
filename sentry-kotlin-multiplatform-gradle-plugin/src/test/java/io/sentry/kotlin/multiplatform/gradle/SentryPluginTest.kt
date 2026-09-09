@@ -4,6 +4,7 @@ import io.github.frankois944.spmForKmp.swiftPackageConfig
 import io.sentry.BuildConfig
 import org.gradle.api.GradleException
 import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -328,7 +329,75 @@ class SentryPluginTest {
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        // Applied before spm4Kmp, so the install waits for afterEvaluate instead of running as the
+        // target is created.
+        assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+
+        (project as ProjectInternal).evaluate()
+
         assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+    }
+
+    @Test
+    fun `install Sentry Swift package eagerly when spm4Kmp is applied first`() {
+        Assumptions.assumeTrue(HostManager.hostIsMac)
+
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
+
+        // spm4Kmp's afterEvaluate is queued ahead of ours, so the package has to be registered
+        // while the target is being created.
+        val swiftPackages =
+            project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+    }
+
+    @Test
+    fun `spm opt-out after the kotlin block takes effect when applied before spm4Kmp`() {
+        Assumptions.assumeTrue(HostManager.hostIsMac)
+
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
+
+        // Opting out after the targets exist, which the eager registration could not honor.
+        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstall.spm.enabled.set(false)
+
+        (project as ProjectInternal).evaluate()
+
+        val swiftPackages =
+            project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
+        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
+    }
+
+    @Test
+    fun `user-defined per-target config is preserved when applied before spm4Kmp`() {
+        Assumptions.assumeTrue(HostManager.hostIsMac)
+
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        // A config declared inside the target block, i.e. after the auto-install would have run
+        // eagerly. Deferring to afterEvaluate lets it be detected instead of merged into.
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+
+        (project as ProjectInternal).evaluate()
+
+        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
     @Test

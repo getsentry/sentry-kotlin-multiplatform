@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id(Config.spmForKmp)
     id("io.sentry.kotlin.multiplatform.gradle")
+    id(Config.spmForKmp)
 }
 
 java {
