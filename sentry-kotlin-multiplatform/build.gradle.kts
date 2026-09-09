@@ -208,7 +208,7 @@ kotlin {
     }
 }
 
-// spm4Kmp 1.9.3 compiles watchosSimulatorArm64 with `--triple aarch64-apple-watchos-simulator`
+// spm4Kmp compiles watchosSimulatorArm64 with `--triple aarch64-apple-watchos-simulator`
 // (1.9.2 used `arm64`), and SwiftPM does not treat `aarch64` as `arm64` when matching binary
 // xcframework slices, so Sentry.framework is never copied into the build products directory and
 // the cinterop definition task fails with "Module map file not found for module: Sentry".
