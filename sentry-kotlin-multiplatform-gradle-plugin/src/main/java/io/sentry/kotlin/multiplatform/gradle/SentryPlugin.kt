@@ -1,8 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
-import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.gradle.api.GradleException
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.execution.TaskExecutionGraph
@@ -13,7 +11,6 @@ import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
-import java.net.URI
 
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
@@ -51,14 +48,12 @@ class SentryPlugin : Plugin<Project> {
                 sentryExtension.autoInstall.commonMain
             )
 
-            // spm4Kmp reads its swiftPackageConfig container in a single afterEvaluate registered
-            // while it is being applied, and Gradle runs afterEvaluate actions in registration
-            // order. So when spm4Kmp isn't applied yet, whatever we register here still runs before
-            // it reads the container, and the install can wait until afterEvaluate — where the
-            // sentryKmp { } block and any user-defined Swift package config are final no matter
-            // where the build script puts them. Once spm4Kmp is already applied its action is
-            // queued ahead of ours, leaving no choice but to register as each target is created,
-            // before the rest of the build script has been read.
+            // spm4Kmp reads its container in a single afterEvaluate registered while it is being
+            // applied, and Gradle runs those in registration order. Getting in first therefore
+            // lets the install wait for afterEvaluate, where the sentryKmp { } block and any user
+            // config are final wherever the build script puts them. If spm4Kmp is already applied
+            // its read is queued ahead of ours, leaving no choice but to register as each target
+            // is created.
             if (plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
                 project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN_ID) {
                     project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
@@ -95,8 +90,8 @@ class SentryPlugin : Plugin<Project> {
                 project.installSentryForCocoapods(autoInstall.cocoapods)
             }
 
-            // The spm4Kmp install is wired in apply() via plugins.withId, which fires regardless of
-            // plugin application order, so it is intentionally not invoked here.
+            // The spm4Kmp install is wired in apply(), from afterEvaluate or plugins.withId
+            // depending on plugin order, so it is intentionally not invoked here.
         }
 
         warnOnLateSpmAutoInstallOptOut(project, sentryExtension.autoInstall)
@@ -109,11 +104,9 @@ class SentryPlugin : Plugin<Project> {
     }
 
     /**
-     * When spm4Kmp is applied before this plugin, the Sentry Swift package has to be registered as
-     * each Apple target is created (inside the `kotlin { }` block), so an opt-out configured after
-     * that block is read too late to take effect. By afterEvaluate both states are final, so a
-     * disabled flag combined with the registration marker means the opt-out was silently
-     * ignored — warn instead.
+     * On the eager path an opt-out written after the `kotlin { }` block arrives too late to stop
+     * the registration. By afterEvaluate both are final, so a disabled flag together with the
+     * marker means the opt-out was silently ignored.
      */
     private fun warnOnLateSpmAutoInstallOptOut(
         project: Project,
@@ -139,48 +132,17 @@ class SentryPlugin : Plugin<Project> {
 }
 
 /**
- * Name of the integration that already provides Sentry Cocoa to every Apple target, or null when
- * the plugin has to resolve and link the framework itself.
+ * Name of the integration that provides Sentry Cocoa to *every* Apple target, or null when coverage
+ * has to be worked out per target with [isSentryConfiguredViaSpm4Kmp].
  *
- * Sentry Cocoa can reach an Apple target three ways, and exactly one of them has to win:
- * 1. CocoaPods, where `pod("Sentry")` lives in a single project-wide container and therefore covers
- *    either every Apple target or none.
- * 2. spm4Kmp, where a bare "sentryCocoa" config is project-wide as well, but `swiftPackageConfig`
- *    on a target registers "sentryCocoa_<Target>" and covers that one target.
- * 3. Nobody, in which case the plugin resolves the framework from DerivedData (or the configured
- *    `linker { }` paths) and links it itself.
- *
- * Because spm4Kmp is the only one that can cover *some* targets, the decision is split in two: this
- * answers the project-wide question, and [targetsNeedingFallbackLinking] sorts out the remaining
- * per-target spm4Kmp configs. CocoaPods is deliberately not re-checked there — being project-wide,
- * it has already short-circuited linking before that filter ever runs.
- *
- * The two are detected differently on purpose. Every spm4Kmp config is visible to us, so we can
- * require an actual Sentry package and be right about it. Pods are not: a consumer can declare
- * Sentry in their own Podfile, which never appears in [CocoapodsExtension.pods], so requiring
- * `pod("Sentry")` here would report "no provider" for a project that has one. That is not a
- * harmless guess — the fallback resolver throws when it cannot find a framework in DerivedData, so
- * a false negative turns a working build into a configuration failure. Applying the CocoaPods
- * plugin at all is therefore taken as intent to get Sentry Cocoa from CocoaPods.
+ * CocoaPods is the only project-wide one, and plugin presence is enough to claim it: a consumer can
+ * declare Sentry in their own Podfile, which never appears in [CocoapodsExtension.pods], and
+ * answering "no provider" for such a project makes the fallback resolver throw.
  */
-internal fun Project.externalCocoaFrameworkProvider(): String? =
-    when {
-        plugins.hasPlugin(KotlinCocoapodsPlugin::class.java) -> "CocoaPods"
-        isSentryConfiguredViaSpm4Kmp() -> "spm4Kmp"
-        else -> null
-    }
-
-/**
- * The subset of [targets] the plugin still has to link itself, i.e. everything not covered by a
- * per-target spm4Kmp config. Only reached when no project-wide provider exists — see
- * [externalCocoaFrameworkProvider].
- */
-internal fun Project.targetsNeedingFallbackLinking(
-    targets: List<KotlinNativeTarget>
-): List<KotlinNativeTarget> =
-    targets.filterNot { target ->
-        isSentryConfiguredViaSpm4Kmp(target.name)
-    }
+internal fun Project.externalCocoaFrameworkProvider(): String? {
+    val hasCocoapodsPlugin = plugins.hasPlugin(KotlinCocoapodsPlugin::class.java)
+    return if (hasCocoapodsPlugin) "CocoaPods" else null
+}
 
 private fun maybeLinkCocoaFramework(
     project: Project,
@@ -216,9 +178,11 @@ private fun maybeLinkCocoaFramework(
     }
 
     project.gradle.taskGraph.whenReady { graph ->
-        // Check which of the Kotlin/Native targets are actually in the graph
         val requestedTargets = getActiveTargets(project, appleTargets, graph)
-        val activeTargets = project.targetsNeedingFallbackLinking(requestedTargets)
+        // CocoaPods is project-wide and has already short-circuited linking above; spm4Kmp
+        // coverage is per target, so split into what it supplies and what we link ourselves.
+        val (spmCoveredTargets, activeTargets) =
+            requestedTargets.partition { project.isSentryConfiguredViaSpm4Kmp(it.name) }
 
         if (activeTargets.isEmpty()) {
             val message =
@@ -231,8 +195,6 @@ private fun maybeLinkCocoaFramework(
             return@whenReady
         }
 
-        val spmCoveredTargets =
-            requestedTargets.filter { project.isSentryConfiguredViaSpm4Kmp(it.name) }
         if (spmCoveredTargets.isNotEmpty()) {
             project.logger.lifecycle(
                 "Sentry Cocoa is provided by spm4Kmp for targets: ${spmCoveredTargets.map { it.name }}"
@@ -322,110 +284,3 @@ internal fun Project.installSentryForCocoapods(
 }
 
 private const val SENTRY_POD_NAME = "Sentry"
-internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
-private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
-
-internal fun Project.isSentryConfiguredViaSpm4Kmp(targetName: String? = null): Boolean {
-    if (!plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
-        return false
-    }
-    val swiftPackageConfigs =
-        extensions.findByName(SPM4KMP_SWIFT_PACKAGE_CONFIG_EXTENSION_NAME)
-            as? NamedDomainObjectContainer<*> ?: return false
-    if (SENTRY_COCOA_CINTEROP_NAME in swiftPackageConfigs.names) {
-        return true
-    }
-    if (targetName == null) {
-        return false
-    }
-    val perTargetName =
-        "${SENTRY_COCOA_CINTEROP_NAME}_${targetName.replaceFirstChar { it.uppercase() }}"
-    return perTargetName in swiftPackageConfigs.names
-}
-
-/**
- * Extra-property marker set when the spm4Kmp auto-install actually registered the Sentry Swift
- * package, used to warn when the auto-install opt-out is configured too late to take effect.
- */
-internal const val SPM_AUTO_INSTALLED_MARKER = "io.sentry.kotlin.multiplatform.spmAutoInstalled"
-
-/**
- * True when a [SENTRY_COCOA_CINTEROP_NAME] Swift package config already exists for [targetName] in
- * the spm4Kmp container — either a global (non target-scoped) "sentryCocoa" entry or the
- * "sentryCocoa_<TargetCapitalized>" key that spm4Kmp's `swiftPackageConfig(cinteropName)` creates.
- *
- * The container is the only reliable "already configured" signal at configuration time: spm4Kmp
- * creates the actual Kotlin cinterop only in its own afterEvaluate, and capitalizes its name
- * ("SentryCocoa"), so checking the compilation's cinterops would never match a spm4Kmp-managed
- * config.
- *
- * On the eager path this only sees configs registered before [targetName] was created — see
- * [installSentryForSpm4Kmp].
- */
-private fun Project.hasSentrySwiftPackageConfig(targetName: String): Boolean {
-    val swiftPackageConfigs =
-        extensions.findByName(SPM4KMP_SWIFT_PACKAGE_CONFIG_EXTENSION_NAME)
-            as? NamedDomainObjectContainer<*> ?: return false
-    val perTargetName =
-        "${SENTRY_COCOA_CINTEROP_NAME}_${targetName.replaceFirstChar { it.uppercase() }}"
-    return SENTRY_COCOA_CINTEROP_NAME in swiftPackageConfigs.names ||
-        perTargetName in swiftPackageConfigs.names
-}
-
-/**
- * Adds the Sentry Cocoa Swift package to every Apple target via the spm4Kmp DSL so consumers don't
- * have to declare it themselves. Re-running is a no-op, and a [SENTRY_COCOA_CINTEROP_NAME] config
- * that already exists when the Apple targets are created is left untouched.
- *
- * When this runs from afterEvaluate every config is final, so a user's own is always detected. When
- * spm4Kmp forces the eager path it runs on target creation instead, and a config registered *inside*
- * the target block (`iosArm64 { swiftPackageConfig(...) }`) cannot be seen, because Gradle invokes
- * that block afterwards. spm4Kmp's `swiftPackageConfig` uses `maybeCreate`, so the user config then
- * lands on the object registered here and sentry-cocoa ends up declared twice in the generated
- * Package.swift, which SwiftPM rejects. Those setups have to opt out via
- * `sentryKmp { autoInstall { spm { enabled = false } } }` before the `kotlin { }` block.
- */
-internal fun Project.installSentryForSpm4Kmp(
-    autoInstall: AutoInstallExtension,
-    hostIsMac: Boolean = HostManager.hostIsMac
-) {
-    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension || !hostIsMac) {
-        logger.info("Skipping spm4Kmp installation.")
-        return
-    }
-
-    kmpExtension.appleTargets().configureEach { target ->
-        if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
-            return@configureEach
-        }
-
-        if (hasSentrySwiftPackageConfig(target.name)) {
-            logger.info(
-                "Sentry Cocoa Swift package already configured for ${target.name}. " +
-                    "Skipping spm4Kmp auto installation."
-            )
-            return@configureEach
-        }
-
-        val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
-        extensions.extraProperties.set(SPM_AUTO_INSTALLED_MARKER, true)
-        target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
-            dependency {
-                remotePackageVersion(
-                    url = URI(SENTRY_COCOA_GIT_URL),
-                    version = cocoaVersion,
-                    products = {
-                        // exportToKotlin defaults to false (link only). The published KMP SDK klib
-                        // already contains the Sentry cinterop bindings, so consumers only need the
-                        // framework available at link time.
-                        add("Sentry")
-                    }
-                )
-            }
-        }
-        logger.info(
-            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}."
-        )
-    }
-}
