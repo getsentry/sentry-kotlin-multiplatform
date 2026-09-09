@@ -94,7 +94,7 @@ class SentryPlugin : Plugin<Project> {
 
         maybeLinkCocoaFramework(
             project,
-            frameworkProvidedExternally = project.hasExternalCocoaFrameworkProvider(),
+            externalProvider = project.externalCocoaFrameworkProvider(),
             hostIsMac
         )
     }
@@ -127,22 +127,42 @@ class SentryPlugin : Plugin<Project> {
     }
 }
 
-internal fun Project.hasExternalCocoaFrameworkProvider(): Boolean =
-    isSentryConfiguredViaCocoapods() || isSentryConfiguredViaSpm4Kmp()
-
-internal fun Project.isSentryConfiguredViaCocoapods(): Boolean {
-    if (plugins.findPlugin(KotlinCocoapodsPlugin::class.java) == null) {
-        return false
-    }
-    val kmpExtension =
-        extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-            ?: return false
+/**
+ * Name of the integration that already provides Sentry Cocoa to every Apple target, or null when
+ * the plugin has to resolve and link the framework itself.
+ *
+ * Sentry Cocoa can reach an Apple target three ways, and exactly one of them has to win:
+ * 1. CocoaPods, where `pod("Sentry")` lives in a single project-wide container and therefore covers
+ *    either every Apple target or none.
+ * 2. spm4Kmp, where a bare "sentryCocoa" config is project-wide as well, but `swiftPackageConfig`
+ *    on a target registers "sentryCocoa_<Target>" and covers that one target.
+ * 3. Nobody, in which case the plugin resolves the framework from DerivedData (or the configured
+ *    `linker { }` paths) and links it itself.
+ *
+ * Because spm4Kmp is the only one that can cover *some* targets, the decision is split in two: this
+ * answers the project-wide question, and [targetsNeedingFallbackLinking] sorts out the remaining
+ * per-target spm4Kmp configs. CocoaPods is deliberately not re-checked there — being project-wide,
+ * a Sentry pod has already short-circuited linking before that filter ever runs.
+ */
+internal fun Project.externalCocoaFrameworkProvider(): String? {
+    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
     val cocoapodsExtension =
-        (kmpExtension as ExtensionAware).extensions.findByType(CocoapodsExtension::class.java)
-            ?: return false
-    return cocoapodsExtension.pods.findByName("Sentry") != null
+        if (plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null && kmpExtension != null) {
+            (kmpExtension as ExtensionAware).extensions.findByType(CocoapodsExtension::class.java)
+        } else {
+            null
+        }
+    if (cocoapodsExtension?.pods?.findByName(SENTRY_POD_NAME) != null) {
+        return "CocoaPods"
+    }
+    return if (isSentryConfiguredViaSpm4Kmp()) "spm4Kmp" else null
 }
 
+/**
+ * The subset of [targets] the plugin still has to link itself, i.e. everything not covered by a
+ * per-target spm4Kmp config. Only reached when no project-wide provider exists — see
+ * [externalCocoaFrameworkProvider].
+ */
 internal fun Project.targetsNeedingFallbackLinking(
     targets: List<KotlinNativeTarget>
 ): List<KotlinNativeTarget> =
@@ -152,50 +172,68 @@ internal fun Project.targetsNeedingFallbackLinking(
 
 private fun maybeLinkCocoaFramework(
     project: Project,
-    frameworkProvidedExternally: Boolean,
+    externalProvider: String?,
     hostIsMac: Boolean
 ) {
-    if (hostIsMac && !frameworkProvidedExternally) {
-        // Register a task graph listener so that we only configure Cocoa framework linking
-        // if at least one Apple target task is part of the requested task graph. This avoids
-        // executing the (potentially expensive) path-resolution logic when the build is only
-        // concerned with non-Apple targets such as Android.
+    if (!hostIsMac) {
+        project.logger.info("Host is not macOS - skipping Sentry Cocoa framework linking setup.")
+        return
+    }
 
-        val kmpExtension =
-            project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-                ?: throw GradleException("Error fetching Kotlin Multiplatform extension.")
+    if (externalProvider != null) {
+        project.logger.lifecycle(
+            "Sentry Cocoa is provided by $externalProvider - skipping Sentry Cocoa framework linking"
+        )
+        return
+    }
 
-        val appleTargets = kmpExtension.appleTargets().toList()
+    // Register a task graph listener so that we only configure Cocoa framework linking
+    // if at least one Apple target task is part of the requested task graph. This avoids
+    // executing the (potentially expensive) path-resolution logic when the build is only
+    // concerned with non-Apple targets such as Android.
 
-        if (appleTargets.isEmpty()) {
-            project.logger.info("No Apple targets detected – skipping Sentry Cocoa framework linking setup.")
-            return
+    val kmpExtension =
+        project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
+            ?: throw GradleException("Error fetching Kotlin Multiplatform extension.")
+
+    val appleTargets = kmpExtension.appleTargets().toList()
+
+    if (appleTargets.isEmpty()) {
+        project.logger.info("No Apple targets detected – skipping Sentry Cocoa framework linking setup.")
+        return
+    }
+
+    project.gradle.taskGraph.whenReady { graph ->
+        // Check which of the Kotlin/Native targets are actually in the graph
+        val requestedTargets = getActiveTargets(project, appleTargets, graph)
+        val activeTargets = project.targetsNeedingFallbackLinking(requestedTargets)
+
+        if (activeTargets.isEmpty()) {
+            val message =
+                if (requestedTargets.isEmpty()) {
+                    "No Apple compile task scheduled for this build"
+                } else {
+                    "Sentry Cocoa is provided by spm4Kmp for all requested Apple targets"
+                }
+            project.logger.lifecycle("$message - skipping Sentry Cocoa framework linking")
+            return@whenReady
         }
 
-        project.gradle.taskGraph.whenReady { graph ->
-            // Check which of the Kotlin/Native targets are actually in the graph
-            val requestedTargets = getActiveTargets(project, appleTargets, graph)
-            val activeTargets = project.targetsNeedingFallbackLinking(requestedTargets)
-
-            if (activeTargets.isEmpty()) {
-                val message =
-                    if (requestedTargets.isEmpty()) {
-                        "No Apple compile task scheduled for this build"
-                    } else {
-                        "Sentry Cocoa is provided by spm4Kmp for all requested Apple targets"
-                    }
-                project.logger.lifecycle("$message - skipping Sentry Cocoa framework linking")
-                return@whenReady
-            }
-
-            project.logger.lifecycle("Set up Sentry Cocoa linking for targets: ${activeTargets.map { it.name }}")
-
-            CocoaFrameworkLinker(
-                logger = project.logger,
-                pathResolver = FrameworkPathResolver(project),
-                binaryLinker = FrameworkLinker(project.logger)
-            ).configure(appleTargets = activeTargets)
+        val spmCoveredTargets =
+            requestedTargets.filter { project.isSentryConfiguredViaSpm4Kmp(it.name) }
+        if (spmCoveredTargets.isNotEmpty()) {
+            project.logger.lifecycle(
+                "Sentry Cocoa is provided by spm4Kmp for targets: ${spmCoveredTargets.map { it.name }}"
+            )
         }
+
+        project.logger.lifecycle("Set up Sentry Cocoa linking for targets: ${activeTargets.map { it.name }}")
+
+        CocoaFrameworkLinker(
+            logger = project.logger,
+            pathResolver = FrameworkPathResolver(project),
+            binaryLinker = FrameworkLinker(project.logger)
+        ).configure(appleTargets = activeTargets)
     }
 }
 
@@ -256,18 +294,22 @@ internal fun Project.installSentryForCocoapods(
     }
 
     (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
-        val podName = "Sentry"
-        val sentryPod = cocoapods.pods.findByName(podName)
+        val sentryPod = cocoapods.pods.findByName(SENTRY_POD_NAME)
         if (sentryPod == null) {
-            cocoapods.pod(podName) {
-                version = cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
+            val cocoaVersion = cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
+            cocoapods.pod(SENTRY_POD_NAME) {
+                version = cocoaVersion
                 linkOnly = true
                 extraOpts += listOf("-compiler-option", "-fmodules")
             }
+            logger.info("Added the Sentry Cocoa $cocoaVersion pod via CocoaPods auto installation.")
+        } else {
+            logger.info("Sentry pod already configured. Skipping CocoaPods auto installation.")
         }
     }
 }
 
+private const val SENTRY_POD_NAME = "Sentry"
 internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
 private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
 
@@ -304,6 +346,8 @@ internal const val SPM_AUTO_INSTALLED_MARKER = "io.sentry.kotlin.multiplatform.s
  * creates the actual Kotlin cinterop only in its own afterEvaluate, and capitalizes its name
  * ("SentryCocoa"), so checking the compilation's cinterops would never match a spm4Kmp-managed
  * config.
+ *
+ * Only sees configs registered before [targetName] was created — see [installSentryForSpm4Kmp].
  */
 private fun Project.hasSentrySwiftPackageConfig(targetName: String): Boolean {
     val swiftPackageConfigs =
@@ -317,9 +361,15 @@ private fun Project.hasSentrySwiftPackageConfig(targetName: String): Boolean {
 
 /**
  * Adds the Sentry Cocoa Swift package to every Apple target via the spm4Kmp DSL so consumers don't
- * have to declare it themselves. Idempotent: skips any target that already has a
- * [SENTRY_COCOA_CINTEROP_NAME] Swift package config registered with spm4Kmp (e.g. a user-defined
- * Sentry config) and re-running is a no-op.
+ * have to declare it themselves. Re-running is a no-op, and a [SENTRY_COCOA_CINTEROP_NAME] config
+ * that already exists when the Apple targets are created is left untouched.
+ *
+ * A user config registered *inside* the target block (`iosArm64 { swiftPackageConfig(...) }`) is not
+ * detected, because this runs on target creation and Gradle invokes that block afterwards. spm4Kmp's
+ * `swiftPackageConfig` uses `maybeCreate`, so the user config then lands on the object registered
+ * here and sentry-cocoa ends up declared twice in the generated Package.swift, which SwiftPM
+ * rejects. Such setups have to opt out via `sentryKmp { autoInstall { spm { enabled = false } } }`
+ * placed before the `kotlin { }` block.
  */
 internal fun Project.installSentryForSpm4Kmp(
     autoInstall: AutoInstallExtension,
@@ -344,12 +394,13 @@ internal fun Project.installSentryForSpm4Kmp(
             return@configureEach
         }
 
+        val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
         extensions.extraProperties.set(SPM_AUTO_INSTALLED_MARKER, true)
         target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
             dependency {
                 remotePackageVersion(
                     url = URI(SENTRY_COCOA_GIT_URL),
-                    version = autoInstall.spm.sentryCocoaVersion.get(),
+                    version = cocoaVersion,
                     products = {
                         // exportToKotlin defaults to false (link only). The published KMP SDK klib
                         // already contains the Sentry cinterop bindings, so consumers only need the
@@ -359,5 +410,8 @@ internal fun Project.installSentryForSpm4Kmp(
                 )
             }
         }
+        logger.info(
+            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}."
+        )
     }
 }
