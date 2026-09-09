@@ -86,8 +86,8 @@ your Apple targets automatically — you don't need to declare the Sentry Swift 
 ```kotlin
 plugins {
     kotlin("multiplatform")
-    id("io.github.frankois944.spmForKmp")
     id("io.sentry.kotlin.multiplatform.gradle")
+    id("io.github.frankois944.spmForKmp")
 }
 ```
 
@@ -106,16 +106,18 @@ sentryKmp {
 ```
 
 > [!NOTE]
-> The Sentry Swift package is registered as soon as the Apple targets are created, so place the
-> `sentryKmp { }` block **before** the `kotlin { }` block — otherwise the opt-out (including the
-> global `autoInstall.enabled` flag) and version override have no effect.
+> Apply this plugin **before** the spm4Kmp plugin, as in the snippet above, so that the settings
+> above can go anywhere in the build script. If spm4Kmp is applied first, the Sentry Swift package
+> has to be registered as the Apple targets are created, so the `sentryKmp { }` block must then come
+> before the `kotlin { }` block — otherwise the opt-out (including the global `autoInstall.enabled`
+> flag) and version override have no effect. The plugin warns when it detects this.
 
 > [!IMPORTANT]
-> If you declare the Sentry Swift package yourself inside a target (for example
-> `iosArm64 { swiftPackageConfig(cinteropName = "sentryCocoa") { ... } }`), you must opt out as shown
-> above. That block runs after the auto-install has already registered the package, so both
-> declarations end up in the same spm4Kmp config and SwiftPM fails on the duplicate `sentry-cocoa`
-> dependency.
+> If spm4Kmp is applied first *and* you declare the Sentry Swift package yourself inside a target
+> (for example `iosArm64 { swiftPackageConfig(cinteropName = "sentryCocoa") { ... } }`), you must opt
+> out as shown above. The auto-install cannot see a config declared there, so both declarations end
+> up in the same spm4Kmp config and SwiftPM fails on the duplicate `sentry-cocoa` dependency.
+> Applying this plugin first avoids the problem: your config is then detected and left alone.
 
 Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
 Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for

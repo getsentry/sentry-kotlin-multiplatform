@@ -19,9 +19,9 @@ constructor(
      * If the spm4Kmp plugin (io.github.frankois944.spmForKmp) is applied and no existing Sentry
      * Swift package configuration exists, the Sentry-Cocoa SDK will be added to every Apple target.
      *
-     * The Swift package is registered as soon as each Apple target is created, so this must be set
-     * before the `kotlin { }` block declares the Apple targets — setting it afterwards has no
-     * effect.
+     * Can be set anywhere in the build script, as long as this plugin is applied before the spm4Kmp
+     * plugin. If spm4Kmp is applied first, the Swift package has to be registered as each Apple
+     * target is created, so this must then be set before the `kotlin { }` block declares them.
      *
      * Defaults to true.
      */
@@ -30,9 +30,9 @@ constructor(
     /**
      * Overrides default Sentry Cocoa version.
      *
-     * The Swift package is registered as soon as each Apple target is created, so this must be set
-     * before the `kotlin { }` block declares the Apple targets — setting it afterwards has no
-     * effect.
+     * Can be set anywhere in the build script, as long as this plugin is applied before the spm4Kmp
+     * plugin. If spm4Kmp is applied first, the Swift package has to be registered as each Apple
+     * target is created, so this must then be set before the `kotlin { }` block declares them.
      *
      * Defaults to the version used in the latest KMP SDK. Must be an exact version since the Swift
      * Package Manager resolves remote packages by exact version.
