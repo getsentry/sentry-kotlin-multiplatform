@@ -19,26 +19,24 @@ VERSION_NAME_PATTERN="versionName"
 perl -pi -e "s/$VERSION_NAME_PATTERN=.*$/$VERSION_NAME_PATTERN=$NEW_VERSION/g" $GRADLE_FILEPATH
 perl -pi -e "s/$VERSION_NAME_PATTERN=.*$/$VERSION_NAME_PATTERN=$NEW_VERSION/g" $PLUGIN_GRADLE_FILEPATH
 
-PODSPEC_FILEPATH='sentry-kotlin-multiplatform/sentry_kotlin_multiplatform.podspec'
-PODSPEC_CONTENT=$(cat $PODSPEC_FILEPATH)
+CONFIG_FILEPATH='buildSrc/src/main/java/Config.kt'
+CONFIG_CONTENT=$(cat $CONFIG_FILEPATH)
 
-PODSPEC_REGEX="('Sentry', *)'([0-9\.]+)'"
+COCOA_VERSION_REGEX='sentryCocoaVersion *= *"([0-9\.]+)"'
 
-if ! [[ $PODSPEC_CONTENT =~ $PODSPEC_REGEX ]]; then
-    echo "Failed to find the Cocoa version in $PODSPEC_FILEPATH"
+if ! [[ $CONFIG_CONTENT =~ $COCOA_VERSION_REGEX ]]; then
+    echo "Failed to find the Cocoa version in $CONFIG_FILEPATH"
     exit 1
 fi
 
-PODSPEC_WHOLE_MATCH=${BASH_REMATCH[0]}
-PODSPEC_VAR_NAME=${BASH_REMATCH[1]}
-PODSPEC_VERSION=${BASH_REMATCH[2]}
+COCOA_VERSION=${BASH_REMATCH[1]}
 
-# create a new table entry in readme with NEW_VERSION and PODSPEC_VERSION in the compatibility table
+# create a new table entry in readme with NEW_VERSION and COCOA_VERSION in the compatibility table
 # Find the line number of the last entry in the compatibility table and insert the new entry after it
 README_FILE="README.md"
 
 # Check if an entry with the same KMP version and Cocoa version already exists
-EXISTING_ENTRY=$(grep "| $NEW_VERSION" $README_FILE 2>/dev/null | grep "$PODSPEC_VERSION" 2>/dev/null || true)
+EXISTING_ENTRY=$(grep "| $NEW_VERSION" $README_FILE 2>/dev/null | grep "$COCOA_VERSION" 2>/dev/null || true)
 
 if [ -n "$EXISTING_ENTRY" ]; then
     echo "Found same KMP and Cocoaversion in the compatibility table. Skipping addition to avoid duplicate."
@@ -56,10 +54,10 @@ fi
 TEMP_FILE=$(mktemp)
 
 head -n $LAST_TABLE_LINE $README_FILE > $TEMP_FILE
-echo "| $NEW_VERSION                     | $PODSPEC_VERSION            |" >> $TEMP_FILE
+echo "| $NEW_VERSION                     | $COCOA_VERSION            |" >> $TEMP_FILE
 tail -n +$((LAST_TABLE_LINE + 1)) $README_FILE >> $TEMP_FILE
 
 # Replace the original file with the modified content
 mv $TEMP_FILE $README_FILE
 
-echo "Added new compatibility table entry: | $NEW_VERSION | $PODSPEC_VERSION |"
+echo "Added new compatibility table entry: | $NEW_VERSION | $COCOA_VERSION |"
