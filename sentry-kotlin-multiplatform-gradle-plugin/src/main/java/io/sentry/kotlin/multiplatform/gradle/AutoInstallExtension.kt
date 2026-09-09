@@ -14,9 +14,11 @@ abstract class AutoInstallExtension @Inject constructor(project: Project) {
      *
      * Disabling this will prevent the plugin from auto installing any dependency.
      *
-     * The spm4Kmp auto-install registers the Sentry Swift package as soon as each Apple target is
-     * created, so to disable it this flag must be set before the `kotlin { }` block declares the
-     * Apple targets — setting it afterwards only disables the CocoaPods and commonMain installs.
+     * If the spm4Kmp plugin is applied before this one, its Swift package has to be registered as
+     * each Apple target is created, so disabling it then requires setting this flag before the
+     * `kotlin { }` block declares the targets — setting it afterwards only disables the CocoaPods
+     * and commonMain installs. Applying this plugin first lifts that restriction; see
+     * [Spm4KmpAutoInstallExtension.enabled].
      *
      * Defaults to true.
      */

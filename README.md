@@ -119,6 +119,13 @@ sentryKmp {
 > up in the same spm4Kmp config and SwiftPM fails on the duplicate `sentry-cocoa` dependency.
 > Applying this plugin first avoids the problem: your config is then detected and left alone.
 
+> [!NOTE]
+> Declaring the Sentry Swift package yourself for *any* target switches the auto-install off for
+> **all** of them. spm4Kmp merges configs that share a cinterop name into a single package, so
+> auto-installing alongside yours would put two `sentry-cocoa` versions into one package and
+> silently pick one — overriding a version you pinned on purpose. The plugin warns and names the
+> targets it left uncovered, so add those to your own `swiftPackageConfig` if they need Sentry Cocoa.
+
 Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
 Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for
 plain SPM-in-Xcode setups.
