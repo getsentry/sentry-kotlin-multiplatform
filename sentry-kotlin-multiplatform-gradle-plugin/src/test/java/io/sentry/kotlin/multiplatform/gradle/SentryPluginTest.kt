@@ -251,6 +251,7 @@ class SentryPluginTest {
 
         val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
         assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "custom version")
+        assertTrue(project.hasExternalCocoaFrameworkProvider())
     }
 
     @Test
@@ -347,6 +348,7 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
+        assertFalse(project.hasExternalCocoaFrameworkProvider())
     }
 
     @Test
@@ -368,6 +370,7 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
+        assertTrue(project.hasExternalCocoaFrameworkProvider())
     }
 
     @Test
@@ -391,11 +394,51 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `framework is considered externally provided when spm4Kmp plugin is applied`() {
+    fun `spm4Kmp plugin without Sentry does not provide the framework`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
 
-        assertTrue(project.hasExternalCocoaFrameworkProvider())
+        assertFalse(project.hasExternalCocoaFrameworkProvider())
+    }
+
+    @Test
+    fun `CocoaPods plugin without Sentry does not provide the framework`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
+
+        assertFalse(project.hasExternalCocoaFrameworkProvider())
+    }
+
+    @Test
+    fun `target-specific spm4Kmp configuration does not provide the framework globally`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+
+        assertFalse(project.hasExternalCocoaFrameworkProvider())
+    }
+
+    @Test
+    fun `spm4Kmp configuration only covers its matching Apple target`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val configuredTarget =
+            kmpExtension.iosArm64().also {
+                it.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+            }
+        val fallbackTarget = kmpExtension.iosSimulatorArm64()
+
+        assertEquals(
+            listOf(fallbackTarget),
+            project.targetsNeedingFallbackLinking(listOf(configuredTarget, fallbackTarget))
+        )
     }
 
     @Test
