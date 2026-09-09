@@ -471,12 +471,15 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `CocoaPods plugin without Sentry does not provide the framework`() {
+    fun `CocoaPods plugin provides the framework even without a pod in the Kotlin DSL`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
-        assertNull(project.externalCocoaFrameworkProvider())
+        // Sentry may be declared in the consumer's own Podfile, which never shows up in the
+        // CocoaPods extension. Falling back to DerivedData linking here would throw for a project
+        // that does have the framework.
+        assertEquals("CocoaPods", project.externalCocoaFrameworkProvider())
     }
 
     @Test

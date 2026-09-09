@@ -153,21 +153,22 @@ class SentryPlugin : Plugin<Project> {
  * Because spm4Kmp is the only one that can cover *some* targets, the decision is split in two: this
  * answers the project-wide question, and [targetsNeedingFallbackLinking] sorts out the remaining
  * per-target spm4Kmp configs. CocoaPods is deliberately not re-checked there — being project-wide,
- * a Sentry pod has already short-circuited linking before that filter ever runs.
+ * it has already short-circuited linking before that filter ever runs.
+ *
+ * The two are detected differently on purpose. Every spm4Kmp config is visible to us, so we can
+ * require an actual Sentry package and be right about it. Pods are not: a consumer can declare
+ * Sentry in their own Podfile, which never appears in [CocoapodsExtension.pods], so requiring
+ * `pod("Sentry")` here would report "no provider" for a project that has one. That is not a
+ * harmless guess — the fallback resolver throws when it cannot find a framework in DerivedData, so
+ * a false negative turns a working build into a configuration failure. Applying the CocoaPods
+ * plugin at all is therefore taken as intent to get Sentry Cocoa from CocoaPods.
  */
-internal fun Project.externalCocoaFrameworkProvider(): String? {
-    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
-    val cocoapodsExtension =
-        if (plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null && kmpExtension != null) {
-            (kmpExtension as ExtensionAware).extensions.findByType(CocoapodsExtension::class.java)
-        } else {
-            null
-        }
-    if (cocoapodsExtension?.pods?.findByName(SENTRY_POD_NAME) != null) {
-        return "CocoaPods"
+internal fun Project.externalCocoaFrameworkProvider(): String? =
+    when {
+        plugins.hasPlugin(KotlinCocoapodsPlugin::class.java) -> "CocoaPods"
+        isSentryConfiguredViaSpm4Kmp() -> "spm4Kmp"
+        else -> null
     }
-    return if (isSentryConfiguredViaSpm4Kmp()) "spm4Kmp" else null
-}
 
 /**
  * The subset of [targets] the plugin still has to link itself, i.e. everything not covered by a
