@@ -6,6 +6,8 @@ object Config {
 
     val multiplatform = "multiplatform"
     val cocoapods = "native.cocoapods"
+    val spmForKmp = "io.github.frankois944.spmForKmp"
+    val spmForKmpVersion = "1.9.5"
     val jetpackCompose = "org.jetbrains.compose"
     val kotlinCompose = "org.jetbrains.kotlin.plugin.compose"
     val gradleMavenPublishPlugin = "com.vanniktech.maven.publish"
