@@ -535,8 +535,9 @@ class SentryPluginTest {
         assertNull(cocoapodsExtension.pods.findByName("Sentry"))
     }
 
-    @Test
-    fun `global spm4Kmp config only covers targets that declare the cinterop`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
+    fun `global spm4Kmp config only covers targets that declare the cinterop`(cinteropName: String) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -552,7 +553,7 @@ class SentryPluginTest {
         val simulator = kmpExtension.iosSimulatorArm64()
         // spm4Kmp connects a global config to targets through matching cinterop tasks, so a target
         // without the cinterop is not covered by it and still needs fallback linking.
-        device.compilations.getByName("main").cinterops.create(SENTRY_COCOA_CINTEROP_NAME)
+        device.compilations.getByName("main").cinterops.create(cinteropName)
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
