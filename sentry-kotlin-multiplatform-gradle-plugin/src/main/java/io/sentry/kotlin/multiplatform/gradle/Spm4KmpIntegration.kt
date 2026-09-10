@@ -65,7 +65,7 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
  */
 internal fun Project.installSentryForSpm4Kmp(
     autoInstall: AutoInstallExtension,
-    hostIsMac: Boolean = HostManager.hostIsMac
+    hostIsMac: Boolean = HostManager.hostIsMac,
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension || !hostIsMac) {
@@ -85,12 +85,12 @@ internal fun Project.installSentryForSpm4Kmp(
                     "Sentry Cocoa is configured with spm4Kmp in $userDefinedConfigNames, so the " +
                         "auto-install left ${target.name} alone rather than add a second " +
                         "sentry-cocoa package that would override that configuration. Add " +
-                        "${target.name} to your own swiftPackageConfig if it needs Sentry Cocoa."
+                        "${target.name} to your own swiftPackageConfig if it needs Sentry Cocoa.",
                 )
             } else {
                 logger.info(
                     "Sentry Cocoa Swift package already configured for ${target.name}. " +
-                        "Skipping spm4Kmp auto installation."
+                        "Skipping spm4Kmp auto installation.",
                 )
             }
             return@forEach
@@ -106,12 +106,12 @@ internal fun Project.installSentryForSpm4Kmp(
                         // Link only (exportToKotlin defaults to false): the published klib already
                         // carries the Sentry cinterop bindings.
                         add("Sentry")
-                    }
+                    },
                 )
             }
         }
         logger.lifecycle(
-            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}."
+            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
         )
     }
 }

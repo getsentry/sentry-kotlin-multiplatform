@@ -6,8 +6,12 @@ import org.gradle.api.provider.Property
 import javax.inject.Inject
 
 @Suppress("UnnecessaryAbstractClass")
-abstract class CocoapodsAutoInstallExtension @Inject constructor(project: Project) {
-    private val objects = project.objects
+abstract class CocoapodsAutoInstallExtension
+    @Inject
+    constructor(
+        project: Project,
+    ) {
+        private val objects = project.objects
 
     /**
      * Enable auto-installation of the Sentry Cocoa SDK pod.
@@ -20,11 +24,11 @@ abstract class CocoapodsAutoInstallExtension @Inject constructor(project: Projec
      */
     val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
-    /**
-     * Overrides default Sentry Cocoa version.
-     *
-     * Defaults to the version used in the latest KMP SDK.
-     */
-    val sentryCocoaVersion: Property<String> =
-        objects.property(String::class.java).convention("~> ${BuildConfig.SentryCocoaVersion}")
-}
+        /**
+         * Overrides default Sentry Cocoa version.
+         *
+         * Defaults to the version used in the latest KMP SDK.
+         */
+        val sentryCocoaVersion: Property<String> =
+            objects.property(String::class.java).convention("~> ${BuildConfig.SentryCocoaVersion}")
+    }

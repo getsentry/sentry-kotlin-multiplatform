@@ -26,7 +26,7 @@ class DerivedDataStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve static path`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path
+        @TempDir dir: Path,
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
         val xcframeworkPath =
@@ -35,9 +35,10 @@ class DerivedDataStrategyTest {
         val archDirectory =
             Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture.first()))
 
-        val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
-            dir.toFile().absolutePath
-        }
+        val sut =
+            fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
+                dir.toFile().absolutePath
+            }
 
         val paths = sut.resolvePaths(expectedArchitecture)
         assertEquals(archDirectory.absolutePathString(), paths.static)
@@ -48,7 +49,7 @@ class DerivedDataStrategyTest {
     @MethodSource("architectureMappingProvider")
     fun `if xcodeproj is null and find xcode project successfully then resolve dynamic path`(
         expectedArchitecture: Set<String>,
-        @TempDir dir: Path
+        @TempDir dir: Path,
     ) {
         Files.createDirectory(dir.resolve("project.xcodeproj"))
         val xcframeworkPath =
@@ -57,9 +58,10 @@ class DerivedDataStrategyTest {
         val archDirectory =
             Files.createDirectory(xcframeworkDirectory.resolve(expectedArchitecture.first()))
 
-        val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
-            dir.toFile().absolutePath
-        }
+        val sut =
+            fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
+                dir.toFile().absolutePath
+            }
 
         val paths = sut.resolvePaths(expectedArchitecture)
         assertEquals(archDirectory.absolutePathString(), paths.dynamic)
@@ -68,11 +70,12 @@ class DerivedDataStrategyTest {
 
     @Test
     fun `if xcodeproj is null and find xcode project is not successful then return NONE`(
-        @TempDir dir: Path
+        @TempDir dir: Path,
     ) {
-        val sut = fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
-            dir.toFile().absolutePath
-        }
+        val sut =
+            fixture.getSut(null, rootDirPath = dir.toFile().absolutePath) { _: String ->
+                dir.toFile().absolutePath
+            }
 
         val paths = sut.resolvePaths(setOf("doesnt matter"))
         assertEquals(FrameworkPaths.NONE, paths)
@@ -80,14 +83,15 @@ class DerivedDataStrategyTest {
 
     @Test
     fun `if xcodeproj is not null and find xcode project is not successful then return NONE`(
-        @TempDir dir: Path
+        @TempDir dir: Path,
     ) {
-        val sut = fixture.getSut(
-            "some invalid path",
-            rootDirPath = dir.toFile().absolutePath
-        ) { _: String ->
-            dir.toFile().absolutePath
-        }
+        val sut =
+            fixture.getSut(
+                "some invalid path",
+                rootDirPath = dir.toFile().absolutePath,
+            ) { _: String ->
+                dir.toFile().absolutePath
+            }
 
         val paths = sut.resolvePaths(setOf("doesnt matter"))
         assertEquals(FrameworkPaths.NONE, paths)
@@ -95,20 +99,23 @@ class DerivedDataStrategyTest {
 
     companion object {
         @JvmStatic
-        fun architectureMappingProvider() = SentryCocoaFrameworkArchitectures.all
-            .map { Arguments.of(it) }
-            .toList()
+        fun architectureMappingProvider() =
+            SentryCocoaFrameworkArchitectures.all
+                .map { Arguments.of(it) }
+                .toList()
     }
 
     private class Fixture {
         fun getSut(
             xcodeprojPath: String?,
             rootDirPath: String,
-            derivedDataProvider: (String) -> String?
+            derivedDataProvider: (String) -> String?,
         ): DerivedDataStrategy {
-            val project = ProjectBuilder.builder()
-                .withProjectDir(File(rootDirPath))
-                .build()
+            val project =
+                ProjectBuilder
+                    .builder()
+                    .withProjectDir(File(rootDirPath))
+                    .build()
 
             project.pluginManager.apply {
                 apply("org.jetbrains.kotlin.multiplatform")

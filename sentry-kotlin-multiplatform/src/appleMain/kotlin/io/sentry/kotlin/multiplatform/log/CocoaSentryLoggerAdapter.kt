@@ -11,9 +11,12 @@ import cocoapods.Sentry.SentryLogger as CocoaSentryLogger
  */
 internal class CocoaSentryLoggerAdapter(
     private val cocoaLoggerProvider: () -> CocoaSentryLogger,
-    logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory
+    logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory,
 ) : BaseSentryLogger(logBuilderFactory) {
-    override fun sendLog(level: SentryLogLevel, formatted: FormattedLog) {
+    override fun sendLog(
+        level: SentryLogLevel,
+        formatted: FormattedLog,
+    ) {
         val cocoaLogger = cocoaLoggerProvider()
         val attributes = formatted.attributes.toCocoaMap()
         when (level) {

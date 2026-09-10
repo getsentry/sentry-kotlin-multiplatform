@@ -13,10 +13,15 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 internal expect fun SentryPlatformOptions.prepareForInitBridge()
 
-internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
+internal actual class SentryBridge actual constructor(
+    private val sentryInstance: SentryInstance,
+) {
     private val logger = JvmSentryLoggerAdapter(Sentry::logger)
 
-    actual fun init(context: Context, configuration: OptionsConfiguration) {
+    actual fun init(
+        context: Context,
+        configuration: OptionsConfiguration,
+    ) {
         init(configuration)
     }
 
@@ -39,7 +44,10 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         return SentryId(jvmSentryId.toString())
     }
 
-    actual fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
+    actual fun captureMessage(
+        message: String,
+        scopeCallback: ScopeCallback,
+    ): SentryId {
         val jvmSentryId = Sentry.captureMessage(message, configureScopeCallback(scopeCallback))
         return SentryId(jvmSentryId.toString())
     }
@@ -49,7 +57,10 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         return SentryId(jvmSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
+    actual fun captureException(
+        throwable: Throwable,
+        scopeCallback: ScopeCallback,
+    ): SentryId {
         val jvmSentryId =
             Sentry.captureException(throwable, configureScopeCallback(scopeCallback))
         return SentryId(jvmSentryId.toString())
@@ -71,26 +82,19 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         Sentry.setUser(user?.toJvmUser())
     }
 
-    actual fun logger(): SentryLogger {
-        return logger
-    }
+    actual fun logger(): SentryLogger = logger
 
-    actual fun isCrashedLastRun(): Boolean {
-        return Sentry.isCrashedLastRun() ?: false
-    }
+    actual fun isCrashedLastRun(): Boolean = Sentry.isCrashedLastRun() ?: false
 
-    actual fun isEnabled(): Boolean {
-        return Sentry.isEnabled()
-    }
+    actual fun isEnabled(): Boolean = Sentry.isEnabled()
 
     actual fun close() {
         Sentry.close()
     }
 
-    private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmIScope) -> Unit {
-        return {
+    private fun configureScopeCallback(scopeCallback: ScopeCallback): (JvmIScope) -> Unit =
+        {
             val jvmScopeProvider = JvmScopeProvider(it)
             scopeCallback.invoke(jvmScopeProvider)
         }
-    }
 }

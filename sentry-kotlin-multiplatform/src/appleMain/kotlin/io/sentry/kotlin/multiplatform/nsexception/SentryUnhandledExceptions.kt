@@ -39,15 +39,14 @@ private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeI
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
  */
-internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentryEvent? {
-    return event?.takeUnless {
+internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentryEvent? =
+    event?.takeUnless {
         (it as InternalSentryEvent).isFatalEvent && (
             it.tags?.containsKey(
-                KOTLIN_CRASH_TAG
+                KOTLIN_CRASH_TAG,
             ) ?: false
-            )
+        )
     }
-}
 
 /**
  * Sets the unhandled exception hook such that all unhandled exceptions are logged to Sentry as fatal exceptions.
@@ -55,25 +54,26 @@ internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentry
  * Note: once the exception is logged the program will be terminated.
  * @see wrapUnhandledExceptionHook
  */
-public fun setSentryUnhandledExceptionHook(): Unit = wrapUnhandledExceptionHook { throwable ->
-    val crashReporter = InternalSentryDependencyContainer.sharedInstance().crashReporter
-    val handler = crashReporter.uncaughtExceptionHandler
+public fun setSentryUnhandledExceptionHook(): Unit =
+    wrapUnhandledExceptionHook { throwable ->
+        val crashReporter = InternalSentryDependencyContainer.sharedInstance().crashReporter
+        val handler = crashReporter.uncaughtExceptionHandler
 
-    if (handler != null) {
-        // This will:
-        // 1. Write a crash report to disk with ALL synced scope data
-        // 2. Include tags, user, context, breadcrumbs, etc.
-        // 3. The crash will be sent on next app launch
-        handler.invoke(throwable.asNSException(appendCausedBy = true))
-    } else {
-        // Fallback to old approach if handler not available
-        val envelope = throwable.asSentryEnvelope()
-        InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
-        CocoapodsSentrySDK.configureScope { scope ->
-            scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
+        if (handler != null) {
+            // This will:
+            // 1. Write a crash report to disk with ALL synced scope data
+            // 2. Include tags, user, context, breadcrumbs, etc.
+            // 3. The crash will be sent on next app launch
+            handler.invoke(throwable.asNSException(appendCausedBy = true))
+        } else {
+            // Fallback to old approach if handler not available
+            val envelope = throwable.asSentryEnvelope()
+            InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
+            CocoapodsSentrySDK.configureScope { scope ->
+                scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
+            }
         }
     }
-}
 
 /**
  * Tag used to mark the Kotlin termination crash.
@@ -85,10 +85,12 @@ internal const val KOTLIN_CRASH_TAG = "nsexceptionkt.kotlin_crashed"
  */
 private fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope {
     val event = asSentryEvent() as InternalSentryEvent
-    val preparedEvent = InternalSentrySDK.currentHub().let { hub ->
-        hub.getClient()
-            ?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isFatalEvent = true)
-    } ?: event
+    val preparedEvent =
+        InternalSentrySDK.currentHub().let { hub ->
+            hub
+                .getClient()
+                ?.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isFatalEvent = true)
+        } ?: event
     val item = CocoapodsSentryEnvelopeItem(event = preparedEvent as cocoapods.Sentry.SentryEvent)
     // TODO: pass traceState when enabling performance monitoring for KMP SDK
     val header = CocoapodsSentryEnvelopeHeader(id = preparedEvent.eventId)
@@ -106,29 +108,32 @@ private fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope {
 internal fun Throwable.asSentryEvent(
     level: CocoaSentryLevel = kSentryLevelFatal,
     isHandled: Boolean = false,
-    markThreadAsCrashed: Boolean = true
+    markThreadAsCrashed: Boolean = true,
 ): CocoapodsSentryEvent =
     CocoapodsSentryEvent(level).apply {
         @Suppress("UNCHECKED_CAST")
         val threads =
             threadInspector?.getCurrentThreadsWithStackTrace() as List<CocoapodsSentryThread>?
         this.threads = threads
-        val currentThread = threads?.firstOrNull { it.current?.boolValue ?: false }?.apply {
-            if (markThreadAsCrashed) {
-                setCrashed(NSNumber(true))
-                // Crashed threads shouldn't have a stacktrace, the thread_id should be set on the exception instead
-                // https://develop.sentry.dev/sdk/event-payloads/threads/
-                stacktrace = null
+        val currentThread =
+            threads?.firstOrNull { it.current?.boolValue ?: false }?.apply {
+                if (markThreadAsCrashed) {
+                    setCrashed(NSNumber(true))
+                    // Crashed threads shouldn't have a stacktrace, the thread_id should be set on the exception instead
+                    // https://develop.sentry.dev/sdk/event-payloads/threads/
+                    stacktrace = null
+                }
             }
-        }
-        debugMeta = threads?.let {
-            InternalSentryDependencyContainer.sharedInstance().debugImageProvider.getDebugImagesForThreads(
-                it
-            )
-        }
-        exceptions = this@asSentryEvent
-            .let { throwable -> throwable.causes.asReversed() + throwable }
-            .map { it.asNSException().asSentryException(currentThread?.threadId, isHandled) }
+        debugMeta =
+            threads?.let {
+                InternalSentryDependencyContainer.sharedInstance().debugImageProvider.getDebugImagesForThreads(
+                    it,
+                )
+            }
+        exceptions =
+            this@asSentryEvent
+                .let { throwable -> throwable.causes.asReversed() + throwable }
+                .map { it.asNSException().asSentryException(currentThread?.threadId, isHandled) }
     }
 
 /**
@@ -136,18 +141,21 @@ internal fun Throwable.asSentryEvent(
  */
 private fun NSException.asSentryException(
     threadId: NSNumber?,
-    isHandled: Boolean = false
-): CocoapodsSentryException = CocoapodsSentryException(reason ?: "", name ?: "Throwable").apply {
-    this.threadId = threadId
-    mechanism = CocoapodsSentryMechanism("generic").apply {
-        setHandled(NSNumber(isHandled))
+    isHandled: Boolean = false,
+): CocoapodsSentryException =
+    CocoapodsSentryException(reason ?: "", name ?: "Throwable").apply {
+        this.threadId = threadId
+        mechanism =
+            CocoapodsSentryMechanism("generic").apply {
+                setHandled(NSNumber(isHandled))
+            }
+        stacktrace =
+            threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
+                val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)
+                val stacktrace = stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
+                stacktrace as CocoapodsSentryStacktrace
+            }
     }
-    stacktrace = threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
-        val cursor = NSExceptionKt_SentryCrashStackCursorFromNSException(this@asSentryException)
-        val stacktrace = stacktraceBuilder.retrieveStacktraceFromCursor(cursor)
-        stacktrace as CocoapodsSentryStacktrace
-    }
-}
 
 private val threadInspector: InternalSentryThreadInspector?
     get() = InternalSentrySDK.currentHub().getClient()?.threadInspector

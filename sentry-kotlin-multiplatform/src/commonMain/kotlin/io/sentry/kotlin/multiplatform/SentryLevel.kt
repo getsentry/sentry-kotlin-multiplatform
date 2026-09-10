@@ -25,19 +25,16 @@ public enum class SentryLevel(private val value: Int) {
     /** Critical failures that prevent normal application operation. */
     FATAL(SentryLevelNumConstants.FATAL_LEVEL);
 
-    internal fun toInt(): Int {
-        return this.value
-    }
+    internal fun toInt(): Int = this.value
 
     internal companion object {
-        fun fromInt(value: Int): SentryLevel? {
-            return try {
+        fun fromInt(value: Int): SentryLevel? =
+            try {
                 values().first {
                     it.value == value
                 }
             } catch (throwable: Throwable) {
                 null
             }
-        }
     }
 }
