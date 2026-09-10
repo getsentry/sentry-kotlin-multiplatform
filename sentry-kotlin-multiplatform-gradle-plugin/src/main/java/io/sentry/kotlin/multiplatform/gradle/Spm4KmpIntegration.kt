@@ -58,7 +58,10 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
     val target = kmpExtension?.targets?.findByName(targetName) as? KotlinNativeTarget ?: return false
     val mainCompilation = target.compilations.findByName("main") as? KotlinNativeCompilation
-    return mainCompilation?.cinterops?.findByName(SENTRY_COCOA_CINTEROP_NAME) != null
+    // Both spellings produce the cinteropSentryCocoa task name used by spm4Kmp.
+    return mainCompilation?.cinterops?.any {
+        it.name == SENTRY_COCOA_CINTEROP_NAME || it.name == "SentryCocoa"
+    } == true
 }
 
 /**
