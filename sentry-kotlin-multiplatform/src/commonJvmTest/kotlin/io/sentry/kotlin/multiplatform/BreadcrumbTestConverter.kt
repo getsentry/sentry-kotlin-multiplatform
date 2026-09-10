@@ -4,25 +4,16 @@ import io.sentry.kotlin.multiplatform.extensions.toJvmBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toKmpSentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 
-actual data class BreadcrumbTestConverter actual constructor(val breadcrumb: Breadcrumb) {
+actual data class BreadcrumbTestConverter actual constructor(
+    val breadcrumb: Breadcrumb,
+) {
+    actual fun getType(): String? = breadcrumb.toJvmBreadcrumb().type
 
-    actual fun getType(): String? {
-        return breadcrumb.toJvmBreadcrumb().type
-    }
+    actual fun getCategory(): String? = breadcrumb.toJvmBreadcrumb().category
 
-    actual fun getCategory(): String? {
-        return breadcrumb.toJvmBreadcrumb().category
-    }
+    actual fun getMessage(): String? = breadcrumb.toJvmBreadcrumb().message
 
-    actual fun getMessage(): String? {
-        return breadcrumb.toJvmBreadcrumb().message
-    }
+    actual fun getData(): MutableMap<String, Any> = breadcrumb.toJvmBreadcrumb().data
 
-    actual fun getData(): MutableMap<String, Any> {
-        return breadcrumb.toJvmBreadcrumb().data
-    }
-
-    actual fun getLevel(): SentryLevel? {
-        return breadcrumb.toJvmBreadcrumb().level?.toKmpSentryLevel()
-    }
+    actual fun getLevel(): SentryLevel? = breadcrumb.toJvmBreadcrumb().level?.toKmpSentryLevel()
 }

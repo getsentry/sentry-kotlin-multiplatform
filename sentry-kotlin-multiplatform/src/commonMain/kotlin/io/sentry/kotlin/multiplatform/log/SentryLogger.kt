@@ -15,7 +15,11 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun log(level: SentryLogLevel, message: String, vararg args: Any?)
+    public fun log(
+        level: SentryLogLevel,
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at a specific level with inline attributes.
@@ -29,7 +33,7 @@ public interface SentryLogger {
         level: SentryLogLevel,
         message: String,
         vararg args: Any?,
-        attributes: @SentryLogDsl SentryAttributes.() -> Unit
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
     )
 
     /**
@@ -49,7 +53,10 @@ public interface SentryLogger {
      * @param level The log level
      * @param block A lambda with [SentryLogBuilder] receiver to configure the log entry
      */
-    public fun log(level: SentryLogLevel, block: SentryLogBuilder.() -> Unit)
+    public fun log(
+        level: SentryLogLevel,
+        block: SentryLogBuilder.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.TRACE] level.
@@ -57,7 +64,10 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun trace(message: String, vararg args: Any?)
+    public fun trace(
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.DEBUG] level.
@@ -65,7 +75,10 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun debug(message: String, vararg args: Any?)
+    public fun debug(
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.INFO] level.
@@ -73,7 +86,10 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun info(message: String, vararg args: Any?)
+    public fun info(
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.WARN] level.
@@ -81,7 +97,10 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun warn(message: String, vararg args: Any?)
+    public fun warn(
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.ERROR] level.
@@ -89,7 +108,10 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun error(message: String, vararg args: Any?)
+    public fun error(
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.FATAL] level.
@@ -97,7 +119,10 @@ public interface SentryLogger {
      * @param message The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the message template via toString()
      */
-    public fun fatal(message: String, vararg args: Any?)
+    public fun fatal(
+        message: String,
+        vararg args: Any?,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.TRACE] level with inline attributes.
@@ -113,7 +138,10 @@ public interface SentryLogger {
      * @param message The log message
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun trace(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun trace(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.DEBUG] level with inline attributes.
@@ -129,7 +157,10 @@ public interface SentryLogger {
      * @param message The log message
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun debug(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun debug(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.INFO] level with inline attributes.
@@ -145,7 +176,10 @@ public interface SentryLogger {
      * @param message The log message
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun info(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun info(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.WARN] level with inline attributes.
@@ -161,7 +195,10 @@ public interface SentryLogger {
      * @param message The log message
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun warn(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.TRACE] level with template parameters and inline attributes.
@@ -178,7 +215,11 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun trace(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun trace(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.DEBUG] level with template parameters and inline attributes.
@@ -195,7 +236,11 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun debug(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun debug(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.INFO] level with template parameters and inline attributes.
@@ -212,7 +257,11 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun info(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun info(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.WARN] level with template parameters and inline attributes.
@@ -229,7 +278,11 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun warn(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun warn(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.ERROR] level with template parameters and inline attributes.
@@ -246,7 +299,11 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun error(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun error(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.FATAL] level with template parameters and inline attributes.
@@ -263,7 +320,11 @@ public interface SentryLogger {
      * @param args Arguments to substitute into the message template via toString()
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun fatal(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun fatal(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.ERROR] level with inline attributes.
@@ -279,7 +340,10 @@ public interface SentryLogger {
      * @param message The log message
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun error(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun error(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.FATAL] level with inline attributes.
@@ -295,7 +359,10 @@ public interface SentryLogger {
      * @param message The log message
      * @param attributes A lambda with [SentryAttributes] receiver to set key-value attributes
      */
-    public fun fatal(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit)
+    public fun fatal(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    )
 
     /**
      * Logs a message at [SentryLogLevel.TRACE] level using a DSL builder.

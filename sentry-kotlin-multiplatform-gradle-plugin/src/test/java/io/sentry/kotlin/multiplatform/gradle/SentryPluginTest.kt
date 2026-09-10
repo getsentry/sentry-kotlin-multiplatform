@@ -152,10 +152,11 @@ class SentryPluginTest {
 
         project.installSentryForKmp(project.extensions.getByName("commonMain") as SourceSetAutoInstallExtension)
 
-        val sentryDependencies = project.configurations
-            .flatMap { it.dependencies }
-            .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
-            .toList()
+        val sentryDependencies =
+            project.configurations
+                .flatMap { it.dependencies }
+                .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
+                .toList()
 
         assertTrue(sentryDependencies.isNotEmpty())
 
@@ -552,7 +553,10 @@ class SentryPluginTest {
         val simulator = kmpExtension.iosSimulatorArm64()
         // spm4Kmp connects a global config to targets through matching cinterop tasks, so a target
         // without the cinterop is not covered by it and still needs fallback linking.
-        device.compilations.getByName("main").cinterops.create(SENTRY_COCOA_CINTEROP_NAME)
+        device.compilations
+            .getByName("main")
+            .cinterops
+            .create(SENTRY_COCOA_CINTEROP_NAME)
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
@@ -578,7 +582,7 @@ class SentryPluginTest {
                 remotePackageVersion(
                     url = URI("https://github.com/getsentry/sentry-cocoa.git"),
                     version = "8.57.0",
-                    products = { add("Sentry") }
+                    products = { add("Sentry") },
                 )
             }
         }
