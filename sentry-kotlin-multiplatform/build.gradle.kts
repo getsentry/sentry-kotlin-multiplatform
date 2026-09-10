@@ -54,7 +54,13 @@ kotlin {
         // Stub targets do not run shared tests.
         excludeCompilations {
             it.name == "test" &&
-                it.target.name in setOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+                it.target.name in setOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+        }
+        common {
+            group("native") {
+                // The legacy watch target uses commonStub, never the Cocoa-backed Apple sources.
+                excludeCompilations { it.target.name == "watchosArm32" }
+            }
         }
     }
 
@@ -191,6 +197,7 @@ kotlin {
         val commonStub by creating {
             dependsOn(commonMain.get())
         }
+        getByName("watchosArm32Main").dependsOn(commonStub)
         jsMain.get().dependsOn(commonStub)
         wasmJsMain.get().dependsOn(commonStub)
         linuxMain.get().dependsOn(commonStub)
@@ -217,7 +224,7 @@ tasks
 
 // Stub targets do not run tests. Their inherited commonTest dependencies include Ktor,
 // which lacks variants for some targets. Exclude it and disable test compilation and execution.
-val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->
         noOpStubTargets.any { configuration.name.startsWith(it) } &&
@@ -253,6 +260,7 @@ buildkonfig {
 }
 
 private fun KotlinMultiplatformExtension.addNoOpTargets() {
+    watchosArm32()
     js(IR) {
         browser()
         binaries.library()

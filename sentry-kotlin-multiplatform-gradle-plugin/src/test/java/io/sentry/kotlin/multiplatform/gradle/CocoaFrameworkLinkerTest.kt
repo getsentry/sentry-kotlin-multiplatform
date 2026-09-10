@@ -21,13 +21,25 @@ class CocoaFrameworkLinkerTest {
     }
 
     @Test
+    fun `stub watch target needs no Cocoa framework for any binary`() {
+        val kotlin = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        val target = kotlin.watchosArm32("legacyWatch")
+        target.binaries.framework { isStatic = true }
+        target.binaries.framework("dynamic") { isStatic = false }
+
+        fixture.getSut().configure(listOf(target))
+
+        target.binaries.forEach { assertTrue(it.linkerOpts.isEmpty()) }
+    }
+
+    @Test
     fun `framework linking succeeds for static Framework binary`() {
         val kmpExtension = fixture.project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val appleTargets =
             listOf(
                 kmpExtension.iosSimulatorArm64(),
                 kmpExtension.iosArm64(),
-                kmpExtension.watchosArm32(),
+                kmpExtension.watchosArm64(),
                 kmpExtension.watchosSimulatorArm64(),
                 kmpExtension.watchosX64(),
                 kmpExtension.macosArm64(),
@@ -60,7 +72,7 @@ class CocoaFrameworkLinkerTest {
             listOf(
                 kmpExtension.iosSimulatorArm64(),
                 kmpExtension.iosArm64(),
-                kmpExtension.watchosArm32(),
+                kmpExtension.watchosArm64(),
                 kmpExtension.watchosSimulatorArm64(),
                 kmpExtension.watchosX64(),
                 kmpExtension.macosArm64(),
@@ -93,7 +105,7 @@ class CocoaFrameworkLinkerTest {
             listOf(
                 kmpExtension.iosSimulatorArm64(),
                 kmpExtension.iosArm64(),
-                kmpExtension.watchosArm32(),
+                kmpExtension.watchosArm64(),
                 kmpExtension.watchosSimulatorArm64(),
                 kmpExtension.watchosX64(),
                 kmpExtension.macosArm64(),

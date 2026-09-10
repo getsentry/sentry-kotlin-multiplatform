@@ -34,8 +34,9 @@ that can be used on Kotlin Multiplatform.
 |     watchOS     | <ul><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
 |      tvOS       | <ul><li>`tvosArm64`</li><li>`tvosX64`</li><li>`tvosSimulatorArm64`</li></ul>                                 |
 
-Apple targets require **iOS 15, tvOS 15, macOS 12, or watchOS 9** with Sentry Cocoa **9.28.0**.
-The `watchosArm32` target is no longer supported because Cocoa 9.28.0 does not include an armv7k slice.
+Cocoa-backed Apple targets require **iOS 15, tvOS 15, macOS 12, or watchOS 9** with Sentry Cocoa **9.28.0**.
+The `watchosArm32` target ships as a **no-op stub** because Cocoa 9.28.0 does not include an armv7k slice.
+It requires no Cocoa dependency and sends no events, crashes, or logs; `Sentry.isEnabled()` remains false.
 
 ## Stubbed Platforms (No-Op Implementations)
 
@@ -44,6 +45,7 @@ They compile and satisfy the API surface, but **do nothing at runtime**.
 
 | Target Platform | Target preset                                     |
 |:---------------:|---------------------------------------------------|
+| Legacy watchOS  | <ul><li>`watchosArm32` (no-op)</li></ul>          |
 | JS              | <ul><li>`js`</li></ul>                            |
 | Wasm JS         | <ul><li>`wasmJs`</li></ul>                        |
 | Linux           | <ul><li>`linuxx64`</li><li>`linuxarm64`</li></ul> |
@@ -138,8 +140,10 @@ and legacy plugin configuration remain in the repository but are excluded from a
 Raise deployment targets in your app and Swift package configuration to at least iOS/tvOS 15,
 macOS 12, and watchOS 9. Keep any higher minimums your app already requires. If you declare the
 Sentry Swift package yourself, pin it to 9.28.0 and set these minimums in your own spm4Kmp
-configuration; the plugin does not replace user-owned Sentry packages. Remove `watchosArm32`
-from your target list.
+configuration; the plugin does not replace user-owned Sentry packages. You may keep `watchosArm32`
+in your target list for compilation compatibility, but Sentry calls on that target now do nothing.
+The plugin skips Cocoa installation and linking for that target. Use `watchosArm64` for reporting
+on supported watchOS devices.
 
 The common Kotlin `captureUserFeedback` API remains available. On Apple it maps to Cocoa's
 `SentryFeedback` with source `custom`: comments become the message (null becomes an empty

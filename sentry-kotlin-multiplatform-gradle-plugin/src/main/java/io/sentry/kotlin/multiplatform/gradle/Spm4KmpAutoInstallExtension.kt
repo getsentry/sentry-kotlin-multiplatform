@@ -24,7 +24,7 @@ abstract class Spm4KmpAutoInstallExtension
          *
          * Auto-installed packages require iOS/tvOS 15, macOS 12, and watchOS 9 or later.
          * Existing user-owned Sentry packages are left unchanged; configure these minimums there
-         * when using Cocoa 9.28.0. watchosArm32 is unsupported by auto-installation.
+         * when using Cocoa 9.28.0. watchosArm32 uses a no-op SDK and needs no Cocoa dependency.
          *
          * Defaults to true.
          */

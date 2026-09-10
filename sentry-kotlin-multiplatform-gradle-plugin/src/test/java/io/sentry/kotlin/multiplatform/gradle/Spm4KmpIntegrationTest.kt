@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -32,6 +31,7 @@ class Spm4KmpIntegrationTest {
             tvosSimulatorArm64()
             macosArm64()
             macosX64()
+            watchosArm32("legacyWatch")
             watchosArm64()
             watchosX64()
             watchosSimulatorArm64()
@@ -74,22 +74,20 @@ class Spm4KmpIntegrationTest {
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
-    fun `unsupported target fails with an actionable diagnostic in either plugin order`(spmFirst: Boolean) {
+    fun `stub target skips Cocoa installation in either plugin order`(spmFirst: Boolean) {
         val project = createProject(spmFirst)
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        // Check the Konan target, even if the consumer assigns a custom name.
+        val legacyWatch = kotlin.watchosArm32("legacyWatch")
+        (project as ProjectInternal).evaluate()
 
-        val failure =
-            assertThrows<Exception> {
-                // Check the Konan target, even if the consumer assigns a custom name.
-                kotlin.watchosArm32("legacyWatch")
-                (project as ProjectInternal).evaluate()
-            }
-        val messages = generateSequence<Throwable>(failure) { it.cause }.joinToString { it.message.orEmpty() }
-        assertTrue(messages.contains("watchosArm32 (legacyWatch)"), messages)
-        assertTrue(messages.contains("armv7k"), messages)
-        assertTrue(messages.contains("watchosArm64()"), messages)
-        assertTrue(messages.contains("autoInstall.spm.enabled = false"), messages)
         assertTrue(packages(project).isEmpty())
+        assertTrue(
+            legacyWatch.compilations
+                .getByName("main")
+                .cinterops
+                .isEmpty(),
+        )
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
