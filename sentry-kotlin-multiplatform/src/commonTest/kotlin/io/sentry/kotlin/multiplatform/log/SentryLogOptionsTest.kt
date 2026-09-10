@@ -7,7 +7,6 @@ import kotlin.test.assertNull
 
 /** Tests for [SentryLogOptions] configuration and beforeSend callback. */
 class SentryLogOptionsTest {
-
     @Test
     fun `enabled is false by default`() {
         val options = SentryLogOptions()
@@ -102,6 +101,6 @@ class SentryLogOptionsTest {
     private fun createTestLog(
         timestamp: Double = 1234567890.0,
         level: SentryLogLevel = SentryLogLevel.INFO,
-        body: String = "test message"
+        body: String = "test message",
     ): SentryLog = SentryLog(timestamp, level, body)
 }

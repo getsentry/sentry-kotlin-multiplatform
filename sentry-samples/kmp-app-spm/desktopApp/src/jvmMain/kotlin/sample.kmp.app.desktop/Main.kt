@@ -27,7 +27,7 @@ fun App() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val btnBackgroundColor = Color(56, 31, 67)
         Button({
@@ -48,20 +48,21 @@ fun App() {
     }
 }
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "Jetpack Compose Desktop App (SPM Sample Version)") {
-        // Initialize Sentry using shared code
-        initializeSentry()
+fun main() =
+    application {
+        Window(onCloseRequest = ::exitApplication, title = "Jetpack Compose Desktop App (SPM Sample Version)") {
+            // Initialize Sentry using shared code
+            initializeSentry()
 
-        // Shared scope across all platforms
-        configureSentryScope()
+            // Shared scope across all platforms
+            configureSentryScope()
 
-        // Add platform specific scope in addition to the shared scope
-        Sentry.configureScope {
-            it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
-            it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
+            // Add platform specific scope in addition to the shared scope
+            Sentry.configureScope {
+                it.setContext("JVM Desktop Context", mapOf("context1" to 12, "context2" to false))
+                it.addBreadcrumb(Breadcrumb.debug("initialized Sentry on JVM Desktop"))
+            }
+
+            App()
         }
-
-        App()
     }
-}

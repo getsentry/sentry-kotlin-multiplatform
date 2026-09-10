@@ -11,9 +11,10 @@ import io.sentry.kotlin.multiplatform.setEnableUnhandledCppExceptionMonitoring
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 
-internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit = {
-    it?.applyCocoaBaseOptions(this)
-}
+internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit =
+    {
+        it?.applyCocoaBaseOptions(this)
+    }
 
 /**
  * Applies the given options to this CocoaSentryOptions.
@@ -65,9 +66,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.beforeSend = { event ->
         val sdk = event?.sdk?.toMutableMap()
 
-        val packages = kmpOptions.sdk?.packages?.map {
-            mapOf("name" to it.name, "version" to it.version)
-        }?.toMutableList() ?: mutableListOf()
+        val packages =
+            kmpOptions.sdk
+                ?.packages
+                ?.map {
+                    mapOf("name" to it.name, "version" to it.version)
+                }?.toMutableList() ?: mutableListOf()
 
         sdk?.set("packages", packages)
 
@@ -87,17 +91,20 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
         if (kmpOptions.beforeBreadcrumb == null) {
             cocoaBreadcrumb
         } else {
-            cocoaBreadcrumb?.toKmpBreadcrumb()
-                ?.let { kmpOptions.beforeBreadcrumb?.invoke(it) }?.toCocoaBreadcrumb()
+            cocoaBreadcrumb
+                ?.toKmpBreadcrumb()
+                ?.let { kmpOptions.beforeBreadcrumb?.invoke(it) }
+                ?.toCocoaBreadcrumb()
         }
     }
 
     cocoaOptions.enableCaptureFailedRequests = kmpOptions.enableCaptureFailedRequests
     cocoaOptions.failedRequestTargets = kmpOptions.failedRequestTargets
-    cocoaOptions.failedRequestStatusCodes = kmpOptions.failedRequestStatusCodes.map {
-        SentryHttpStatusCodeRange(
-            min = it.min.convert(),
-            max = it.max.convert()
-        )
-    }
+    cocoaOptions.failedRequestStatusCodes =
+        kmpOptions.failedRequestStatusCodes.map {
+            SentryHttpStatusCodeRange(
+                min = it.min.convert(),
+                max = it.max.convert(),
+            )
+        }
 }

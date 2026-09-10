@@ -8,7 +8,6 @@ import kotlin.test.assertTrue
 
 /** Tests for [DefaultSentryLogBuilder] DSL builder. */
 class SentryLogBuilderTest {
-
     // region Message configuration
 
     @Test
