@@ -13,6 +13,7 @@ import io.sentry.kotlin.multiplatform.protocol.User
  *  - For Cocoa: [io.sentry.kotlin.multiplatform.CocoaScopeProvider]
  */
 public interface Scope {
+
     /**
      * Returns the scope's tags
      */
@@ -60,10 +61,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: Any,
-    )
+    public fun setContext(key: String, value: Any)
 
     /**
      * Sets the Scope's contexts
@@ -71,10 +69,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: Boolean,
-    )
+    public fun setContext(key: String, value: Boolean)
 
     /**
      * Sets the Scope's context
@@ -82,10 +77,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: String,
-    )
+    public fun setContext(key: String, value: String)
 
     /**
      * Sets the Scope's context
@@ -93,10 +85,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: Number,
-    )
+    public fun setContext(key: String, value: Number)
 
     /**
      * Sets the Scope's context
@@ -104,10 +93,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: Collection<*>,
-    )
+    public fun setContext(key: String, value: Collection<*>)
 
     /**
      * Sets the Scope's context
@@ -115,10 +101,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: Array<*>,
-    )
+    public fun setContext(key: String, value: Array<*>)
 
     /**
      * Sets the Scope's context
@@ -126,10 +109,7 @@ public interface Scope {
      * @param key the context key
      * @param value the context value
      */
-    public fun setContext(
-        key: String,
-        value: Char,
-    )
+    public fun setContext(key: String, value: Char)
 
     /**
      * Removes a value from the Scope's contexts
@@ -144,10 +124,7 @@ public interface Scope {
      * @param key the key
      * @param value the value
      */
-    public fun setTag(
-        key: String,
-        value: String,
-    )
+    public fun setTag(key: String, value: String)
 
     /**
      * Removes a tag from the Scope's tags
@@ -162,10 +139,7 @@ public interface Scope {
      * @param key the key
      * @param value the value
      */
-    public fun setExtra(
-        key: String,
-        value: String,
-    )
+    public fun setExtra(key: String, value: String)
 
     /**
      * Removes an extra from the Scope's extras

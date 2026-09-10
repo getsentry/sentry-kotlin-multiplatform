@@ -19,10 +19,9 @@ class SentryAndroidBridgeTest {
 
         sut.init { }
 
-        val option =
-            SentryPlatformOptions().apply {
-                fixture.sentryInstance.lastConfiguration?.invoke(this)
-            }
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+        }
 
         assertEquals(BuildKonfig.SENTRY_KMP_NATIVE_ANDROID_SDK_NAME, option.nativeSdkName)
     }
@@ -31,5 +30,7 @@ class SentryAndroidBridgeTest {
 internal class Fixture {
     val sentryInstance = FakeSentryInstance()
 
-    fun getSut(): SentryBridge = SentryBridge(sentryInstance)
+    fun getSut(): SentryBridge {
+        return SentryBridge(sentryInstance)
+    }
 }

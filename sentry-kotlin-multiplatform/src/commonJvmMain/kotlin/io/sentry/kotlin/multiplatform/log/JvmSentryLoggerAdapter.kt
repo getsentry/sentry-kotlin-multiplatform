@@ -11,12 +11,9 @@ import io.sentry.logger.SentryLogParameters
  */
 internal class JvmSentryLoggerAdapter(
     private val jvmLoggerProvider: () -> ILoggerApi,
-    logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory,
+    logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory
 ) : BaseSentryLogger(logBuilderFactory) {
-    override fun sendLog(
-        level: SentryLogLevel,
-        formatted: FormattedLog,
-    ) {
+    override fun sendLog(level: SentryLogLevel, formatted: FormattedLog) {
         val jvmLogger = jvmLoggerProvider()
         val jvmLevel = level.toJvmSentryLogLevel()
         if (formatted.attributes.isEmpty()) {

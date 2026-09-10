@@ -23,10 +23,9 @@ class FrameworkPathResolverTest {
 
     @Test
     fun `does not execute subsequent strategies after first success`() {
-        val strategy1 =
-            mockk<FrameworkResolutionStrategy> {
-                every { resolvePaths(any()) } returns FrameworkPaths(dynamic = "dyn")
-            }
+        val strategy1 = mockk<FrameworkResolutionStrategy> {
+            every { resolvePaths(any()) } returns FrameworkPaths(dynamic = "dyn")
+        }
         val strategy2 = mockk<FrameworkResolutionStrategy>()
 
         val sut = fixture.getSut(listOf(strategy1, strategy2))

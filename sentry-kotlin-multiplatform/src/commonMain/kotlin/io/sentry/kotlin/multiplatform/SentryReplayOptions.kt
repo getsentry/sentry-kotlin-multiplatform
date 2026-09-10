@@ -11,6 +11,7 @@ public data class SentryReplayOptions(
      * The default is null (disabled).
      */
     public var sessionSampleRate: Double? = null,
+
     /**
      * Indicates the percentage in which a 30 seconds replay will be sent with error events.
      * Specifying 0 means never, 1.0 means always. The value needs to be >= 0.0 and <= 1.0.
@@ -18,23 +19,26 @@ public data class SentryReplayOptions(
      * The default is null (disabled).
      */
     public var onErrorSampleRate: Double? = null,
+
     /**
      * Makss all text content. Draws a rectangle of text bounds with text color on top.
      *
      * The default is true.
      */
     public var maskAllText: Boolean = true,
+
     /**
      * Masks all image content. Draws a rectangle of image bounds with image's dominant color on top.
      *
      * The default is true.
      */
     public var maskAllImages: Boolean = true,
+
     /**
      * Defines the quality of the session replay. The higher the quality, the more accurate the replay
      * will be, but also more data to transfer and more CPU load, defaults to MEDIUM.
      */
-    public var quality: Quality = Quality.MEDIUM,
+    public var quality: Quality = Quality.MEDIUM
 ) {
     /**
      * Quality of the session replay.
@@ -47,7 +51,7 @@ public data class SentryReplayOptions(
          * Defines the quality of the session replay. Higher bit rates have better replay quality, but
          * also affect the final payload size to transfer, defaults to 40kbps.
          */
-        public val bitRate: Int,
+        public val bitRate: Int
     ) {
         /** Video Scale: 80% Bit Rate: 50.000  */
         LOW(0.8f, 50000),
@@ -56,6 +60,6 @@ public data class SentryReplayOptions(
         MEDIUM(1.0f, 75000),
 
         /** Video Scale: 100% Bit Rate: 100.000  */
-        HIGH(1.0f, 100000),
+        HIGH(1.0f, 100000)
     }
 }

@@ -6,6 +6,7 @@ import kotlin.test.assertIs
 
 /** Tests for [SentryAttributeValue] factory methods and type hierarchy. */
 class SentryAttributeValueTest {
+
     @Test
     fun `string factory creates StringValue with correct value`() {
         val value = SentryAttributeValue.string("myValue")

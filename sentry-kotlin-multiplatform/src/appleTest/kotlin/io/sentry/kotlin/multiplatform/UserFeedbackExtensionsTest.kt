@@ -7,14 +7,14 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class UserFeedbackExtensionsTest {
+
     private val sentryIdString = "dcebada57d794590a6da3d1977eed58a"
 
     @Test
     fun `toCocoaUserFeedback correctly maps comments`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                comments = "Test comment"
-            }
+        val userFeedback = UserFeedback(SentryId(sentryIdString)).apply {
+            comments = "Test comment"
+        }
 
         val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
 
@@ -23,10 +23,9 @@ class UserFeedbackExtensionsTest {
 
     @Test
     fun `toCocoaUserFeedback correctly maps email`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                email = "test@email.com"
-            }
+        val userFeedback = UserFeedback(SentryId(sentryIdString)).apply {
+            email = "test@email.com"
+        }
 
         val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
 
@@ -35,10 +34,9 @@ class UserFeedbackExtensionsTest {
 
     @Test
     fun `toCocoaUserFeedback correctly maps name`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                name = "John Doe"
-            }
+        val userFeedback = UserFeedback(SentryId(sentryIdString)).apply {
+            name = "John Doe"
+        }
 
         val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
 
@@ -80,12 +78,11 @@ class UserFeedbackExtensionsTest {
 
     @Test
     fun `toCocoaUserFeedback maps all properties correctly`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                name = "John Doe"
-                email = "john@doe.com"
-                comments = "I had an error"
-            }
+        val userFeedback = UserFeedback(SentryId(sentryIdString)).apply {
+            name = "John Doe"
+            email = "john@doe.com"
+            comments = "I had an error"
+        }
 
         val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
 

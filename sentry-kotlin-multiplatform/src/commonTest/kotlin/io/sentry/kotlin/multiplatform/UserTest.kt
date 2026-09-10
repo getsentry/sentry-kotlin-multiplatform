@@ -8,8 +8,8 @@ import kotlin.test.assertEquals
 class UserTest {
     private var user = User()
 
-    private fun createTestUser(): User =
-        User().apply {
+    private fun createTestUser(): User {
+        return User().apply {
             username = "TestUsername"
             email = "TestEmail"
             id = "TestId"
@@ -17,6 +17,7 @@ class UserTest {
             unknown = mutableMapOf("key" to "value", "key2" to 12)
             other = mutableMapOf("key" to "value")
         }
+    }
 
     @BeforeTest
     fun setup() {

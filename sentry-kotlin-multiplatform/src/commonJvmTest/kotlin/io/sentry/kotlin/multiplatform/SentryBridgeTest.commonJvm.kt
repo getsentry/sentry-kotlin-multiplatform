@@ -49,11 +49,9 @@ actual class SentryBridgeTest {
         }
 
         // WHEN
-        val option =
-            SentryPlatformOptions()
-                .apply {
-                    fixture.sentryInstance.lastConfiguration?.invoke(this)
-                }.let { it as JvmSentryOptions }
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+        }.let { it as JvmSentryOptions }
 
         // THEN
         assert(option.beforeSend != null)
@@ -66,11 +64,9 @@ actual class SentryBridgeTest {
         fixture.sut.init { }
 
         // WHEN
-        val option =
-            SentryPlatformOptions()
-                .apply {
-                    fixture.sentryInstance.lastConfiguration?.invoke(this)
-                }.let { it as JvmSentryOptions }
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+        }.let { it as JvmSentryOptions }
 
         // THEN
         assert(option.beforeSend != null)
@@ -81,12 +77,10 @@ actual class SentryBridgeTest {
     actual fun `default beforeSend in init does not drop the event after prepareForInit`() {
         fixture.sut.init { }
 
-        val option =
-            SentryPlatformOptions()
-                .apply {
-                    fixture.sentryInstance.lastConfiguration?.invoke(this)
-                    prepareForInit()
-                }.let { it as JvmSentryOptions }
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+            prepareForInit()
+        }.let { it as JvmSentryOptions }
 
         assert(option.beforeSend != null)
         assert(option.beforeSend!!.execute(JvmSentryEvent(), Hint()) != null)
@@ -96,11 +90,9 @@ actual class SentryBridgeTest {
     actual fun `init sets the SDK packages`() {
         // WHEN
         fixture.sut.init { }
-        val option =
-            SentryPlatformOptions()
-                .apply {
-                    fixture.sentryInstance.lastConfiguration?.invoke(this)
-                }.let { it as JvmSentryOptions }
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+        }.let { it as JvmSentryOptions }
 
         // THEN
         assert(option.sdkVersion?.packageSet != null)
@@ -118,11 +110,9 @@ actual class SentryBridgeTest {
 
         // When
         fixture.sut.init(configuration)
-        val option =
-            SentryPlatformOptions()
-                .apply {
-                    fixture.sentryInstance.lastConfiguration?.invoke(this)
-                }.let { it as JvmSentryOptions }
+        val option = SentryPlatformOptions().apply {
+            fixture.sentryInstance.lastConfiguration?.invoke(this)
+        }.let { it as JvmSentryOptions }
 
         // Then
         assertTrue(option.sdkVersion!!.name.contains("kmp"))

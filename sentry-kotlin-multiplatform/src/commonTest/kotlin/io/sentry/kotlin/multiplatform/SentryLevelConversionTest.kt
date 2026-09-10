@@ -4,6 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SentryLevelConversionTest {
+
     private var converter: SentryLevelTestConverter? = SentryLevelTestConverter()
 
     @Test
