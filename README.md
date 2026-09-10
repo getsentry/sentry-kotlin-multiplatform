@@ -77,6 +77,59 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 
 For detailed usage, check out the [Kotlin Multiplatform Documentation](https://docs.sentry.io/platforms/kotlin-multiplatform/).
 
+### Apple linking via spm4Kmp (Gradle plugin)
+
+If you apply the [spm4Kmp](https://github.com/frankois944/spm4Kmp) plugin (`io.github.frankois944.spmForKmp`)
+alongside the Sentry Kotlin Multiplatform Gradle plugin, the matching Sentry Cocoa version is added to
+your Apple targets automatically — you don't need to declare the Sentry Swift package yourself:
+
+```kotlin
+plugins {
+    kotlin("multiplatform")
+    id("io.sentry.kotlin.multiplatform.gradle")
+    id("io.github.frankois944.spmForKmp")
+}
+```
+
+You can override the version or opt out (for example if you configure the Sentry Swift package
+manually):
+
+```kotlin
+sentryKmp {
+    autoInstall {
+        spm {
+            // enabled = false // opt out of the automatic Sentry Cocoa Swift package
+            // sentryCocoaVersion = "8.58.2" // override the default version
+        }
+    }
+}
+```
+
+> [!NOTE]
+> Apply this plugin **before** the spm4Kmp plugin, as in the snippet above, so that the settings
+> above can go anywhere in the build script. If spm4Kmp is applied first, the Sentry Swift package
+> has to be registered as the Apple targets are created, so the `sentryKmp { }` block must then come
+> before the `kotlin { }` block — otherwise the opt-out (including the global `autoInstall.enabled`
+> flag) and version override have no effect. The plugin warns when it detects this.
+
+> [!IMPORTANT]
+> If spm4Kmp is applied first *and* you declare the Sentry Swift package yourself inside a target
+> (for example `iosArm64 { swiftPackageConfig(cinteropName = "sentryCocoa") { ... } }`), you must opt
+> out as shown above. The auto-install cannot see a config declared there, so both declarations end
+> up in the same spm4Kmp config and SwiftPM fails on the duplicate `sentry-cocoa` dependency.
+> Applying this plugin first avoids the problem: your config is then detected and left alone.
+
+> [!NOTE]
+> Declaring the Sentry Swift package yourself for *any* target switches the auto-install off for
+> **all** of them. spm4Kmp merges configs that share a cinterop name into a single package, so
+> auto-installing alongside yours would put two `sentry-cocoa` versions into one package and
+> silently pick one — overriding a version you pinned on purpose. The plugin warns and names the
+> targets it left uncovered, so add those to your own `swiftPackageConfig` if they need Sentry Cocoa.
+
+Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
+Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for
+plain SPM-in-Xcode setups.
+
 ## Samples
 
 For detailed information on how to build and run the samples, check out our `README.md` in the

@@ -22,8 +22,7 @@ plugins {
 android {
     namespace = "io.sentry.kotlin.multiplatform"
     compileSdk = Config.Android.compileSdkVersion
-    // AGP 8 disables BuildConfig generation by default; keep it on to preserve
-    // the previously published Android public API surface.
+    // Preserve the public BuildConfig class, which AGP 8 no longer generates by default.
     buildFeatures {
         buildConfig = true
     }
@@ -159,16 +158,15 @@ kotlin {
 
         appleTargets.forEach { target ->
             target.swiftPackageConfig(cinteropName = "sentryCocoa") {
-                // Keep the legacy Kotlin CocoaPods `cocoapods.Sentry.*` import prefix so
-                // published klib symbols stay identical.
+                // Preserve the cocoapods.Sentry package used by consumers.
                 packageDependencyPrefix = "cocoapods"
                 minIos = Config.Cocoa.iosDeploymentTarget
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
-                // KT-41709: Sentry classes with "Meta" in the name (e.g. SentryMechanismMeta) are
-                // otherwise declared twice. Must be extraOpts — compilerOpts only populates the
-                // generated def's clang flags. https://youtrack.jetbrains.com/issue/KT-41709
+                // Avoid duplicate declarations from Kotlin/Native's "Meta" naming conflict (KT-41709).
+                // Use extraOpts to pass these flags to cinterop.
+                // https://youtrack.jetbrains.com/issue/KT-41709
                 extraOpts =
                     listOf(
                         "-compiler-option",
@@ -189,8 +187,7 @@ kotlin {
                 }
             }
 
-            // The private `Sentry.Internal` cinterop has self-contained headers; its symbols
-            // resolve at link time against the Sentry framework regardless of how it is delivered.
+            // These private headers are self-contained; their symbols link against Sentry.framework.
             target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
@@ -208,21 +205,18 @@ kotlin {
     }
 }
 
-// spm4Kmp compiles watchosSimulatorArm64 with `--triple aarch64-apple-watchos-simulator`
-// (1.9.2 used `arm64`), and SwiftPM does not treat `aarch64` as `arm64` when matching binary
-// xcframework slices, so Sentry.framework is never copied into the build products directory and
-// the cinterop definition task fails with "Module map file not found for module: Sentry".
-// Copy the watchOS simulator slice there manually until spm4Kmp maps this target back to `arm64`.
+// spm4Kmp uses aarch64-apple-watchos-simulator, which SwiftPM cannot match to the arm64 slice.
+// Copy the missing Sentry.framework so cinterop can find its module map.
+// Remove this workaround when spm4Kmp uses arm64 for this target.
 val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
 val copyWatchosSimulatorSentryFramework =
     tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
         dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
-        // Select the slice with a pattern: the xcframework doesn't exist yet when Gradle
-        // computes task dependencies, only after the compile task resolves the Swift package.
+        // Match lazily: the compile task downloads the xcframework.
         from(sentryCocoaScratchDir.map { it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework") }) {
             include("watchos-*-simulator/Sentry.framework/**")
         }
-        // Strip the slice directory segment so the framework lands directly in the products dir.
+        // Place Sentry.framework directly in the build products directory.
         eachFile {
             relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
         }
@@ -233,11 +227,8 @@ tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
     .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
-// The js/wasmJs/linux/mingw targets ship as no-op stubs and run no tests. Kotlin
-// 2.2.20's shared `web` source set wires their test compilations to commonTest, whose
-// Ktor dependency has no wasm (and limited native) variants, which breaks dependency
-// resolution. Exclude Ktor from those test classpaths and disable their test
-// compile/run tasks so no test sources are compiled for these stub targets.
+// Stub targets do not run tests. Their inherited commonTest dependencies include Ktor,
+// which lacks variants for some targets. Exclude it and disable test compilation and execution.
 val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->

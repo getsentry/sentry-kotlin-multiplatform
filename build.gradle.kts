@@ -60,9 +60,6 @@ subprojects {
                     }.toTypedArray()
             project.tasks.getByName("distZip").finalizedBy(*platformDists)
 
-            // signing is done when uploading files to MC
-            // via gpg:sign-and-deploy-file (release.kts); disabled here via
-            // the RELEASE_SIGNING_ENABLED Gradle property (see gradle.properties)
             apply<MavenPublishPlugin>()
         }
     }
@@ -164,8 +161,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
                     artifactFile.name.contains("tvos", ignoreCase = true) -> {
-                    // The main klib plus one per cinterop on Apple targets: the Sentry framework
-                    // bindings, its internal headers, and the Swift bridge spm4Kmp always creates.
+                    // Apple artifacts include the SDK klib and three cinterops, including spm4Kmp's bridge.
                     val expectedCinteropKlibs =
                         listOf(
                             "cinterop-Sentry.klib",
@@ -217,9 +213,7 @@ subprojects {
     }
 }
 
-// Keep ktlint 1.x on the pre-1.0 formatting conventions (see .editorconfig for the
-// rationale). Spotless does not reliably forward the ij_* properties from
-// .editorconfig to ktlint, so pass them explicitly.
+// Pass these explicitly because Spotless does not reliably forward .editorconfig's ij_* settings.
 val ktlintEditorConfigOverride =
     mapOf(
         "ktlint_code_style" to "intellij_idea",
