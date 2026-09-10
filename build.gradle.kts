@@ -11,7 +11,6 @@ plugins {
     id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
     id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
-    kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
     id(Config.spmForKmp).version(Config.spmForKmpVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composePluginVersion).apply(false)
     id(Config.kotlinCompose).version(Config.kotlinVersion).apply(false)
@@ -84,7 +83,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             .dir("distributions")
             .get()
             .asFile
-    val expectedNumOfFiles = 20
+    val expectedNumOfFiles = 19
     val filesList = distributionDir.listFiles()
     val actualNumOfFiles = filesList?.size ?: 0
 
@@ -100,7 +99,6 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             "watchosx64",
             "watchossimulatorarm64",
             "watchosarm64",
-            "watchosarm32",
             "tvosx64",
             "tvossimulatorarm64",
             "tvosarm64",

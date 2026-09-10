@@ -17,52 +17,52 @@ open class SentryAppleOptionsWrapper(
     private var cachedEnableUnhandledCppExceptionMonitoring = true
 
     override val dsn: String?
-        get() = cocoaOptions.dsn
+        get() = cocoaOptions.dsn()
 
     override val attachStackTrace: Boolean
-        get() = cocoaOptions.attachStacktrace
+        get() = cocoaOptions.attachStacktrace()
 
     override val release: String?
-        get() = cocoaOptions.releaseName
+        get() = cocoaOptions.releaseName()
 
     override val debug: Boolean
-        get() = cocoaOptions.debug
+        get() = cocoaOptions.debug()
 
     override val environment: String
-        get() = cocoaOptions.environment
+        get() = cocoaOptions.environment()
 
     override val dist: String?
-        get() = cocoaOptions.dist
+        get() = cocoaOptions.dist()
 
     override val enableAutoSessionTracking: Boolean
-        get() = cocoaOptions.enableAutoSessionTracking
+        get() = cocoaOptions.enableAutoSessionTracking()
 
     override val sessionTrackingIntervalMillis: Long
-        get() = cocoaOptions.sessionTrackingIntervalMillis.convert()
+        get() = cocoaOptions.sessionTrackingIntervalMillis().convert()
 
     override val maxBreadcrumbs: Int
-        get() = cocoaOptions.maxBreadcrumbs.convert()
+        get() = cocoaOptions.maxBreadcrumbs().convert()
 
     override val maxAttachmentSize: Long
-        get() = cocoaOptions.maxAttachmentSize.convert()
+        get() = cocoaOptions.maxAttachmentSize().convert()
 
     override val sampleRate: Double?
-        get() = cocoaOptions.sampleRate?.doubleValue
+        get() = cocoaOptions.sampleRate()?.doubleValue
 
     override val tracesSampleRate: Double?
-        get() = cocoaOptions.tracesSampleRate?.doubleValue
+        get() = cocoaOptions.tracesSampleRate()?.doubleValue
 
     override val enableWatchdogTerminationTracking: Boolean
-        get() = cocoaOptions.enableWatchdogTerminationTracking
+        get() = cocoaOptions.enableWatchdogTerminationTracking()
 
     override val enableUnhandledCppExceptionMonitoring: Boolean
         get() = cachedEnableUnhandledCppExceptionMonitoring
 
     override val diagnosticLevel: SentryLevel
-        get() = cocoaOptions.diagnosticLevel.toKmpSentryLevel()!!
+        get() = cocoaOptions.diagnosticLevel().toKmpSentryLevel()!!
 
     override val sendDefaultPii: Boolean
-        get() = cocoaOptions.sendDefaultPii
+        get() = cocoaOptions.sendDefaultPii()
 
     override val proguardUuid: String?
         get() = null // Not supported on Apple platforms
@@ -98,5 +98,5 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
 actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
     {
         val cocoaOptions = it as CocoaSentryOptions
-        cocoaOptions.dsn = fakeDsn
+        cocoaOptions.setDsn(fakeDsn)
     }

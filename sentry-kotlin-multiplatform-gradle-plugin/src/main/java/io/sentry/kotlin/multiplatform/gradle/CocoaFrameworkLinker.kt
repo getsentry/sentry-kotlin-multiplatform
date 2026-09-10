@@ -64,7 +64,8 @@ internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> =
             "macosArm64", "macosX64" -> addAll(SentryCocoaFrameworkArchitectures.MACOS_ARM64_AND_X64)
             "tvosSimulatorArm64", "tvosX64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_SIMULATOR_AND_X64)
             "tvosArm64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_ARM64)
-            "watchosArm32", "watchosArm64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_ARM)
+            "watchosArm32" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_ARM32)
+            "watchosArm64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_ARM)
             "watchosSimulatorArm64", "watchosX64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_SIMULATOR_AND_X64)
         }
     }
@@ -75,8 +76,13 @@ internal object SentryCocoaFrameworkArchitectures {
     val MACOS_ARM64_AND_X64 = setOf("macos-arm64_x86_64", "macos-arm64_arm64e_x86_64")
     val TVOS_SIMULATOR_AND_X64 = setOf("tvos-arm64_x86_64-simulator")
     val TVOS_ARM64 = setOf("tvos-arm64", "tvos-arm64_arm64e")
-    val WATCHOS_ARM = setOf("watchos-arm64_arm64_32_armv7k", "watchos-arm64_arm64_32_arm64e_armv7k")
-    val WATCHOS_SIMULATOR_AND_X64 = setOf("watchos-arm64_i386_x86_64-simulator")
+
+    // arm64_32 is the supported watchosArm64 device architecture, distinct from armv7k.
+    // Keep watchosArm32 limited to historical archives that actually contain armv7k.
+    val WATCHOS_ARM32 = setOf("watchos-arm64_arm64_32_armv7k", "watchos-arm64_arm64_32_arm64e_armv7k")
+    val WATCHOS_ARM = WATCHOS_ARM32 + setOf("watchos-arm64_arm64_32", "watchos-arm64_arm64_32_arm64e")
+    val WATCHOS_SIMULATOR_AND_X64 =
+        setOf("watchos-arm64_i386_x86_64-simulator", "watchos-arm64_x86_64-simulator")
 
     // Used for tests
     val all =
@@ -86,6 +92,7 @@ internal object SentryCocoaFrameworkArchitectures {
             MACOS_ARM64_AND_X64,
             TVOS_SIMULATOR_AND_X64,
             TVOS_ARM64,
+            WATCHOS_ARM32,
             WATCHOS_ARM,
             WATCHOS_SIMULATOR_AND_X64,
         )

@@ -63,7 +63,6 @@ kotlin {
             iosArm64(),
             iosSimulatorArm64(),
             iosX64(),
-            watchosArm32(),
             watchosArm64(),
             watchosX64(),
             watchosSimulatorArm64(),
@@ -166,18 +165,6 @@ kotlin {
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
-                // KT-41709: Sentry classes with "Meta" in the name (e.g. SentryMechanismMeta) are
-                // otherwise declared twice. Must be extraOpts — compilerOpts only populates the
-                // generated def's clang flags. https://youtrack.jetbrains.com/issue/KT-41709
-                extraOpts =
-                    listOf(
-                        "-compiler-option",
-                        "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                        "-compiler-option",
-                        "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                        "-compiler-option",
-                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable",
-                    )
                 dependency {
                     remotePackageVersion(
                         url = uri("https://github.com/getsentry/sentry-cocoa.git"),

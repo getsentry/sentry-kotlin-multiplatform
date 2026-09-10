@@ -15,7 +15,7 @@ actual class SentryEventConfigurator {
     actual fun applyOptions(options: SentryOptions): SentryEvent? {
         val cocoaOptions = CocoaSentryOptions()
         cocoaOptions.applyCocoaBaseOptions(options)
-        val cocoaModifiedSentryEvent = cocoaOptions.beforeSend?.invoke(cocoaSentryEvent)
+        val cocoaModifiedSentryEvent = cocoaOptions.beforeSend()?.invoke(cocoaSentryEvent)
         return if (cocoaModifiedSentryEvent == null) {
             null
         } else {

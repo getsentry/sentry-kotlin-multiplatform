@@ -31,8 +31,11 @@ that can be used on Kotlin Multiplatform.
 |   Kotlin/JVM    | <ul><li>`jvm`</li></ul>                                                                                      
 |       iOS       | <ul><li>`iosArm64`</li><li>`iosX64`</li><li>`iosSimulatorArm64`</li></ul>                                    |
 |      macOS      | <ul><li>`macosArm64`</li><li>`macosX64`</ul>                                                                 |
-|     watchOS     | <ul><li>`watchosArm32`</li><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
+|     watchOS     | <ul><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
 |      tvOS       | <ul><li>`tvosArm64`</li><li>`tvosX64`</li><li>`tvosSimulatorArm64`</li></ul>                                 |
+
+Apple targets require **iOS 15, tvOS 15, macOS 12, or watchOS 9** with Sentry Cocoa **9.28.0**.
+The `watchosArm32` target is no longer supported because Cocoa 9.28.0 does not include an armv7k slice.
 
 ## Stubbed Platforms (No-Op Implementations)
 
@@ -72,6 +75,7 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 | 0.25.0                     | 8.57.3            |
 | 0.26.0                     | 8.58.2            |
 | 0.27.0                     | 8.58.2            |
+| Unreleased                 | 9.28.0            |
 
 ## Usage
 
@@ -99,7 +103,7 @@ sentryKmp {
     autoInstall {
         spm {
             // enabled = false // opt out of the automatic Sentry Cocoa Swift package
-            // sentryCocoaVersion = "8.58.2" // override the default version
+            // sentryCocoaVersion = "9.28.0" // override the default version
         }
     }
 }
@@ -126,19 +130,42 @@ sentryKmp {
 > silently pick one — overriding a version you pinned on purpose. The plugin warns and names the
 > targets it left uncovered, so add those to your own `swiftPackageConfig` if they need Sentry Cocoa.
 
-Consumers that don't use spm4Kmp keep the existing behavior: the CocoaPods auto-install (when the
-Kotlin CocoaPods plugin is applied) or the `linker { frameworkPath / xcodeprojPath }` fallback for
-plain SPM-in-Xcode setups.
+Use SwiftPM through spm4Kmp for Cocoa 9.28.0. CocoaPods is unsupported; its historical sample
+and legacy plugin configuration remain in the repository but are excluded from active validation.
+
+### Migrating to Cocoa 9
+
+Raise deployment targets in your app and Swift package configuration to at least iOS/tvOS 15,
+macOS 12, and watchOS 9. Keep any higher minimums your app already requires. If you declare the
+Sentry Swift package yourself, pin it to 9.28.0 and set these minimums in your own spm4Kmp
+configuration; the plugin does not replace user-owned Sentry packages. Remove `watchosArm32`
+from your target list.
+
+The common Kotlin `captureUserFeedback` API remains available. On Apple it maps to Cocoa's
+`SentryFeedback` with source `custom`: comments become the message (null becomes an empty
+string), the original event ID becomes `associatedEventId`, and name/email are preserved.
+
+The `cocoapods.Sentry` Kotlin import prefix is retained for compatibility with existing bindings.
+Apple-native customizations still need review: Cocoa option access from Kotlin uses generated
+getter/setter functions, log enablement moves to the top-level native option, and native log
+attributes use `SentryAttribute` instead of `SentryStructuredLogAttribute`.
 
 ## Samples
 
-For detailed information on how to build and run the samples, check out our `README.md` in the
-[sentry-samples](https://github.com/getsentry/sentry-kotlin-multiplatform/tree/main/sentry-samples)
-folder.
+The supported sample is [kmp-app-spm](sentry-samples/kmp-app-spm), with Android, JVM, and iOS apps.
+Build the iOS simulator app with `make buildAppleSamples`; `make compile` also runs the SDK
+build, tests, API checks, and lint. Xcode builds the shared Kotlin framework through Gradle.
+These commands use your selected Xcode. To select another installation for this build only, run:
+
+```sh
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer make buildAppleSamples
+```
+
+The retired `kmp-app-cocoapods` files are retained as historical examples only.
 
 ## Apple Privacy Manifest
 
-Starting with [May 1st 2024](https://developer.apple.com/news/?id=3d8a9yyh), apps submitted to the Apple App Store are required to declare approved reasons to access certain privacy-relevant APIs. This also includes usages of these APIs via third-party SDKs. To ensure compliance, update your Sentry Cocoa SDK to `8.21.0`.
+Starting with [May 1st 2024](https://developer.apple.com/news/?id=3d8a9yyh), apps submitted to the Apple App Store are required to declare approved reasons to access certain privacy-relevant APIs. This also includes usages of these APIs via third-party SDKs. Sentry Cocoa 9.28.0 includes a privacy manifest.
 For more information, refer to our [Apple Privacy Manifest Guide](https://docs.sentry.io/platforms/kotlin-multiplatform/data-management/apple-privacy-manifest/).
 
 ## Contribution

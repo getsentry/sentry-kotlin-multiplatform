@@ -19,6 +19,10 @@ abstract class Spm4KmpAutoInstallExtension
          * If the spm4Kmp plugin (io.github.frankois944.spmForKmp) is applied and no existing Sentry
          * Swift package configuration exists, the Sentry-Cocoa SDK will be added to every Apple target.
          *
+         * Auto-installed packages require iOS/tvOS 15, macOS 12, and watchOS 9 or later.
+         * Existing user-owned Sentry packages are left unchanged; configure these minimums there
+         * when using Cocoa 9.28.0. watchosArm32 is unsupported by auto-installation.
+         *
          * Can be set anywhere in the build script, as long as this plugin is applied before the spm4Kmp
          * plugin. If spm4Kmp is applied first, the Swift package has to be registered as each Apple
          * target is created, so this must then be set before the `kotlin { }` block declares them.

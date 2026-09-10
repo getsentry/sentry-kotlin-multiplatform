@@ -21,9 +21,9 @@
 
 @class SentryScope;
 
-@interface SentryHub : NSObject
+@interface SentryHubInternal : NSObject
 
-- (SentryClient *_Nullable)getClient;
+- (SentryClientInternal *_Nullable)getClient;
 
 @property (nonatomic, readonly, strong, nonnull) SentryScope *scope;
 
