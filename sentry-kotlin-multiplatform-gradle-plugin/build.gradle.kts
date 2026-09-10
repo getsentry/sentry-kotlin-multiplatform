@@ -21,9 +21,7 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
-    // Compile against the spm4Kmp DSL so we can auto-configure the Sentry Cocoa Swift
-    // package when a consumer applies the spm4Kmp plugin. compileOnly: only used when
-    // the consumer also brings the plugin onto the classpath.
+    // Consumers supply spm4Kmp when they apply it; keep it optional at runtime.
     compileOnly(libs.spmForKmp)
 
     testImplementation(kotlin("gradle-plugin"))
@@ -43,10 +41,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-// spm4Kmp's implementation artifact is published for Java 17. It is only a compileOnly dependency
-// (used solely when a consumer also applies the spm4Kmp plugin, which itself requires JDK 17), so we
-// request Java 17-compatible variants on the compile/test classpaths while still producing Java 11
-// bytecode. This keeps the published plugin runnable on JDK 11 for consumers that don't use spm4Kmp.
+// Resolve spm4Kmp's Java 17 artifact for compilation and tests, but emit Java 11 bytecode
+// for consumers that do not use spm4Kmp.
 listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEach { configurationName ->
     configurations.named(configurationName).configure {
         attributes {
@@ -68,10 +64,6 @@ gradlePlugin {
         }
     }
 }
-
-// signing is done when uploading files to MC
-// via gpg:sign-and-deploy-file (release.kts); disabled here via
-// the RELEASE_SIGNING_ENABLED Gradle property (see gradle.properties)
 
 tasks.named("distZip") {
     dependsOn("publishToMavenLocal")

@@ -58,10 +58,7 @@ android {
     }
 }
 
-// We depend on project(":sentry-kotlin-multiplatform") directly, so the commonMain auto-install
-// (which would add the published SDK dependency) is disabled. The spm4Kmp auto-install stays enabled
-// to exercise it: applying the spm4Kmp plugin makes the Sentry KMP plugin add the matching
-// Sentry Cocoa Swift package to the Apple targets automatically.
+// Use the local SDK project and exercise Cocoa auto-install through spm4Kmp.
 sentryKmp {
     autoInstall.commonMain.enabled = false
 }

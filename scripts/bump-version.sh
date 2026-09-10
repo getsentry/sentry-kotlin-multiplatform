@@ -14,7 +14,6 @@ NEW_VERSION="$2"
 GRADLE_FILEPATH="gradle.properties"
 PLUGIN_GRADLE_FILEPATH="sentry-kotlin-multiplatform-gradle-plugin/gradle.properties"
 
-# Replace `versionName` with the given version
 VERSION_NAME_PATTERN="versionName"
 perl -pi -e "s/$VERSION_NAME_PATTERN=.*$/$VERSION_NAME_PATTERN=$NEW_VERSION/g" $GRADLE_FILEPATH
 perl -pi -e "s/$VERSION_NAME_PATTERN=.*$/$VERSION_NAME_PATTERN=$NEW_VERSION/g" $PLUGIN_GRADLE_FILEPATH
@@ -31,11 +30,9 @@ fi
 
 COCOA_VERSION=${BASH_REMATCH[1]}
 
-# create a new table entry in readme with NEW_VERSION and COCOA_VERSION in the compatibility table
-# Find the line number of the last entry in the compatibility table and insert the new entry after it
+# Append the SDK/Cocoa compatibility entry unless it already exists.
 README_FILE="README.md"
 
-# Check if an entry with the same KMP version and Cocoa version already exists
 EXISTING_ENTRY=$(grep "| $NEW_VERSION" $README_FILE 2>/dev/null | grep "$COCOA_VERSION" 2>/dev/null || true)
 
 if [ -n "$EXISTING_ENTRY" ]; then
@@ -43,7 +40,6 @@ if [ -n "$EXISTING_ENTRY" ]; then
     exit 0
 fi
 
-# We'll look for the last line that matches the table entry pattern (starts with | and contains version numbers)
 LAST_TABLE_LINE=$(grep -n "^| [0-9]" $README_FILE | tail -1 | cut -d: -f1)
 
 if [ -z "$LAST_TABLE_LINE" ]; then
@@ -57,7 +53,6 @@ head -n $LAST_TABLE_LINE $README_FILE > $TEMP_FILE
 echo "| $NEW_VERSION                     | $COCOA_VERSION            |" >> $TEMP_FILE
 tail -n +$((LAST_TABLE_LINE + 1)) $README_FILE >> $TEMP_FILE
 
-# Replace the original file with the modified content
 mv $TEMP_FILE $README_FILE
 
 echo "Added new compatibility table entry: | $NEW_VERSION | $COCOA_VERSION |"

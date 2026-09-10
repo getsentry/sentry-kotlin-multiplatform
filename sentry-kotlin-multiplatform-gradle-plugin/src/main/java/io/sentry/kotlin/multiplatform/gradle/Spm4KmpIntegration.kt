@@ -12,10 +12,9 @@ import java.net.URI
 internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
 private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
 
-/** Set once the auto-install has registered the package, so a too-late opt-out is detectable. */
+/** Records registration so we can warn if auto-install is disabled afterwards. */
 internal const val SPM_AUTO_INSTALLED_MARKER = "io.sentry.kotlin.multiplatform.spmAutoInstalled"
 
-/** Null when spm4Kmp isn't applied, which is not the same as an empty container. */
 private fun Project.swiftPackageConfigNames(): Set<String>? {
     if (!plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
         return null
@@ -26,7 +25,6 @@ private fun Project.swiftPackageConfigNames(): Set<String>? {
     return container.names
 }
 
-/** The container key spm4Kmp's `swiftPackageConfig(cinteropName)` creates for [targetName]. */
 private fun spm4KmpConfigName(targetName: String): String {
     val capitalizedTarget = targetName.replaceFirstChar { it.uppercase() }
     return "${SENTRY_COCOA_CINTEROP_NAME}_$capitalizedTarget"
@@ -40,11 +38,8 @@ private fun Project.sentrySwiftPackageConfigNames(): Set<String> =
         }
 
 /**
- * True when spm4Kmp already supplies Sentry Cocoa to [targetName].
- *
- * A bare "sentryCocoa" entry (spm4Kmp's legacy style) looks project-wide but isn't: spm4Kmp
- * connects it to targets through matching cinterop tasks, so it only reaches the targets that
- * declare the cinterop themselves.
+ * A global "sentryCocoa" config only covers targets with a matching cinterop.
+ * Target-specific configs create that cinterop automatically.
  */
 internal fun Project.isSentryConfiguredViaSpm4Kmp(targetName: String): Boolean {
     val configNames = swiftPackageConfigNames() ?: return false
@@ -65,15 +60,11 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
 }
 
 /**
- * Adds the Sentry Cocoa Swift package to every Apple target via the spm4Kmp DSL so consumers don't
- * have to declare it themselves.
+ * Skip auto-install when a user config exists. spm4Kmp selects one configuration per cinterop
+ * name, so adding defaults could replace the user's package settings.
  *
- * A single config the consumer wrote suppresses the auto-install for *all* targets, not just the
- * one it names: spm4Kmp merges configs sharing a cinterop name into one SwiftPM package, so a
- * second one would put two sentry-cocoa versions in that package and silently pick one.
- *
- * On the eager path (spm4Kmp applied first) this runs as each target is created, so it cannot see
- * a config declared *inside* a target block; those setups have to opt out before `kotlin { }`.
+ * If spm4Kmp is applied first, configs inside target blocks are not visible yet.
+ * Users declaring those configs must disable auto-install before `kotlin { }`.
  */
 internal fun Project.installSentryForSpm4Kmp(
     autoInstall: AutoInstallExtension,
@@ -85,7 +76,7 @@ internal fun Project.installSentryForSpm4Kmp(
         return
     }
 
-    // Ours, so anything else in the container is recognisable as the consumer's.
+    // Track our registrations to distinguish them from user-defined configs.
     val autoInstalledConfigNames = mutableSetOf<String>()
 
     kmpExtension.appleTargets().configureEach { target ->
