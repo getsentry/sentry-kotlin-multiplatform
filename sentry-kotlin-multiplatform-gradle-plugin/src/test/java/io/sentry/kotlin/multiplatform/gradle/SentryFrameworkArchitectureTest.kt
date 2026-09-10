@@ -5,7 +5,6 @@ import io.mockk.mockk
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -53,9 +52,6 @@ class SentryFrameworkArchitectureTest {
                 tvosX64(),
                 tvosArm64(),
                 tvosSimulatorArm64(),
-            ).plus(
-                // Cocoa 8 archives still support the historical armv7k device slice.
-                if (cocoaVersion.startsWith("8.")) listOf(watchosArm32()) else emptyList(),
             ).forEach {
                 it.binaries.framework {
                     baseName = "shared"
@@ -108,9 +104,6 @@ class SentryFrameworkArchitectureTest {
                 tvosX64(),
                 tvosArm64(),
                 tvosSimulatorArm64(),
-            ).plus(
-                // Cocoa 8 archives still support the historical armv7k device slice.
-                if (cocoaVersion.startsWith("8.")) listOf(watchosArm32()) else emptyList(),
             ).forEach {
                 it.binaries.framework {
                     baseName = "shared"
@@ -165,16 +158,12 @@ class SentryFrameworkArchitectureTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["watchos-arm64_arm64_32", "watchos-arm64_arm64_32_arm64e"])
-    fun `legacy watchOS arm32 cannot match Cocoa 9 device slice`(slice: String) {
+    @ValueSource(strings = ["watchosArm32", "legacyWatch"])
+    fun `stub watch target has no Cocoa architecture mapping`(targetName: String) {
         val target = mockk<KotlinNativeTarget>()
-        every { target.name } returns "watchosArm32"
+        every { target.name } returns targetName
 
-        val architectures = target.toSentryFrameworkArchitecture()
-
-        assertFalse(slice in architectures)
-        assertTrue("watchos-arm64_arm64_32_armv7k" in architectures)
-        assertTrue("watchos-arm64_arm64_32_arm64e_armv7k" in architectures)
+        assertTrue(target.toSentryFrameworkArchitecture().isEmpty())
     }
 
     @Test
