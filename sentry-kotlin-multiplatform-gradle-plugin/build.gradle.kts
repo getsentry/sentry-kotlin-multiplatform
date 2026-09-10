@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.api.attributes.java.TargetJvmVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -20,8 +21,13 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
+    // Compile against the spm4Kmp DSL so we can auto-configure the Sentry Cocoa Swift
+    // package when a consumer applies the spm4Kmp plugin. compileOnly: only used when
+    // the consumer also brings the plugin onto the classpath.
+    compileOnly(libs.spmForKmp)
 
     testImplementation(kotlin("gradle-plugin"))
+    testImplementation(libs.spmForKmp)
     testImplementation(libs.junit)
     testImplementation(libs.junit.params)
     testImplementation(libs.mockk)
@@ -35,6 +41,21 @@ tasks.test {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+// spm4Kmp's implementation artifact is published for Java 17. It is only a compileOnly dependency
+// (used solely when a consumer also applies the spm4Kmp plugin, which itself requires JDK 17), so we
+// request Java 17-compatible variants on the compile/test classpaths while still producing Java 11
+// bytecode. This keeps the published plugin runnable on JDK 11 for consumers that don't use spm4Kmp.
+listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEach { configurationName ->
+    configurations.named(configurationName).configure {
+        attributes {
+            attribute(
+                TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE,
+                JavaVersion.VERSION_17.majorVersion.toInt()
+            )
+        }
+    }
 }
 
 tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
