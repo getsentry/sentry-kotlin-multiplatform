@@ -1,6 +1,7 @@
 comments:
   UndocumentedPublicClass:
     active: true
+    ignoreDefaultCompanionObject: true
     includes: "**/commonMain/**"
   UndocumentedPublicProperty:
     active: true
@@ -10,7 +11,7 @@ style:
     active: false
   ForbiddenComment:
     active: false
-  UnusedPrivateMember:
+  UnusedPrivateProperty:
     excludes:
       - "**/Attachment.kt"
   ReturnCount:
