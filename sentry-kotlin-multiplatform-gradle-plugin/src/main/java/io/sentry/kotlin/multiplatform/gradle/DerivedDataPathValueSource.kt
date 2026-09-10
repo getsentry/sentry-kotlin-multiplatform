@@ -14,7 +14,8 @@ import javax.inject.Inject
  *
  * e.g /Users/theusername/Library/Developer/Xcode/DerivedData/iosApp-ddefikekigqzzgcnpfkkdallksmlfpln/
  */
-abstract class DerivedDataPathValueSource : ValueSource<String?, DerivedDataPathValueSource.Parameters> {
+abstract class DerivedDataPathValueSource :
+    ValueSource<String?, DerivedDataPathValueSource.Parameters> {
     interface Parameters : ValueSourceParameters {
         @get:Input
         val xcodeprojPath: Property<String>
@@ -31,19 +32,17 @@ abstract class DerivedDataPathValueSource : ValueSource<String?, DerivedDataPath
         val buildDirOutput = ByteArrayOutputStream()
         val errOutput = ByteArrayOutputStream()
 
-        val execOperations =
-            execOperations.exec {
-                it.commandLine =
-                    listOf(
-                        "xcodebuild",
-                        "-project",
-                        parameters.xcodeprojPath.get(),
-                        "-showBuildSettings",
-                    )
-                it.standardOutput = buildDirOutput
-                it.errorOutput = errOutput
-                it.isIgnoreExitValue = true
-            }
+        val execOperations = execOperations.exec {
+            it.commandLine = listOf(
+                "xcodebuild",
+                "-project",
+                parameters.xcodeprojPath.get(),
+                "-showBuildSettings"
+            )
+            it.standardOutput = buildDirOutput
+            it.errorOutput = errOutput
+            it.isIgnoreExitValue = true
+        }
 
         if (execOperations.exitValue == 0) {
             val buildSettings = buildDirOutput.toString("UTF-8")
@@ -57,9 +56,9 @@ abstract class DerivedDataPathValueSource : ValueSource<String?, DerivedDataPath
             logger.warn(
                 "Failed to retrieve derived data path. xcodebuild command failed. Error output: ${
                     errOutput.toString(
-                        Charsets.UTF_8,
+                        Charsets.UTF_8
                     )
-                }",
+                }"
             )
             return null
         }

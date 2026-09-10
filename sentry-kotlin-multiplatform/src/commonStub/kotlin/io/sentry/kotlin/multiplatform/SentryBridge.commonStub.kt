@@ -8,12 +8,9 @@ import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 
 @Suppress("UnusedPrivateMember")
 internal actual class SentryBridge actual constructor(
-    private val sentryInstance: SentryInstance,
+    private val sentryInstance: SentryInstance
 ) {
-    actual fun init(
-        context: Context,
-        configuration: OptionsConfiguration,
-    ) {
+    actual fun init(context: Context, configuration: OptionsConfiguration) {
         // No-op
     }
 
@@ -25,19 +22,21 @@ internal actual class SentryBridge actual constructor(
         // No-op
     }
 
-    actual fun captureMessage(message: String): SentryId = SentryId.EMPTY_ID
+    actual fun captureMessage(message: String): SentryId {
+        return SentryId.EMPTY_ID
+    }
 
-    actual fun captureMessage(
-        message: String,
-        scopeCallback: ScopeCallback,
-    ): SentryId = SentryId.EMPTY_ID
+    actual fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
+        return SentryId.EMPTY_ID
+    }
 
-    actual fun captureException(throwable: Throwable): SentryId = SentryId.EMPTY_ID
+    actual fun captureException(throwable: Throwable): SentryId {
+        return SentryId.EMPTY_ID
+    }
 
-    actual fun captureException(
-        throwable: Throwable,
-        scopeCallback: ScopeCallback,
-    ): SentryId = SentryId.EMPTY_ID
+    actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
+        return SentryId.EMPTY_ID
+    }
 
     actual fun configureScope(scopeCallback: ScopeCallback) {
         // No-op
@@ -55,11 +54,17 @@ internal actual class SentryBridge actual constructor(
         // No-op
     }
 
-    actual fun logger(): SentryLogger = NoOpSentryLogger()
+    actual fun logger(): SentryLogger {
+        return NoOpSentryLogger()
+    }
 
-    actual fun isCrashedLastRun(): Boolean = false
+    actual fun isCrashedLastRun(): Boolean {
+        return false
+    }
 
-    actual fun isEnabled(): Boolean = false
+    actual fun isEnabled(): Boolean {
+        return false
+    }
 
     actual fun close() {
         // No-op

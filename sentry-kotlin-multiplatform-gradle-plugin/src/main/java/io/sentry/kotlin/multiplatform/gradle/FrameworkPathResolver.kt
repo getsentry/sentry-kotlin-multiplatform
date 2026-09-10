@@ -11,12 +11,12 @@ import kotlin.io.path.absolutePathString
 
 enum class FrameworkType {
     STATIC,
-    DYNAMIC,
+    DYNAMIC
 }
 
 data class FrameworkPaths(
     val dynamic: String? = null,
-    val static: String? = null,
+    val static: String? = null
 ) {
     companion object {
         val NONE = FrameworkPaths(null, null)
@@ -25,17 +25,15 @@ data class FrameworkPaths(
             dynamicBasePath: String? = null,
             staticBasePath: String? = null,
             architectures: Set<String>,
-            pathExists: (String) -> Boolean = { path -> File(path).exists() },
+            pathExists: (String) -> Boolean = { path -> File(path).exists() }
         ): FrameworkPaths {
-            val dynamicPath =
-                dynamicBasePath?.let { basePath ->
-                    architectures.map { arch -> "$basePath/$arch" }.firstOrNull { pathExists(it) }
-                }
+            val dynamicPath = dynamicBasePath?.let { basePath ->
+                architectures.map { arch -> "$basePath/$arch" }.firstOrNull { pathExists(it) }
+            }
 
-            val staticPath =
-                staticBasePath?.let { basePath ->
-                    architectures.map { arch -> "$basePath/$arch" }.firstOrNull { pathExists(it) }
-                }
+            val staticPath = staticBasePath?.let { basePath ->
+                architectures.map { arch -> "$basePath/$arch" }.firstOrNull { pathExists(it) }
+            }
 
             return when {
                 dynamicPath != null && staticPath != null ->
@@ -63,35 +61,32 @@ interface FrameworkResolutionStrategy {
  * This should generally be executed first.
  */
 class CustomPathStrategy(
-    private val project: Project,
+    private val project: Project
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
     // In this function we don't distinguish between static and dynamic frameworks
     // We trust that the user knows the distinction if they purposefully override the framework path
     override fun resolvePaths(architectures: Set<String>): FrameworkPaths {
-        val result =
-            linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }?.let { basePath ->
-                when {
-                    basePath.endsWith("Sentry.xcframework") ->
-                        FrameworkPaths.createValidated(
-                            staticBasePath = basePath,
-                            architectures = architectures,
-                        )
+        val result = linker.frameworkPath.orNull?.takeIf { it.isNotEmpty() }?.let { basePath ->
+            when {
+                basePath.endsWith("Sentry.xcframework") -> FrameworkPaths.createValidated(
+                    staticBasePath = basePath,
+                    architectures = architectures
+                )
 
-                    basePath.endsWith("Sentry-Dynamic.xcframework") ->
-                        FrameworkPaths.createValidated(
-                            dynamicBasePath = basePath,
-                            architectures = architectures,
-                        )
+                basePath.endsWith("Sentry-Dynamic.xcframework") -> FrameworkPaths.createValidated(
+                    dynamicBasePath = basePath,
+                    architectures = architectures
+                )
 
-                    else -> FrameworkPaths.NONE
-                }
-            } ?: FrameworkPaths.NONE
+                else -> FrameworkPaths.NONE
+            }
+        } ?: FrameworkPaths.NONE
         if (linker.frameworkPath.orNull != null && result == FrameworkPaths.NONE) {
             project.logger.warn(
                 "Custom framework path has been set manually but could not be found. " +
-                    "Trying to resolve framework paths using other strategies.",
+                    "Trying to resolve framework paths using other strategies."
             )
         }
         return result
@@ -108,11 +103,10 @@ class CustomPathStrategy(
 class DerivedDataStrategy(
     private val project: Project,
     private val derivedDataProvider: (String) -> String? = { xcodeprojPath ->
-        project.providers
-            .of(DerivedDataPathValueSource::class.java) {
-                it.parameters.xcodeprojPath.set(xcodeprojPath)
-            }.orNull
-    },
+        project.providers.of(DerivedDataPathValueSource::class.java) {
+            it.parameters.xcodeprojPath.set(xcodeprojPath)
+        }.orNull
+    }
 ) : FrameworkResolutionStrategy {
     private val linker: LinkerExtension = project.extensions.getByType(LinkerExtension::class.java)
 
@@ -132,7 +126,7 @@ class DerivedDataStrategy(
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicBasePath,
             staticBasePath = staticBasePath,
-            architectures = architectures,
+            architectures = architectures
         )
     }
 
@@ -149,9 +143,9 @@ class DerivedDataStrategy(
             object : SimpleFileVisitor<Path>() {
                 override fun preVisitDirectory(
                     dir: Path,
-                    attrs: BasicFileAttributes,
-                ): FileVisitResult =
-                    when {
+                    attrs: BasicFileAttributes
+                ): FileVisitResult {
+                    return when {
                         // Check if current directory is a xcodeproj before checking ignored dirs
                         dir.toString().endsWith(".xcodeproj") -> {
                             foundXcodeprojPath = dir.absolutePathString()
@@ -161,7 +155,8 @@ class DerivedDataStrategy(
                         ignoredDirectories.contains(dir.fileName.toString()) -> FileVisitResult.SKIP_SUBTREE
                         else -> FileVisitResult.CONTINUE
                     }
-            },
+                }
+            }
         )
 
         if (foundXcodeprojPath != null) {
@@ -184,7 +179,7 @@ class DerivedDataStrategy(
  */
 class ManualSearchStrategy(
     private val project: Project,
-    private val basePathToSearch: String? = null,
+    private val basePathToSearch: String? = null
 ) : FrameworkResolutionStrategy {
     // TODO: currently the search doesnt differentiate between Cocoa versions
     // we can improve this by checking the info.plist and prefer the ones that are the version we are looking for
@@ -207,26 +202,28 @@ class ManualSearchStrategy(
         return FrameworkPaths.createValidated(
             dynamicBasePath = dynamicValueSource.orNull,
             staticBasePath = staticValueSource.orNull,
-            architectures = architectures,
+            architectures = architectures
         )
     }
 }
 
 class FrameworkPathResolver(
     private val project: Project,
-    private val strategies: List<FrameworkResolutionStrategy> = defaultStrategies(project),
+    private val strategies: List<FrameworkResolutionStrategy> = defaultStrategies(project)
 ) {
-    fun resolvePaths(architectures: Set<String>): FrameworkPaths {
+    fun resolvePaths(
+        architectures: Set<String>
+    ): FrameworkPaths {
         strategies.forEach { strategy ->
             try {
                 project.logger.info(
-                    "Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}",
+                    "Attempt to resolve Sentry Cocoa framework paths using ${strategy::class.simpleName}"
                 )
                 val result = strategy.resolvePaths(architectures)
                 if (result != FrameworkPaths.NONE) {
                     val path = result.dynamic ?: result.static
                     project.logger.lifecycle(
-                        "Found Sentry Cocoa framework path using ${strategy::class.simpleName} at $path",
+                        "Found Sentry Cocoa framework path using ${strategy::class.simpleName} at $path"
                     )
                     return result
                 } else {
@@ -234,7 +231,7 @@ class FrameworkPathResolver(
                 }
             } catch (e: FrameworkLinkingException) {
                 project.logger.warn(
-                    "Strategy ${strategy::class.simpleName} failed due to error: ${e.message}",
+                    "Strategy ${strategy::class.simpleName} failed due to error: ${e.message}"
                 )
             }
         }
@@ -243,8 +240,7 @@ class FrameworkPathResolver(
         throw FrameworkLinkingException(frameworkNotFoundMessage)
     }
 
-    private val frameworkNotFoundMessage =
-        """
+    private val frameworkNotFoundMessage = """
         Failed to find Sentry Cocoa framework. Steps to resolve:
         
         1. Install Sentry Cocoa via SPM in Xcode
@@ -258,7 +254,7 @@ class FrameworkPathResolver(
                 frameworkPath.set("path/to/Sentry.xcframework") 
             }
         }
-        """.trimIndent()
+    """.trimIndent()
 
     companion object {
         /**
@@ -268,13 +264,14 @@ class FrameworkPathResolver(
          * resolved by the first successful strategy. Specifically here Custom Path will be checked first,
          * if that fails then it is followed by the Derived Data strategy etc...
          */
-        fun defaultStrategies(project: Project): List<FrameworkResolutionStrategy> =
-            listOf(
+        fun defaultStrategies(project: Project): List<FrameworkResolutionStrategy> {
+            return listOf(
                 CustomPathStrategy(project),
                 DerivedDataStrategy(project),
-                ManualSearchStrategy(project),
+                ManualSearchStrategy(project)
                 // TODO: add DownloadStrategy -> downloads the framework and stores it in build dir
                 // this is especially useful for users who dont have a monorepo setup
             )
+        }
     }
 }

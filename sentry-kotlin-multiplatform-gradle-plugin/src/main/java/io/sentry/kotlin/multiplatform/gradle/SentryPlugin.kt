@@ -27,17 +27,17 @@ class SentryPlugin : Plugin<Project> {
                 project.extensions.create(
                     SENTRY_EXTENSION_NAME,
                     SentryExtension::class.java,
-                    project,
+                    project
                 )
             project.extensions.add(LINKER_EXTENSION_NAME, sentryExtension.linker)
             project.extensions.add(AUTO_INSTALL_EXTENSION_NAME, sentryExtension.autoInstall)
             project.extensions.add(
                 COCOAPODS_AUTO_INSTALL_EXTENSION_NAME,
-                sentryExtension.autoInstall.cocoapods,
+                sentryExtension.autoInstall.cocoapods
             )
             project.extensions.add(
                 COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME,
-                sentryExtension.autoInstall.commonMain,
+                sentryExtension.autoInstall.commonMain
             )
 
             afterEvaluate {
@@ -47,7 +47,7 @@ class SentryPlugin : Plugin<Project> {
 
     internal fun executeConfiguration(
         project: Project,
-        hostIsMac: Boolean = HostManager.hostIsMac,
+        hostIsMac: Boolean = HostManager.hostIsMac
     ) {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
         val hasCocoapodsPlugin =
@@ -78,7 +78,7 @@ class SentryPlugin : Plugin<Project> {
 private fun maybeLinkCocoaFramework(
     project: Project,
     hasCocoapods: Boolean,
-    hostIsMac: Boolean,
+    hostIsMac: Boolean
 ) {
     if (hostIsMac && !hasCocoapods) {
         // Register a task graph listener so that we only configure Cocoa framework linking
@@ -104,7 +104,7 @@ private fun maybeLinkCocoaFramework(
             if (activeTargets.isEmpty()) {
                 project.logger.lifecycle(
                     "No Apple compile task scheduled for this build " +
-                        "- skipping Sentry Cocoa framework linking",
+                        "- skipping Sentry Cocoa framework linking"
                 )
                 return@whenReady
             }
@@ -114,7 +114,7 @@ private fun maybeLinkCocoaFramework(
             CocoaFrameworkLinker(
                 logger = project.logger,
                 pathResolver = FrameworkPathResolver(project),
-                binaryLinker = FrameworkLinker(project.logger),
+                binaryLinker = FrameworkLinker(project.logger)
             ).configure(appleTargets = activeTargets)
         }
     }
@@ -123,27 +123,26 @@ private fun maybeLinkCocoaFramework(
 private fun getActiveTargets(
     project: Project,
     appleTargets: List<KotlinNativeTarget>,
-    graph: TaskExecutionGraph,
-): List<KotlinNativeTarget> =
-    appleTargets.filter { target ->
-        val targetName =
-            target.name.replaceFirstChar {
-                it.uppercase()
-            }
-        val path =
-            if (project.path == ":") {
-                ":compileKotlin$targetName"
-            } else {
-                "${project.path}:compileKotlin$targetName"
-            }
-        try {
-            graph.hasTask(path)
-        } catch (_: Exception) {
-            false
-        }
+    graph: TaskExecutionGraph
+): List<KotlinNativeTarget> = appleTargets.filter { target ->
+    val targetName = target.name.replaceFirstChar {
+        it.uppercase()
     }
+    val path = if (project.path == ":") {
+        ":compileKotlin$targetName"
+    } else {
+        "${project.path}:compileKotlin$targetName"
+    }
+    try {
+        graph.hasTask(path)
+    } catch (_: Exception) {
+        false
+    }
+}
 
-internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceSetAutoInstallExtension) {
+internal fun Project.installSentryForKmp(
+    commonMainAutoInstallExtension: SourceSetAutoInstallExtension
+) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension) {
         logger.info("Kotlin Multiplatform plugin not found. Skipping Sentry installation.")
@@ -157,7 +156,7 @@ internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceS
                 "Unsupported target: ${target.name}. " +
                     "Cannot auto install in commonMain. " +
                     "Please create an intermediate sourceSet with targets that the Sentry SDK " +
-                    "supports and add the dependency manually.",
+                    "supports and add the dependency manually."
             )
         }
     }
@@ -168,7 +167,9 @@ internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceS
     commonMain?.dependencies { api("io.sentry:sentry-kotlin-multiplatform:$sentryVersion") }
 }
 
-internal fun Project.installSentryForCocoapods(cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension) {
+internal fun Project.installSentryForCocoapods(
+    cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension
+) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
         logger.info("Skipping Cocoapods installation.")

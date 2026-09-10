@@ -30,12 +30,9 @@ public object Sentry {
     @HiddenFromObjC
     @Deprecated(
         "Use init(OptionsConfiguration) instead.",
-        ReplaceWith("Sentry.init(configuration)"),
+        ReplaceWith("Sentry.init(configuration)")
     )
-    public fun init(
-        context: Context,
-        configuration: OptionsConfiguration,
-    ) {
+    public fun init(context: Context, configuration: OptionsConfiguration) {
         bridge.init(context, configuration)
     }
 
@@ -75,7 +72,9 @@ public object Sentry {
      *
      * @param message The message to send.
      */
-    public fun captureMessage(message: String): SentryId = bridge.captureMessage(message)
+    public fun captureMessage(message: String): SentryId {
+        return bridge.captureMessage(message)
+    }
 
     /**
      * Captures the exception.
@@ -83,17 +82,18 @@ public object Sentry {
      * @param message The message to send.
      * @param scopeCallback The local scope callback.
      */
-    public fun captureMessage(
-        message: String,
-        scopeCallback: ScopeCallback,
-    ): SentryId = bridge.captureMessage(message, scopeCallback)
+    public fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
+        return bridge.captureMessage(message, scopeCallback)
+    }
 
     /**
      * Captures the exception.
      *
      * @param throwable The exception.
      */
-    public fun captureException(throwable: Throwable): SentryId = bridge.captureException(throwable)
+    public fun captureException(throwable: Throwable): SentryId {
+        return bridge.captureException(throwable)
+    }
 
     /**
      * Captures the exception.
@@ -101,10 +101,9 @@ public object Sentry {
      * @param throwable The exception.
      * @param scopeCallback The local scope callback.
      */
-    public fun captureException(
-        throwable: Throwable,
-        scopeCallback: ScopeCallback,
-    ): SentryId = bridge.captureException(throwable, scopeCallback)
+    public fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
+        return bridge.captureException(throwable, scopeCallback)
+    }
 
     /**
      * Captures a manually created user feedback and sends it to Sentry.
@@ -112,7 +111,7 @@ public object Sentry {
      * @param userFeedback The user feedback to send to Sentry.
      */
     public fun captureUserFeedback(userFeedback: UserFeedback) {
-        bridge.captureUserFeedback(userFeedback)
+        return bridge.captureUserFeedback(userFeedback)
     }
 
     /**
@@ -173,17 +172,23 @@ public object Sentry {
     /**
      * Returns true if the app crashed during last run.
      */
-    public fun isCrashedLastRun(): Boolean = bridge.isCrashedLastRun()
+    public fun isCrashedLastRun(): Boolean {
+        return bridge.isCrashedLastRun()
+    }
 
     /**
      * Throws a RuntimeException, useful for testing.
      */
-    public fun crash(): Unit = throw RuntimeException("Uncaught Exception from Kotlin Multiplatform.")
+    public fun crash() {
+        throw RuntimeException("Uncaught Exception from Kotlin Multiplatform.")
+    }
 
     /**
      * Checks if the SDK is enabled.
      */
-    public fun isEnabled(): Boolean = bridge.isEnabled()
+    public fun isEnabled(): Boolean {
+        return bridge.isEnabled()
+    }
 
     /**
      * Closes the SDK.

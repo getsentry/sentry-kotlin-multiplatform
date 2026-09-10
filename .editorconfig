@@ -1,6 +1,17 @@
 root = true
 
 [*.{kt,kts}]
-max_line_length = 120
+# ktlint 1.x defaults to the new ktlint_official code style, which would reformat
+# most of the codebase (multiline expression wrapping, trailing commas, signature
+# wrapping). Pin the pre-1.x style until a dedicated style-migration PR adopts
+# ktlint_official deliberately.
+ktlint_code_style = intellij_idea
+# ktlint 1.x adds trailing commas by default regardless of code style; the
+# codebase doesn't use them.
+ij_kotlin_allow_trailing_comma = false
+ij_kotlin_allow_trailing_comma_on_call_site = false
+# ktlint 1.x also enables stricter naming rules by default. The codebase relies on
+# backtick-wrapped test function names and constant-style vals that predate
+# these rules, so keep them disabled to match existing conventions.
 ktlint_standard_function-naming = disabled
 ktlint_standard_property-naming = disabled

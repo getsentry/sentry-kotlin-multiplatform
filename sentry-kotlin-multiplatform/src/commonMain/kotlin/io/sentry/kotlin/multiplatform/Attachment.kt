@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform
 
 /** An attachment to be sent along with the event. */
 public expect class Attachment {
+
     /** The bytes of the attachment. */
     public val bytes: ByteArray?
 

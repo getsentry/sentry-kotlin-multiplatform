@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BreadcrumbTest {
+
     private val testMessage = "TestMessage"
     private val testCategory = "TestCategory"
     private val testUrl = "sentry.io"

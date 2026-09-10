@@ -9,9 +9,8 @@ import io.sentry.kotlin.multiplatform.extensions.toMap
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.User
 
-internal class JvmScopeProvider(
-    private val scope: JvmIScope,
-) : Scope {
+internal class JvmScopeProvider(private val scope: JvmIScope) : Scope {
+
     override var level: SentryLevel?
         set(value) {
             scope.level = value?.toJvmSentryLevel()
@@ -32,9 +31,13 @@ internal class JvmScopeProvider(
         scope.clearAttachments()
     }
 
-    override fun getContexts(): MutableMap<String, Any> = scope.contexts.toMap().toMutableMap()
+    override fun getContexts(): MutableMap<String, Any> {
+        return scope.contexts.toMap().toMutableMap()
+    }
 
-    override fun getTags(): MutableMap<String, String> = scope.tags
+    override fun getTags(): MutableMap<String, String> {
+        return scope.tags
+    }
 
     override fun addBreadcrumb(breadcrumb: Breadcrumb) {
         scope.addBreadcrumb(breadcrumb.toJvmBreadcrumb())
@@ -44,52 +47,31 @@ internal class JvmScopeProvider(
         scope.clearBreadcrumbs()
     }
 
-    override fun setContext(
-        key: String,
-        value: Any,
-    ) {
+    override fun setContext(key: String, value: Any) {
         scope.setContexts(key, value)
     }
 
-    override fun setContext(
-        key: String,
-        value: Boolean,
-    ) {
+    override fun setContext(key: String, value: Boolean) {
         scope.setContexts(key, value)
     }
 
-    override fun setContext(
-        key: String,
-        value: String,
-    ) {
+    override fun setContext(key: String, value: String) {
         scope.setContexts(key, value)
     }
 
-    override fun setContext(
-        key: String,
-        value: Number,
-    ) {
+    override fun setContext(key: String, value: Number) {
         scope.setContexts(key, value)
     }
 
-    override fun setContext(
-        key: String,
-        value: Collection<*>,
-    ) {
+    override fun setContext(key: String, value: Collection<*>) {
         scope.setContexts(key, value)
     }
 
-    override fun setContext(
-        key: String,
-        value: Array<*>,
-    ) {
+    override fun setContext(key: String, value: Array<*>) {
         scope.setContexts(key, value as Array<Any>)
     }
 
-    override fun setContext(
-        key: String,
-        value: Char,
-    ) {
+    override fun setContext(key: String, value: Char) {
         scope.setContexts(key, value)
     }
 
@@ -97,10 +79,7 @@ internal class JvmScopeProvider(
         scope.removeContexts(key)
     }
 
-    override fun setTag(
-        key: String,
-        value: String,
-    ) {
+    override fun setTag(key: String, value: String) {
         scope.setTag(key, value)
     }
 
@@ -108,10 +87,7 @@ internal class JvmScopeProvider(
         scope.removeTag(key)
     }
 
-    override fun setExtra(
-        key: String,
-        value: String,
-    ) {
+    override fun setExtra(key: String, value: String) {
         scope.setExtra(key, value)
     }
 

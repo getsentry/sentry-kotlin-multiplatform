@@ -32,10 +32,7 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
         args = emptyArray()
     }
 
-    override fun message(
-        template: String,
-        vararg args: Any?,
-    ) {
+    override fun message(template: String, vararg args: Any?) {
         this.template = template
         this.args = args
     }
@@ -58,7 +55,7 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
 
         return FormattedLog(
             body = formattedBody,
-            attributes = allAttributes,
+            attributes = allAttributes
         )
     }
 
@@ -66,10 +63,7 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
      * Formats the message by substituting %s placeholders with argument values.
      * Use %% to produce a literal percent sign.
      */
-    private fun formatMessage(
-        template: String,
-        args: Array<out Any?>,
-    ): String {
+    private fun formatMessage(template: String, args: Array<out Any?>): String {
         if (!template.contains('%')) return template
 
         var argIndex = 0
@@ -88,7 +82,7 @@ internal class DefaultSentryLogBuilder : SentryLogBuilder {
     private fun buildAllAttributes(
         template: String,
         args: Array<out Any?>,
-        customAttributes: SentryAttributes,
+        customAttributes: SentryAttributes
     ): SentryAttributes {
         val result = SentryAttributes.empty()
 

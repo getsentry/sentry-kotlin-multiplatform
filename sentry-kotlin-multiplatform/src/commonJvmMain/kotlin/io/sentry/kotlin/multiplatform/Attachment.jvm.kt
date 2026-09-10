@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 public actual class Attachment {
+
     internal var jvmAttachment: JvmAttachment
 
     public actual val filename: String
@@ -16,8 +17,9 @@ public actual class Attachment {
         get() = jvmAttachment.contentType
 
     public actual companion object {
-        public actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment =
-            Attachment(screenshotBytes, "screenshot.png", "image/png")
+        public actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
+            return Attachment(screenshotBytes, "screenshot.png", "image/png")
+        }
     }
 
     public actual constructor(pathname: String) {
