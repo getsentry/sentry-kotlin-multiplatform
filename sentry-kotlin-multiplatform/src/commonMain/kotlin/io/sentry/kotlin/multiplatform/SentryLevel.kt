@@ -22,7 +22,7 @@ public enum class SentryLevel(private val value: Int) {
     /** Failures that prevent an operation from completing. */
     ERROR(SentryLevelNumConstants.ERROR_LEVEL),
 
-    /** Critical failures that make the application unusable. */
+    /** Critical failures that prevent normal application operation. */
     FATAL(SentryLevelNumConstants.FATAL_LEVEL);
 
     internal fun toInt(): Int {
