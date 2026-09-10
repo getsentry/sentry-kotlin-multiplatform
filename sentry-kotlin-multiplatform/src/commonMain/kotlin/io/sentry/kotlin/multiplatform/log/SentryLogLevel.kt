@@ -19,6 +19,6 @@ public enum class SentryLogLevel {
     /** Failures that prevent an operation from completing. */
     ERROR,
 
-    /** Critical failures that make the application unusable. */
+    /** Critical failures that prevent normal application operation. */
     FATAL
 }
