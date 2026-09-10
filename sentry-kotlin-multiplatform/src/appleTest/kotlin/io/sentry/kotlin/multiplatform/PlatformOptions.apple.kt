@@ -11,8 +11,9 @@ actual interface PlatformOptions : CommonPlatformOptions {
     val enableUnhandledCppExceptionMonitoring: Boolean
 }
 
-open class SentryAppleOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) :
-    PlatformOptions {
+open class SentryAppleOptionsWrapper(
+    private val cocoaOptions: CocoaSentryOptions,
+) : PlatformOptions {
     private var cachedEnableUnhandledCppExceptionMonitoring = true
 
     override val dsn: String?
@@ -94,7 +95,8 @@ actual fun PlatformOptions.assertPlatformSpecificOptions(kmpOptions: SentryOptio
     assertEquals(appleOptions.enableUnhandledCppExceptionMonitoring, kmpOptions.enableUnhandledCppExceptionMonitoring)
 }
 
-actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration = {
-    val cocoaOptions = it as CocoaSentryOptions
-    cocoaOptions.dsn = fakeDsn
-}
+actual fun createSentryPlatformOptionsConfiguration(): PlatformOptionsConfiguration =
+    {
+        val cocoaOptions = it as CocoaSentryOptions
+        cocoaOptions.dsn = fakeDsn
+    }

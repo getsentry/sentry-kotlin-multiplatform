@@ -152,10 +152,11 @@ class SentryPluginTest {
 
         project.installSentryForKmp(project.extensions.getByName("commonMain") as SourceSetAutoInstallExtension)
 
-        val sentryDependencies = project.configurations
-            .flatMap { it.dependencies }
-            .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
-            .toList()
+        val sentryDependencies =
+            project.configurations
+                .flatMap { it.dependencies }
+                .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
+                .toList()
 
         assertTrue(sentryDependencies.isNotEmpty())
 
@@ -565,7 +566,7 @@ class SentryPluginTest {
                 remotePackageVersion(
                     url = URI("https://github.com/getsentry/sentry-cocoa.git"),
                     version = "8.57.0",
-                    products = { add("Sentry") }
+                    products = { add("Sentry") },
                 )
             }
         }

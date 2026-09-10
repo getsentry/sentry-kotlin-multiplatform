@@ -50,7 +50,10 @@ public interface SentryLogBuilder {
      * @param template The message template (use %s for substitution, %% for literal %)
      * @param args Arguments to substitute into the template via toString()
      */
-    public fun message(template: String, vararg args: Any?)
+    public fun message(
+        template: String,
+        vararg args: Any?,
+    )
 
     /**
      * Merges prebuilt attributes into this log entry.
@@ -97,5 +100,5 @@ public class FormattedLog(
     /** The formatted message body with placeholders substituted. */
     public val body: String,
     /** Complete attributes including template info and custom attributes. */
-    public val attributes: SentryAttributes
+    public val attributes: SentryAttributes,
 )
