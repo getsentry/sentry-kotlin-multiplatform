@@ -68,7 +68,6 @@ kotlin {
             iosArm64(),
             iosSimulatorArm64(),
             iosX64(),
-            watchosArm32(),
             watchosArm64(),
             watchosX64(),
             watchosSimulatorArm64(),
@@ -170,17 +169,6 @@ kotlin {
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
-                // Avoid duplicate declarations from Kotlin/Native's "Meta" naming conflict (KT-41709).
-                // https://youtrack.jetbrains.com/issue/KT-41709
-                extraOpts =
-                    listOf(
-                        "-compiler-option",
-                        "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                        "-compiler-option",
-                        "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                        "-compiler-option",
-                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable",
-                    )
                 dependency {
                     remotePackageVersion(
                         url = uri("https://github.com/getsentry/sentry-cocoa.git"),
