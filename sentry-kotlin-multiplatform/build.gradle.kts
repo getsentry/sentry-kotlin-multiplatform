@@ -51,7 +51,13 @@ tasks.withType<KotlinCompile>().configureEach {
 
 kotlin {
     explicitApi()
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        // Stub targets do not run shared tests.
+        excludeCompilations {
+            it.name == "test" &&
+                it.target.name in setOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+        }
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -216,27 +222,6 @@ kotlin {
         mingwMain.get().dependsOn(commonStub)
     }
 }
-
-// The js/wasmJs/linux/mingw targets ship as no-op stubs and run no tests. Kotlin
-// 2.2.20's shared `web` source set wires their test compilations to commonTest, whose
-// Ktor dependency has no wasm (and limited native) variants, which breaks dependency
-// resolution. Exclude Ktor from those test classpaths and disable their test
-// compile/run tasks so no test sources are compiled for these stub targets.
-val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
-configurations
-    .matching { configuration ->
-        noOpStubTargets.any { configuration.name.startsWith(it) } &&
-            configuration.name.contains("Test")
-    }.configureEach {
-        exclude(group = "io.ktor")
-    }
-tasks
-    .matching { task ->
-        noOpStubTargets.any { task.name.contains(it, ignoreCase = true) } &&
-            (task.name.startsWith("compileTestKotlin") || task.name.endsWith("Test"))
-    }.configureEach {
-        enabled = false
-    }
 
 buildkonfig {
     packageName = "io.sentry.kotlin.multiplatform"
