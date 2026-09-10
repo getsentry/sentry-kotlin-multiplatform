@@ -60,7 +60,6 @@ subprojects {
                     }.toTypedArray()
             project.tasks.getByName("distZip").finalizedBy(*platformDists)
 
-            // release.kts signs artifacts during upload.
             apply<MavenPublishPlugin>()
         }
     }
@@ -162,8 +161,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
                     artifactFile.name.contains("tvos", ignoreCase = true) -> {
-                    // The main klib plus one per cinterop on Apple targets: the Sentry framework
-                    // bindings, its internal headers, and the Swift bridge spm4Kmp always creates.
+                    // Apple artifacts include the SDK klib and three cinterops, including spm4Kmp's bridge.
                     val expectedCinteropKlibs =
                         listOf(
                             "cinterop-Sentry.klib",

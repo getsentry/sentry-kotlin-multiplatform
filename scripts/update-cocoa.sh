@@ -42,22 +42,18 @@ sample_podspec_var_name=${BASH_REMATCH[1]}
 
 case $1 in
 get-version)
-    # We only require to return the version number of one of the files
     echo ${config_version}
     ;;
 get-repo)
     echo "https://github.com/getsentry/sentry-cocoa.git"
     ;;
 set-version)
-    # Update the version in the config file
     newValue="${config_var_name}\"$2"\"
     echo "${config_content/${config_whole_match}/$newValue}" >$config_file
 
-    # Update the version in the plugin properties file
     newValue="${plugin_properties_var_name}$2"
     echo "${plugin_properties_content/${plugin_properties_whole_match}/$newValue}" >$plugin_properties_file
 
-    # Update the version in the sample podspec file
     newValue="${sample_podspec_var_name}'$2'"
     echo "${sample_podspec_content/${sample_podspec_whole_match}/$newValue}" >$sample_podspec_file
 
@@ -65,12 +61,10 @@ set-version)
     echo "Generating dummy framework for shared module..."
     ./gradlew :sentry-samples:kmp-app-cocoapods:shared:generateDummyFramework
 
-    # Run pod update in the sample iOS app directory to update Podfile.lock
     echo "Running pod update in $sample_ios_app_dir..."
     (cd $sample_ios_app_dir && pod update)
 
-    # The SPM sample needs no update: it gets Sentry Cocoa through the Gradle plugin's
-    # spm4Kmp auto-install, which is versioned from the two files above.
+    # The SPM sample uses the plugin's Cocoa version automatically.
     ;;
 *)
     echo "Unknown argument $1"

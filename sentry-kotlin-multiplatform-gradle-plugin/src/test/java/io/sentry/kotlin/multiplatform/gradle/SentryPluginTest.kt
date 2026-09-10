@@ -289,7 +289,6 @@ class SentryPluginTest {
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
         project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
 
-        // spm4Kmp keys per-target config as "<cinteropName>_<TargetCapitalized>" in its container.
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
@@ -330,8 +329,7 @@ class SentryPluginTest {
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
-        // Applied before spm4Kmp, so the install waits for afterEvaluate instead of running as the
-        // target is created.
+        // Sentry was applied first, so registration waits until evaluation finishes.
         assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
 
         (project as ProjectInternal).evaluate()
@@ -351,8 +349,6 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64()
 
-        // spm4Kmp's afterEvaluate is queued ahead of ours, so the package has to be registered
-        // while the target is being created.
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
@@ -370,7 +366,6 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64()
 
-        // Opting out after the targets exist, which the eager registration could not honor.
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
         autoInstall.spm.enabled.set(false)
 
@@ -391,8 +386,6 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
 
-        // A config declared inside the target block, i.e. after the auto-install would have run
-        // eagerly. Deferring to afterEvaluate lets it be detected instead of merged into.
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
 
@@ -409,8 +402,7 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
 
-        // The container is the only place the auto-install can detect this: no Kotlin cinterop
-        // exists at configuration time.
+        // spm4Kmp creates the cinterop later, during evaluation.
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
 
@@ -428,7 +420,6 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
 
-        // Old-style (non target-scoped) spm4Kmp config registered directly under "sentryCocoa".
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         swiftPackages.create(SENTRY_COCOA_CINTEROP_NAME)
@@ -439,8 +430,7 @@ class SentryPluginTest {
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
-        // The config is left alone, but it covers no target on its own: without a matching cinterop
-        // spm4Kmp never connects it to iosArm64, so that target still needs fallback linking.
+        // A global config without a matching cinterop does not provide the framework.
         assertNull(project.externalCocoaFrameworkProvider())
         assertFalse(project.isSentryConfiguredViaSpm4Kmp("iosArm64"))
     }
@@ -479,9 +469,7 @@ class SentryPluginTest {
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
-        // Sentry may be declared in the consumer's own Podfile, which never shows up in the
-        // CocoaPods extension. Falling back to DerivedData linking here would throw for a project
-        // that does have the framework.
+        // Podfile dependencies are not visible in the CocoaPods extension.
         assertEquals("CocoaPods", project.externalCocoaFrameworkProvider())
     }
 
@@ -551,8 +539,6 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val device = kmpExtension.iosArm64()
         val simulator = kmpExtension.iosSimulatorArm64()
-        // spm4Kmp connects a global config to targets through matching cinterop tasks, so a target
-        // without the cinterop is not covered by it and still needs fallback linking.
         device.compilations.getByName("main").cinterops.create(cinteropName)
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
@@ -588,8 +574,7 @@ class SentryPluginTest {
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
-        // spm4Kmp merges configs sharing a cinterop name into a single package, so auto-installing
-        // the default version alongside the pinned 8.57.0 would silently replace it.
+        // Adding device defaults could override the simulator's pinned version.
         assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
         assertNotNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosSimulatorArm64"))
     }

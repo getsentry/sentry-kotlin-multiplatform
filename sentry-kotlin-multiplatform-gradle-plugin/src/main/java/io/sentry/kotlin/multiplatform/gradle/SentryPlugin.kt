@@ -48,12 +48,9 @@ class SentryPlugin : Plugin<Project> {
                 sentryExtension.autoInstall.commonMain
             )
 
-            // spm4Kmp reads its container in a single afterEvaluate registered while it is being
-            // applied, and Gradle runs those in registration order. Getting in first therefore
-            // lets the install wait for afterEvaluate, where the sentryKmp { } block and any user
-            // config are final wherever the build script puts them. If spm4Kmp is already applied
-            // its read is queued ahead of ours, leaving no choice but to register as each target
-            // is created.
+            // spm4Kmp reads package configs in afterEvaluate; callbacks run in registration order.
+            // If Sentry is applied first, wait until the build script has configured all targets.
+            // Otherwise, register packages as targets are created, before spm4Kmp reads them.
             if (plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
                 project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN_ID) {
                     project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
@@ -89,9 +86,6 @@ class SentryPlugin : Plugin<Project> {
             if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
                 project.installSentryForCocoapods(autoInstall.cocoapods)
             }
-
-            // The spm4Kmp install is wired in apply(), from afterEvaluate or plugins.withId
-            // depending on plugin order, so it is intentionally not invoked here.
         }
 
         warnOnLateSpmAutoInstallOptOut(project, sentryExtension.autoInstall)
@@ -103,11 +97,6 @@ class SentryPlugin : Plugin<Project> {
         )
     }
 
-    /**
-     * On the eager path an opt-out written after the `kotlin { }` block arrives too late to stop
-     * the registration. By afterEvaluate both are final, so a disabled flag together with the
-     * marker means the opt-out was silently ignored.
-     */
     private fun warnOnLateSpmAutoInstallOptOut(
         project: Project,
         autoInstall: AutoInstallExtension
@@ -132,12 +121,8 @@ class SentryPlugin : Plugin<Project> {
 }
 
 /**
- * Name of the integration that provides Sentry Cocoa to *every* Apple target, or null when coverage
- * has to be worked out per target with [isSentryConfiguredViaSpm4Kmp].
- *
- * CocoaPods is the only project-wide one, and plugin presence is enough to claim it: a consumer can
- * declare Sentry in their own Podfile, which never appears in [CocoapodsExtension.pods], and
- * answering "no provider" for such a project makes the fallback resolver throw.
+ * Treat the CocoaPods plugin as the framework provider: Sentry may be declared in a Podfile
+ * rather than [CocoapodsExtension.pods]. Check spm4Kmp coverage separately for each target.
  */
 internal fun Project.externalCocoaFrameworkProvider(): String? {
     val hasCocoapodsPlugin = plugins.hasPlugin(KotlinCocoapodsPlugin::class.java)
@@ -161,10 +146,7 @@ private fun maybeLinkCocoaFramework(
         return
     }
 
-    // Register a task graph listener so that we only configure Cocoa framework linking
-    // if at least one Apple target task is part of the requested task graph. This avoids
-    // executing the (potentially expensive) path-resolution logic when the build is only
-    // concerned with non-Apple targets such as Android.
+    // Resolve framework paths only when an Apple target is part of the build.
 
     val kmpExtension =
         project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
@@ -179,8 +161,6 @@ private fun maybeLinkCocoaFramework(
 
     project.gradle.taskGraph.whenReady { graph ->
         val requestedTargets = getActiveTargets(project, appleTargets, graph)
-        // CocoaPods is project-wide and has already short-circuited linking above; spm4Kmp
-        // coverage is per target, so split into what it supplies and what we link ourselves.
         val (spmCoveredTargets, activeTargets) =
             requestedTargets.partition { project.isSentryConfiguredViaSpm4Kmp(it.name) }
 
