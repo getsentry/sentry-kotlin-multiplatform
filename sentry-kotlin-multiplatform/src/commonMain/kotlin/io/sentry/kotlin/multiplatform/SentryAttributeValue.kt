@@ -11,19 +11,27 @@ package io.sentry.kotlin.multiplatform
  */
 public sealed class SentryAttributeValue(
     /** The underlying raw value. */
-    public val value: Any
+    public val value: Any,
 ) {
     /** Holds a [String] attribute value. */
-    public class StringValue(value: String) : SentryAttributeValue(value)
+    public class StringValue(
+        value: String,
+    ) : SentryAttributeValue(value)
 
     /** Holds a [Long] attribute value. */
-    public class LongValue(value: Long) : SentryAttributeValue(value)
+    public class LongValue(
+        value: Long,
+    ) : SentryAttributeValue(value)
 
     /** Holds a [Double] attribute value. */
-    public class DoubleValue(value: Double) : SentryAttributeValue(value)
+    public class DoubleValue(
+        value: Double,
+    ) : SentryAttributeValue(value)
 
     /** Holds a [Boolean] attribute value. */
-    public class BooleanValue(value: Boolean) : SentryAttributeValue(value)
+    public class BooleanValue(
+        value: Boolean,
+    ) : SentryAttributeValue(value)
 
     /** Returns the String value, or null if this is not a [StringValue]. */
     public val stringOrNull: String? get() = (this as? StringValue)?.value as? String

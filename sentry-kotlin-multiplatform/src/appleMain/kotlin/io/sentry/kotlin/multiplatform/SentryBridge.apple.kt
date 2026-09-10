@@ -47,10 +47,15 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
     PrivateSentrySDKOnly.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, BuildKonfig.VERSION_NAME)
 }
 
-internal actual class SentryBridge actual constructor(private val sentryInstance: SentryInstance) {
+internal actual class SentryBridge actual constructor(
+    private val sentryInstance: SentryInstance,
+) {
     private val logger = CocoaSentryLoggerAdapter(SentrySDK::logger)
 
-    actual fun init(context: Context, configuration: OptionsConfiguration) {
+    actual fun init(
+        context: Context,
+        configuration: OptionsConfiguration,
+    ) {
         init(configuration)
     }
 
@@ -74,27 +79,35 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureMessage(message: String, scopeCallback: ScopeCallback): SentryId {
+    actual fun captureMessage(
+        message: String,
+        scopeCallback: ScopeCallback,
+    ): SentryId {
         val cocoaSentryId = SentrySDK.captureMessage(message, configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
 
     actual fun captureException(throwable: Throwable): SentryId {
-        val event = throwable.asSentryEvent(
-            level = kSentryLevelError,
-            isHandled = true,
-            markThreadAsCrashed = false
-        )
+        val event =
+            throwable.asSentryEvent(
+                level = kSentryLevelError,
+                isHandled = true,
+                markThreadAsCrashed = false,
+            )
         val cocoaSentryId = SentrySDK.captureEvent(event)
         return SentryId(cocoaSentryId.toString())
     }
 
-    actual fun captureException(throwable: Throwable, scopeCallback: ScopeCallback): SentryId {
-        val event = throwable.asSentryEvent(
-            level = kSentryLevelError,
-            isHandled = true,
-            markThreadAsCrashed = false
-        )
+    actual fun captureException(
+        throwable: Throwable,
+        scopeCallback: ScopeCallback,
+    ): SentryId {
+        val event =
+            throwable.asSentryEvent(
+                level = kSentryLevelError,
+                isHandled = true,
+                markThreadAsCrashed = false,
+            )
         val cocoaSentryId = SentrySDK.captureEvent(event, configureScopeCallback(scopeCallback))
         return SentryId(cocoaSentryId.toString())
     }
@@ -115,32 +128,26 @@ internal actual class SentryBridge actual constructor(private val sentryInstance
         SentrySDK.setUser(user?.toCocoaUser())
     }
 
-    actual fun isCrashedLastRun(): Boolean {
-        return SentrySDK.crashedLastRun()
-    }
+    actual fun isCrashedLastRun(): Boolean = SentrySDK.crashedLastRun()
 
-    actual fun isEnabled(): Boolean {
-        return SentrySDK.isEnabled()
-    }
+    actual fun isEnabled(): Boolean = SentrySDK.isEnabled()
 
     actual fun close() {
         SentrySDK.close()
     }
 
-    private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit {
-        return { cocoaScope ->
-            val cocoaScopeProvider = cocoaScope?.let {
-                CocoaScopeProvider(it)
-            }
+    private fun configureScopeCallback(scopeCallback: ScopeCallback): (CocoaScope?) -> Unit =
+        { cocoaScope ->
+            val cocoaScopeProvider =
+                cocoaScope?.let {
+                    CocoaScopeProvider(it)
+                }
             cocoaScopeProvider?.let {
                 scopeCallback.invoke(it)
             }
         }
-    }
 
-    actual fun logger(): SentryLogger {
-        return logger
-    }
+    actual fun logger(): SentryLogger = logger
 }
 
 @Suppress("unused")

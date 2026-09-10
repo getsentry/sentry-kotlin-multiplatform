@@ -12,7 +12,10 @@ actual interface ApplePlatformOptions : PlatformOptions {
     val sessionReplay: SentryReplayOptions
 }
 
-class SentryIosOptionsWrapper(private val cocoaOptions: CocoaSentryOptions) : SentryAppleOptionsWrapper(cocoaOptions), ApplePlatformOptions {
+class SentryIosOptionsWrapper(
+    private val cocoaOptions: CocoaSentryOptions,
+) : SentryAppleOptionsWrapper(cocoaOptions),
+    ApplePlatformOptions {
     override val attachScreenshot: Boolean
         get() = cocoaOptions.attachScreenshot
 
@@ -45,5 +48,9 @@ actual fun ApplePlatformOptions.assertApplePlatformSpecificOptions(options: Sent
     assertEquals(sessionReplay.maskAllImages(), options.sessionReplay.maskAllImages)
     assertEquals(sessionReplay.onErrorSampleRate().toDouble(), options.sessionReplay.onErrorSampleRate)
     assertEquals(sessionReplay.sessionSampleRate().toDouble(), options.sessionReplay.sessionSampleRate)
-    assertEquals(sessionReplay.quality(), options.sessionReplay.quality.ordinal.toLong())
+    assertEquals(
+        sessionReplay.quality(),
+        options.sessionReplay.quality.ordinal
+            .toLong(),
+    )
 }

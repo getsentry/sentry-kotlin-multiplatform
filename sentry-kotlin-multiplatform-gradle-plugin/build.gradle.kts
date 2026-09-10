@@ -52,7 +52,7 @@ listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEa
         attributes {
             attribute(
                 TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE,
-                JavaVersion.VERSION_17.majorVersion.toInt()
+                JavaVersion.VERSION_17.majorVersion.toInt(),
             )
         }
     }
@@ -114,12 +114,12 @@ buildConfig {
     buildConfigField(
         "String",
         "SentryCocoaVersion",
-        provider { "\"${project.property("sentryCocoaVersion")}\"" }
+        provider { "\"${project.property("sentryCocoaVersion")}\"" },
     )
     buildConfigField(
         "String",
         "SentryKmpVersion",
-        provider { "\"${project.property("versionName")}\"" }
+        provider { "\"${project.property("versionName")}\"" },
     )
 }
 

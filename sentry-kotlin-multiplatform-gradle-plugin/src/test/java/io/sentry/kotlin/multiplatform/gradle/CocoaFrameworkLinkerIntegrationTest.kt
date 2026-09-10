@@ -19,7 +19,9 @@ class CocoaFrameworkLinkerIntegrationTest {
      * contains only non-Apple targets.
      */
     @Test
-    fun `linker is not configured when only non-Apple tasks are requested`(@TempDir projectDir: File) {
+    fun `linker is not configured when only non-Apple tasks are requested`(
+        @TempDir projectDir: File,
+    ) {
         writeBuildFiles(projectDir)
 
         val output = ByteArrayOutputStream()
@@ -36,7 +38,9 @@ class CocoaFrameworkLinkerIntegrationTest {
      * task is present in the task graph.
      */
     @Test
-    fun `linker is configured when an Apple task is requested`(@TempDir projectDir: File) {
+    fun `linker is configured when an Apple task is requested`(
+        @TempDir projectDir: File,
+    ) {
         writeBuildFiles(projectDir)
 
         val output = ByteArrayOutputStream()
@@ -60,18 +64,20 @@ class CocoaFrameworkLinkerIntegrationTest {
         // can resolve a valid framework path even on CI machines where SPM
         // (and hence DerivedData) is not available.
         // -----------------------------------------------------------------
-        val fakeFrameworkDir = File(dir, "Sentry-Dynamic.xcframework").apply {
-            // Create minimal structure that satisfies path validation logic
-            val archDirName = "ios-arm64_x86_64-simulator" // architecture used for iosSimulatorArm64
-            val archDir = File(this, archDirName)
-            archDir.mkdirs()
-        }
+        val fakeFrameworkDir =
+            File(dir, "Sentry-Dynamic.xcframework").apply {
+                // Create minimal structure that satisfies path validation logic
+                val archDirName = "ios-arm64_x86_64-simulator" // architecture used for iosSimulatorArm64
+                val archDir = File(this, archDirName)
+                archDir.mkdirs()
+            }
 
         File(dir, "settings.gradle").writeText("""rootProject.name = "fixture"""")
 
-        val pluginClasspath = PluginUnderTestMetadataReading
-            .readImplementationClasspath()
-            .joinToString(", ") { "\"${it.absolutePath.replace('\\', '/')}\"" }
+        val pluginClasspath =
+            PluginUnderTestMetadataReading
+                .readImplementationClasspath()
+                .joinToString(", ") { "\"${it.absolutePath.replace('\\', '/')}\"" }
 
         File(dir, "build.gradle").writeText(
             """
@@ -110,17 +116,24 @@ class CocoaFrameworkLinkerIntegrationTest {
                 frameworkPath.set("${fakeFrameworkDir.absolutePath.replace('\\', '/')}")
               }
             }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
     /** Returns a pre-configured [GradleRunner] that logs into [out]. */
-    private fun defaultRunner(projectDir: File, out: ByteArrayOutputStream): GradleRunner =
-        GradleRunner.create()
+    private fun defaultRunner(
+        projectDir: File,
+        out: ByteArrayOutputStream,
+    ): GradleRunner =
+        GradleRunner
+            .create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
-            .withGradleVersion(org.gradle.util.GradleVersion.current().version)
-            .forwardStdOutput(OutputStreamWriter(SynchronizedOutputStream(out)))
+            .withGradleVersion(
+                org.gradle.util.GradleVersion
+                    .current()
+                    .version,
+            ).forwardStdOutput(OutputStreamWriter(SynchronizedOutputStream(out)))
             .forwardStdError(OutputStreamWriter(SynchronizedOutputStream(out)))
             .withArguments("--stacktrace")
 
