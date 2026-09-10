@@ -5,7 +5,7 @@
 ### Breaking changes
 
 - Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
-- Drop the `watchosArm32` target; Cocoa 9.28.0 no longer ships an armv7k slice.
+- Convert `watchosArm32` to a no-op stub: builds remain supported, but Sentry no longer captures events, crashes, or logs on this target. Cocoa 9.28.0 no longer ships an armv7k slice.
 - CocoaPods is unsupported. Use SwiftPM through spm4Kmp; the retired CocoaPods sample is excluded from active builds and validation.
 - Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
 

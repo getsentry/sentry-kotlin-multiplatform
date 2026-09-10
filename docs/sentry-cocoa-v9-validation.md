@@ -6,7 +6,7 @@ Status: implementation, aggregate validation and refreshed external-consumer val
 
 ## Implementation
 
-- **Build/plugin:** pin Cocoa 9.28.0 with Kotlin 2.2.21 and spm4Kmp 1.9.5; retain the Sentry product and `cocoapods.Sentry` binding namespace. Set minimums to iOS/tvOS 15, macOS 12 and watchOS 9, preserving higher consumer values and user-owned Swift packages. Remove watchosArm32 support while retaining arm64_32. Use the SPM sample for active validation. The plugin supplies the watchOS simulator slice-copy fix for auto-installed packages.
+- **Build/plugin:** pin Cocoa 9.28.0 with Kotlin 2.2.21 and spm4Kmp 1.9.5; retain the Sentry product and `cocoapods.Sentry` binding namespace. Set minimums to iOS/tvOS 15, macOS 12 and watchOS 9, preserving higher consumer values and user-owned Swift packages. Publish watchosArm32 as a no-op stub while retaining Cocoa-backed arm64_32 support. Use the SPM sample for active validation. The plugin supplies the watchOS simulator slice-copy fix for auto-installed packages.
 - **Adapters:** use generated Cocoa getters/setters and SDK extension imports. Move logs enablement to the top-level option and use `SentryAttribute`, retaining typed values, callback mutation, deletion and filtering. Convert feedback to `SentryFeedback` with `comments.orEmpty()`, source `custom`, nullable contact fields and the original `associatedEventId`.
 - **Native ABI:** align remaining private declarations with Cocoa 9 and use generated container/reporter/provider bindings. Remove obsolete async fields and the `symbolicate` pointer from `SentryCrashStackCursor`; stop including `SentryHook.h`. Build the stacktrace before freeing its malloc-backed address array.
 - **Crash behavior:** change only the C++ bit through the active monitor mask; preserve close/restart behavior and previous Kotlin hook chaining without repeated wrapping. Fallback envelope preparation respects a filtered null result, enriches from the live scope, then marks the prepared event fatal before persistence. Retrieve cached debug images for exception and retained thread frames.
@@ -14,6 +14,16 @@ Status: implementation, aggregate validation and refreshed external-consumer val
 - **Tests/docs:** cover options, logs, feedback serialization, native exception/envelope conversion, monitor lifecycle and crash/relaunch sessions. Plugin architecture tests accept versioned local framework fixtures and use bounded network connection/read timeouts. Review these as three chunks: build/plugin; adapters/crash; tests/docs.
 
 No upstream Cocoa patch is required by the implemented and validated paths. Private API declarations remain tied to **9.28.0** and require review on future upgrades.
+
+## watchosArm32 compatibility follow-up
+
+The legacy `watchosArm32` target now uses `commonStub`, outside the Cocoa-backed Apple source hierarchy. It publishes a klib with no Cocoa interop or framework dependency. Capture calls return an empty event ID, `isEnabled()` stays false, and initialization, scope, feedback and logging use the existing no-op implementations. Auto-installation warns and skips this target; fallback framework linking skips it as well, including custom target names. This is compile compatibility, not restored monitoring support.
+
+Cocoa raised its minimum to watchOS 9 in [9.25.0 / PR #8595](https://github.com/getsentry/sentry-cocoa/pull/8595). The [commit](https://github.com/getsentry/sentry-cocoa/commit/7511ca2bad378e96029f7ba7c29aa3aa3f6cec00) explains that watchOS 9 rejects armv7k binaries and IR.
+
+Follow-up checks: `spotlessApply`, `detekt`, `apiCheck`, and the full `build` passed (`/private/tmp/kmp-watch32-gates-final.log`), with 2,248 SDK test executions and no failures or skips. The plugin suite passed all 149 tests (`/private/tmp/kmp-watch32-plugin.log`). The compiled watchosArm32 klib manifest declares only `depends=stdlib`. An initial overlapping build/publication run damaged generated commonizer outputs; regenerating that metadata and running the checks sequentially resolved the failure.
+
+The refreshed isolated publications also passed: SDK/root metadata in `/private/tmp/kmp-watch32-publish-sdk-final.log` and plugin in `/private/tmp/kmp-watch32-publish-plugin.log`. A separate consumer declared `watchosArm32("legacyWatch")` alongside Cocoa-backed targets, resolved the SDK/plugin exclusively from the temporary Maven repository, and passed `compileKotlinLegacyWatch linkDebugFrameworkLegacyWatch` (`/private/tmp/kmp-watch32-consumer.log`). No Cocoa or Swift compilation/interoperability task ran for the stub. This verifies publication, compilation and framework linking; no armv7k device runtime test was performed.
 
 ## Results
 

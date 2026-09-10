@@ -18,6 +18,7 @@ PROJECT_NAME="$1"
           "publishIosX64PublicationToMavenLocal" \
           "publishMacosX64PublicationToMavenLocal" \
           "publishMacosArm64PublicationToMavenLocal" \
+          "publishWatchosArm32PublicationToMavenLocal" \
           "publishWatchosArm64PublicationToMavenLocal" \
           "publishWatchosSimulatorArm64PublicationToMavenLocal" \
           "publishWatchosX64PublicationToMavenLocal" \

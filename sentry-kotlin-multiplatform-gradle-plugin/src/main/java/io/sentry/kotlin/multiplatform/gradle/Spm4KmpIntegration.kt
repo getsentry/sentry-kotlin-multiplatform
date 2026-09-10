@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.gradle
 
 import io.github.frankois944.spmForKmp.swiftPackageConfig
-import org.gradle.api.GradleException
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -81,6 +80,14 @@ internal fun Project.installSentryForSpm4Kmp(
 
     val userDefinedConfigNames = sentrySwiftPackageConfigNames()
     kmpExtension.appleTargets().forEach { target ->
+        if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
+            logger.warn(
+                "Sentry KMP uses a no-op SDK for watchosArm32 (${target.name}); " +
+                    "errors, crashes and logs are not reported. Skipping Sentry Cocoa installation.",
+            )
+            return@forEach
+        }
+
         if (userDefinedConfigNames.isNotEmpty()) {
             if (!isSentryConfiguredViaSpm4Kmp(target.name)) {
                 logger.warn(
@@ -96,15 +103,6 @@ internal fun Project.installSentryForSpm4Kmp(
                 )
             }
             return@forEach
-        }
-
-        if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
-            throw GradleException(
-                "Sentry Cocoa SPM auto-install does not support watchosArm32 (${target.name}): " +
-                    "Cocoa 9.28.0 does not include armv7k. Remove watchosArm32() and use " +
-                    "watchosArm64() for supported watchOS devices. To manage a compatible " +
-                    "Cocoa package yourself, set autoInstall.spm.enabled = false before declaring targets.",
-            )
         }
 
         registerSentrySwiftPackage(target, autoInstall.spm.sentryCocoaVersion.get())

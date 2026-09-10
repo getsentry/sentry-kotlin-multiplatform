@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
@@ -17,6 +18,10 @@ class CocoaFrameworkLinker(
 ) {
     fun configure(appleTargets: List<KotlinNativeTarget>) {
         appleTargets.forEach { target ->
+            if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
+                logger.info("Skipping Sentry Cocoa linking for no-op target ${target.name}.")
+                return@forEach
+            }
             try {
                 logger.info(
                     "Start resolving Sentry Cocoa framework paths for target: ${target.name}",

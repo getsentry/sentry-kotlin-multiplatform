@@ -27,6 +27,7 @@ fun DistributionContainer.configureForMultiplatform(
             "tvosarm64" to "$projectName-tvosarm64",
             "tvossimulatorarm64" to "$projectName-tvossimulatorarm64",
             "tvosx64" to "$projectName-tvosx64",
+            "watchosarm32" to "$projectName-watchosarm32",
             "watchosarm64" to "$projectName-watchosarm64",
             "watchossimulatorarm64" to "$projectName-watchossimulatorarm64",
             "watchosx64" to "$projectName-watchosx64",
