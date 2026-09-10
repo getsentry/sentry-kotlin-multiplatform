@@ -51,7 +51,14 @@ tasks.withType<KotlinCompile>().configureEach {
 
 kotlin {
     explicitApi()
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        common {
+            group("native") {
+                // The legacy watch target uses commonStub, never the Cocoa-backed Apple sources.
+                excludeCompilations { it.target.name == "watchosArm32" }
+            }
+        }
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -188,6 +195,7 @@ kotlin {
         val commonStub by creating {
             dependsOn(commonMain.get())
         }
+        getByName("watchosArm32Main").dependsOn(commonStub)
         jsMain.get().dependsOn(commonStub)
         wasmJsMain.get().dependsOn(commonStub)
         linuxMain.get().dependsOn(commonStub)
@@ -220,12 +228,12 @@ tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
     .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
-// The js/wasmJs/linux/mingw targets ship as no-op stubs and run no tests. Kotlin
+// The watchosArm32/js/wasmJs/linux/mingw targets ship as no-op stubs and run no tests. Kotlin
 // 2.2.20's shared `web` source set wires their test compilations to commonTest, whose
 // Ktor dependency has no wasm (and limited native) variants, which breaks dependency
 // resolution. Exclude Ktor from those test classpaths and disable their test
 // compile/run tasks so no test sources are compiled for these stub targets.
-val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->
         noOpStubTargets.any { configuration.name.startsWith(it) } &&
@@ -261,6 +269,7 @@ buildkonfig {
 }
 
 private fun KotlinMultiplatformExtension.addNoOpTargets() {
+    watchosArm32()
     js(IR) {
         browser()
         binaries.library()

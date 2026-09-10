@@ -83,7 +83,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             .dir("distributions")
             .get()
             .asFile
-    val expectedNumOfFiles = 19
+    val expectedNumOfFiles = 20
     val filesList = distributionDir.listFiles()
     val actualNumOfFiles = filesList?.size ?: 0
 
@@ -98,6 +98,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         listOf(
             "watchosx64",
             "watchossimulatorarm64",
+            "watchosarm32",
             "watchosarm64",
             "tvosx64",
             "tvossimulatorarm64",

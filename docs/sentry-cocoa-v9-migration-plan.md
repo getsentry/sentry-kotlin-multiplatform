@@ -26,7 +26,7 @@ Changes:
 - Identify how spm4kmp merges minimums across targets; verify the effective generated `Package.swift`, not just the Gradle configuration values.
 - Raise the SPM sample's Xcode target from iOS 14.1 to 15.0.
 - Remove CocoaPods sample inclusion from `settings.gradle.kts` and its commands from active Makefile/CI sample builds. Review root plugin declarations and scripts for requirements that exist only for the retired sample.
-- Remove `watchosArm32` from SDK publication and active target expectations because the selected Cocoa binary lacks armv7k. Keep `arm64_32` distinct: it remains in the archive and is used by the supported watchOS device target. Add a clear diagnostic for unsupported consumer target selection.
+- Publish `watchosArm32` using the existing no-op implementation so consumers can keep the target without a Cocoa dependency. Skip Cocoa installation/linking and warn that reporting is disabled. Keep `arm64_32` distinct: it remains in the archive and is used by the supported watchOS device target.
 - Retain the existing watchOS simulator workaround provisionally; verify whether v9 still needs it before keeping or removing it.
 
 Gate: SwiftPM resolves the pinned release with correct minimums, and the first iOS simulator build reaches Kotlin compilation. The plugin's generated sample configuration also resolves the same version. No CocoaPods installation is needed for supported validation.
@@ -106,7 +106,7 @@ make compile
 
 The Makefile/active sample configuration must already be SPM-based before the final `make compile`. Discover precise focused compile/link/test tasks from Gradle during implementation rather than assuming a library compile task verifies the linker.
 
-Review any API dump changes deliberately, especially Apple platform-options aliases, native-event constructor signatures, and removed watchOS publication. Preserve source/binary compatibility where feasible; document genuine changes instead of automatically refreshing baselines to make checks pass. Run JVM/Android regression tests as part of the required build.
+Review any API dump changes deliberately, especially Apple platform-options aliases, native-event constructor signatures, and watchOS publication changing to a no-op stub. Preserve source/binary compatibility where feasible; document genuine changes instead of automatically refreshing baselines to make checks pass. Run JVM/Android regression tests as part of the required build.
 
 Update the changelog and consumer migration documentation with the pinned Cocoa version, OS minimums, supported targets, feedback adaptation, and any Apple-native API changes. Recheck the final SPM sample configuration and required toolchain. Any commit must include the repository-required AI co-author attribution.
 
