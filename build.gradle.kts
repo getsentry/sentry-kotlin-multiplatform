@@ -199,9 +199,7 @@ subprojects {
     }
 }
 
-// Keep ktlint 1.x on the pre-1.0 formatting conventions (see .editorconfig for the
-// rationale). Spotless does not reliably forward the ij_* properties from
-// .editorconfig to ktlint, so pass them explicitly.
+// Preserve existing formatting until the migration in #561.
 val ktlintEditorConfigOverride =
     mapOf(
         "ktlint_code_style" to "intellij_idea",
