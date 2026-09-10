@@ -1,7 +1,6 @@
 package io.sentry.kotlin.multiplatform.extensions
 
 import cocoapods.Sentry.SentryHttpStatusCodeRange
-import cocoapods.Sentry.experimental
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
@@ -22,25 +21,25 @@ internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) 
  */
 internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions) {
     val cocoaOptions = this
-    cocoaOptions.dsn = kmpOptions.dsn
-    cocoaOptions.attachStacktrace = kmpOptions.attachStackTrace
-    cocoaOptions.dist = kmpOptions.dist
+    cocoaOptions.setDsn(kmpOptions.dsn)
+    cocoaOptions.setAttachStacktrace(kmpOptions.attachStackTrace)
+    cocoaOptions.setDist(kmpOptions.dist)
     kmpOptions.environment?.let {
-        cocoaOptions.environment = it
+        cocoaOptions.setEnvironment(it)
     }
-    cocoaOptions.sendDefaultPii = kmpOptions.sendDefaultPii
-    cocoaOptions.releaseName = kmpOptions.release
-    cocoaOptions.debug = kmpOptions.debug
-    cocoaOptions.sessionTrackingIntervalMillis = kmpOptions.sessionTrackingIntervalMillis.convert()
-    cocoaOptions.enableAutoSessionTracking = kmpOptions.enableAutoSessionTracking
-    cocoaOptions.maxAttachmentSize = kmpOptions.maxAttachmentSize.convert()
-    cocoaOptions.maxBreadcrumbs = kmpOptions.maxBreadcrumbs.convert()
-    cocoaOptions.enableAppHangTracking = kmpOptions.enableAppHangTracking
-    cocoaOptions.enableWatchdogTerminationTracking = kmpOptions.enableWatchdogTerminationTracking
-    cocoaOptions.appHangTimeoutInterval = kmpOptions.appHangTimeoutIntervalMillis.toDouble()
-    cocoaOptions.diagnosticLevel = kmpOptions.diagnosticLevel.toCocoaSentryLevel()
+    cocoaOptions.setSendDefaultPii(kmpOptions.sendDefaultPii)
+    cocoaOptions.setReleaseName(kmpOptions.release)
+    cocoaOptions.setDebug(kmpOptions.debug)
+    cocoaOptions.setSessionTrackingIntervalMillis(kmpOptions.sessionTrackingIntervalMillis.convert())
+    cocoaOptions.setEnableAutoSessionTracking(kmpOptions.enableAutoSessionTracking)
+    cocoaOptions.setMaxAttachmentSize(kmpOptions.maxAttachmentSize.convert())
+    cocoaOptions.setMaxBreadcrumbs(kmpOptions.maxBreadcrumbs.convert())
+    cocoaOptions.setEnableAppHangTracking(kmpOptions.enableAppHangTracking)
+    cocoaOptions.setEnableWatchdogTerminationTracking(kmpOptions.enableWatchdogTerminationTracking)
+    cocoaOptions.setAppHangTimeoutInterval(kmpOptions.appHangTimeoutIntervalMillis.toDouble())
+    cocoaOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toCocoaSentryLevel())
     setEnableUnhandledCppExceptionMonitoring(kmpOptions.enableUnhandledCppExceptionMonitoring)
-    cocoaOptions.experimental().setEnableLogs(kmpOptions.logs.enabled)
+    cocoaOptions.setEnableLogs(kmpOptions.logs.enabled)
     kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
         cocoaOptions.setBeforeSendLog { cocoaLog ->
             cocoaLog?.let {
@@ -58,12 +57,12 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
         }
     }
     kmpOptions.sampleRate?.let {
-        cocoaOptions.sampleRate = NSNumber(double = it)
+        cocoaOptions.setSampleRate(NSNumber(double = it))
     }
     kmpOptions.tracesSampleRate?.let {
-        cocoaOptions.tracesSampleRate = NSNumber(double = it)
+        cocoaOptions.setTracesSampleRate(NSNumber(double = it))
     }
-    cocoaOptions.beforeSend = { event ->
+    cocoaOptions.setBeforeSend { event ->
         val sdk = event?.sdk?.toMutableMap()
 
         val packages =
@@ -87,7 +86,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
         }
     }
 
-    cocoaOptions.beforeBreadcrumb = { cocoaBreadcrumb ->
+    cocoaOptions.setBeforeBreadcrumb { cocoaBreadcrumb ->
         if (kmpOptions.beforeBreadcrumb == null) {
             cocoaBreadcrumb
         } else {
@@ -98,13 +97,14 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
         }
     }
 
-    cocoaOptions.enableCaptureFailedRequests = kmpOptions.enableCaptureFailedRequests
-    cocoaOptions.failedRequestTargets = kmpOptions.failedRequestTargets
-    cocoaOptions.failedRequestStatusCodes =
+    cocoaOptions.setEnableCaptureFailedRequests(kmpOptions.enableCaptureFailedRequests)
+    cocoaOptions.setFailedRequestTargets(kmpOptions.failedRequestTargets)
+    cocoaOptions.setFailedRequestStatusCodes(
         kmpOptions.failedRequestStatusCodes.map {
             SentryHttpStatusCodeRange(
                 min = it.min.convert(),
                 max = it.max.convert(),
             )
-        }
+        },
+    )
 }

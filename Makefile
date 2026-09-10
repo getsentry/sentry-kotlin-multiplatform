@@ -1,4 +1,7 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi buildAppleSamples generateDokka detekt format stop createCoverageReports
+.PHONY: all clean compile dryRelease checkFormat checkApi buildProject buildAppleSamples generateDokka detekt format stop createCoverageReports
+
+# Keep Gradle invocations sequential, including when make is invoked with -j.
+.NOTPARALLEL:
 
 all: stop clean compile createCoverageReports
 
@@ -35,17 +38,16 @@ format:
 buildProject:
 	./gradlew build
 
-# Build Apple Samples
-buildAppleSamples:
-	./gradlew build -p sentry-samples
-	cd ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp && touch iosApp.xcconfig
-	cd ./sentry-samples/kmp-app-spm/iosApp && touch iosApp.xcconfig
-	sudo xcode-select --switch /Applications/Xcode.app && /usr/bin/xcodebuild -version
-	./gradlew ":sentry-samples:kmp-app-cocoapods:shared:podInstall"
-	cd ./sentry-samples/kmp-app-cocoapods/iosApp; pod update;
-	xcodebuild -workspace ./sentry-samples/kmp-app-cocoapods/iosApp/iosApp.xcworkspace -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
-	xcodebuild -project ./sentry-samples/kmp-app-spm/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64
+# Local validation skips symbol uploads; CI retains uploads unless explicitly opted out.
+SENTRY_SKIP_UPLOAD ?= $(if $(filter true 1,$(CI)),0,1)
 
+# Build the supported Apple sample. Uses the selected Xcode or a DEVELOPER_DIR override.
+buildAppleSamples:
+	/usr/bin/xcodebuild -version
+	touch ./sentry-samples/kmp-app-spm/iosApp/iosApp.xcconfig
+	SENTRY_SKIP_UPLOAD="$(SENTRY_SKIP_UPLOAD)" xcodebuild -project ./sentry-samples/kmp-app-spm/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64 CODE_SIGNING_ALLOWED=NO
+
+# The Xcode build invokes embedAndSignAppleFrameworkForXcode for the SPM sample.
 
 # Build all targets, run tests and checks api
 compile: checkApi detekt buildProject buildAppleSamples

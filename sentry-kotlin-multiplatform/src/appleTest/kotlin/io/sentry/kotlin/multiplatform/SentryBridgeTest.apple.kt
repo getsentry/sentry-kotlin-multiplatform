@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import Internal.Sentry.PrivateSentrySDKOnly
+import cocoapods.Sentry.PrivateSentrySDKOnly
 import io.sentry.kotlin.multiplatform.fakes.FakeSentryInstance
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.BeforeTest
@@ -35,8 +35,8 @@ actual class SentryBridgeTest {
         // Note: We don't test every single combination because creating a converter from
         // Platform options to SentryOptions for every single platform and every property is overkill
         // We test a few properties to make sure the conversion is working
-        assertEquals(expectedOptions.dsn, actualOptions.dsn)
-        assertEquals(expectedOptions.release, actualOptions.releaseName)
+        assertEquals(expectedOptions.dsn, actualOptions.dsn())
+        assertEquals(expectedOptions.release, actualOptions.releaseName())
     }
 
     @Test
@@ -72,8 +72,8 @@ actual class SentryBridgeTest {
                 }.let { it as CocoaSentryOptions }
 
         // THEN
-        assert(option.beforeSend != null)
-        assert(option.beforeSend!!.invoke(CocoaSentryEvent()) == null)
+        assert(option.beforeSend() != null)
+        assert(option.beforeSend()!!.invoke(CocoaSentryEvent()) == null)
     }
 
     @Test
@@ -89,8 +89,8 @@ actual class SentryBridgeTest {
                 }.let { it as CocoaSentryOptions }
 
         // THEN
-        assert(option.beforeSend != null)
-        assert(option.beforeSend!!.invoke(CocoaSentryEvent()) != null)
+        assert(option.beforeSend() != null)
+        assert(option.beforeSend()!!.invoke(CocoaSentryEvent()) != null)
     }
 
     @Test
@@ -104,8 +104,8 @@ actual class SentryBridgeTest {
                     prepareForInit()
                 }.let { it as CocoaSentryOptions }
 
-        assert(option.beforeSend != null)
-        assert(option.beforeSend!!.invoke(CocoaSentryEvent()) != null)
+        assert(option.beforeSend() != null)
+        assert(option.beforeSend()!!.invoke(CocoaSentryEvent()) != null)
     }
 
     @Test
@@ -119,11 +119,11 @@ actual class SentryBridgeTest {
                 .apply {
                     fixture.sentryInstance.lastConfiguration?.invoke(this)
                 }.let { it as CocoaSentryOptions }
-        val event = option.beforeSend!!.invoke(CocoaSentryEvent())
+        val event = option.beforeSend()!!.invoke(CocoaSentryEvent())
         val packages = event?.sdk()?.get("packages") as? List<Map<String, String>>
 
         // THEN
-        assert(option.beforeSend != null)
+        assert(option.beforeSend() != null)
         assert(packages != null)
         assert(packages!!.isNotEmpty())
         assert(packages.find { it["name"]!!.contains("cocoa") } != null)

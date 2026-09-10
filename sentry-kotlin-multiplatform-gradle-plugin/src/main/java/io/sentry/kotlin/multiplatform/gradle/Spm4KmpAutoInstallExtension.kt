@@ -22,6 +22,10 @@ abstract class Spm4KmpAutoInstallExtension
          * If spm4Kmp is applied before Sentry, set this before `kotlin { }`.
          * Otherwise, it can be set anywhere in the build script.
          *
+         * Auto-installed packages require iOS/tvOS 15, macOS 12, and watchOS 9 or later.
+         * Existing user-owned Sentry packages are left unchanged; configure these minimums there
+         * when using Cocoa 9.28.0. watchosArm32 is unsupported by auto-installation.
+         *
          * Defaults to true.
          */
         val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
