@@ -5,7 +5,6 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class AttachmentTest {
-
     @Test
     fun `adding pathname to attachment returns correct values`() {
         val pathname = "test"

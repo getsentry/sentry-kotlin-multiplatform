@@ -7,7 +7,7 @@ import io.sentry.kotlin.multiplatform.protocol.User
 /** Base class for all Sentry events. */
 public abstract class SentryBaseEvent(
     /** The Sentry event ID. */
-    public open var eventId: SentryId = SentryId.EMPTY_ID
+    public open var eventId: SentryId = SentryId.EMPTY_ID,
 ) {
     /** The event release. */
     public open var release: String? = null
@@ -65,7 +65,10 @@ public abstract class SentryBaseEvent(
         tags.remove(key)
     }
 
-    public fun setTag(key: String, value: String) {
+    public fun setTag(
+        key: String,
+        value: String,
+    ) {
         tags.set(key, value)
     }
 
