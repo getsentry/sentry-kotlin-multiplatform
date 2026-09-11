@@ -4,7 +4,7 @@
 
 ### Dependencies
 
-- Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, Android Gradle Plugin `8.7.3`, and Android compile SDK `35` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
+- Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.7.3` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
 
 ## 0.27.0
 

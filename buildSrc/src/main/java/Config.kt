@@ -66,7 +66,7 @@ object Config {
     }
 
     object Android {
-        private val sdkVersion = 35
+        private val sdkVersion = 33
 
         val minSdkVersion = 21
         val targetSdkVersion = sdkVersion
