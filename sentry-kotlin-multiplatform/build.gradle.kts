@@ -208,26 +208,18 @@ kotlin {
     }
 }
 
-// spm4Kmp compiles watchosSimulatorArm64 with `--triple aarch64-apple-watchos-simulator`
-// (1.9.2 used `arm64`), and SwiftPM does not treat `aarch64` as `arm64` when matching binary
-// xcframework slices, so Sentry.framework is never copied into the build products directory and
-// the cinterop definition task fails with "Module map file not found for module: Sentry".
-// Copy the watchOS simulator slice there manually until spm4Kmp maps this target back to `arm64`.
+// spm4Kmp 1.9.3 uses `aarch64` where SwiftPM expects `arm64`, so it skips the watchOS
+// simulator framework. Copy it manually until the target naming is fixed upstream.
 val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
 val copyWatchosSimulatorSentryFramework =
     tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
         dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
-        // Select the slice with a pattern: the xcframework doesn't exist yet when Gradle
-        // computes task dependencies, only after the compile task resolves the Swift package.
-        from(sentryCocoaScratchDir.map { it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework") }) {
-            include("watchos-*-simulator/Sentry.framework/**")
-        }
-        // Strip the slice directory segment so the framework lands directly in the products dir.
-        eachFile {
-            relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
-        }
-        includeEmptyDirs = false
-        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release") })
+        from(
+            sentryCocoaScratchDir.map {
+                it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_i386_x86_64-simulator/Sentry.framework")
+            }
+        )
+        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
     }
 tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
