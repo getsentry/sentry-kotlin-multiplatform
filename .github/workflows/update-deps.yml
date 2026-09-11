@@ -22,7 +22,6 @@ jobs:
           name: Cocoa SDK
           changelog-entry: true
           pr-strategy: update
-          # Prefix updater branches with main- to avoid conflicts with existing versioned branches.
           target-branch: main
           ssh-key: ${{ secrets.CI_DEPLOY_KEY }}
 
@@ -35,6 +34,5 @@ jobs:
           name: Java SDK
           changelog-entry: true
           pr-strategy: update
-          # Prefix updater branches with main- to avoid conflicts with existing versioned branches.
           target-branch: main
           ssh-key: ${{ secrets.CI_DEPLOY_KEY }}
