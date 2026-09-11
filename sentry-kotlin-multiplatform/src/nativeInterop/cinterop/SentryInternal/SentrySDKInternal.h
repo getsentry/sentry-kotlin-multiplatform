@@ -23,6 +23,6 @@
 @interface SentrySDKInternal : NSObject
 
 + (void)storeEnvelope:(SentryEnvelope *_Nonnull)envelope;
-+ (SentryHub *_Nonnull)currentHub;
++ (SentryHubInternal *_Nonnull)currentHub;
 
 @end

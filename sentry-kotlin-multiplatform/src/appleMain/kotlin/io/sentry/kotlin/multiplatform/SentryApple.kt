@@ -1,8 +1,10 @@
 package io.sentry.kotlin.multiplatform
 
 import Internal.Sentry.SentryCrashMonitorTypeCPPException
-import Internal.Sentry.SentryDependencyContainer
+import Internal.Sentry.sentrycrash_setMonitoring
+import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentrySDK
+import cocoapods.Sentry.startWithConfigureOptions
 import io.sentry.kotlin.multiplatform.nsexception.setSentryUnhandledExceptionHook
 
 /** Convenience extension to setup unhandled exception hook */
@@ -24,6 +26,6 @@ internal fun setEnableUnhandledCppExceptionMonitoring(enabled: Boolean) {
 internal fun isUnhandledCppExceptionMonitoringEnabled(): Boolean = enableUnhandledCppExceptionMonitoring
 
 private fun disableCppExceptionMonitor() {
-    val crashReporter = SentryDependencyContainer.sharedInstance().crashReporter
-    crashReporter.monitoring = crashReporter.monitoring and SentryCrashMonitorTypeCPPException.inv()
+    // Use the active mask: SentryCrashSwift exposes only a cached, read-only monitoring property.
+    sentrycrash_setMonitoring(sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeCPPException.inv())
 }

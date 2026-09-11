@@ -9,7 +9,7 @@ class ApplyKmpEventTest {
     fun `native release is not set if kmp release has same value`() {
         val nativeEvent =
             FakeSentryEvent().apply {
-                releaseName = "1.0.0"
+                setReleaseName("1.0.0")
             }
         val kmpEvent =
             SentryEvent().apply {
@@ -25,7 +25,7 @@ class ApplyKmpEventTest {
     fun `native dist is not set if kmp dist has same value`() {
         val nativeEvent =
             FakeSentryEvent().apply {
-                dist = "randomDist"
+                setDist("randomDist")
             }
         val kmpEvent =
             SentryEvent().apply {
@@ -41,7 +41,7 @@ class ApplyKmpEventTest {
     fun `native release is set if kmp release has different value`() {
         val nativeEvent =
             FakeSentryEvent().apply {
-                releaseName = "1.0.0"
+                setReleaseName("1.0.0")
             }
         val kmpEvent =
             SentryEvent().apply {
@@ -57,7 +57,7 @@ class ApplyKmpEventTest {
     fun `native dist is set if kmp dist has different value`() {
         val nativeEvent =
             FakeSentryEvent().apply {
-                dist = "randomDist"
+                setDist("randomDist")
             }
         val kmpEvent =
             SentryEvent().apply {

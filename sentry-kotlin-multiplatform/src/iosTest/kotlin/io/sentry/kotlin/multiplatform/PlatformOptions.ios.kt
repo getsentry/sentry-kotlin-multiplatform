@@ -17,16 +17,16 @@ class SentryIosOptionsWrapper(
 ) : SentryAppleOptionsWrapper(cocoaOptions),
     ApplePlatformOptions {
     override val attachScreenshot: Boolean
-        get() = cocoaOptions.attachScreenshot
+        get() = cocoaOptions.attachScreenshot()
 
     override val attachViewHierarchy: Boolean
-        get() = cocoaOptions.attachViewHierarchy
+        get() = cocoaOptions.attachViewHierarchy()
 
     override val enableAppHangTracking: Boolean
-        get() = cocoaOptions.enableAppHangTracking
+        get() = cocoaOptions.enableAppHangTracking()
 
     override val appHangTimeoutIntervalMillis: Long
-        get() = cocoaOptions.appHangTimeoutInterval.toLong()
+        get() = cocoaOptions.appHangTimeoutInterval().toLong()
 
     override val sessionReplay: SentryReplayOptions
         get() = cocoaOptions.sessionReplay()

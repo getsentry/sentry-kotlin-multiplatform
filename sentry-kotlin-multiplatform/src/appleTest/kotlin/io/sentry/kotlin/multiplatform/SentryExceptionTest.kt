@@ -20,7 +20,7 @@ class SentryExceptionTest {
     fun `SentryException ThreadId NSNumber long conversion`() {
         val cocoaSentryException =
             getCocoaSentryException().apply {
-                threadId = NSNumber(long = this@SentryExceptionTest.threadId.convert())
+                setThreadId(NSNumber(long = this@SentryExceptionTest.threadId.convert()))
             }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
@@ -30,7 +30,7 @@ class SentryExceptionTest {
     fun `SentryException ThreadId NSNumber longLong conversion`() {
         val cocoaSentryException =
             getCocoaSentryException().apply {
-                threadId = NSNumber(longLong = this@SentryExceptionTest.threadId.convert())
+                setThreadId(NSNumber(longLong = this@SentryExceptionTest.threadId.convert()))
             }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
@@ -40,7 +40,7 @@ class SentryExceptionTest {
     fun `SentryException ThreadId NSNumber int conversion`() {
         val cocoaSentryException =
             getCocoaSentryException().apply {
-                threadId = NSNumber(int = this@SentryExceptionTest.threadId.convert())
+                setThreadId(NSNumber(int = this@SentryExceptionTest.threadId.convert()))
             }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)
@@ -50,7 +50,7 @@ class SentryExceptionTest {
     fun `SentryException ThreadId NSNumber short conversion`() {
         val cocoaSentryException =
             getCocoaSentryException().apply {
-                threadId = NSNumber(short = this@SentryExceptionTest.threadId.convert())
+                setThreadId(NSNumber(short = this@SentryExceptionTest.threadId.convert()))
             }
         val sentryException = getKmpSentryException()
         assert(cocoaSentryException.toKmpSentryException() == sentryException)

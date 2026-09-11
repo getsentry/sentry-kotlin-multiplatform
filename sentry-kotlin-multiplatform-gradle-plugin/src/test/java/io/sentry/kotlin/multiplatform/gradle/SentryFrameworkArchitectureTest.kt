@@ -5,10 +5,12 @@ import io.mockk.mockk
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
 import java.net.URL
 import java.nio.file.Files
@@ -23,8 +25,7 @@ class SentryFrameworkArchitectureTest {
                 Arguments.of("8.37.0"),
                 Arguments.of("8.38.0"),
                 Arguments.of("8.58.2"),
-//            Arguments.of("latest"),
-                // TODO: Latest is already v9 which is currently failing - let's fix this when we bump to v9
+                Arguments.of("9.28.0"),
             )
     }
 
@@ -46,7 +47,7 @@ class SentryFrameworkArchitectureTest {
                 macosArm64(),
                 macosX64(),
                 watchosX64(),
-                watchosArm32(),
+                watchosArm64(),
                 watchosSimulatorArm64(),
                 tvosX64(),
                 tvosArm64(),
@@ -98,7 +99,7 @@ class SentryFrameworkArchitectureTest {
                 macosArm64(),
                 macosX64(),
                 watchosX64(),
-                watchosArm32(),
+                watchosArm64(),
                 watchosSimulatorArm64(),
                 tvosX64(),
                 tvosArm64(),
@@ -132,6 +133,39 @@ class SentryFrameworkArchitectureTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = ["watchosArm64", "watchosSimulatorArm64", "watchosX64"])
+    fun `supported watchOS targets find Cocoa 9 slice names`(targetName: String) {
+        val target = mockk<KotlinNativeTarget>()
+        every { target.name } returns targetName
+        val cocoa9Slice =
+            if (targetName == "watchosArm64") {
+                "watchos-arm64_arm64_32_arm64e"
+            } else {
+                "watchos-arm64_x86_64-simulator"
+            }
+
+        assertTrue(cocoa9Slice in target.toSentryFrameworkArchitecture())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["watchos-arm64_arm64_32", "watchos-arm64_arm64_32_arm64e"])
+    fun `watchOS arm64 matches both Cocoa 9 device distributions`(slice: String) {
+        val target = mockk<KotlinNativeTarget>()
+        every { target.name } returns "watchosArm64"
+
+        assertTrue(slice in target.toSentryFrameworkArchitecture())
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["watchosArm32", "legacyWatch"])
+    fun `stub watch target has no Cocoa architecture mapping`(targetName: String) {
+        val target = mockk<KotlinNativeTarget>()
+        every { target.name } returns targetName
+
+        assertTrue(target.toSentryFrameworkArchitecture().isEmpty())
+    }
+
     @Test
     fun `returns empty list if target is unsupported`() {
         val unsupportedTarget = mockk<KotlinNativeTarget>()
@@ -153,6 +187,14 @@ class SentryFrameworkArchitectureTest {
         cocoaVersion: String,
         isStatic: Boolean,
     ): File {
+        // An optional local fixture directory permits offline checks against previously
+        // downloaded release archives: <root>/<version>/Sentry[-Dynamic].xcframework.
+        System.getenv("SENTRY_COCOA_TEST_FRAMEWORKS")?.let { root ->
+            val directory = File(root, cocoaVersion)
+            val framework = if (isStatic) "Sentry.xcframework" else "Sentry-Dynamic.xcframework"
+            check(directory.resolve(framework).isDirectory) { "Missing framework fixture: $directory/$framework" }
+            return directory
+        }
         val tempDir = Files.createTempDirectory("sentry-cocoa-test").toFile()
         tempDir.deleteOnExit()
 
@@ -169,7 +211,12 @@ class SentryFrameworkArchitectureTest {
                 "https://github.com/getsentry/sentry-cocoa/releases/download/$cocoaVersion/$xcFrameworkZip"
             }
         val url = URL(downloadLink)
-        url.openStream().use { input ->
+        val connection =
+            url.openConnection().apply {
+                connectTimeout = 30_000
+                readTimeout = 60_000
+            }
+        connection.getInputStream().use { input ->
             Files.copy(
                 input,
                 targetFile.toPath(),

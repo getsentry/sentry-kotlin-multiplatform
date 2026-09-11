@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Breaking changes
+
+- Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
+- Convert `watchosArm32` to a no-op stub: builds remain supported, but Sentry no longer captures events, crashes, or logs on this target. Cocoa 9.28.0 no longer ships an armv7k slice.
+- CocoaPods is unsupported. Use SwiftPM through spm4Kmp; the retired CocoaPods sample is excluded from active builds and validation.
+- Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
+
+### Fixes
+
+- Preserve the common `captureUserFeedback` API on Apple by mapping to native `SentryFeedback` with source `custom`, comments as the message (null becomes an empty string), the original event ID as `associatedEventId`, and the existing name/email.
+- Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
+- Keep unhandled-exception hooks from being wrapped repeatedly across SDK restarts, and retain debug images referenced by exception frames.
+- Recognize Cocoa 9 watchOS framework slice names in the Gradle plugin.
+
 ### Features
 
 - Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))
@@ -9,10 +23,11 @@
 ### Internal
 
 - Build the Apple SDK against Sentry Cocoa via SwiftPM (spm4Kmp) instead of the Kotlin CocoaPods plugin ([#557](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/557))
-  - The published klibs keep the `cocoapods.Sentry` import prefix, so no changes are required for consumers
+  - The published klibs keep the `cocoapods.Sentry` import prefix, preserving the existing Kotlin import namespace
 
 ### Dependencies
 
+- Bump Cocoa SDK from `8.58.2` to `9.28.0`.
 - Bump Kotlin from `2.1.21` to `2.2.21` and Gradle from `8.6` to `8.13` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
   - Also bumps AGP to `8.7.3` and `compileSdk` to 35
 

@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
+import org.jetbrains.kotlin.konan.target.KonanTarget
 import java.net.URI
 
 internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
@@ -86,6 +87,14 @@ internal fun Project.installSentryForSpm4Kmp(
     val autoInstalledConfigNames = mutableSetOf<String>()
 
     kmpExtension.appleTargets().configureEach { target ->
+        if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
+            logger.warn(
+                "Sentry KMP uses a no-op SDK for watchosArm32 (${target.name}); " +
+                    "errors, crashes and logs are not reported. Skipping Sentry Cocoa installation.",
+            )
+            return@configureEach
+        }
+
         if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
             return@configureEach
         }
@@ -108,24 +117,55 @@ internal fun Project.installSentryForSpm4Kmp(
             return@configureEach
         }
 
-        val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
-        extensions.extraProperties.set(SPM_AUTO_INSTALLED_MARKER, true)
-        target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
-            dependency {
-                remotePackageVersion(
-                    url = URI(SENTRY_COCOA_GIT_URL),
-                    version = cocoaVersion,
-                    products = {
-                        // Link only (exportToKotlin defaults to false): the published klib already
-                        // carries the Sentry cinterop bindings.
-                        add("Sentry")
-                    },
-                )
-            }
-        }
+        registerSentrySwiftPackage(target, autoInstall.spm.sentryCocoaVersion.get())
         autoInstalledConfigNames += spm4KmpConfigName(target.name)
-        logger.lifecycle(
-            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
-        )
     }
+}
+
+private fun Project.registerSentrySwiftPackage(
+    target: KotlinNativeTarget,
+    cocoaVersion: String,
+) {
+    extensions.extraProperties.set(SPM_AUTO_INSTALLED_MARKER, true)
+    target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
+        // spm4Kmp selects one entry for the shared container, so every entry needs all four
+        // minimums, including platforms other than this target's own family.
+        minIos = minimumDeploymentVersion(minIos, "15.0")
+        minTvos = minimumDeploymentVersion(minTvos, "15.0")
+        minMacos = minimumDeploymentVersion(minMacos, "12.0")
+        minWatchos = minimumDeploymentVersion(minWatchos, "9.0")
+        dependency {
+            remotePackageVersion(
+                url = URI(SENTRY_COCOA_GIT_URL),
+                version = cocoaVersion,
+                products = {
+                    // Link only (exportToKotlin defaults to false): the published klib already
+                    // carries the Sentry cinterop bindings.
+                    add("Sentry")
+                },
+            )
+        }
+    }
+    if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
+        registerWatchosSimulatorFrameworkCopy()
+    }
+    logger.lifecycle(
+        "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
+    )
+}
+
+/** Preserve higher consumer minimums, comparing numeric components rather than strings. */
+private fun minimumDeploymentVersion(
+    configured: String?,
+    required: String,
+): String {
+    val configuredParts = configured?.split('.')?.map { it.toInt() } ?: return required
+    val requiredParts = required.split('.').map { it.toInt() }
+    for (index in 0 until maxOf(configuredParts.size, requiredParts.size)) {
+        val comparison = configuredParts.getOrElse(index) { 0 }.compareTo(requiredParts.getOrElse(index) { 0 })
+        if (comparison != 0) {
+            return if (comparison > 0) configured else required
+        }
+    }
+    return configured
 }
