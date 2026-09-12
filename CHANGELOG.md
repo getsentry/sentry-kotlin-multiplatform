@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.7.3` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
+  - Set Android `compileSdk` and sample app `targetSdk` to `36`, matching Sentry Android `8.41.0`.
+
 ## 0.27.0
 
 ### Features

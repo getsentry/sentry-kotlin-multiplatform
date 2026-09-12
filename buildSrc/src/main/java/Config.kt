@@ -1,8 +1,8 @@
 object Config {
-    val agpVersion = "7.4.2"
-    val kotlinVersion = "2.1.21"
-    val composePluginVersion = "1.8.0"
-    val gradleMavenPublishPluginVersion = "0.18.0"
+    val agpVersion = "8.7.3"
+    val kotlinVersion = "2.2.21"
+    val composePluginVersion = "1.9.0"
+    val gradleMavenPublishPluginVersion = "0.30.0"
 
     val multiplatform = "multiplatform"
     val cocoapods = "native.cocoapods"
@@ -12,20 +12,20 @@ object Config {
     val androidGradle = "com.android.library"
     val kotlinSerializationPlugin = "plugin.serialization"
     val dokka = "org.jetbrains.dokka"
-    val dokkaVersion = "1.8.10"
+    val dokkaVersion = "1.9.20"
 
     object BuildPlugins {
         val buildConfig = "com.codingfeline.buildkonfig"
-        val buildConfigVersion = "0.13.3"
+        val buildConfigVersion = "0.17.1"
     }
 
     object QualityPlugins {
         val spotless = "com.diffplug.spotless"
-        val spotlessVersion = "6.11.0"
+        val spotlessVersion = "7.0.2"
         val kover = "org.jetbrains.kotlinx.kover"
-        val koverVersion = "0.7.3"
+        val koverVersion = "0.9.1"
         val detekt = "io.gitlab.arturbosch.detekt"
-        val detektVersion = "1.22.0"
+        val detektVersion = "1.23.8"
         val binaryCompatibility = "org.jetbrains.kotlinx.binary-compatibility-validator"
         val binaryCompatibilityVersion = "0.18.0"
     }
@@ -51,9 +51,9 @@ object Config {
         val kotlinCommon = "org.jetbrains.kotlin:kotlin-test-common"
         val kotlinCommonAnnotation = "org.jetbrains.kotlin:kotlin-test-annotations-common"
         val kotlinJunit = "org.jetbrains.kotlin:kotlin-test-junit"
-        val kotlinCoroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0-RC"
-        val kotlinCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0-RC"
-        val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
+        val kotlinCoroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0"
+        val kotlinCoroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0"
+        val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
 
         val ktorClientCore = "io.ktor:ktor-client-core:2.3.6"
         val ktorClientSerialization = "io.ktor:ktor-client-serialization:2.3.6"
@@ -66,7 +66,7 @@ object Config {
     }
 
     object Android {
-        private val sdkVersion = 33
+        private val sdkVersion = 36
 
         val minSdkVersion = 21
         val targetSdkVersion = sdkVersion

@@ -3,6 +3,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -18,15 +19,14 @@ plugins {
     `maven-publish`
 }
 
-koverReport {
-    defaults {
-        // adds the contents of the reports of `release` Android build variant to default reports
-        mergeWith("release")
-    }
-}
-
 android {
+    namespace = "io.sentry.kotlin.multiplatform"
     compileSdk = Config.Android.compileSdkVersion
+    // AGP 8 disables BuildConfig generation by default; keep it on to preserve
+    // the previously published Android public API surface.
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -43,13 +43,21 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
+    }
 }
 
 kotlin {
     explicitApi()
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        // Stub targets do not run shared tests.
+        excludeCompilations {
+            it.name == "test" &&
+                it.target.name in setOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+        }
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -190,18 +198,20 @@ kotlin {
 
         // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
         // if we need to use this class, we'd need to find a better way to work it out
-        targets.withType<KotlinNativeTarget>().matching {
-            it.konanTarget.family.isAppleFamily
-        }.forEach { target ->
-            target.compilations["main"].cinterops["Sentry"].extraOpts(
-                "-compiler-option",
-                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                "-compiler-option",
-                "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                "-compiler-option",
-                "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
-            )
-        }
+        targets
+            .withType<KotlinNativeTarget>()
+            .matching {
+                it.konanTarget.family.isAppleFamily
+            }.forEach { target ->
+                target.compilations["main"].cinterops["Sentry"].extraOpts(
+                    "-compiler-option",
+                    "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
+                    "-compiler-option",
+                    "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
+                    "-compiler-option",
+                    "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
+                )
+            }
 
         val commonStub by creating {
             dependsOn(commonMain.get())
@@ -236,20 +246,12 @@ private fun KotlinMultiplatformExtension.addNoOpTargets() {
     js(IR) {
         browser()
         binaries.library()
-        compilations.remove(compilations.getByName("test"))
     }
     wasmJs {
         browser()
         binaries.library()
-        compilations.remove(compilations.getByName("test"))
     }
-    mingwX64 {
-        compilations.remove(compilations.getByName("test"))
-    }
-    linuxArm64 {
-        compilations.remove(compilations.getByName("test"))
-    }
-    linuxX64 {
-        compilations.remove(compilations.getByName("test"))
-    }
+    mingwX64()
+    linuxArm64()
+    linuxX64()
 }
