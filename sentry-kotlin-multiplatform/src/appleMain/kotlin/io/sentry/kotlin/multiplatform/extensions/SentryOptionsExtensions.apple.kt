@@ -22,6 +22,8 @@ internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) 
 internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions) {
     val cocoaOptions = this
     cocoaOptions.setDsn(kmpOptions.dsn)
+    cocoaOptions.setStrictTraceContinuation(kmpOptions.strictTraceContinuation)
+    cocoaOptions.setOrgId(kmpOptions.orgId)
     cocoaOptions.setAttachStacktrace(kmpOptions.attachStackTrace)
     cocoaOptions.setDist(kmpOptions.dist)
     kmpOptions.environment?.let {
