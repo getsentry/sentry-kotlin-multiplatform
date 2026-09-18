@@ -25,6 +25,8 @@
 
 ### Internal
 
+- Use Cocoa’s hybrid `SentrySDK.internal` API for SDK metadata, envelope storage, and debug images through a Swift adapter.
+
 - Build the Apple SDK against Sentry Cocoa via SwiftPM (spm4Kmp) instead of the Kotlin CocoaPods plugin ([#557](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/557))
   - The published klibs keep the `cocoapods.Sentry` import prefix, preserving the existing Kotlin import namespace
 

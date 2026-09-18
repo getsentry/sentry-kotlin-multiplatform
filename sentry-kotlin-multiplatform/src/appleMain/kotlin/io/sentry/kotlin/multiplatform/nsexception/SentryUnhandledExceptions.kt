@@ -17,6 +17,7 @@ package io.sentry.kotlin.multiplatform.nsexception
 import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
 import Internal.Sentry.kSentryLevelFatal
 import cocoapods.Sentry.configureScope
+import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.CocoaSentryLevel
 import kotlinx.cinterop.invoke
 import platform.Foundation.NSException
@@ -70,7 +71,7 @@ public fun setSentryUnhandledExceptionHook(): Unit =
         } else {
             // Fallback to old approach if handler not available
             throwable.asSentryEnvelope()?.let { envelope ->
-                InternalSentrySDK.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
+                SentryKMPInternal.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
             }
             CocoapodsSentrySDK.configureScope { scope ->
                 scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
@@ -136,15 +137,12 @@ internal fun Throwable.asSentryEvent(
                 .map { it.asNSException().asSentryException(currentThread?.threadId, isHandled) }
         exceptions = convertedExceptions
         // The crashed thread's frames live on the exceptions, so include them as well as
-        // retained thread frames. Cocoa deduplicates their image addresses before lookup.
+        // retained thread frames. The Swift adapter deduplicates image addresses before lookup.
         val frames =
             threads.orEmpty().flatMap { it.stacktrace?.frames.orEmpty() } +
                 convertedExceptions.flatMap { it.stacktrace?.frames.orEmpty() }
         debugMeta =
-            InternalSentryDependencyContainer
-                .sharedInstance()
-                .debugImageProvider()
-                .getDebugImagesFromCacheForFrames(frames)
+            SentryKMPInternal.debugImagesForFrames(frames)
     }
 
 /**

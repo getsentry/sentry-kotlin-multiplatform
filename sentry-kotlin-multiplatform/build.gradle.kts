@@ -171,6 +171,22 @@ kotlin {
             target.swiftPackageConfig(cinteropName = "sentryCocoa") {
                 // Preserve the cocoapods.Sentry package used by consumers.
                 packageDependencyPrefix = "cocoapods"
+                // SwiftPM skips Cocoa's watchOS simulator binary for spm4Kmp's aarch64
+                // triple. Other targets find their framework via SwiftPM's earlier search path.
+                bridgeSettings {
+                    swiftSettings {
+                        unsafeFlags =
+                            listOf(
+                                "-F",
+                                layout.buildDirectory
+                                    .dir(
+                                        "spmKmpPlugin/sentryCocoa/scratch/artifacts/sentry-cocoa/Sentry/" +
+                                            "Sentry.xcframework/watchos-arm64_x86_64-simulator",
+                                    ).get()
+                                    .asFile.absolutePath,
+                            )
+                    }
+                }
                 minIos = Config.Cocoa.iosDeploymentTarget
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget

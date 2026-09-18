@@ -8,6 +8,7 @@ import cocoapods.Sentry.SentryEvent
 import cocoapods.Sentry.SentryException
 import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.SentryThread
+import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.nsexception.KOTLIN_CRASH_TAG
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
@@ -90,6 +91,28 @@ class CocoaV9IntegrationTest {
             "Missing exception images: ${expectedAddresses - imageAddresses}",
         )
         assertCurrentThread(event, crashed = true)
+    }
+
+    @Test
+    fun `hybrid debug images ignore invalid addresses and deduplicate frames`() {
+        start()
+        val image =
+            assertNotNull(
+                SentryDependencyContainer
+                    .sharedInstance()
+                    .debugImageProvider()
+                    .getDebugImagesFromCache()
+                    .firstOrNull(),
+            ) as SentryDebugMeta
+        val frame = SentryFrame().apply { imageAddress = image.imageAddress }
+        val invalid = SentryFrame().apply { imageAddress = "not-an-address" }
+        val images = SentryKMPInternal.debugImagesForFrames(listOf(frame, frame, invalid, SentryFrame()))
+        assertEquals(1, images.size)
+        val actual = images.single() as SentryDebugMeta
+        assertEquals(image.imageAddress, actual.imageAddress)
+        assertEquals(image.debugID, actual.debugID)
+        assertEquals(image.codeFile, actual.codeFile)
+        assertEquals(image.imageSize, actual.imageSize)
     }
 
     private fun assertCurrentThread(
