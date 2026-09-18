@@ -7,6 +7,10 @@ on:
   pull_request:
     paths:
       - '.github/workflows/kotlin-multiplatform.yml'
+      - 'settings.gradle.kts'
+      - 'Makefile'
+      - 'scripts/build-apple.sh'
+      - 'scripts/test-cocoa-crash-relaunch.py'
       - 'sentry-kotlin-multiplatform/**'
       - 'sentry-samples/**'
       - 'buildSrc/src/**'
@@ -44,6 +48,11 @@ jobs:
           ./scripts/build-apple.sh sentry-kotlin-multiplatform
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Validate Cocoa crash recovery
+        run: |
+          ./gradlew :sentry-kotlin-multiplatform:linkDebugTestMacosArm64
+          python3 scripts/test-cocoa-crash-relaunch.py --check-sessions
 
   build-apple-samples:
     runs-on: macos-latest-xlarge
@@ -118,4 +127,4 @@ jobs:
 
       - name: Test samples
         run: |
-          ./gradlew allTests -p sentry-samples
+          ./gradlew :sentry-samples:kmp-app-spm:shared:allTests

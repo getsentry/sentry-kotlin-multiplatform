@@ -1,7 +1,7 @@
 // The following are snippets from the Sentry Cocoa SDK used to generate Kotlin stubs.
 //
 // https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/include/SentryThreadInspector.h
-// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/SentryThreadInspector.m
+// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/Sentry/SentryDefaultThreadInspector.m
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,7 @@
 
 @class SentryThread;
 
-@interface SentryThreadInspector : NSObject
+@interface SentryDefaultThreadInspector : NSObject
 
 - (NSArray<SentryThread *> *_Nonnull)getCurrentThreadsWithStackTrace;
 

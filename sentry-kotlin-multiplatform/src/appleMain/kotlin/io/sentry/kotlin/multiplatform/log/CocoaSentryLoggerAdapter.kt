@@ -10,14 +10,14 @@ import cocoapods.Sentry.SentryLogger as CocoaSentryLogger
  * implements [sendLog] to adapt and forward formatted logs to the Cocoa SDK.
  */
 internal class CocoaSentryLoggerAdapter(
-    private val cocoaLoggerProvider: () -> CocoaSentryLogger,
+    private val cocoaLoggerProvider: () -> CocoaSentryLogger?,
     logBuilderFactory: SentryLogBuilderFactory = DefaultSentryLogBuilderFactory,
 ) : BaseSentryLogger(logBuilderFactory) {
     override fun sendLog(
         level: SentryLogLevel,
         formatted: FormattedLog,
     ) {
-        val cocoaLogger = cocoaLoggerProvider()
+        val cocoaLogger = cocoaLoggerProvider() ?: return
         val attributes = formatted.attributes.toCocoaMap()
         when (level) {
             SentryLogLevel.TRACE -> cocoaLogger.trace(formatted.body, attributes)

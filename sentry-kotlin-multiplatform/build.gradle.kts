@@ -54,7 +54,13 @@ kotlin {
         // Stub targets do not run shared tests.
         excludeCompilations {
             it.name == "test" &&
-                it.target.name in setOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+                it.target.name in setOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+        }
+        common {
+            group("native") {
+                // The legacy watch target uses commonStub, never the Cocoa-backed Apple sources.
+                excludeCompilations { it.target.name == "watchosArm32" }
+            }
         }
     }
 
@@ -68,7 +74,6 @@ kotlin {
             iosArm64(),
             iosSimulatorArm64(),
             iosX64(),
-            watchosArm32(),
             watchosArm64(),
             watchosX64(),
             watchosSimulatorArm64(),
@@ -166,22 +171,26 @@ kotlin {
             target.swiftPackageConfig(cinteropName = "sentryCocoa") {
                 // Preserve the cocoapods.Sentry package used by consumers.
                 packageDependencyPrefix = "cocoapods"
+                // SwiftPM skips Cocoa's watchOS simulator binary for spm4Kmp's aarch64
+                // triple. Other targets find their framework via SwiftPM's earlier search path.
+                bridgeSettings {
+                    swiftSettings {
+                        unsafeFlags =
+                            listOf(
+                                "-F",
+                                layout.buildDirectory
+                                    .dir(
+                                        "spmKmpPlugin/sentryCocoa/scratch/artifacts/sentry-cocoa/Sentry/" +
+                                            "Sentry.xcframework/watchos-arm64_x86_64-simulator",
+                                    ).get()
+                                    .asFile.absolutePath,
+                            )
+                    }
+                }
                 minIos = Config.Cocoa.iosDeploymentTarget
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
-                // Avoid duplicate declarations from Kotlin/Native's "Meta" naming conflict (KT-41709).
-                // Use extraOpts to pass these flags to cinterop.
-                // https://youtrack.jetbrains.com/issue/KT-41709
-                extraOpts =
-                    listOf(
-                        "-compiler-option",
-                        "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                        "-compiler-option",
-                        "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                        "-compiler-option",
-                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable",
-                    )
                 dependency {
                     remotePackageVersion(
                         url = uri("https://github.com/getsentry/sentry-cocoa.git"),
@@ -204,6 +213,7 @@ kotlin {
         val commonStub by creating {
             dependsOn(commonMain.get())
         }
+        getByName("watchosArm32Main").dependsOn(commonStub)
         jsMain.get().dependsOn(commonStub)
         wasmJsMain.get().dependsOn(commonStub)
         linuxMain.get().dependsOn(commonStub)
@@ -219,7 +229,7 @@ val copyWatchosSimulatorSentryFramework =
         dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
         from(
             sentryCocoaScratchDir.map {
-                it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_i386_x86_64-simulator/Sentry.framework")
+                it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_x86_64-simulator/Sentry.framework")
             },
         )
         into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
@@ -230,7 +240,7 @@ tasks
 
 // Stub targets do not run tests. Their inherited commonTest dependencies include Ktor,
 // which lacks variants for some targets. Exclude it and disable test compilation and execution.
-val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->
         noOpStubTargets.any { configuration.name.startsWith(it) } &&
@@ -266,6 +276,7 @@ buildkonfig {
 }
 
 private fun KotlinMultiplatformExtension.addNoOpTargets() {
+    watchosArm32()
     js(IR) {
         browser()
         binaries.library()

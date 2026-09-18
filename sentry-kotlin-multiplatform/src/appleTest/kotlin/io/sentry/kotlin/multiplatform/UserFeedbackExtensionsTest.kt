@@ -1,96 +1,64 @@
 package io.sentry.kotlin.multiplatform
 
+import cocoapods.Sentry.serialize
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.UserFeedback
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 
 class UserFeedbackExtensionsTest {
     private val sentryIdString = "dcebada57d794590a6da3d1977eed58a"
 
     @Test
-    fun `toCocoaUserFeedback correctly maps comments`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                comments = "Test comment"
-            }
+    fun `feedback maps message contact fields source and associated event`() {
+        val feedback =
+            UserFeedback(SentryId(sentryIdString))
+                .apply {
+                    comments = "I had an error"
+                    name = "John Doe"
+                    email = "john@doe.com"
+                }.toCocoaUserFeedback()
 
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        assertEquals("Test comment", cocoaUserFeedback.comments())
+        assertEquals(
+            mapOf<Any?, Any?>(
+                "message" to "I had an error",
+                "name" to "John Doe",
+                "contact_email" to "john@doe.com",
+                "source" to "custom",
+                "associated_event_id" to sentryIdString,
+            ),
+            feedback.serialize(),
+        )
+        assertNotEquals(sentryIdString, feedback.eventId().sentryIdString())
     }
 
     @Test
-    fun `toCocoaUserFeedback correctly maps email`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                email = "test@email.com"
-            }
+    fun `null comments become an empty message and absent contact fields stay absent`() {
+        val feedback = UserFeedback(SentryId(sentryIdString)).toCocoaUserFeedback().serialize()
 
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        assertEquals("test@email.com", cocoaUserFeedback.email())
+        assertEquals("", feedback["message"])
+        assertEquals("custom", feedback["source"])
+        assertEquals(sentryIdString, feedback["associated_event_id"])
+        assertFalse(feedback.containsKey("name"))
+        assertFalse(feedback.containsKey("contact_email"))
     }
 
     @Test
-    fun `toCocoaUserFeedback correctly maps name`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                name = "John Doe"
-            }
+    fun `explicitly empty comments and contact fields are preserved`() {
+        val feedback =
+            UserFeedback(SentryId(sentryIdString))
+                .apply {
+                    comments = ""
+                    name = ""
+                    email = ""
+                }.toCocoaUserFeedback()
+                .serialize()
 
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        assertEquals("John Doe", cocoaUserFeedback.name())
-    }
-
-    @Test
-    fun `toCocoaUserFeedback keeps default empty string when comments is null`() {
-        val userFeedback = UserFeedback(SentryId(sentryIdString))
-        // comments is null by default
-
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        // Cocoa SDK uses non-nullable NSString, so default is empty string
-        assertEquals("", cocoaUserFeedback.comments())
-    }
-
-    @Test
-    fun `toCocoaUserFeedback keeps default empty string when email is null`() {
-        val userFeedback = UserFeedback(SentryId(sentryIdString))
-        // email is null by default
-
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        // Cocoa SDK uses non-nullable NSString, so default is empty string
-        assertEquals("", cocoaUserFeedback.email())
-    }
-
-    @Test
-    fun `toCocoaUserFeedback keeps default empty string when name is null`() {
-        val userFeedback = UserFeedback(SentryId(sentryIdString))
-        // name is null by default
-
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        // Cocoa SDK uses non-nullable NSString, so default is empty string
-        assertEquals("", cocoaUserFeedback.name())
-    }
-
-    @Test
-    fun `toCocoaUserFeedback maps all properties correctly`() {
-        val userFeedback =
-            UserFeedback(SentryId(sentryIdString)).apply {
-                name = "John Doe"
-                email = "john@doe.com"
-                comments = "I had an error"
-            }
-
-        val cocoaUserFeedback = userFeedback.toCocoaUserFeedback()
-
-        assertEquals("John Doe", cocoaUserFeedback.name())
-        assertEquals("john@doe.com", cocoaUserFeedback.email())
-        assertEquals("I had an error", cocoaUserFeedback.comments())
+        assertEquals("", feedback["message"])
+        assertEquals("", feedback["name"])
+        assertEquals("", feedback["contact_email"])
     }
 }
