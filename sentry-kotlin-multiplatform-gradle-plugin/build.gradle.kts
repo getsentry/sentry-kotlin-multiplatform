@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.api.attributes.java.TargetJvmVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -20,8 +21,11 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
+    // Consumers supply spm4Kmp when they apply it; keep it optional at runtime.
+    compileOnly(libs.spmForKmp)
 
     testImplementation(kotlin("gradle-plugin"))
+    testImplementation(libs.spmForKmp)
     testImplementation(libs.junit)
     testImplementation(libs.junit.params)
     testImplementation(libs.mockk)
@@ -37,6 +41,19 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+// Resolve spm4Kmp's Java 17 artifact for compilation and tests, but emit Java 11 bytecode
+// for consumers that do not use spm4Kmp.
+listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEach { configurationName ->
+    configurations.named(configurationName).configure {
+        attributes {
+            attribute(
+                TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE,
+                JavaVersion.VERSION_17.majorVersion.toInt()
+            )
+        }
+    }
+}
+
 tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
 
 gradlePlugin {
@@ -47,10 +64,6 @@ gradlePlugin {
         }
     }
 }
-
-// signing is done when uploading files to MC
-// via gpg:sign-and-deploy-file (release.kts); disabled here via
-// the RELEASE_SIGNING_ENABLED Gradle property (see gradle.properties)
 
 tasks.named("distZip") {
     dependsOn("publishToMavenLocal")
