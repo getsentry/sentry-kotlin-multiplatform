@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
-import cocoapods.Sentry.PrivateSentrySDKOnly
+import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.fakes.FakeSentryInstance
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.BeforeTest
@@ -51,8 +51,8 @@ actual class SentryBridgeTest {
         fixture.sut.init(configuration)
 
         // Then
-        assertTrue(PrivateSentrySDKOnly.getSdkName()!!.contains("kmp"))
-        assertEquals(PrivateSentrySDKOnly.getSdkVersionString()!!, BuildKonfig.VERSION_NAME)
+        assertTrue(SentryKMPInternal.sdkName().contains("kmp"))
+        assertEquals(SentryKMPInternal.sdkVersion(), BuildKonfig.VERSION_NAME)
     }
 
     @Test
