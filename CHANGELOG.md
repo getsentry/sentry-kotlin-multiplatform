@@ -18,6 +18,8 @@
 
 ### Features
 
+- Add shared `strictTraceContinuation` and `orgId` options for configuring native trace continuation on Apple, Android, and JVM.
+
 - Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))
 
 ### Internal
