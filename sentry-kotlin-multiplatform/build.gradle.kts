@@ -218,7 +218,7 @@ val copyWatchosSimulatorSentryFramework =
         from(
             sentryCocoaScratchDir.map {
                 it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_i386_x86_64-simulator/Sentry.framework")
-            }
+            },
         )
         into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
     }

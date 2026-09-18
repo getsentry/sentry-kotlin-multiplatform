@@ -619,7 +619,10 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val device = kmpExtension.iosArm64()
         val simulator = kmpExtension.iosSimulatorArm64()
-        device.compilations.getByName("main").cinterops.create(cinteropName)
+        device.compilations
+            .getByName("main")
+            .cinterops
+            .create(cinteropName)
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
