@@ -214,7 +214,7 @@ kotlin {
     }
 }
 
-// spm4Kmp 1.9.3 uses `aarch64` where SwiftPM expects `arm64`, so it skips the watchOS
+// spm4Kmp 1.9.5 uses `aarch64` where SwiftPM expects `arm64`, so it skips the watchOS
 // simulator framework. Copy it manually until the target naming is fixed upstream.
 val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
 val copyWatchosSimulatorSentryFramework =
