@@ -18,8 +18,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ThrowableReasonTests {
-
-    private fun testReasonNoCause(message: String?, appendCausedBy: Boolean) {
+    private fun testReasonNoCause(
+        message: String?,
+        appendCausedBy: Boolean,
+    ) {
         val exception = Exception(message)
         val reason = exception.getReason(appendCausedBy)
         assertEquals(message, reason)
@@ -56,7 +58,7 @@ class ThrowableReasonTests {
             Test message
             Caused by: kotlin.Exception: Cause message
             """.trimIndent(),
-            reason
+            reason,
         )
     }
 
@@ -69,7 +71,7 @@ class ThrowableReasonTests {
             """
             Caused by: kotlin.Exception: Cause message
             """.trimIndent(),
-            reason
+            reason,
         )
     }
 
@@ -82,7 +84,7 @@ class ThrowableReasonTests {
             Test message
             Caused by: kotlin.Exception
             """.trimIndent(),
-            reason
+            reason,
         )
     }
 
@@ -98,7 +100,7 @@ class ThrowableReasonTests {
             Caused by: kotlin.Exception: Cause2 message
             Caused by: kotlin.Exception: Cause1 message
             """.trimIndent(),
-            reason
+            reason,
         )
     }
 }

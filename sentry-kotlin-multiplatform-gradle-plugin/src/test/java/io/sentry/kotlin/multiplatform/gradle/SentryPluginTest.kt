@@ -152,10 +152,11 @@ class SentryPluginTest {
 
         project.installSentryForKmp(project.extensions.getByName("commonMain") as SourceSetAutoInstallExtension)
 
-        val sentryDependencies = project.configurations
-            .flatMap { it.dependencies }
-            .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
-            .toList()
+        val sentryDependencies =
+            project.configurations
+                .flatMap { it.dependencies }
+                .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
+                .toList()
 
         assertTrue(sentryDependencies.isNotEmpty())
 
@@ -539,7 +540,10 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val device = kmpExtension.iosArm64()
         val simulator = kmpExtension.iosSimulatorArm64()
-        device.compilations.getByName("main").cinterops.create(cinteropName)
+        device.compilations
+            .getByName("main")
+            .cinterops
+            .create(cinteropName)
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
@@ -565,7 +569,7 @@ class SentryPluginTest {
                 remotePackageVersion(
                     url = URI("https://github.com/getsentry/sentry-cocoa.git"),
                     version = "8.57.0",
-                    products = { add("Sentry") }
+                    products = { add("Sentry") },
                 )
             }
         }

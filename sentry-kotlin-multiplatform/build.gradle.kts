@@ -76,7 +76,7 @@ kotlin {
             tvosX64(),
             tvosSimulatorArm64(),
             macosX64(),
-            macosArm64()
+            macosArm64(),
         )
     addNoOpTargets()
 
@@ -180,7 +180,7 @@ kotlin {
                         "-compiler-option",
                         "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
                         "-compiler-option",
-                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
+                        "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable",
                     )
                 dependency {
                     remotePackageVersion(
@@ -188,7 +188,7 @@ kotlin {
                         version = Config.Libs.sentryCocoaVersion,
                         products = {
                             add("Sentry", exportToKotlin = true)
-                        }
+                        },
                     )
                 }
             }
@@ -220,7 +220,7 @@ val copyWatchosSimulatorSentryFramework =
         from(
             sentryCocoaScratchDir.map {
                 it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_i386_x86_64-simulator/Sentry.framework")
-            }
+            },
         )
         into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
     }
