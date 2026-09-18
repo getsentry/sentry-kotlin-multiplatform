@@ -12,16 +12,16 @@ abstract class AutoInstallExtension
     ) {
         private val objects = project.objects
 
-    /**
-     * Enable auto-installation of the Sentry dependencies through [CocoapodsAutoInstallExtension],
-     * [Spm4KmpAutoInstallExtension] and [SourceSetAutoInstallExtension].
-     *
-     * If spm4Kmp is applied before Sentry, set this before `kotlin { }` to prevent Swift package
-     * registration. See [Spm4KmpAutoInstallExtension.enabled].
-     *
-     * Defaults to true.
-     */
-    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+        /**
+         * Enable auto-installation of the Sentry dependencies through [CocoapodsAutoInstallExtension],
+         * [Spm4KmpAutoInstallExtension] and [SourceSetAutoInstallExtension].
+         *
+         * If spm4Kmp is applied before Sentry, set this before `kotlin { }` to prevent Swift package
+         * registration. See [Spm4KmpAutoInstallExtension.enabled].
+         *
+         * Defaults to true.
+         */
+        val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
         val cocoapods: CocoapodsAutoInstallExtension =
             objects.newInstance(CocoapodsAutoInstallExtension::class.java, project)

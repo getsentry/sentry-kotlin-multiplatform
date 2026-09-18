@@ -41,11 +41,12 @@ private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeI
  */
 internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentryEvent? =
     event?.takeUnless {
-        (it as InternalSentryEvent).isFatalEvent && (
-            it.tags?.containsKey(
-                KOTLIN_CRASH_TAG,
-            ) ?: false
-        )
+        (it as InternalSentryEvent).isFatalEvent &&
+            (
+                it.tags?.containsKey(
+                    KOTLIN_CRASH_TAG,
+                ) ?: false
+            )
     }
 
 /**
