@@ -31,7 +31,6 @@ fi
 
 COCOA_VERSION=${BASH_REMATCH[1]}
 
-# create a new table entry in readme with NEW_VERSION and COCOA_VERSION in the compatibility table
 # Find the line number of the last entry in the compatibility table and insert the new entry after it
 README_FILE="README.md"
 
