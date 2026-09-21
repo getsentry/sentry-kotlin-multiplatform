@@ -195,8 +195,6 @@ kotlin {
                 }
             }
 
-            // The private `Sentry.Internal` cinterop has self-contained headers; its symbols
-            // resolve at link time against the Sentry framework regardless of how it is delivered.
             target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
@@ -231,11 +229,7 @@ tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
     .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
-// The js/wasmJs/linux/mingw targets ship as no-op stubs and run no tests. Kotlin
-// 2.2.20's shared `web` source set wires their test compilations to commonTest, whose
-// Ktor dependency has no wasm (and limited native) variants, which breaks dependency
-// resolution. Exclude Ktor from those test classpaths and disable their test
-// compile/run tasks so no test sources are compiled for these stub targets.
+// Ktor lacks variants for some no-op targets, so exclude their tests and test dependencies.
 val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->
