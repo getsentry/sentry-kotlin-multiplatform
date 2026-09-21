@@ -86,36 +86,9 @@ For detailed usage, check out the [Kotlin Multiplatform Documentation](https://d
 Use SwiftPM through spm4Kmp for Cocoa 9.28.0. CocoaPods is unsupported; its historical sample
 and legacy plugin configuration remain in the repository but are excluded from active validation.
 
-### Migrating to Cocoa 9
-
-Raise deployment targets in your app and Swift package configuration to at least iOS/tvOS 15,
-macOS 12, and watchOS 9. Keep any higher minimums your app already requires. If you declare the
-Sentry Swift package yourself, pin it to 9.28.0 and set these minimums in your own spm4Kmp
-configuration; the plugin does not replace user-owned Sentry packages. You may keep `watchosArm32`
-in your target list for compilation compatibility, but Sentry calls on that target now do nothing.
-The plugin skips Cocoa installation and linking for that target. Use `watchosArm64` for reporting
-on supported watchOS devices.
-
-The common Kotlin `captureUserFeedback` API remains available. On Apple it maps to Cocoa's
-`SentryFeedback` with source `custom`: comments become the message (null becomes an empty
-string), the original event ID becomes `associatedEventId`, and name/email are preserved.
-
-The `cocoapods.Sentry` Kotlin import prefix is retained for compatibility with existing bindings.
-Apple-native customizations still need review: Cocoa option access from Kotlin uses generated
-getter/setter functions, log enablement moves to the top-level native option, and native log
-attributes use `SentryAttribute` instead of `SentryStructuredLogAttribute`.
-
 ## Samples
 
 The supported sample is [kmp-app-spm](sentry-samples/kmp-app-spm), with Android, JVM, and iOS apps.
-Build the iOS simulator app with `make buildAppleSamples`; `make compile` also runs the SDK
-build, tests, API checks, and lint. Xcode builds the shared Kotlin framework through Gradle.
-These commands use your selected Xcode. To select another installation for this build only, run:
-
-```sh
-DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer make buildAppleSamples
-```
-
 The retired `kmp-app-cocoapods` files are retained as historical examples only.
 
 ## Apple Privacy Manifest
