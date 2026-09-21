@@ -74,7 +74,6 @@ class Spm4KmpWatchosSimulatorTest {
         destination.mkdirs()
         destination.resolve("libsentryCocoa.a").writeText("existing bridge")
 
-        // Run only the real Copy action against a local fixture, without SwiftPM or compilation.
         copy.actions.forEach { it.execute(copy) }
 
         assertEquals(destination, copy.destinationDir)

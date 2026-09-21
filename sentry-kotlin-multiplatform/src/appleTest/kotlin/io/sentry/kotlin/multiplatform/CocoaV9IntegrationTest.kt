@@ -40,7 +40,7 @@ class CocoaV9IntegrationTest {
         beforeSend: (SentryEvent?) -> SentryEvent? = { null },
     ) {
         Sentry.initWithPlatformOptions {
-            // Every test drops outgoing events. The local endpoint is also deliberately unreachable.
+            // Use an unreachable local endpoint to prevent external traffic.
             it.setDsn("http://public@127.0.0.1:9/1")
             it.setEnableAutoSessionTracking(false)
             it.setEnableAppHangTracking(false)

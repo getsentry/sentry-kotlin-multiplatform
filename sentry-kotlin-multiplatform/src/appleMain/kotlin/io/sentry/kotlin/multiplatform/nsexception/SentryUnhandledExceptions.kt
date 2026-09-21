@@ -137,7 +137,7 @@ internal fun Throwable.asSentryEvent(
                 .map { it.asNSException().asSentryException(currentThread?.threadId, isHandled) }
         exceptions = convertedExceptions
         // The crashed thread's frames live on the exceptions, so include them as well as
-        // retained thread frames. The Swift adapter deduplicates image addresses before lookup.
+        // retained thread frames.
         val frames =
             threads.orEmpty().flatMap { it.stacktrace?.frames.orEmpty() } +
                 convertedExceptions.flatMap { it.stacktrace?.frames.orEmpty() }

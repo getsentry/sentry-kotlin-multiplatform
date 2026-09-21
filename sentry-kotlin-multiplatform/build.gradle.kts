@@ -237,8 +237,7 @@ tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
     .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
-// Stub targets do not run tests. Their inherited commonTest dependencies include Ktor,
-// which lacks variants for some targets. Exclude it and disable test compilation and execution.
+// Ktor lacks variants for some no-op targets, so exclude their tests and test dependencies.
 val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->

@@ -60,7 +60,6 @@ class Spm4KmpIntegrationTest {
             it.minIos = "16.2"
             it.minTvos = "17.0"
             it.minMacos = "13.1"
-            // Numeric comparison must keep 10 above 9.
             it.minWatchos = "10.0"
         }
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
