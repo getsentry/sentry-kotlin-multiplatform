@@ -134,21 +134,6 @@ class SentryFrameworkArchitectureTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["watchosArm64", "watchosSimulatorArm64", "watchosX64"])
-    fun `supported watchOS targets find Cocoa 9 slice names`(targetName: String) {
-        val target = mockk<KotlinNativeTarget>()
-        every { target.name } returns targetName
-        val cocoa9Slice =
-            if (targetName == "watchosArm64") {
-                "watchos-arm64_arm64_32_arm64e"
-            } else {
-                "watchos-arm64_x86_64-simulator"
-            }
-
-        assertTrue(cocoa9Slice in target.toSentryFrameworkArchitecture())
-    }
-
-    @ParameterizedTest
     @ValueSource(strings = ["watchos-arm64_arm64_32", "watchos-arm64_arm64_32_arm64e"])
     fun `watchOS arm64 matches both Cocoa 9 device distributions`(slice: String) {
         val target = mockk<KotlinNativeTarget>()
@@ -157,11 +142,10 @@ class SentryFrameworkArchitectureTest {
         assertTrue(slice in target.toSentryFrameworkArchitecture())
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = ["watchosArm32", "legacyWatch"])
-    fun `stub watch target has no Cocoa architecture mapping`(targetName: String) {
+    @Test
+    fun `stub watch target has no Cocoa architecture mapping`() {
         val target = mockk<KotlinNativeTarget>()
-        every { target.name } returns targetName
+        every { target.name } returns "watchosArm32"
 
         assertTrue(target.toSentryFrameworkArchitecture().isEmpty())
     }

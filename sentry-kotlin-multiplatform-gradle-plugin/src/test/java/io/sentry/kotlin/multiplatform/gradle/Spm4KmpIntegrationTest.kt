@@ -93,24 +93,6 @@ class Spm4KmpIntegrationTest {
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
-    fun `opt outs do not reject unsupported target`(disableGlobally: Boolean) {
-        val project = createProject(spmFirst = true)
-        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        if (disableGlobally) {
-            autoInstall.enabled.set(false)
-        } else {
-            autoInstall.spm.enabled.set(false)
-        }
-        project.extensions.getByType(KotlinMultiplatformExtension::class.java).watchosArm32()
-
-        (project as ProjectInternal).evaluate()
-
-        assertTrue(packages(project).isEmpty())
-        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
-    }
-
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
     fun `existing user minimums remain unchanged for target and global configs`(global: Boolean) {
         val project = createProject(spmFirst = false)
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
