@@ -58,7 +58,6 @@ android {
     }
 }
 
-// Use the local SDK project and exercise Cocoa auto-install through spm4Kmp.
 sentryKmp {
     autoInstall.commonMain.enabled = false
 }

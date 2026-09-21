@@ -171,7 +171,6 @@ kotlin {
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
                 // Avoid duplicate declarations from Kotlin/Native's "Meta" naming conflict (KT-41709).
-                // Use extraOpts to pass these flags to cinterop.
                 // https://youtrack.jetbrains.com/issue/KT-41709
                 extraOpts =
                     listOf(
@@ -193,7 +192,6 @@ kotlin {
                 }
             }
 
-            // These private headers are self-contained; their symbols link against Sentry.framework.
             target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
@@ -228,8 +226,7 @@ tasks
     .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
     .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
-// Stub targets do not run tests. Their inherited commonTest dependencies include Ktor,
-// which lacks variants for some targets. Exclude it and disable test compilation and execution.
+// Ktor lacks variants for some no-op targets, so exclude their tests and test dependencies.
 val noOpStubTargets = listOf("js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
 configurations
     .matching { configuration ->

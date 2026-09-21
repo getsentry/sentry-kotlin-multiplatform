@@ -29,8 +29,7 @@ constructor(
     /**
      * Overrides default Sentry Cocoa version.
      *
-     * If spm4Kmp is applied before Sentry, set this before `kotlin { }`.
-     * Otherwise, it can be set anywhere in the build script.
+     * Follow the configuration ordering described in [enabled].
      *
      * Requires an exact version. Defaults to this plugin's Sentry Cocoa version.
      */

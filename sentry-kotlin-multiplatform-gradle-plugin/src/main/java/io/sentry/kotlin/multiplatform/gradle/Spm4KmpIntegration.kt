@@ -76,7 +76,6 @@ internal fun Project.installSentryForSpm4Kmp(
         return
     }
 
-    // Track our registrations to distinguish them from user-defined configs.
     val autoInstalledConfigNames = mutableSetOf<String>()
 
     kmpExtension.appleTargets().configureEach { target ->

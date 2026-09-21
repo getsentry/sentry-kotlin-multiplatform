@@ -9,7 +9,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // Hosts the spm4Kmp plugin marker + implementation (compiled against for spm4Kmp auto-install)
+        // Resolves the spm4Kmp implementation.
         gradlePluginPortal()
     }
 }

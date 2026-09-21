@@ -146,8 +146,6 @@ private fun maybeLinkCocoaFramework(
         return
     }
 
-    // Resolve framework paths only when an Apple target is part of the build.
-
     val kmpExtension =
         project.extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension
             ?: throw GradleException("Error fetching Kotlin Multiplatform extension.")

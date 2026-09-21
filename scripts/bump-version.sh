@@ -30,7 +30,6 @@ fi
 
 COCOA_VERSION=${BASH_REMATCH[1]}
 
-# Append the SDK/Cocoa compatibility entry unless it already exists.
 README_FILE="README.md"
 
 EXISTING_ENTRY=$(grep "| $NEW_VERSION" $README_FILE 2>/dev/null | grep "$COCOA_VERSION" 2>/dev/null || true)
