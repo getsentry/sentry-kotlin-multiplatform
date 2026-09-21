@@ -59,9 +59,7 @@ subprojects {
                     }.toTypedArray()
             project.tasks.getByName("distZip").finalizedBy(*platformDists)
 
-            // signing is done when uploading files to MC
-            // via gpg:sign-and-deploy-file (release.kts); disabled here via
-            // the RELEASE_SIGNING_ENABLED Gradle property (see gradle.properties)
+            // release.kts signs artifacts during upload.
             apply<MavenPublishPlugin>()
         }
     }
