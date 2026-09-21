@@ -22,7 +22,10 @@ private fun Project.swiftPackageConfigNames(): Set<String>? {
     val container =
         extensions.findByName(SPM4KMP_SWIFT_PACKAGE_CONFIG_EXTENSION_NAME)
             as? NamedDomainObjectContainer<*> ?: return null
-    return container.names
+    // spm4Kmp capitalizes the first character when generating task names.
+    return container.names.mapTo(mutableSetOf()) { name ->
+        name.replaceFirstChar { it.lowercase() }
+    }
 }
 
 private fun spm4KmpConfigName(targetName: String): String {

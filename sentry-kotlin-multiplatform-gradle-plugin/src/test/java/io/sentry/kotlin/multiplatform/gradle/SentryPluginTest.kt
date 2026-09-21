@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.net.URI
 
@@ -377,8 +378,9 @@ class SentryPluginTest {
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
-    @Test
-    fun `user-defined per-target config is preserved when applied before spm4Kmp`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
+    fun `user-defined per-target config is preserved when applied before spm4Kmp`(configName: String) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -387,15 +389,16 @@ class SentryPluginTest {
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = configName) { }
 
         (project as ProjectInternal).evaluate()
 
         assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
-    @Test
-    fun `do not install Sentry Swift package when a user-defined per-target config exists`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
+    fun `do not install Sentry Swift package when a user-defined per-target config exists`(configName: String) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -404,7 +407,7 @@ class SentryPluginTest {
 
         // spm4Kmp creates the cinterop later, during evaluation.
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = configName) { }
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
@@ -412,8 +415,9 @@ class SentryPluginTest {
         assertNull(project.externalCocoaFrameworkProvider())
     }
 
-    @Test
-    fun `do not install Sentry Swift package when a user-defined global config exists`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
+    fun `do not install Sentry Swift package when a user-defined global config exists`(configName: String) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -422,7 +426,7 @@ class SentryPluginTest {
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
-        swiftPackages.create(SENTRY_COCOA_CINTEROP_NAME)
+        swiftPackages.create(configName)
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64()
@@ -485,8 +489,9 @@ class SentryPluginTest {
         assertNull(project.externalCocoaFrameworkProvider())
     }
 
-    @Test
-    fun `spm4Kmp configuration only covers its matching Apple target`() {
+    @ParameterizedTest
+    @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
+    fun `spm4Kmp configuration only covers its matching Apple target`(configName: String) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
@@ -494,7 +499,7 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val configuredTarget =
             kmpExtension.iosArm64().also {
-                it.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
+                it.swiftPackageConfig(cinteropName = configName) { }
             }
         val fallbackTarget = kmpExtension.iosSimulatorArm64()
 
@@ -524,8 +529,13 @@ class SentryPluginTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
-    fun `global spm4Kmp config only covers targets that declare the cinterop`(cinteropName: String) {
+    @CsvSource(
+        "sentryCocoa,sentryCocoa",
+        "sentryCocoa,SentryCocoa",
+        "SentryCocoa,sentryCocoa",
+        "SentryCocoa,SentryCocoa"
+    )
+    fun `global spm4Kmp config only covers targets that declare the cinterop`(configName: String, cinteropName: String) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -534,7 +544,7 @@ class SentryPluginTest {
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
-        swiftPackages.create(SENTRY_COCOA_CINTEROP_NAME)
+        swiftPackages.create(configName)
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val device = kmpExtension.iosArm64()
