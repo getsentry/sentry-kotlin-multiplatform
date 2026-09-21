@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.log.SentryLogger
+import io.sentry.kotlin.multiplatform.metrics.SentryMetrics
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -139,6 +140,10 @@ public object Sentry {
     public fun setUser(user: User?) {
         bridge.setUser(user)
     }
+
+    /** The trace-connected Metrics API for counters, gauges, and distributions. */
+    public val metrics: SentryMetrics
+        get() = bridge.metrics()
 
     /**
      * The Sentry logger API for sending structured logs.

@@ -21,6 +21,8 @@ import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
 import io.sentry.kotlin.multiplatform.log.CocoaSentryLoggerAdapter
 import io.sentry.kotlin.multiplatform.log.SentryLogger
+import io.sentry.kotlin.multiplatform.metrics.CocoaSentryMetricsAdapter
+import io.sentry.kotlin.multiplatform.metrics.SentryMetrics
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
 import io.sentry.kotlin.multiplatform.nsexception.dropKotlinCrashEvent
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
@@ -169,6 +171,10 @@ internal actual class SentryBridge actual constructor(
                 scopeCallback.invoke(it)
             }
         }
+
+    private val metrics: SentryMetrics = CocoaSentryMetricsAdapter()
+
+    actual fun metrics(): SentryMetrics = metrics
 
     actual fun logger(): SentryLogger = logger
 }

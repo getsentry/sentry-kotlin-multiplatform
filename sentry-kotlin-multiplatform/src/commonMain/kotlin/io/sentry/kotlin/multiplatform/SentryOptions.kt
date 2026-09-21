@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.log.SentryLogOptions
+import io.sentry.kotlin.multiplatform.metrics.SentryMetricOptions
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SdkVersion
 
@@ -255,6 +256,9 @@ public open class SentryOptions {
      * [ProGuard & DexGuard Documentation](https://docs.sentry.io/platforms/android/enhance-errors/proguard/)
      */
     public var proguardUuid: String? = null
+
+    /** Options for trace-connected metrics, enabled by default. */
+    public var metrics: SentryMetricOptions = SentryMetricOptions()
 
     /** Options for Sentry structured logs. */
     public var logs: SentryLogOptions = SentryLogOptions()

@@ -5,6 +5,7 @@ import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 import io.sentry.kotlin.multiplatform.log.updateFrom
+import io.sentry.kotlin.multiplatform.metrics.applyMetricsOptions
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit =
     {
@@ -38,6 +39,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.sampleRate = kmpOptions.sampleRate
     jvmOptions.tracesSampleRate = kmpOptions.tracesSampleRate
     jvmOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toJvmSentryLevel())
+    applyMetricsOptions(kmpOptions.metrics)
     jvmOptions.logs.isEnabled = kmpOptions.logs.enabled
     kmpOptions.logs.beforeSend?.let { kmpBeforeSend ->
         jvmOptions.logs.setBeforeSend { jvmLog ->

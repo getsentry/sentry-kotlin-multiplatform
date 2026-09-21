@@ -83,6 +83,7 @@ public final class io/sentry/kotlin/multiplatform/Sentry {
 	public final fun configureScope (Lkotlin/jvm/functions/Function1;)V
 	public final fun crash ()V
 	public final fun getLogger ()Lio/sentry/kotlin/multiplatform/log/SentryLogger;
+	public final fun getMetrics ()Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;
 	public final fun init (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)V
 	public final fun init (Lkotlin/jvm/functions/Function1;)V
 	public final fun initWithPlatformOptions (Lkotlin/jvm/functions/Function1;)V
@@ -260,6 +261,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getLogs ()Lio/sentry/kotlin/multiplatform/log/SentryLogOptions;
 	public final fun getMaxAttachmentSize ()J
 	public final fun getMaxBreadcrumbs ()I
+	public final fun getMetrics ()Lio/sentry/kotlin/multiplatform/metrics/SentryMetricOptions;
 	public final fun getOrgId ()Ljava/lang/String;
 	public final fun getProguardUuid ()Ljava/lang/String;
 	public final fun getRelease ()Ljava/lang/String;
@@ -295,6 +297,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setLogs (Lio/sentry/kotlin/multiplatform/log/SentryLogOptions;)V
 	public final fun setMaxAttachmentSize (J)V
 	public final fun setMaxBreadcrumbs (I)V
+	public final fun setMetrics (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricOptions;)V
 	public final fun setOrgId (Ljava/lang/String;)V
 	public final fun setProguardUuid (Ljava/lang/String;)V
 	public final fun setRelease (Ljava/lang/String;)V
@@ -429,6 +432,86 @@ public abstract interface class io/sentry/kotlin/multiplatform/log/SentryLogger 
 	public abstract fun warn (Ljava/lang/String;[Ljava/lang/Object;)V
 	public abstract fun warn (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun warn (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetric {
+	public fun <init> (DLjava/lang/String;Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue;Ljava/lang/String;Lio/sentry/kotlin/multiplatform/SentryAttributes;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (DLjava/lang/String;Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue;Ljava/lang/String;Lio/sentry/kotlin/multiplatform/SentryAttributes;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAttributes ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSpanId ()Ljava/lang/String;
+	public final fun getTimestamp ()D
+	public final fun getTraceId ()Ljava/lang/String;
+	public final fun getUnit ()Ljava/lang/String;
+	public final fun getValue ()Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue;
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setUnit (Ljava/lang/String;)V
+	public final fun setValue (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricBuilder {
+	public final fun attributes (Lio/sentry/kotlin/multiplatform/SentryAttributes;)V
+	public final fun attributes (Lkotlin/jvm/functions/Function1;)V
+	public final fun getAttributes ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricOptions {
+	public fun <init> ()V
+	public final fun getBeforeSend ()Lkotlin/jvm/functions/Function1;
+	public final fun getEnabled ()Z
+	public final fun setBeforeSend (Lkotlin/jvm/functions/Function1;)V
+	public final fun setEnabled (Z)V
+}
+
+public abstract class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter : io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
+	public fun <init> (J)V
+	public final fun component1 ()J
+	public final fun copy (J)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;JILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Distribution : io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Distribution;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Distribution;DILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Distribution;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Gauge : io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Gauge;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Gauge;DILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Gauge;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class io/sentry/kotlin/multiplatform/metrics/SentryMetrics {
+	public abstract fun count (Ljava/lang/String;JLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun count$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;Ljava/lang/String;JLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun distribution (Ljava/lang/String;DLjava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun distribution$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;Ljava/lang/String;DLjava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun gauge (Ljava/lang/String;DLjava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun gauge$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;Ljava/lang/String;DLjava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class io/sentry/kotlin/multiplatform/metrics/SentryMetrics$DefaultImpls {
+	public static synthetic fun count$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;Ljava/lang/String;JLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun distribution$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;Ljava/lang/String;DLjava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun gauge$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetrics;Ljava/lang/String;DLjava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public final class io/sentry/kotlin/multiplatform/protocol/Breadcrumb {

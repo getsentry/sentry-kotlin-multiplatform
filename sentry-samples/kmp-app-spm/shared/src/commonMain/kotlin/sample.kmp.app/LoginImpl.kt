@@ -17,6 +17,9 @@ object LoginImpl {
      *
      */
     fun login(username: String? = null) {
+        Sentry.metrics.count("login.attempt") {
+            attributes["method"] = "password"
+        }
         Sentry.logger.info("Login attempt for user: %s", username) {
             this["source"] = "login-form"
             this["platform"] = Platform().platform
