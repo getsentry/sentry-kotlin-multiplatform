@@ -32,7 +32,7 @@
 
 ### Dependencies
 
-- Bump Cocoa SDK from `8.58.2` to `9.28.0`.
+- Bump Cocoa SDK from `8.58.2` to `9.28.0` ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567)).
 - Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.9.1` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
   - Set Android `compileSdk` and sample app `targetSdk` to `36`, matching Sentry Android `8.41.0`.
 - Bump Java SDK from v8.41.0 to v8.57.0 ([#568](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/568))
