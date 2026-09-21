@@ -12,6 +12,7 @@ import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.nsexception.KOTLIN_CRASH_TAG
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
+import platform.Foundation.NSNumber
 import kotlin.native.OsFamily
 import kotlin.native.Platform
 import kotlin.test.AfterTest
@@ -34,12 +35,16 @@ class CocoaV9IntegrationTest {
         Sentry.close()
     }
 
-    private fun start(beforeSend: (SentryEvent?) -> SentryEvent? = { null }) {
+    private fun start(
+        sampleRate: Double = 1.0,
+        beforeSend: (SentryEvent?) -> SentryEvent? = { null },
+    ) {
         Sentry.initWithPlatformOptions {
             // Every test drops outgoing events. The local endpoint is also deliberately unreachable.
             it.setDsn("http://public@127.0.0.1:9/1")
             it.setEnableAutoSessionTracking(false)
             it.setEnableAppHangTracking(false)
+            it.setSampleRate(NSNumber(sampleRate))
             it.setBeforeSend(beforeSend)
         }
     }
@@ -140,6 +145,17 @@ class CocoaV9IntegrationTest {
         }
         assertNull(IllegalStateException("dropped").asSentryEnvelope())
         assertTrue(called)
+    }
+
+    @Test
+    fun `fatal envelope preparation honors sampling before beforeSend`() {
+        var called = false
+        start(sampleRate = 0.0) {
+            called = true
+            it
+        }
+        assertNull(IllegalStateException("sampled out").asSentryEnvelope())
+        assertFalse(called)
     }
 
     @Test
