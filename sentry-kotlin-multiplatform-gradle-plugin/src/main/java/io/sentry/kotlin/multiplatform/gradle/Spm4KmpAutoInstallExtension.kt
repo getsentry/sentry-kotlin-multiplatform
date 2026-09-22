@@ -29,11 +29,11 @@ abstract class Spm4KmpAutoInstallExtension
      */
     val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
-    /**
-     * Overrides default Sentry Cocoa version.
-     *
-     * Requires an exact version. Defaults to this plugin's Sentry Cocoa version.
-     */
-    val sentryCocoaVersion: Property<String> =
-        objects.property(String::class.java).convention(BuildConfig.SentryCocoaVersion)
-}
+        /**
+         * Overrides default Sentry Cocoa version.
+         *
+         * Requires an exact version. Defaults to this plugin's Sentry Cocoa version.
+         */
+        val sentryCocoaVersion: Property<String> =
+            objects.property(String::class.java).convention(BuildConfig.SentryCocoaVersion)
+    }

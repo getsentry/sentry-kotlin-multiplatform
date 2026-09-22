@@ -415,7 +415,7 @@ class SentryPluginTest {
         assertTrue(
             generateSequence<Throwable>(exception) { it.cause }.any {
                 it.message?.contains("Move the Sentry plugin before spm4Kmp in your plugins block.") == true
-            }
+            },
         )
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
@@ -603,9 +603,12 @@ class SentryPluginTest {
         "sentryCocoa,sentryCocoa",
         "sentryCocoa,SentryCocoa",
         "SentryCocoa,sentryCocoa",
-        "SentryCocoa,SentryCocoa"
+        "SentryCocoa,SentryCocoa",
     )
-    fun `global spm4Kmp config only covers targets that declare the cinterop`(configName: String, cinteropName: String) {
+    fun `global spm4Kmp config only covers targets that declare the cinterop`(
+        configName: String,
+        cinteropName: String,
+    ) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
