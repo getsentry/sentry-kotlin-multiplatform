@@ -57,7 +57,7 @@ class SentryPlugin : Plugin<Project> {
     internal fun executeConfiguration(
         project: Project,
         hostIsMac: Boolean = HostManager.hostIsMac,
-        spmAppliedFirst: Boolean = false
+        spmAppliedFirst: Boolean = false,
     ) {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
         val hasCocoapodsPlugin =
@@ -75,7 +75,7 @@ class SentryPlugin : Plugin<Project> {
                 if (spmAppliedFirst) {
                     throw GradleException(
                         "Sentry Cocoa auto-install requires the Sentry plugin to be applied before spm4Kmp. " +
-                            "Move the Sentry plugin before spm4Kmp in your plugins block."
+                            "Move the Sentry plugin before spm4Kmp in your plugins block.",
                     )
                 }
                 project.installSentryForSpm4Kmp(autoInstall, hostIsMac)

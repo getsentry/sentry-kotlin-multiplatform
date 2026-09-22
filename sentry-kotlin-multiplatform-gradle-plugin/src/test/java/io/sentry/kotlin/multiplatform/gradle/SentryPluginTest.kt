@@ -263,14 +263,14 @@ class SentryPluginTest {
         "true,true,true,true,false",
         "true,true,false,true,false",
         "true,false,true,false,true",
-        "false,true,true,false,false"
+        "false,true,true,false,false",
     )
     fun `SPM takes precedence over CocoaPods auto install`(
         globalEnabled: Boolean,
         spmEnabled: Boolean,
         podsEnabled: Boolean,
         expectSpm: Boolean,
-        expectPod: Boolean
+        expectPod: Boolean,
     ) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
@@ -309,7 +309,10 @@ class SentryPluginTest {
         val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         val manualPackage = packages.getByName("SentryCocoa_IosArm64")
         val manualPod = cocoaPods.pods.getByName("Sentry")
-        project.extensions.getByType(AutoInstallExtension::class.java).spm.enabled.set(spmEnabled)
+        project.extensions
+            .getByType(AutoInstallExtension::class.java)
+            .spm.enabled
+            .set(spmEnabled)
 
         project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
