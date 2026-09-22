@@ -7,6 +7,7 @@
 - Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))
 
   - Apply the Sentry Gradle plugin before spm4Kmp when SPM auto-install is enabled.
+  - SPM auto-install takes precedence over CocoaPods auto-install. Remove any manually declared Sentry pod when adopting SPM, or disable SPM auto-install to keep using CocoaPods.
 
 ### Internal
 

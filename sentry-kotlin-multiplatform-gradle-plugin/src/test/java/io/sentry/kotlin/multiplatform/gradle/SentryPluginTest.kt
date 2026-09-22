@@ -257,6 +257,67 @@ class SentryPluginTest {
         assertEquals("CocoaPods", project.externalCocoaFrameworkProvider())
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "true,true,true,true,false",
+        "true,true,false,true,false",
+        "true,false,true,false,true",
+        "false,true,true,false,false"
+    )
+    fun `SPM takes precedence over CocoaPods auto install`(
+        globalEnabled: Boolean,
+        spmEnabled: Boolean,
+        podsEnabled: Boolean,
+        expectSpm: Boolean,
+        expectPod: Boolean
+    ) {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kotlin.iosArm64()
+        val autoInstall = project.extensions.getByType(AutoInstallExtension::class.java)
+        autoInstall.enabled.set(globalEnabled)
+        autoInstall.spm.enabled.set(spmEnabled)
+        autoInstall.cocoapods.enabled.set(podsEnabled)
+
+        project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
+
+        val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        val pods = (kotlin as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java).pods
+        assertEquals(expectSpm, packages.findByName("sentryCocoa_IosArm64") != null)
+        assertEquals(expectPod, pods.findByName("Sentry") != null)
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `provider selection preserves manually configured pod and Swift package`(spmEnabled: Boolean) {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kotlin.iosArm64().swiftPackageConfig(cinteropName = "SentryCocoa") { }
+        val cocoaPods = (kotlin as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java)
+        cocoaPods.pod("Sentry") { version = "8.57.0" }
+        val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
+        val manualPackage = packages.getByName("SentryCocoa_IosArm64")
+        val manualPod = cocoaPods.pods.getByName("Sentry")
+        project.extensions.getByType(AutoInstallExtension::class.java).spm.enabled.set(spmEnabled)
+
+        project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
+
+        assertEquals(setOf("SentryCocoa_IosArm64"), packages.names)
+        assertEquals(manualPackage, packages.getByName("SentryCocoa_IosArm64"))
+        assertEquals(manualPod, cocoaPods.pods.getByName("Sentry"))
+        assertEquals("8.57.0", manualPod.version)
+    }
+
     @Test
     fun `default cocoa version is set in spm extension`() {
         val project = ProjectBuilder.builder().build()

@@ -50,26 +50,14 @@ class SentryPlugin : Plugin<Project> {
             val spmAppliedFirst = plugins.hasPlugin(SPM4KMP_PLUGIN_ID)
             // Register before spm4Kmp's afterEvaluate callback, after user configuration is complete.
             afterEvaluate {
-                val autoInstall = sentryExtension.autoInstall
-                if (
-                    plugins.hasPlugin(SPM4KMP_PLUGIN_ID) &&
-                    autoInstall.enabled.get() && autoInstall.spm.enabled.get()
-                ) {
-                    if (spmAppliedFirst) {
-                        throw GradleException(
-                            "Sentry Cocoa auto-install requires the Sentry plugin to be applied before spm4Kmp. " +
-                                "Move the Sentry plugin before spm4Kmp in your plugins block."
-                        )
-                    }
-                    project.installSentryForSpm4Kmp(autoInstall)
-                }
-                executeConfiguration(project)
+                executeConfiguration(project, spmAppliedFirst = spmAppliedFirst)
             }
         }
 
     internal fun executeConfiguration(
         project: Project,
-        hostIsMac: Boolean = HostManager.hostIsMac
+        hostIsMac: Boolean = HostManager.hostIsMac,
+        spmAppliedFirst: Boolean = false
     ) {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
         val hasCocoapodsPlugin =
@@ -82,7 +70,16 @@ class SentryPlugin : Plugin<Project> {
                 project.installSentryForKmp(autoInstall.commonMain)
             }
 
-            if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
+            val useSpmAutoInstall = project.plugins.hasPlugin(SPM4KMP_PLUGIN_ID) && autoInstall.spm.enabled.get()
+            if (useSpmAutoInstall) {
+                if (spmAppliedFirst) {
+                    throw GradleException(
+                        "Sentry Cocoa auto-install requires the Sentry plugin to be applied before spm4Kmp. " +
+                            "Move the Sentry plugin before spm4Kmp in your plugins block."
+                    )
+                }
+                project.installSentryForSpm4Kmp(autoInstall, hostIsMac)
+            } else if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
                 project.installSentryForCocoapods(autoInstall.cocoapods)
             }
         }
