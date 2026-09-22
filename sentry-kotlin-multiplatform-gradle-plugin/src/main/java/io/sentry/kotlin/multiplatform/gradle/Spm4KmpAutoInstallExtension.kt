@@ -19,8 +19,8 @@ constructor(
      * Adds Sentry Cocoa to every Apple target when spm4Kmp is applied and no user-defined Sentry
      * package config exists.
      *
-     * If spm4Kmp is applied before Sentry, set this before `kotlin { }`.
-     * Otherwise, it can be set anywhere in the build script.
+     * Requires the Sentry plugin to be applied before spm4Kmp unless disabled.
+     * Can be set anywhere in the build script.
      *
      * Defaults to true.
      */
@@ -28,8 +28,6 @@ constructor(
 
     /**
      * Overrides default Sentry Cocoa version.
-     *
-     * Follow the configuration ordering described in [enabled].
      *
      * Requires an exact version. Defaults to this plugin's Sentry Cocoa version.
      */

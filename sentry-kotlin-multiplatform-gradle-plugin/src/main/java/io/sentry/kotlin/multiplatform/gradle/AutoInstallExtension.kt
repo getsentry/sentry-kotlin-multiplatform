@@ -12,8 +12,7 @@ abstract class AutoInstallExtension @Inject constructor(project: Project) {
      * Enable auto-installation of the Sentry dependencies through [CocoapodsAutoInstallExtension],
      * [Spm4KmpAutoInstallExtension] and [SourceSetAutoInstallExtension].
      *
-     * If spm4Kmp is applied before Sentry, set this before `kotlin { }` to prevent Swift package
-     * registration. See [Spm4KmpAutoInstallExtension.enabled].
+     * Disabling this also removes the plugin ordering requirement for spm4Kmp auto-install.
      *
      * Defaults to true.
      */

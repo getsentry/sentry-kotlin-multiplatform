@@ -12,9 +12,6 @@ import java.net.URI
 internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
 private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
 
-/** Records registration so we can warn if auto-install is disabled afterwards. */
-internal const val SPM_AUTO_INSTALLED_MARKER = "io.sentry.kotlin.multiplatform.spmAutoInstalled"
-
 private fun Project.swiftPackageConfigNames(): Set<String>? {
     if (!plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
         return null
@@ -65,9 +62,6 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
 /**
  * Skip auto-install when a user config exists. spm4Kmp selects one configuration per cinterop
  * name, so adding defaults could replace the user's package settings.
- *
- * If spm4Kmp is applied first, configs inside target blocks are not visible yet.
- * Users declaring those configs must disable auto-install before `kotlin { }`.
  */
 internal fun Project.installSentryForSpm4Kmp(
     autoInstall: AutoInstallExtension,
@@ -79,14 +73,12 @@ internal fun Project.installSentryForSpm4Kmp(
         return
     }
 
-    val autoInstalledConfigNames = mutableSetOf<String>()
+    if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
+        return
+    }
 
-    kmpExtension.appleTargets().configureEach { target ->
-        if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
-            return@configureEach
-        }
-
-        val userDefinedConfigNames = sentrySwiftPackageConfigNames() - autoInstalledConfigNames
+    val userDefinedConfigNames = sentrySwiftPackageConfigNames()
+    kmpExtension.appleTargets().forEach { target ->
         if (userDefinedConfigNames.isNotEmpty()) {
             if (!isSentryConfiguredViaSpm4Kmp(target.name)) {
                 logger.warn(
@@ -101,11 +93,10 @@ internal fun Project.installSentryForSpm4Kmp(
                         "Skipping spm4Kmp auto installation."
                 )
             }
-            return@configureEach
+            return@forEach
         }
 
         val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
-        extensions.extraProperties.set(SPM_AUTO_INSTALLED_MARKER, true)
         target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
             dependency {
                 remotePackageVersion(
@@ -119,7 +110,6 @@ internal fun Project.installSentryForSpm4Kmp(
                 )
             }
         }
-        autoInstalledConfigNames += spm4KmpConfigName(target.name)
         logger.lifecycle(
             "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}."
         )

@@ -19,7 +19,6 @@ internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
 internal const val SPM4KMP_AUTO_INSTALL_EXTENSION_NAME = "spm"
 internal const val COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME = "commonMain"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
-internal const val KOTLIN_MULTIPLATFORM_PLUGIN_ID = "org.jetbrains.kotlin.multiplatform"
 internal const val SPM4KMP_PLUGIN_ID = "io.github.frankois944.spmForKmp"
 internal const val SPM4KMP_SWIFT_PACKAGE_CONFIG_EXTENSION_NAME = "swiftPackageConfig"
 
@@ -48,22 +47,22 @@ class SentryPlugin : Plugin<Project> {
                 sentryExtension.autoInstall.commonMain
             )
 
-            // spm4Kmp reads package configs in afterEvaluate; callbacks run in registration order.
-            // If Sentry is applied first, wait until the build script has configured all targets.
-            // Otherwise, register packages as targets are created, before spm4Kmp reads them.
-            if (plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
-                project.plugins.withId(KOTLIN_MULTIPLATFORM_PLUGIN_ID) {
-                    project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
-                }
-            } else {
-                afterEvaluate {
-                    if (plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
-                        project.installSentryForSpm4Kmp(sentryExtension.autoInstall)
-                    }
-                }
-            }
-
+            val spmAppliedFirst = plugins.hasPlugin(SPM4KMP_PLUGIN_ID)
+            // Register before spm4Kmp's afterEvaluate callback, after user configuration is complete.
             afterEvaluate {
+                val autoInstall = sentryExtension.autoInstall
+                if (
+                    plugins.hasPlugin(SPM4KMP_PLUGIN_ID) &&
+                    autoInstall.enabled.get() && autoInstall.spm.enabled.get()
+                ) {
+                    if (spmAppliedFirst) {
+                        throw GradleException(
+                            "Sentry Cocoa auto-install requires the Sentry plugin to be applied before spm4Kmp. " +
+                                "Move the Sentry plugin before spm4Kmp in your plugins block."
+                        )
+                    }
+                    project.installSentryForSpm4Kmp(autoInstall)
+                }
                 executeConfiguration(project)
             }
         }
@@ -88,29 +87,11 @@ class SentryPlugin : Plugin<Project> {
             }
         }
 
-        warnOnLateSpmAutoInstallOptOut(project, sentryExtension.autoInstall)
-
         maybeLinkCocoaFramework(
             project,
             externalProvider = project.externalCocoaFrameworkProvider(),
             hostIsMac
         )
-    }
-
-    private fun warnOnLateSpmAutoInstallOptOut(
-        project: Project,
-        autoInstall: AutoInstallExtension
-    ) {
-        val spmAutoInstalled = project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER)
-        val spmOptedOut = !autoInstall.enabled.get() || !autoInstall.spm.enabled.get()
-        if (spmAutoInstalled && spmOptedOut) {
-            project.logger.warn(
-                "The Sentry Cocoa Swift package was already registered with spm4Kmp before the " +
-                    "auto-install was disabled, because the spm4Kmp plugin is applied before the " +
-                    "Sentry plugin. Apply the Sentry plugin first, or place the sentryKmp { } " +
-                    "block before the kotlin { } block, for the opt-out to take effect."
-            )
-        }
     }
 
     companion object {
