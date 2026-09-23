@@ -2,6 +2,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.gradle.api.attributes.java.TargetJvmVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.zip.ZipFile
 
 plugins {
     alias(libs.plugins.kotlin)
@@ -79,13 +80,44 @@ val sep: String = File.separator
 distributions {
     main {
         contents {
-            from("build${sep}libs")
+            from("build${sep}libs") {
+                // Craft expects Maven filenames, while newer Vanniktech versions include the publication name.
+                rename { fileName -> fileName.replace("-pluginMaven-javadoc-", "-") }
+            }
             from("build${sep}publications${sep}pluginMaven")
         }
     }
     create("sentryPluginMarker") {
         contents {
             from("build${sep}publications${sep}sentryPluginPluginMarkerMaven")
+        }
+    }
+}
+
+tasks.register("validateDistributions") {
+    dependsOn("distZip", "sentryPluginMarkerDistZip")
+    doLast {
+        val artifactName = "${project.name}-${project.version}"
+        val archive =
+            layout.buildDirectory
+                .file("distributions/$artifactName.zip")
+                .get()
+                .asFile
+        val requiredFiles =
+            listOf(
+                "$artifactName.jar",
+                "$artifactName-sources.jar",
+                "$artifactName-javadoc.jar",
+                "pom-default.xml",
+                "module.json",
+            )
+        ZipFile(archive).use { zip ->
+            requiredFiles.forEach { fileName ->
+                val entry = zip.getEntry("$artifactName/$fileName")
+                require(entry != null && entry.size > 0) {
+                    "Missing or empty $fileName in ${archive.name}"
+                }
+            }
         }
     }
 }
