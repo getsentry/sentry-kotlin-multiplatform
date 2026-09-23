@@ -98,14 +98,19 @@ tasks.register("validateDistributions") {
     dependsOn("distZip", "sentryPluginMarkerDistZip")
     doLast {
         val artifactName = "${project.name}-${project.version}"
-        val archive = layout.buildDirectory.file("distributions/$artifactName.zip").get().asFile
-        val requiredFiles = listOf(
-            "$artifactName.jar",
-            "$artifactName-sources.jar",
-            "$artifactName-javadoc.jar",
-            "pom-default.xml",
-            "module.json"
-        )
+        val archive =
+            layout.buildDirectory
+                .file("distributions/$artifactName.zip")
+                .get()
+                .asFile
+        val requiredFiles =
+            listOf(
+                "$artifactName.jar",
+                "$artifactName-sources.jar",
+                "$artifactName-javadoc.jar",
+                "pom-default.xml",
+                "module.json",
+            )
         ZipFile(archive).use { zip ->
             requiredFiles.forEach { fileName ->
                 val entry = zip.getEntry("$artifactName/$fileName")
