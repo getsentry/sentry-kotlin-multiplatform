@@ -446,12 +446,6 @@ public final class io/sentry/kotlin/multiplatform/metrics/SentryMetric {
 	public final fun setValue (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue;)V
 }
 
-public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricBuilder {
-	public final fun attributes (Lio/sentry/kotlin/multiplatform/SentryAttributes;)V
-	public final fun attributes (Lkotlin/jvm/functions/Function1;)V
-	public final fun getAttributes ()Lio/sentry/kotlin/multiplatform/SentryAttributes;
-}
-
 public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricOptions {
 	public fun <init> ()V
 	public final fun getBeforeSend ()Lkotlin/jvm/functions/Function1;

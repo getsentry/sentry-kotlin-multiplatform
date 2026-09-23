@@ -54,10 +54,10 @@ class CocoaSentryMetricsTest {
         metrics.count("before init")
         start(callback = callback)
         metrics.count("count", 3) {
-            attributes["bool"] = true
-            attributes["integer"] = 42L
-            attributes["double"] = 1.5
-            attributes["string"] =
+            this["bool"] = true
+            this["integer"] = 42L
+            this["double"] = 1.5
+            this["string"] =
                 "text"
         }
         metrics.gauge("gauge", -2.0, "connection")
@@ -100,7 +100,7 @@ class CocoaSentryMetricsTest {
                 null
             }
         }
-        Sentry.metrics.count("original") { attributes["remove"] = "old" }
+        Sentry.metrics.count("original") { this["remove"] = "old" }
         val native = assertNotNull(captured)
         val timestamp = native.timestamp()
         val traceId = native.traceId()
@@ -174,8 +174,8 @@ class CocoaSentryMetricsTest {
         }
         Sentry.metrics.count("large", MAX_EXACT_COUNTER)
         Sentry.metrics.count("native boundary", UInt.MAX_VALUE.toLong()) {
-            attributes["large"] = Long.MAX_VALUE
-            attributes["small"] = 42L
+            this["large"] = Long.MAX_VALUE
+            this["small"] = 42L
         }
         assertEquals(if (is32Bit) 1 else 2, captured.size)
         assertEquals(SentryMetricValue.Counter(UInt.MAX_VALUE.toLong()), captured.last().value)

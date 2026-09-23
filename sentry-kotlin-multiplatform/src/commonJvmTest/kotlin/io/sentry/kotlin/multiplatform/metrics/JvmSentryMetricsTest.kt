@@ -125,10 +125,10 @@ class JvmSentryMetricsTest {
         }
         start(true)
         metrics.count("count", 3) {
-            attributes["bool"] = true
-            attributes["integer"] = 42L
-            attributes["double"] = 1.5
-            attributes["string"] =
+            this["bool"] = true
+            this["integer"] = 42L
+            this["double"] = 1.5
+            this["string"] =
                 "text"
         }
         metrics.gauge("gauge", -2.0, "connection")
@@ -203,7 +203,7 @@ class JvmSentryMetricsTest {
         NativeSentry.init(options)
         val transaction = NativeSentry.startTransaction("metrics", "test")
         NativeSentry.configureScope { it.setTransaction(transaction) }
-        Sentry.metrics.count("count", 2) { attributes["secret"] = "remove" }
+        Sentry.metrics.count("count", 2) { this["secret"] = "remove" }
         Sentry.metrics.gauge("gauge", 4.5, "custom")
         Sentry.metrics.distribution("distribution", 3.0, "millisecond")
         Sentry.metrics.count("drop")

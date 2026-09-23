@@ -6,7 +6,7 @@ internal abstract class BaseSentryMetrics : SentryMetrics {
     override fun count(
         name: String,
         value: Long,
-        configure: SentryMetricBuilder.() -> Unit,
+        configure: SentryAttributes.() -> Unit,
     ) {
         record(name, SentryMetricValue.Counter(value), null, configure)
     }
@@ -15,7 +15,7 @@ internal abstract class BaseSentryMetrics : SentryMetrics {
         name: String,
         value: Double,
         unit: String?,
-        configure: SentryMetricBuilder.() -> Unit,
+        configure: SentryAttributes.() -> Unit,
     ) {
         record(name, SentryMetricValue.Gauge(value), unit, configure)
     }
@@ -24,7 +24,7 @@ internal abstract class BaseSentryMetrics : SentryMetrics {
         name: String,
         value: Double,
         unit: String?,
-        configure: SentryMetricBuilder.() -> Unit,
+        configure: SentryAttributes.() -> Unit,
     ) {
         record(name, SentryMetricValue.Distribution(value), unit, configure)
     }
@@ -33,11 +33,11 @@ internal abstract class BaseSentryMetrics : SentryMetrics {
         name: String,
         value: SentryMetricValue,
         unit: String?,
-        configure: SentryMetricBuilder.() -> Unit,
+        configure: SentryAttributes.() -> Unit,
     ) {
         if (!value.isValid()) return
-        val builder = SentryMetricBuilder().apply(configure)
-        capture(name, value, unit, builder.attributes)
+        val attributes = SentryAttributes.empty().apply(configure)
+        capture(name, value, unit, attributes)
     }
 
     protected abstract fun capture(

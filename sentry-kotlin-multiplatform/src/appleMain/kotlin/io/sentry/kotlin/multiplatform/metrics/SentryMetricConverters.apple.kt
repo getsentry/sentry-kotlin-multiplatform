@@ -50,12 +50,15 @@ internal fun CocoaSentryOptions.applyMetricsOptions(options: SentryMetricOptions
         this as objcnames.classes.SentryOptions,
         options.beforeSend?.let { callback ->
             { nativeMetric ->
-                nativeMetric?.toKmpMetric()?.let { metric ->
-                    applyMetricCallback(callback, metric)?.let { result ->
-                        nativeMetric.takeIf { it.updateFrom(result) }
-                    }
-                }
+                nativeMetric?.applyCallback(callback)
             }
         },
     )
+}
+
+private fun SentryKMPMetric.applyCallback(callback: (SentryMetric) -> SentryMetric?): SentryKMPMetric? {
+    val metric = toKmpMetric() ?: return null
+    val result = applyMetricCallback(callback, metric) ?: return null
+    if (!updateFrom(result)) return null
+    return this
 }

@@ -1,11 +1,9 @@
 package io.sentry.kotlin.multiplatform.metrics
 
-import io.sentry.SentryAttributeType
-import io.sentry.SentryLogEventAttributeValue
 import io.sentry.SentryMetricsEvent
 import io.sentry.kotlin.multiplatform.JvmSentryOptions
-import io.sentry.kotlin.multiplatform.SentryAttributeValue
-import io.sentry.kotlin.multiplatform.SentryAttributes
+import io.sentry.kotlin.multiplatform.toKmpSentryAttributes
+import io.sentry.kotlin.multiplatform.updateJvmAttributes
 
 internal fun SentryMetricsEvent.toKmpMetric(): SentryMetric? {
     val metricValue =
@@ -19,21 +17,13 @@ internal fun SentryMetricsEvent.toKmpMetric(): SentryMetric? {
             "distribution" -> SentryMetricValue.Distribution(value)
             else -> return null
         }
-    val converted = SentryAttributes.empty()
-    attributes?.forEach { (key, attribute) ->
-        when (attribute.type) {
-            "string" -> converted[key] = attribute.value as String
-            "boolean" -> converted[key] = attribute.value as Boolean
-            "integer" -> converted[key] = (attribute.value as Number).toLong()
-            "double" -> converted[key] = (attribute.value as Number).toDouble()
-        }
-    }
+    val converted = attributes.toKmpSentryAttributes()
     return SentryMetric(timestamp, name, metricValue, unit, converted, traceId.toString(), spanId?.toString())
 }
 
 internal fun SentryMetricsEvent.updateFrom(
     metric: SentryMetric,
-    originalAttributes: SentryAttributes,
+    originalKeys: Set<String>,
 ) {
     name = metric.name
     unit = metric.unit
@@ -51,17 +41,7 @@ internal fun SentryMetricsEvent.updateFrom(
             value = number.value
         }
     }
-    (originalAttributes.keys - metric.attributes.keys).forEach { attributes?.remove(it) }
-    metric.attributes.forEach { (key, attribute) ->
-        val nativeType =
-            when (attribute) {
-                is SentryAttributeValue.StringValue -> SentryAttributeType.STRING
-                is SentryAttributeValue.BooleanValue -> SentryAttributeType.BOOLEAN
-                is SentryAttributeValue.LongValue -> SentryAttributeType.INTEGER
-                is SentryAttributeValue.DoubleValue -> SentryAttributeType.DOUBLE
-            }
-        setAttribute(key, SentryLogEventAttributeValue(nativeType, attribute.value))
-    }
+    updateJvmAttributes(metric.attributes, originalKeys, { attributes?.remove(it) }, ::setAttribute)
 }
 
 internal fun JvmSentryOptions.applyMetricsOptions(options: SentryMetricOptions) {
@@ -69,14 +49,16 @@ internal fun JvmSentryOptions.applyMetricsOptions(options: SentryMetricOptions) 
     this.metrics.setBeforeSend(
         options.beforeSend?.let { callback ->
             io.sentry.SentryOptions.Metrics.BeforeSendMetricCallback { nativeMetric, _ ->
-                nativeMetric.toKmpMetric()?.let { metric ->
-                    val originalAttributes = metric.attributes.copy()
-                    applyMetricCallback(callback, metric)?.let { result ->
-                        nativeMetric.updateFrom(result, originalAttributes)
-                        nativeMetric
-                    }
-                }
+                nativeMetric.applyCallback(callback)
             }
         },
     )
+}
+
+private fun SentryMetricsEvent.applyCallback(callback: (SentryMetric) -> SentryMetric?): SentryMetricsEvent? {
+    val metric = toKmpMetric() ?: return null
+    val originalKeys = metric.attributes.keys.toSet()
+    val result = applyMetricCallback(callback, metric) ?: return null
+    updateFrom(result, originalKeys)
+    return this
 }

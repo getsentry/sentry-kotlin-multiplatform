@@ -23,8 +23,8 @@ class SentryMetricsTest {
     @Test
     fun `records all operations with independent attributes and custom units`() {
         val metrics = Recorder()
-        metrics.count("count") { attributes["count"] = 42L }
-        metrics.gauge("gauge", -2.5, "connection") { attributes { this["enabled"] = true } }
+        metrics.count("count") { this["count"] = 42L }
+        metrics.gauge("gauge", -2.5, "connection") { this["enabled"] = true }
         metrics.distribution("distribution", 0.5, "millisecond")
         assertEquals(
             listOf(
@@ -46,7 +46,7 @@ class SentryMetricsTest {
     @Test
     fun `invalid numbers are ignored before evaluating the builder`() {
         val metrics = Recorder()
-        val unexpected: SentryMetricBuilder.() -> Unit = { error("must not build invalid metric") }
+        val unexpected: SentryAttributes.() -> Unit = { error("must not build invalid metric") }
         metrics.count("negative", -1, unexpected)
         metrics.count("imprecise", MAX_EXACT_COUNTER + 1, unexpected)
         metrics.count("overflow", Long.MAX_VALUE, unexpected)

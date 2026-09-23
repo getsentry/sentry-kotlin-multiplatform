@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform.metrics
 
 import io.sentry.kotlin.multiplatform.SentryAttributes
-import io.sentry.kotlin.multiplatform.log.toJvmSentryAttributes
+import io.sentry.kotlin.multiplatform.toJvmSentryAttributes
 import io.sentry.metrics.IMetricsApi
 import io.sentry.metrics.SentryMetricsParameters
 

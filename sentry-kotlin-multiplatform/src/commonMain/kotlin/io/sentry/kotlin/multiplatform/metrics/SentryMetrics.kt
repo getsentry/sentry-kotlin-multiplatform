@@ -1,6 +1,13 @@
 package io.sentry.kotlin.multiplatform.metrics
 
-/** Records trace-connected metrics using the native SDK. Unsupported platforms are no-ops. */
+import io.sentry.kotlin.multiplatform.SentryAttributes
+
+/**
+ * Records trace-connected metrics using the native SDK. Unsupported platforms are no-ops.
+ *
+ * Each call can configure scalar attributes, overriding attributes inherited from native scope.
+ * On 32-bit watchOS, integer attributes outside the signed 32-bit range are omitted.
+ */
 public interface SentryMetrics {
     /**
      * Records an integer increment, defaulting to one. Values outside 0..2^53 are ignored
@@ -10,7 +17,7 @@ public interface SentryMetrics {
     public fun count(
         name: String,
         value: Long = 1,
-        configure: SentryMetricBuilder.() -> Unit = {},
+        configure: SentryAttributes.() -> Unit = {},
     )
 
     /** Records a finite current value. NaN and infinities are ignored. Units may be custom strings. */
@@ -18,7 +25,7 @@ public interface SentryMetrics {
         name: String,
         value: Double,
         unit: String? = null,
-        configure: SentryMetricBuilder.() -> Unit = {},
+        configure: SentryAttributes.() -> Unit = {},
     )
 
     /** Records a finite distribution sample. NaN and infinities are ignored. Units may be custom strings. */
@@ -26,6 +33,6 @@ public interface SentryMetrics {
         name: String,
         value: Double,
         unit: String? = null,
-        configure: SentryMetricBuilder.() -> Unit = {},
+        configure: SentryAttributes.() -> Unit = {},
     )
 }
