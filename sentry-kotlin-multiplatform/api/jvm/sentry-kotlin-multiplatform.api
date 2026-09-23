@@ -249,6 +249,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getEnableAppHangTracking ()Z
 	public final fun getEnableAutoSessionTracking ()Z
 	public final fun getEnableCaptureFailedRequests ()Z
+	public final fun getEnablePropagateTraceparent ()Z
 	public final fun getEnableUnhandledCppExceptionMonitoring ()Z
 	public final fun getEnableWatchdogTerminationTracking ()Z
 	public final fun getEnvironment ()Ljava/lang/String;
@@ -286,6 +287,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setEnableAppHangTracking (Z)V
 	public final fun setEnableAutoSessionTracking (Z)V
 	public final fun setEnableCaptureFailedRequests (Z)V
+	public final fun setEnablePropagateTraceparent (Z)V
 	public final fun setEnableUnhandledCppExceptionMonitoring (Z)V
 	public final fun setEnableWatchdogTerminationTracking (Z)V
 	public final fun setEnvironment (Ljava/lang/String;)V

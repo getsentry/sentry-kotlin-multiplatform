@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
-class StrictTraceContinuationOptionsTest {
+class TracePropagationOptionsTest {
     @Test
     fun `shared options forward strict continuation and organization ID`() {
         for (strict in listOf(false, true)) {
@@ -26,10 +26,24 @@ class StrictTraceContinuationOptionsTest {
     }
 
     @Test
+    fun `shared options forward traceparent propagation`() {
+        for (enabled in listOf(false, true)) {
+            val nativeOptions = JvmSentryOptions()
+            SentryOptions()
+                .apply { enablePropagateTraceparent = enabled }
+                .toJvmSentryOptionsCallback()
+                .invoke(nativeOptions)
+
+            assertEquals(enabled, nativeOptions.isPropagateTraceparent)
+        }
+    }
+
+    @Test
     fun `shared defaults reset previously configured native options`() {
         val nativeOptions = JvmSentryOptions()
         SentryOptions()
             .apply {
+                enablePropagateTraceparent = true
                 strictTraceContinuation = true
                 orgId = "123456"
             }.toJvmSentryOptionsCallback()
@@ -38,6 +52,7 @@ class StrictTraceContinuationOptionsTest {
         SentryOptions().toJvmSentryOptionsCallback().invoke(nativeOptions)
 
         assertFalse(nativeOptions.isStrictTraceContinuation)
+        assertFalse(nativeOptions.isPropagateTraceparent)
         assertNull(nativeOptions.orgId)
     }
 }

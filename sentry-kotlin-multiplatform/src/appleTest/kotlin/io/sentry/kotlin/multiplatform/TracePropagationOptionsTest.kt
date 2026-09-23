@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
-class StrictTraceContinuationOptionsTest {
+class TracePropagationOptionsTest {
     @Test
     fun `shared options forward strict continuation and organization ID`() {
         for (strict in listOf(false, true)) {
@@ -26,10 +26,24 @@ class StrictTraceContinuationOptionsTest {
     }
 
     @Test
+    fun `shared options forward traceparent propagation`() {
+        for (enabled in listOf(false, true)) {
+            val nativeOptions = CocoaSentryOptions()
+            SentryOptions()
+                .apply { enablePropagateTraceparent = enabled }
+                .toCocoaOptionsConfiguration()
+                .invoke(nativeOptions)
+
+            assertEquals(enabled, nativeOptions.enablePropagateTraceparent())
+        }
+    }
+
+    @Test
     fun `shared defaults reset previously configured native options`() {
         val nativeOptions = CocoaSentryOptions()
         SentryOptions()
             .apply {
+                enablePropagateTraceparent = true
                 strictTraceContinuation = true
                 orgId = "123456"
             }.toCocoaOptionsConfiguration()
@@ -38,6 +52,7 @@ class StrictTraceContinuationOptionsTest {
         SentryOptions().toCocoaOptionsConfiguration().invoke(nativeOptions)
 
         assertFalse(nativeOptions.strictTraceContinuation())
+        assertFalse(nativeOptions.enablePropagateTraceparent())
         assertNull(nativeOptions.orgId())
     }
 }

@@ -25,6 +25,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     jvmOptions.dsn = kmpOptions.dsn
     jvmOptions.isStrictTraceContinuation = kmpOptions.strictTraceContinuation
     jvmOptions.orgId = kmpOptions.orgId
+    jvmOptions.isPropagateTraceparent = kmpOptions.enablePropagateTraceparent
     jvmOptions.isAttachThreads = kmpOptions.attachThreads
     jvmOptions.isAttachStacktrace = kmpOptions.attachStackTrace
     jvmOptions.dist = kmpOptions.dist

@@ -35,6 +35,12 @@ public open class SentryOptions {
     public var orgId: String? = null
 
     /**
+     * Enables W3C `traceparent` headers on outgoing requests instrumented by the platform SDK.
+     * Defaults to false. Native trace propagation target restrictions still apply.
+     */
+    public var enablePropagateTraceparent: Boolean = false
+
+    /**
      * When enabled, stack traces are automatically attached to all threads logged. Stack traces are
      * always attached to exceptions but when this is set stack traces are also sent with threads. If
      * no threads are logged, we log the current thread automatically.
