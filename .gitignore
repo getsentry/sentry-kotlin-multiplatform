@@ -17,6 +17,10 @@ local.properties
 
 Pods/
 
+# spm4Kmp generated sources/packages (regenerated on every build)
+**/exportedSentryCocoa/
+**/src/swift/
+
 .project
 .settings
 .classpath

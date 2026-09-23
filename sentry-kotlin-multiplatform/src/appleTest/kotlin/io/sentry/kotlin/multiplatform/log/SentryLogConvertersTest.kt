@@ -1,7 +1,9 @@
 package io.sentry.kotlin.multiplatform.log
 
+import kotlinx.cinterop.convert
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import cocoapods.Sentry.SentryLogLevel as CocoaSentryLogLevel
 
 /** Tests for Apple/Cocoa log level conversion functions in SentryLogConverters.apple.kt. */
 class SentryLogConvertersTest {
@@ -10,7 +12,7 @@ class SentryLogConvertersTest {
         val kmp = SentryLogLevel.TRACE
         val cocoa = kmp.toCocoaSentryLogLevel()
 
-        assertEquals(0L, cocoa)
+        assertEquals(0, cocoa.convert<Int>())
         assertEquals(kmp, cocoa.toKmpSentryLogLevel())
     }
 
@@ -19,7 +21,7 @@ class SentryLogConvertersTest {
         val kmp = SentryLogLevel.DEBUG
         val cocoa = kmp.toCocoaSentryLogLevel()
 
-        assertEquals(1L, cocoa)
+        assertEquals(1, cocoa.convert<Int>())
         assertEquals(kmp, cocoa.toKmpSentryLogLevel())
     }
 
@@ -28,7 +30,7 @@ class SentryLogConvertersTest {
         val kmp = SentryLogLevel.INFO
         val cocoa = kmp.toCocoaSentryLogLevel()
 
-        assertEquals(2L, cocoa)
+        assertEquals(2, cocoa.convert<Int>())
         assertEquals(kmp, cocoa.toKmpSentryLogLevel())
     }
 
@@ -37,7 +39,7 @@ class SentryLogConvertersTest {
         val kmp = SentryLogLevel.WARN
         val cocoa = kmp.toCocoaSentryLogLevel()
 
-        assertEquals(3L, cocoa)
+        assertEquals(3, cocoa.convert<Int>())
         assertEquals(kmp, cocoa.toKmpSentryLogLevel())
     }
 
@@ -46,7 +48,7 @@ class SentryLogConvertersTest {
         val kmp = SentryLogLevel.ERROR
         val cocoa = kmp.toCocoaSentryLogLevel()
 
-        assertEquals(4L, cocoa)
+        assertEquals(4, cocoa.convert<Int>())
         assertEquals(kmp, cocoa.toKmpSentryLogLevel())
     }
 
@@ -55,13 +57,13 @@ class SentryLogConvertersTest {
         val kmp = SentryLogLevel.FATAL
         val cocoa = kmp.toCocoaSentryLogLevel()
 
-        assertEquals(5L, cocoa)
+        assertEquals(5, cocoa.convert<Int>())
         assertEquals(kmp, cocoa.toKmpSentryLogLevel())
     }
 
     @Test
     fun `unknown Cocoa value defaults to DEBUG`() {
-        val unknownValue = 99L
+        val unknownValue: CocoaSentryLogLevel = 99.convert()
         val kmpLevel = unknownValue.toKmpSentryLogLevel()
 
         assertEquals(SentryLogLevel.DEBUG, kmpLevel)

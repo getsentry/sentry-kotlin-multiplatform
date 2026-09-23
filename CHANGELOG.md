@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))
+
+  - Apply the Sentry Gradle plugin before spm4Kmp when SPM auto-install is enabled.
+  - SPM auto-install takes precedence over CocoaPods auto-install. Remove any manually declared Sentry pod when adopting SPM, or disable SPM auto-install to keep using CocoaPods.
+
+### Internal
+
+- Build the Apple SDK against Sentry Cocoa via SwiftPM (spm4Kmp) instead of the Kotlin CocoaPods plugin ([#557](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/557))
+  - The published klibs keep the `cocoapods.Sentry` import prefix, so no changes are required for consumers
+
+### Dependencies
+
+- Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.9.1` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
+  - Set Android `compileSdk` and sample app `targetSdk` to `36`, matching Sentry Android `8.41.0`.
+- Bump Java SDK from v8.41.0 to v8.57.0 ([#568](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/568))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/8.57.0/CHANGELOG.md#8570)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.41.0...8.57.0)
+
 ## 0.27.0
 
 ### Features
