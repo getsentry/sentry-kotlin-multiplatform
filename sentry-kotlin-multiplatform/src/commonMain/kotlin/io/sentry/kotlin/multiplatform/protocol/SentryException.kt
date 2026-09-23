@@ -14,5 +14,5 @@ public data class SentryException(
     /** The optional module, or package which the exception type lives in. */
     val module: String? = null,
     /** An optional value that refers to a thread. */
-    val threadId: Long? = null
+    val threadId: Long? = null,
 )

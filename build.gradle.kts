@@ -1,6 +1,7 @@
 import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.zip.ZipFile
 
@@ -111,7 +112,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             "wasm-js",
             "linuxx64",
             "linuxarm64",
-            "mingwx64"
+            "mingwx64",
         )
 
     val artifactPaths =
@@ -120,7 +121,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             addAll(
                 platforms.map { platform ->
                     distributionDir.resolve("$baseFileName-$platform-$version.zip")
-                }
+                },
             )
         }
 
@@ -129,7 +130,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             "javadoc",
             "sources",
             "module",
-            "pom-default.xml"
+            "pom-default.xml",
         )
 
     artifactPaths.forEach { artifactFile ->
@@ -166,7 +167,7 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                         listOf(
                             "cinterop-Sentry.klib",
                             "cinterop-Sentry.Internal.klib",
-                            "cinterop-SentryCocoa.klib"
+                            "cinterop-SentryCocoa.klib",
                         )
                     val klibFiles = entries.filter { it.endsWith(".klib") }
                     val missingKlibs =
@@ -175,13 +176,13 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                         }
                     if (missingKlibs.isNotEmpty()) {
                         throw GradleException(
-                            "❌ Missing klib files $missingKlibs in ${artifactFile.name}"
+                            "❌ Missing klib files $missingKlibs in ${artifactFile.name}",
                         )
                     }
                     val expectedNumOfKlibFiles = expectedCinteropKlibs.size + 1
                     if (klibFiles.size != expectedNumOfKlibFiles) {
                         throw GradleException(
-                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found ${klibFiles.size}"
+                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found ${klibFiles.size}",
                         )
                     } else {
                         println("✅ Found $expectedNumOfKlibFiles klib files in ${artifactFile.name}")
@@ -213,35 +214,18 @@ subprojects {
     }
 }
 
-// Preserve existing formatting until the migration in #561.
-val ktlintEditorConfigOverride =
-    mapOf(
-        "ktlint_code_style" to "intellij_idea",
-        "ij_kotlin_allow_trailing_comma" to "false",
-        "ij_kotlin_allow_trailing_comma_on_call_site" to "false",
-        "ktlint_standard_argument-list-wrapping" to "disabled",
-        "ktlint_standard_chain-method-continuation" to "disabled",
-        "ktlint_standard_class-signature" to "disabled",
-        "ktlint_standard_condition-wrapping" to "disabled",
-        "ktlint_standard_function-expression-body" to "disabled",
-        "ktlint_standard_function-signature" to "disabled",
-        "ktlint_standard_multiline-expression-wrapping" to "disabled",
-        "ktlint_standard_function-naming" to "disabled",
-        "ktlint_standard_property-naming" to "disabled"
-    )
-
 spotless {
     lineEndings = LineEnding.UNIX
 
     kotlin {
         target("**/*.kt")
         targetExclude("**/generated/**/*.kt")
-        ktlint().editorConfigOverride(ktlintEditorConfigOverride)
+        ktlint()
     }
     kotlinGradle {
         target("**/*.kts")
         targetExclude("**/generated/**/*.kts")
-        ktlint().editorConfigOverride(ktlintEditorConfigOverride)
+        ktlint()
     }
 }
 
@@ -256,6 +240,8 @@ detekt {
 
 fun SourceTask.detektExcludes() {
     exclude("**/build/**")
+    exclude("**/.kotlin/**")
+    exclude("**/.gradle/**")
     exclude("**/*.kts")
     exclude("**/buildSrc/**")
     exclude("**/*Test*/**")
@@ -267,6 +253,11 @@ tasks.withType<Detekt>().configureEach {
     reports {
         html.required.set(true)
     }
+    setSource(files(project.projectDir))
+    detektExcludes()
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
     setSource(files(project.projectDir))
     detektExcludes()
 }

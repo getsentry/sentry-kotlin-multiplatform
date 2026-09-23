@@ -61,11 +61,17 @@ class SentryIntegrationTest : BaseSentryTest() {
         assertEquals(2, capturedEvents.size)
 
         val event = capturedEvents[0]
-        event.exceptions.first().type?.let { assertTrue(it.contains("RuntimeException")) }
+        event.exceptions
+            .first()
+            .type
+            ?.let { assertTrue(it.contains("RuntimeException")) }
         assertEquals("test", event.exceptions.first().value)
 
         val event2 = capturedEvents[1]
-        event2.exceptions.first().type?.let { assertTrue(it.contains("RuntimeException")) }
+        event2.exceptions
+            .first()
+            .type
+            ?.let { assertTrue(it.contains("RuntimeException")) }
         assertEquals("test2", event2.exceptions.first().value)
     }
 
@@ -213,12 +219,13 @@ class SentryIntegrationTest : BaseSentryTest() {
         }
 
         Sentry.configureScope {
-            it.user = User().apply {
-                this.email = expectedEmail
-                this.id = expectedId
-                this.ipAddress = expectedIpAddress
-                this.username = expectedUsername
-            }
+            it.user =
+                User().apply {
+                    this.email = expectedEmail
+                    this.id = expectedId
+                    this.ipAddress = expectedIpAddress
+                    this.username = expectedUsername
+                }
         }
 
         Sentry.captureException(RuntimeException("test"))
@@ -244,59 +251,60 @@ class SentryIntegrationTest : BaseSentryTest() {
     }
 
     @Test
-    fun `global scope sets context correctly with different data types`() = runTest {
-        val stringKey = "stringKey"
-        val stringValue = "stringValue"
-        val booleanKey = "booleanKey"
-        val booleanValue = true
-        val numberKey = "numberKey"
-        val numberValue = 123
-        val collectionKey = "collectionKey"
-        val collectionValue = listOf("abc", 123, true)
+    fun `global scope sets context correctly with different data types`() =
+        runTest {
+            val stringKey = "stringKey"
+            val stringValue = "stringValue"
+            val booleanKey = "booleanKey"
+            val booleanValue = true
+            val numberKey = "numberKey"
+            val numberValue = 123
+            val collectionKey = "collectionKey"
+            val collectionValue = listOf("abc", 123, true)
 
-        val expectedStringValue = mapOf("value" to stringValue)
-        val expectedBooleanValue = mapOf("value" to booleanValue)
-        val expectedNumberValue = mapOf("value" to numberValue)
-        val expectedCollectionValue = mapOf("value" to collectionValue)
+            val expectedStringValue = mapOf("value" to stringValue)
+            val expectedBooleanValue = mapOf("value" to booleanValue)
+            val expectedNumberValue = mapOf("value" to numberValue)
+            val expectedCollectionValue = mapOf("value" to collectionValue)
 
-        var actualStringValue: Map<String, Any>? = null
-        var actualBooleanValue: Map<String, Any>? = null
-        var actualNumberValue: Map<String, Any>? = null
-        var actualCollectionValue: Map<String, Any>? = null
+            var actualStringValue: Map<String, Any>? = null
+            var actualBooleanValue: Map<String, Any>? = null
+            var actualNumberValue: Map<String, Any>? = null
+            var actualCollectionValue: Map<String, Any>? = null
 
-        sentryInit {
-            it.dsn = fakeDsn
-            it.beforeSend = { event ->
-                val contexts = event.contexts
-                assertNotNull(contexts)
-                actualStringValue = contexts[stringKey] as Map<String, Any>?
-                actualBooleanValue = contexts[booleanKey] as Map<String, Any>?
-                actualNumberValue = contexts[numberKey] as Map<String, Any>?
-                actualCollectionValue = contexts[collectionKey] as Map<String, Any>?
-                null
+            sentryInit {
+                it.dsn = fakeDsn
+                it.beforeSend = { event ->
+                    val contexts = event.contexts
+                    assertNotNull(contexts)
+                    actualStringValue = contexts[stringKey] as Map<String, Any>?
+                    actualBooleanValue = contexts[booleanKey] as Map<String, Any>?
+                    actualNumberValue = contexts[numberKey] as Map<String, Any>?
+                    actualCollectionValue = contexts[collectionKey] as Map<String, Any>?
+                    null
+                }
             }
+
+            Sentry.configureScope {
+                it.setContext(stringKey, stringValue)
+                it.setContext(booleanKey, booleanValue)
+                it.setContext(numberKey, numberValue)
+                it.setContext(collectionKey, collectionValue)
+            }
+
+            Sentry.captureException(RuntimeException("test"))
+
+            assertEquals(expectedStringValue, actualStringValue)
+            assertEquals(expectedBooleanValue, actualBooleanValue)
+            assertEquals(expectedNumberValue, actualNumberValue)
+            assertEquals(expectedCollectionValue, actualCollectionValue)
         }
-
-        Sentry.configureScope {
-            it.setContext(stringKey, stringValue)
-            it.setContext(booleanKey, booleanValue)
-            it.setContext(numberKey, numberValue)
-            it.setContext(collectionKey, collectionValue)
-        }
-
-        Sentry.captureException(RuntimeException("test"))
-
-        assertEquals(expectedStringValue, actualStringValue)
-        assertEquals(expectedBooleanValue, actualBooleanValue)
-        assertEquals(expectedNumberValue, actualNumberValue)
-        assertEquals(expectedCollectionValue, actualCollectionValue)
-    }
 
     // region Logger Tests
 
     private fun initWithLogCapture(
         enabled: Boolean = true,
-        beforeSend: ((SentryLog) -> SentryLog?)? = null
+        beforeSend: ((SentryLog) -> SentryLog?)? = null,
     ): MutableList<SentryLog> {
         val capturedLogs = mutableListOf<SentryLog>()
         sentryInit {
@@ -323,14 +331,15 @@ class SentryIntegrationTest : BaseSentryTest() {
 
         assertEquals(6, capturedLogs.size)
 
-        val expectedLevels = listOf(
-            SentryLogLevel.TRACE,
-            SentryLogLevel.DEBUG,
-            SentryLogLevel.INFO,
-            SentryLogLevel.WARN,
-            SentryLogLevel.ERROR,
-            SentryLogLevel.FATAL
-        )
+        val expectedLevels =
+            listOf(
+                SentryLogLevel.TRACE,
+                SentryLogLevel.DEBUG,
+                SentryLogLevel.INFO,
+                SentryLogLevel.WARN,
+                SentryLogLevel.ERROR,
+                SentryLogLevel.FATAL,
+            )
         val expectedBodies = listOf("trace", "debug", "info", "warn", "error", "fatal")
 
         capturedLogs.forEachIndexed { index, log ->

@@ -65,9 +65,11 @@ actual class SentryBridgeTest {
         }
 
         // WHEN
-        val option = SentryPlatformOptions().apply {
-            fixture.sentryInstance.lastConfiguration?.invoke(this)
-        }.let { it as CocoaSentryOptions }
+        val option =
+            SentryPlatformOptions()
+                .apply {
+                    fixture.sentryInstance.lastConfiguration?.invoke(this)
+                }.let { it as CocoaSentryOptions }
 
         // THEN
         assert(option.beforeSend != null)
@@ -80,9 +82,11 @@ actual class SentryBridgeTest {
         fixture.sut.init { }
 
         // WHEN
-        val option = SentryPlatformOptions().apply {
-            fixture.sentryInstance.lastConfiguration?.invoke(this)
-        }.let { it as CocoaSentryOptions }
+        val option =
+            SentryPlatformOptions()
+                .apply {
+                    fixture.sentryInstance.lastConfiguration?.invoke(this)
+                }.let { it as CocoaSentryOptions }
 
         // THEN
         assert(option.beforeSend != null)
@@ -93,10 +97,12 @@ actual class SentryBridgeTest {
     actual fun `default beforeSend in init does not drop the event after prepareForInit`() {
         fixture.sut.init { }
 
-        val option = SentryPlatformOptions().apply {
-            fixture.sentryInstance.lastConfiguration?.invoke(this)
-            prepareForInit()
-        }.let { it as CocoaSentryOptions }
+        val option =
+            SentryPlatformOptions()
+                .apply {
+                    fixture.sentryInstance.lastConfiguration?.invoke(this)
+                    prepareForInit()
+                }.let { it as CocoaSentryOptions }
 
         assert(option.beforeSend != null)
         assert(option.beforeSend!!.invoke(CocoaSentryEvent()) != null)
@@ -108,9 +114,11 @@ actual class SentryBridgeTest {
         fixture.sut.init { }
 
         // WHEN
-        val option = SentryPlatformOptions().apply {
-            fixture.sentryInstance.lastConfiguration?.invoke(this)
-        }.let { it as CocoaSentryOptions }
+        val option =
+            SentryPlatformOptions()
+                .apply {
+                    fixture.sentryInstance.lastConfiguration?.invoke(this)
+                }.let { it as CocoaSentryOptions }
         val event = option.beforeSend!!.invoke(CocoaSentryEvent())
         val packages = event?.sdk()?.get("packages") as? List<Map<String, String>>
 

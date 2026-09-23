@@ -153,10 +153,11 @@ class SentryPluginTest {
 
         project.installSentryForKmp(project.extensions.getByName("commonMain") as SourceSetAutoInstallExtension)
 
-        val sentryDependencies = project.configurations
-            .flatMap { it.dependencies }
-            .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
-            .toList()
+        val sentryDependencies =
+            project.configurations
+                .flatMap { it.dependencies }
+                .filter { it.group == "io.sentry" && it.name == "sentry-kotlin-multiplatform" }
+                .toList()
 
         assertTrue(sentryDependencies.isNotEmpty())
 
@@ -262,14 +263,14 @@ class SentryPluginTest {
         "true,true,true,true,false",
         "true,true,false,true,false",
         "true,false,true,false,true",
-        "false,true,true,false,false"
+        "false,true,true,false,false",
     )
     fun `SPM takes precedence over CocoaPods auto install`(
         globalEnabled: Boolean,
         spmEnabled: Boolean,
         podsEnabled: Boolean,
         expectSpm: Boolean,
-        expectPod: Boolean
+        expectPod: Boolean,
     ) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
@@ -308,7 +309,10 @@ class SentryPluginTest {
         val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         val manualPackage = packages.getByName("SentryCocoa_IosArm64")
         val manualPod = cocoaPods.pods.getByName("Sentry")
-        project.extensions.getByType(AutoInstallExtension::class.java).spm.enabled.set(spmEnabled)
+        project.extensions
+            .getByType(AutoInstallExtension::class.java)
+            .spm.enabled
+            .set(spmEnabled)
 
         project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
@@ -414,7 +418,7 @@ class SentryPluginTest {
         assertTrue(
             generateSequence<Throwable>(exception) { it.cause }.any {
                 it.message?.contains("Move the Sentry plugin before spm4Kmp in your plugins block.") == true
-            }
+            },
         )
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
@@ -602,9 +606,12 @@ class SentryPluginTest {
         "sentryCocoa,sentryCocoa",
         "sentryCocoa,SentryCocoa",
         "SentryCocoa,sentryCocoa",
-        "SentryCocoa,SentryCocoa"
+        "SentryCocoa,SentryCocoa",
     )
-    fun `global spm4Kmp config only covers targets that declare the cinterop`(configName: String, cinteropName: String) {
+    fun `global spm4Kmp config only covers targets that declare the cinterop`(
+        configName: String,
+        cinteropName: String,
+    ) {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -618,7 +625,10 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val device = kmpExtension.iosArm64()
         val simulator = kmpExtension.iosSimulatorArm64()
-        device.compilations.getByName("main").cinterops.create(cinteropName)
+        device.compilations
+            .getByName("main")
+            .cinterops
+            .create(cinteropName)
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
@@ -644,7 +654,7 @@ class SentryPluginTest {
                 remotePackageVersion(
                     url = URI("https://github.com/getsentry/sentry-cocoa.git"),
                     version = "8.57.0",
-                    products = { add("Sentry") }
+                    products = { add("Sentry") },
                 )
             }
         }

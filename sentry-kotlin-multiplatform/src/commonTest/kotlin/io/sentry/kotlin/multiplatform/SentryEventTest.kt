@@ -9,7 +9,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SentryEventTest {
-
     @Test
     fun `setTag should add a new tag`() {
         val event = SentryEvent()
