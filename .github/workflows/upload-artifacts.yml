@@ -31,7 +31,7 @@ jobs:
       - name: DistZip plugin
         run: |
           cd sentry-kotlin-multiplatform-gradle-plugin
-          ./gradlew distZip sentryPluginMarkerDistZip
+          ./gradlew distZip sentryPluginMarkerDistZip validateDistributions
 
       - name: Validate distributions
         run: |
