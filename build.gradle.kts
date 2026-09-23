@@ -95,8 +95,8 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         listOf(
             "watchosx64",
             "watchossimulatorarm64",
-            "watchosarm32",
             "watchosarm64",
+            "watchosarm32",
             "tvosx64",
             "tvossimulatorarm64",
             "tvosarm64",

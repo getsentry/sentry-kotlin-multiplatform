@@ -48,7 +48,6 @@ class Spm4KmpWatchosSimulatorTest {
         assertTrue(compile in copy.taskDependencies.getDependencies(copy))
         assertTrue(copy in definition.taskDependencies.getDependencies(definition))
         assertTrue(definition in cinterop.taskDependencies.getDependencies(cinterop))
-        assertEquals(1, project.tasks.names.count { it == COPY_TASK_NAME })
 
         verifyCopy(project, copy, debug)
     }

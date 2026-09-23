@@ -21,17 +21,17 @@ class SentryFrameworkArchitectureTest {
     companion object {
         @JvmStatic
         fun cocoaVersions(): List<Arguments> =
-            listOf(
-                Arguments.of("8.37.0"),
-                Arguments.of("8.38.0"),
-                Arguments.of("8.58.2"),
-                Arguments.of("9.28.0"),
-            )
+            listOf("8.37.0", "8.38.0", "8.58.2", "9.28.0").flatMap { version ->
+                listOf(true, false).map { isStatic -> Arguments.of(version, isStatic) }
+            }
     }
 
-    @ParameterizedTest(name = "Test architecture name compatibility with Cocoa Version {0} in static framework")
+    @ParameterizedTest(name = "Cocoa {0}, static={1}")
     @MethodSource("cocoaVersions")
-    fun `finds arch folders in static framework`(cocoaVersion: String) {
+    fun `finds arch folders in released frameworks`(
+        cocoaVersion: String,
+        isStatic: Boolean,
+    ) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply {
             apply("org.jetbrains.kotlin.multiplatform")
@@ -40,95 +40,28 @@ class SentryFrameworkArchitectureTest {
 
         val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
         kmpExtension.apply {
-            listOf(
-                iosX64(),
-                iosArm64(),
-                iosSimulatorArm64(),
-                macosArm64(),
-                macosX64(),
-                watchosX64(),
-                watchosArm64(),
-                watchosSimulatorArm64(),
-                tvosX64(),
-                tvosArm64(),
-                tvosSimulatorArm64(),
-            ).forEach {
-                it.binaries.framework {
-                    baseName = "shared"
-                    isStatic = false
-                }
-            }
+            iosX64()
+            iosArm64()
+            iosSimulatorArm64()
+            macosArm64()
+            macosX64()
+            watchosX64()
+            watchosArm64()
+            watchosSimulatorArm64()
+            tvosX64()
+            tvosArm64()
+            tvosSimulatorArm64()
         }
-        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic = true)
-        val xcFramework = File(frameworkDir, "Sentry.xcframework")
+        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic)
+        val xcFramework = File(frameworkDir, if (isStatic) "Sentry.xcframework" else "Sentry-Dynamic.xcframework")
 
         val downloadedArchNames =
             xcFramework.listFiles()?.map { it.name } ?: throw IllegalStateException("No archs found")
 
         kmpExtension.appleTargets().forEach {
             val mappedArchNames = it.toSentryFrameworkArchitecture()
-            val foundMatch =
-                mappedArchNames.any { mappedArchName ->
-                    downloadedArchNames.contains(mappedArchName)
-                }
-
-            assert(foundMatch) {
-                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
-                    xcFramework.listFiles()
-                        ?.map { file -> file.name }
-                }"
-            }
-        }
-    }
-
-    @ParameterizedTest(name = "Test architecture name compatibility with Cocoa Version {0} in dynamic framework")
-    @MethodSource("cocoaVersions")
-    fun `finds arch folders in dynamic framework`(cocoaVersion: String) {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply {
-            apply("org.jetbrains.kotlin.multiplatform")
-            apply("io.sentry.kotlin.multiplatform.gradle")
-        }
-
-        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
-        kmpExtension.apply {
-            listOf(
-                iosX64(),
-                iosArm64(),
-                iosSimulatorArm64(),
-                macosArm64(),
-                macosX64(),
-                watchosX64(),
-                watchosArm64(),
-                watchosSimulatorArm64(),
-                tvosX64(),
-                tvosArm64(),
-                tvosSimulatorArm64(),
-            ).forEach {
-                it.binaries.framework {
-                    baseName = "shared"
-                    isStatic = false
-                }
-            }
-        }
-        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic = false)
-        val xcFramework = File(frameworkDir, "Sentry-Dynamic.xcframework")
-
-        val downloadedArchNames =
-            xcFramework.listFiles()?.map { it.name } ?: throw IllegalStateException("No archs found")
-
-        kmpExtension.appleTargets().forEach {
-            val mappedArchNames = it.toSentryFrameworkArchitecture()
-            val foundMatch =
-                mappedArchNames.any { mappedArchName ->
-                    downloadedArchNames.contains(mappedArchName)
-                }
-
-            assert(foundMatch) {
-                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
-                    xcFramework.listFiles()
-                        ?.map { file -> file.name }
-                }"
+            assertTrue(mappedArchNames.any { name -> name in downloadedArchNames }) {
+                "Expected one of $mappedArchNames in $xcFramework for ${it.name}, found $downloadedArchNames"
             }
         }
     }

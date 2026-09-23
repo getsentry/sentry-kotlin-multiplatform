@@ -105,39 +105,33 @@ internal fun Project.installSentryForSpm4Kmp(
             return@forEach
         }
 
-        registerSentrySwiftPackage(target, autoInstall.spm.sentryCocoaVersion.get())
-    }
-}
-
-private fun Project.registerSentrySwiftPackage(
-    target: KotlinNativeTarget,
-    cocoaVersion: String,
-) {
-    target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
-        // spm4Kmp selects one entry for the shared container, so every entry needs all four
-        // minimums, including platforms other than this target's own family.
-        minIos = minimumDeploymentVersion(minIos, "15.0")
-        minTvos = minimumDeploymentVersion(minTvos, "15.0")
-        minMacos = minimumDeploymentVersion(minMacos, "12.0")
-        minWatchos = minimumDeploymentVersion(minWatchos, "9.0")
-        dependency {
-            remotePackageVersion(
-                url = URI(SENTRY_COCOA_GIT_URL),
-                version = cocoaVersion,
-                products = {
-                    // Link only (exportToKotlin defaults to false): the published klib already
-                    // carries the Sentry cinterop bindings.
-                    add("Sentry")
-                },
-            )
+        val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
+        target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
+            // spm4Kmp selects one entry for the shared container, so every entry needs all four
+            // minimums, including platforms other than this target's own family.
+            minIos = minimumDeploymentVersion(minIos, "15.0")
+            minTvos = minimumDeploymentVersion(minTvos, "15.0")
+            minMacos = minimumDeploymentVersion(minMacos, "12.0")
+            minWatchos = minimumDeploymentVersion(minWatchos, "9.0")
+            dependency {
+                remotePackageVersion(
+                    url = URI(SENTRY_COCOA_GIT_URL),
+                    version = cocoaVersion,
+                    products = {
+                        // Link only (exportToKotlin defaults to false): the published klib already
+                        // carries the Sentry cinterop bindings.
+                        add("Sentry")
+                    },
+                )
+            }
         }
+        if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
+            registerWatchosSimulatorFrameworkCopy()
+        }
+        logger.lifecycle(
+            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
+        )
     }
-    if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
-        registerWatchosSimulatorFrameworkCopy()
-    }
-    logger.lifecycle(
-        "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
-    )
 }
 
 /** Preserve higher consumer minimums, comparing numeric components rather than strings. */

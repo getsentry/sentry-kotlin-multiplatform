@@ -15,13 +15,11 @@ import Foundation
     }
 
     public static func debugImages(forFrames frames: [Frame]) -> [DebugMeta] {
-        var seen = Set<UInt64>()
         let addresses = frames.compactMap { frame -> UInt64? in
             guard let address = frame.imageAddress else { return nil }
             let hex = address.hasPrefix("0x") ? String(address.dropFirst(2)) : address
-            guard let value = UInt64(hex, radix: 16), seen.insert(value).inserted else { return nil }
-            return value
+            return UInt64(hex, radix: 16)
         }
-        return SentrySDK.internal.debug.images(forAddresses: addresses.sorted(by: >))
+        return SentrySDK.internal.debug.images(forAddresses: Set(addresses).sorted(by: >))
     }
 }

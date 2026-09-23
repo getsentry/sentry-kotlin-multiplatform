@@ -26,10 +26,6 @@ import kotlin.test.assertTrue
 
 class CocoaV9IntegrationTest {
     @BeforeTest
-    fun reset() {
-        Sentry.close()
-    }
-
     @AfterTest
     fun close() {
         Sentry.close()
@@ -40,7 +36,6 @@ class CocoaV9IntegrationTest {
         beforeSend: (SentryEvent?) -> SentryEvent? = { null },
     ) {
         Sentry.initWithPlatformOptions {
-            // Use an unreachable local endpoint to prevent external traffic.
             it.setDsn("http://public@127.0.0.1:9/1")
             it.setEnableAutoSessionTracking(false)
             it.setEnableAppHangTracking(false)

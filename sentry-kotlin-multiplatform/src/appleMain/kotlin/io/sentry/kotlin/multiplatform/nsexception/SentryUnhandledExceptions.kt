@@ -43,12 +43,7 @@ private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeI
  */
 internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentryEvent? =
     event?.takeUnless {
-        (it as InternalSentryEvent).isFatalEvent &&
-            (
-                it.tags?.containsKey(
-                    KOTLIN_CRASH_TAG,
-                ) ?: false
-            )
+        (it as InternalSentryEvent).isFatalEvent && it.tags?.containsKey(KOTLIN_CRASH_TAG) == true
     }
 
 /**
@@ -63,13 +58,9 @@ public fun setSentryUnhandledExceptionHook(): Unit =
         val handler = crashReporter.uncaughtExceptionHandler()
 
         if (handler != null) {
-            // This will:
-            // 1. Write a crash report to disk with ALL synced scope data
-            // 2. Include tags, user, context, breadcrumbs, etc.
-            // 3. The crash will be sent on next app launch
+            // Persist the crash with native scope data for the next launch.
             handler.invoke(throwable.asNSException(appendCausedBy = true))
         } else {
-            // Fallback to old approach if handler not available
             throwable.asSentryEnvelope()?.let { envelope ->
                 SentryKMPInternal.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
             }
@@ -84,9 +75,6 @@ public fun setSentryUnhandledExceptionHook(): Unit =
  */
 internal const val KOTLIN_CRASH_TAG = "nsexceptionkt.kotlin_crashed"
 
-/**
- * Converts `this` [Throwable] to a [SentryEnvelope].
- */
 internal fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope? {
     val event = asSentryEvent() as InternalSentryEvent
     val hub = InternalSentrySDK.currentHub()
@@ -99,7 +87,6 @@ internal fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope? {
             ?: return null
     preparedEvent.isFatalEvent = true
     val item = CocoapodsSentryEnvelopeItem(event = preparedEvent as cocoapods.Sentry.SentryEvent)
-    // KMP does not currently attach a trace context to fatal envelopes.
     val header = CocoapodsSentryEnvelopeHeader(id = preparedEvent.eventId, traceContext = null)
     return CocoapodsSentryEnvelope(header, listOf(item))
 }
@@ -141,8 +128,7 @@ internal fun Throwable.asSentryEvent(
         val frames =
             threads.orEmpty().flatMap { it.stacktrace?.frames.orEmpty() } +
                 convertedExceptions.flatMap { it.stacktrace?.frames.orEmpty() }
-        debugMeta =
-            SentryKMPInternal.debugImagesForFrames(frames)
+        debugMeta = SentryKMPInternal.debugImagesForFrames(frames)
     }
 
 /**

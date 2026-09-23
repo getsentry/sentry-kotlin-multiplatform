@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 
 class Spm4KmpIntegrationTest {
@@ -50,22 +51,31 @@ class Spm4KmpIntegrationTest {
         assertTrue(manifest.contains("https://github.com/getsentry/sentry-cocoa.git"), manifest)
     }
 
-    @Test
-    fun `higher consumer defaults survive auto installation and container generation`() {
+    @ParameterizedTest
+    @CsvSource("16.2,17.0,13.1,10.0", ",14.9,10.15,8.9")
+    fun `consumer defaults are raised only when below Cocoa minimums`(
+        ios: String?,
+        tvos: String,
+        macos: String,
+        watchos: String,
+    ) {
         val project = createProject()
         packages(project).configureEach {
-            it.minIos = "16.2"
-            it.minTvos = "17.0"
-            it.minMacos = "13.1"
-            it.minWatchos = "10.0"
+            it.minIos = ios
+            it.minTvos = tvos
+            it.minMacos = macos
+            it.minWatchos = watchos
         }
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kotlin.iosArm64()
         kotlin.watchosArm64()
-
         (project as ProjectInternal).evaluate()
 
-        assertPlatforms(generateContainer(project), "16.2", "17.0", "13.1", "10.0")
+        if (ios == null) {
+            assertPlatforms(generateContainer(project), "15.0", "15.0", "12.0", "9.0")
+        } else {
+            assertPlatforms(generateContainer(project), ios, tvos, macos, watchos)
+        }
     }
 
     @Test
@@ -111,22 +121,6 @@ class Spm4KmpIntegrationTest {
         assertEquals("17.0", entry.minTvos)
         assertEquals("13.0", entry.minMacos)
         assertEquals("8.0", entry.minWatchos)
-    }
-
-    @Test
-    fun `null and lower defaults are raised on every platform`() {
-        val project = createProject()
-        packages(project).configureEach {
-            it.minIos = null
-            it.minTvos = "14.9"
-            it.minMacos = "10.15"
-            it.minWatchos = "8.9"
-        }
-        project.extensions.getByType(KotlinMultiplatformExtension::class.java).iosArm64()
-
-        (project as ProjectInternal).evaluate()
-
-        assertPlatforms(generateContainer(project), "15.0", "15.0", "12.0", "9.0")
     }
 
     private fun createProject(): Project {

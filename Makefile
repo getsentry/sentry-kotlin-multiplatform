@@ -47,8 +47,6 @@ buildAppleSamples:
 	touch ./sentry-samples/kmp-app-spm/iosApp/iosApp.xcconfig
 	SENTRY_SKIP_UPLOAD="$(SENTRY_SKIP_UPLOAD)" xcodebuild -project ./sentry-samples/kmp-app-spm/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64 CODE_SIGNING_ALLOWED=NO
 
-# The Xcode build invokes embedAndSignAppleFrameworkForXcode for the SPM sample.
-
 # Build all targets, run tests and checks api
 compile: checkApi detekt buildProject buildAppleSamples
 

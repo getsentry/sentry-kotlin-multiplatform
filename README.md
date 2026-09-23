@@ -31,12 +31,8 @@ that can be used on Kotlin Multiplatform.
 |   Kotlin/JVM    | <ul><li>`jvm`</li></ul>                                                                                      
 |       iOS       | <ul><li>`iosArm64`</li><li>`iosX64`</li><li>`iosSimulatorArm64`</li></ul>                                    |
 |      macOS      | <ul><li>`macosArm64`</li><li>`macosX64`</ul>                                                                 |
-|     watchOS     | <ul><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
+|     watchOS     | <ul><li>`watchosArm32`</li><li>`watchosArm64`</li><li>`watchosX64`</li><li>`watchosSimulatorArm64`</li></ul> |
 |      tvOS       | <ul><li>`tvosArm64`</li><li>`tvosX64`</li><li>`tvosSimulatorArm64`</li></ul>                                 |
-
-Cocoa-backed Apple targets require **iOS 15, tvOS 15, macOS 12, or watchOS 9** with Sentry Cocoa **9.28.0**.
-The `watchosArm32` target ships as a **no-op stub** because Cocoa 9.28.0 does not include an armv7k slice.
-It requires no Cocoa dependency and sends no events, crashes, or logs; `Sentry.isEnabled()` remains false.
 
 ## Stubbed Platforms (No-Op Implementations)
 
@@ -45,7 +41,6 @@ They compile and satisfy the API surface, but **do nothing at runtime**.
 
 | Target Platform | Target preset                                     |
 |:---------------:|---------------------------------------------------|
-| Legacy watchOS  | <ul><li>`watchosArm32` (no-op)</li></ul>          |
 | JS              | <ul><li>`js`</li></ul>                            |
 | Wasm JS         | <ul><li>`wasmJs`</li></ul>                        |
 | Linux           | <ul><li>`linuxx64`</li><li>`linuxarm64`</li></ul> |
@@ -77,23 +72,20 @@ Use the Kotlin Multiplatform and Cocoa SDK combinations listed in the table belo
 | 0.25.0                     | 8.57.3            |
 | 0.26.0                     | 8.58.2            |
 | 0.27.0                     | 8.58.2            |
-| Unreleased                 | 9.28.0            |
 
 ## Usage
 
 For detailed usage, check out the [Kotlin Multiplatform Documentation](https://docs.sentry.io/platforms/kotlin-multiplatform/).
 
-Use SwiftPM through spm4Kmp for Cocoa 9.28.0. CocoaPods is unsupported; its historical sample
-and legacy plugin configuration remain in the repository but are excluded from active validation.
-
 ## Samples
 
-The supported sample is [kmp-app-spm](sentry-samples/kmp-app-spm), with Android, JVM, and iOS apps.
-The retired `kmp-app-cocoapods` files are retained as historical examples only.
+For detailed information on how to build and run the samples, check out our `README.md` in the
+[sentry-samples](https://github.com/getsentry/sentry-kotlin-multiplatform/tree/main/sentry-samples)
+folder.
 
 ## Apple Privacy Manifest
 
-Starting with [May 1st 2024](https://developer.apple.com/news/?id=3d8a9yyh), apps submitted to the Apple App Store are required to declare approved reasons to access certain privacy-relevant APIs. This also includes usages of these APIs via third-party SDKs. Sentry Cocoa 9.28.0 includes a privacy manifest.
+Starting with [May 1st 2024](https://developer.apple.com/news/?id=3d8a9yyh), apps submitted to the Apple App Store are required to declare approved reasons to access certain privacy-relevant APIs. This also includes usages of these APIs via third-party SDKs. To ensure compliance, update your Sentry Cocoa SDK to `8.21.0`.
 For more information, refer to our [Apple Privacy Manifest Guide](https://docs.sentry.io/platforms/kotlin-multiplatform/data-management/apple-privacy-manifest/).
 
 ## Contribution
