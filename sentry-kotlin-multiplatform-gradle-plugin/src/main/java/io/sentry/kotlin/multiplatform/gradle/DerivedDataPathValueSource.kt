@@ -55,9 +55,9 @@ abstract class DerivedDataPathValueSource :
         } else {
             logger.warn(
                 "Failed to retrieve derived data path. xcodebuild command failed. Error output: ${
-                errOutput.toString(
-                    Charsets.UTF_8
-                )
+                    errOutput.toString(
+                        Charsets.UTF_8
+                    )
                 }"
             )
             return null

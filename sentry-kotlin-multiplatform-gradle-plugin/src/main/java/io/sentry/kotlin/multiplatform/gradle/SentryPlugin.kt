@@ -176,8 +176,7 @@ internal fun Project.installSentryForCocoapods(
         return
     }
 
-    (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods
-        ->
+    (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
         val podName = "Sentry"
         val sentryPod = cocoapods.pods.findByName(podName)
         if (sentryPod == null) {
