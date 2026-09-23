@@ -9,10 +9,10 @@ abstract class AutoInstallExtension @Inject constructor(project: Project) {
     private val objects = project.objects
 
     /**
-     * Enable auto-installation of the Sentry dependencies through [CocoapodsAutoInstallExtension]
-     * and [SourceSetAutoInstallExtension].
+     * Enable auto-installation of the Sentry dependencies through [CocoapodsAutoInstallExtension],
+     * [Spm4KmpAutoInstallExtension] and [SourceSetAutoInstallExtension].
      *
-     * Disabling this will prevent the plugin from auto installing any dependency.
+     * Disabling this also removes the plugin ordering requirement for spm4Kmp auto-install.
      *
      * Defaults to true.
      */
@@ -20,6 +20,9 @@ abstract class AutoInstallExtension @Inject constructor(project: Project) {
 
     val cocoapods: CocoapodsAutoInstallExtension =
         objects.newInstance(CocoapodsAutoInstallExtension::class.java, project)
+
+    val spm: Spm4KmpAutoInstallExtension =
+        objects.newInstance(Spm4KmpAutoInstallExtension::class.java, project)
 
     val commonMain: SourceSetAutoInstallExtension =
         objects.newInstance(SourceSetAutoInstallExtension::class.java, project)

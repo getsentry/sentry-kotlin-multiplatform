@@ -13,7 +13,8 @@ abstract class CocoapodsAutoInstallExtension @Inject constructor(project: Projec
      * Enable auto-installation of the Sentry Cocoa SDK pod.
      *
      * If the cocoapods plugin is applied and no existing Sentry pod configuration exists, the
-     * Sentry-Cocoa SDK pod will be installed.
+     * Sentry-Cocoa SDK pod will be installed unless spm4Kmp auto-install is enabled.
+     * Manually declared pods are left unchanged.
      *
      * Defaults to true.
      */

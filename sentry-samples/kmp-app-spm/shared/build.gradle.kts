@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("io.sentry.kotlin.multiplatform.gradle")
+    id(Config.spmForKmp)
 }
 
 java {
@@ -57,8 +58,6 @@ android {
     }
 }
 
-// disabling autoInstall because we are using project(":sentry-kotlin-multiplatform") directly
-// for our sample apps
 sentryKmp {
     autoInstall.commonMain.enabled = false
 }

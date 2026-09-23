@@ -22,8 +22,7 @@ plugins {
 android {
     namespace = "io.sentry.kotlin.multiplatform"
     compileSdk = Config.Android.compileSdkVersion
-    // AGP 8 disables BuildConfig generation by default; keep it on to preserve
-    // the previously published Android public API surface.
+    // Preserve the public BuildConfig class, which AGP 8 no longer generates by default.
     buildFeatures {
         buildConfig = true
     }
@@ -165,16 +164,14 @@ kotlin {
 
         appleTargets.forEach { target ->
             target.swiftPackageConfig(cinteropName = "sentryCocoa") {
-                // Keep the legacy Kotlin CocoaPods `cocoapods.Sentry.*` import prefix so
-                // published klib symbols stay identical.
+                // Preserve the cocoapods.Sentry package used by consumers.
                 packageDependencyPrefix = "cocoapods"
                 minIos = Config.Cocoa.iosDeploymentTarget
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
                 minWatchos = Config.Cocoa.watchosDeploymentTarget
-                // KT-41709: Sentry classes with "Meta" in the name (e.g. SentryMechanismMeta) are
-                // otherwise declared twice. Must be extraOpts — compilerOpts only populates the
-                // generated def's clang flags. https://youtrack.jetbrains.com/issue/KT-41709
+                // Avoid duplicate declarations from Kotlin/Native's "Meta" naming conflict (KT-41709).
+                // https://youtrack.jetbrains.com/issue/KT-41709
                 extraOpts =
                     listOf(
                         "-compiler-option",
