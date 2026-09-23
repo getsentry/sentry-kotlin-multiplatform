@@ -71,7 +71,6 @@ class SentryMetricsTest {
                 it
             }, metric),
         )
-        assertTrue(SentryMetricOptions().enabled)
         assertNull(SentryMetricOptions().beforeSend)
     }
 }

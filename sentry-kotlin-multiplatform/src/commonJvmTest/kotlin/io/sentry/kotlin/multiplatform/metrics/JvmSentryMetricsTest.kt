@@ -31,18 +31,15 @@ class JvmSentryMetricsTest {
     }
 
     @Test
-    fun `native options apply defaults and clear stale callbacks`() {
+    fun `native options apply and clear callbacks`() {
         val native = NativeOptions()
         val options =
             SentryOptions().apply {
-                metrics.enabled = false
                 metrics.beforeSend = { null }
             }
         native.applyJvmBaseOptions(options)
-        assertFalse(native.metrics.isEnabled)
         assertNotNull(native.metrics.beforeSend)
         native.applyJvmBaseOptions(SentryOptions())
-        assertTrue(native.metrics.isEnabled)
         assertNull(native.metrics.beforeSend)
     }
 
@@ -106,13 +103,12 @@ class JvmSentryMetricsTest {
         val captured = mutableListOf<SentryMetric>()
         metrics.count("before init")
 
-        fun start(enabled: Boolean) {
+        fun start() {
             NativeSentry.init(
                 NativeOptions().apply {
                     applyJvmBaseOptions(
                         SentryOptions().apply {
                             dsn = "http://public@127.0.0.1:9/1"
-                            this.metrics.enabled = enabled
                             this.metrics.beforeSend = {
                                 captured += it
                                 null
@@ -123,7 +119,7 @@ class JvmSentryMetricsTest {
                 },
             )
         }
-        start(true)
+        start()
         metrics.count("count", 3) {
             this["bool"] = true
             this["integer"] = 42L
@@ -152,10 +148,8 @@ class JvmSentryMetricsTest {
         assertTrue(captured.all { it.traceId.length == 32 })
         NativeSentry.close()
         metrics.count("closed")
-        start(false)
-        metrics.count("disabled")
         assertEquals(3, captured.size)
-        start(true)
+        start()
         metrics.count("restarted")
         assertEquals(4, captured.size)
     }

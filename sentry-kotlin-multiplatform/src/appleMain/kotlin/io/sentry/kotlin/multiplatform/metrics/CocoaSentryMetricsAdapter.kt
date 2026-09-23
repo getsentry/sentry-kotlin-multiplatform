@@ -1,9 +1,6 @@
 package io.sentry.kotlin.multiplatform.metrics
 
 import cocoapods.Sentry.SentryAttribute
-import cocoapods.Sentry.SentrySDK
-import cocoapods.Sentry.isEnabled
-import cocoapods.Sentry.startOption
 import cocoapods.sentryCocoa.SentryKMPMetrics
 import io.sentry.kotlin.multiplatform.SentryAttributeValue
 import io.sentry.kotlin.multiplatform.SentryAttributes
@@ -17,8 +14,6 @@ internal class CocoaSentryMetricsAdapter : BaseSentryMetrics() {
         unit: String?,
         attributes: SentryAttributes,
     ) {
-        // Cocoa can invoke callbacks even when metrics are disabled after a restart.
-        if (!SentrySDK.isEnabled() || SentrySDK.startOption()?.enableMetrics() != true) return
         val nativeAttributes = attributes.toCocoaMetricAttributes()
         when (value) {
             is SentryMetricValue.Counter -> SentryKMPMetrics.count(name, value.value.toULong(), nativeAttributes)

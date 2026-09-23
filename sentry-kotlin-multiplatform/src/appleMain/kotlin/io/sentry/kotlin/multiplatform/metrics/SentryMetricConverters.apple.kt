@@ -45,7 +45,6 @@ internal fun SentryKMPMetric.updateFrom(metric: SentryMetric): Boolean {
 }
 
 internal fun CocoaSentryOptions.applyMetricsOptions(options: SentryMetricOptions) {
-    this.setEnableMetrics(options.enabled)
     SentryKMPMetrics.configure(
         this as objcnames.classes.SentryOptions,
         options.beforeSend?.let { callback ->

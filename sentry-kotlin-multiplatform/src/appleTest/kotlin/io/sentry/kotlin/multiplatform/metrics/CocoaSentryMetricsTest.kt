@@ -2,7 +2,6 @@ package io.sentry.kotlin.multiplatform.metrics
 
 import cocoapods.sentryCocoa.SentryKMPMetric
 import cocoapods.sentryCocoa.SentryKMPMetrics
-import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.SentryAttributes
 import io.sentry.kotlin.multiplatform.SentryOptions
@@ -26,15 +25,11 @@ class CocoaSentryMetricsTest {
         Sentry.close()
     }
 
-    private fun start(
-        enabled: Boolean = true,
-        callback: (SentryMetric) -> SentryMetric?,
-    ) {
+    private fun start(callback: (SentryMetric) -> SentryMetric?) {
         Sentry.initWithPlatformOptions {
             it.applyCocoaBaseOptions(
                 SentryOptions().apply {
                     dsn = "http://public@127.0.0.1:9/1"
-                    metrics.enabled = enabled
                     metrics.beforeSend = callback
                 },
             )
@@ -81,8 +76,6 @@ class CocoaSentryMetricsTest {
         assertTrue(captured.all { it.traceId.length == 32 })
         Sentry.close()
         metrics.count("closed")
-        start(false, callback)
-        metrics.count("disabled")
         assertEquals(3, captured.size)
         start(callback = callback)
         metrics.count("restarted")
@@ -129,12 +122,7 @@ class CocoaSentryMetricsTest {
     }
 
     @Test
-    fun `native options apply defaults and clear stale callbacks`() {
-        val native = CocoaSentryOptions()
-        native.applyCocoaBaseOptions(SentryOptions().apply { metrics.enabled = false })
-        assertFalse(native.enableMetrics())
-        native.applyCocoaBaseOptions(SentryOptions())
-        assertTrue(native.enableMetrics())
+    fun `native options clear stale callbacks`() {
         var calls = 0
         Sentry.initWithPlatformOptions {
             it.applyCocoaBaseOptions(

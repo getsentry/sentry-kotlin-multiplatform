@@ -45,7 +45,6 @@ internal fun SentryMetricsEvent.updateFrom(
 }
 
 internal fun JvmSentryOptions.applyMetricsOptions(options: SentryMetricOptions) {
-    this.metrics.isEnabled = options.enabled
     this.metrics.setBeforeSend(
         options.beforeSend?.let { callback ->
             io.sentry.SentryOptions.Metrics.BeforeSendMetricCallback { nativeMetric, _ ->

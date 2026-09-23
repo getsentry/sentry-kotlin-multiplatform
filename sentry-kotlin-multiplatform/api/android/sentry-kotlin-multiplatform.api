@@ -454,9 +454,7 @@ public final class io/sentry/kotlin/multiplatform/metrics/SentryMetric {
 public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricOptions {
 	public fun <init> ()V
 	public final fun getBeforeSend ()Lkotlin/jvm/functions/Function1;
-	public final fun getEnabled ()Z
 	public final fun setBeforeSend (Lkotlin/jvm/functions/Function1;)V
-	public final fun setEnabled (Z)V
 }
 
 public abstract class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
