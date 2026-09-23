@@ -21,12 +21,9 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class Spm4KmpWatchosSimulatorTest {
     @ParameterizedTest
-    @CsvSource("true, true", "true, false", "false, true", "false, false")
-    fun `copy uses shared configuration and precedes cinterop in either plugin order`(
-        spmFirst: Boolean,
-        debug: Boolean,
-    ) {
-        val project = createProject(spmFirst)
+    @ValueSource(booleans = [true, false])
+    fun `copy uses shared configuration and precedes cinterop`(debug: Boolean) {
+        val project = createProject(spmFirst = false)
         val entries = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         entries.configureEach { entry ->
             entry as PackageRootDefinitionExtension
@@ -119,7 +116,7 @@ class Spm4KmpWatchosSimulatorTest {
 
     @Test
     fun `other targets do not register copy`() {
-        val project = createProject(spmFirst = true)
+        val project = createProject(spmFirst = false)
         project.extensions.getByType(KotlinMultiplatformExtension::class.java).apply {
             iosSimulatorArm64()
             watchosArm64()

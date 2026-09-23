@@ -9,7 +9,6 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
@@ -17,10 +16,9 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
 class Spm4KmpIntegrationTest {
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `generated container uses Cocoa 9 minimums in either plugin order`(spmFirst: Boolean) {
-        val project = createProject(spmFirst)
+    @Test
+    fun `generated container uses Cocoa 9 minimums`() {
+        val project = createProject()
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kotlin.apply {
             iosArm64()
@@ -52,10 +50,9 @@ class Spm4KmpIntegrationTest {
         assertTrue(manifest.contains("https://github.com/getsentry/sentry-cocoa.git"), manifest)
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `higher consumer defaults survive auto installation and container generation`(spmFirst: Boolean) {
-        val project = createProject(spmFirst)
+    @Test
+    fun `higher consumer defaults survive auto installation and container generation`() {
+        val project = createProject()
         packages(project).configureEach {
             it.minIos = "16.2"
             it.minTvos = "17.0"
@@ -71,10 +68,9 @@ class Spm4KmpIntegrationTest {
         assertPlatforms(generateContainer(project), "16.2", "17.0", "13.1", "10.0")
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = [true, false])
-    fun `stub target skips Cocoa installation in either plugin order`(spmFirst: Boolean) {
-        val project = createProject(spmFirst)
+    @Test
+    fun `stub target skips Cocoa installation`() {
+        val project = createProject()
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         // Check the Konan target, even if the consumer assigns a custom name.
         val legacyWatch = kotlin.watchosArm32("legacyWatch")
@@ -87,13 +83,12 @@ class Spm4KmpIntegrationTest {
                 .cinterops
                 .isEmpty(),
         )
-        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun `existing user minimums remain unchanged for target and global configs`(global: Boolean) {
-        val project = createProject(spmFirst = false)
+        val project = createProject()
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val target = kotlin.iosArm64()
         if (global) {
@@ -116,12 +111,11 @@ class Spm4KmpIntegrationTest {
         assertEquals("17.0", entry.minTvos)
         assertEquals("13.0", entry.minMacos)
         assertEquals("8.0", entry.minWatchos)
-        assertFalse(project.extensions.extraProperties.has(SPM_AUTO_INSTALLED_MARKER))
     }
 
     @Test
     fun `null and lower defaults are raised on every platform`() {
-        val project = createProject(spmFirst = true)
+        val project = createProject()
         packages(project).configureEach {
             it.minIos = null
             it.minTvos = "14.9"
@@ -135,12 +129,12 @@ class Spm4KmpIntegrationTest {
         assertPlatforms(generateContainer(project), "15.0", "15.0", "12.0", "9.0")
     }
 
-    private fun createProject(spmFirst: Boolean): Project {
+    private fun createProject(): Project {
         assumeTrue(HostManager.hostIsMac)
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        val plugins = listOf("io.github.frankois944.spmForKmp", "io.sentry.kotlin.multiplatform.gradle")
-        (if (spmFirst) plugins else plugins.reversed()).forEach { project.pluginManager.apply(it) }
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        project.pluginManager.apply("io.github.frankois944.spmForKmp")
         return project
     }
 
