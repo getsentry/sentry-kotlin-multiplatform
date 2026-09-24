@@ -440,15 +440,6 @@ class SentryIntegrationTest : BaseSentryTest() {
     }
 
     @Test
-    fun `logger does not send logs when logs disabled`() {
-        val capturedLogs = initWithLogCapture(enabled = false)
-
-        Sentry.logger.info("this should not be captured")
-
-        assertEquals(0, capturedLogs.size)
-    }
-
-    @Test
     fun `logs beforeSend can add modify and remove attributes`() {
         val capturedLogs = mutableListOf<SentryLog>()
         initWithLogCapture(beforeSend = { log ->

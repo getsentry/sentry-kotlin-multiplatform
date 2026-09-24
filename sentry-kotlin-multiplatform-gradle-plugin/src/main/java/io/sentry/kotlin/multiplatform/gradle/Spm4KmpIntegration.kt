@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform.gradle
 
 import io.github.frankois944.spmForKmp.swiftPackageConfig
+import io.sentry.BuildConfig
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -79,6 +80,8 @@ internal fun Project.installSentryForSpm4Kmp(
     }
 
     val userDefinedConfigNames = sentrySwiftPackageConfigNames()
+    val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
+    warnIfCocoaVersionMismatch(cocoaVersion, kmpExtension.appleTargets(), userDefinedConfigNames)
     kmpExtension.appleTargets().forEach { target ->
         if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
             logger.warn(
@@ -105,7 +108,6 @@ internal fun Project.installSentryForSpm4Kmp(
             return@forEach
         }
 
-        val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
         target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
             // spm4Kmp selects one entry for the shared container, so every entry needs all four
             // minimums, including platforms other than this target's own family.
@@ -130,6 +132,23 @@ internal fun Project.installSentryForSpm4Kmp(
         }
         logger.lifecycle(
             "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
+        )
+    }
+}
+
+private fun Project.warnIfCocoaVersionMismatch(
+    cocoaVersion: String,
+    appleTargets: Collection<KotlinNativeTarget>,
+    userDefinedConfigNames: Set<String>,
+) {
+    if (userDefinedConfigNames.isEmpty() &&
+        appleTargets.any { it.konanTarget != KonanTarget.WATCHOS_ARM32 } &&
+        cocoaVersion != BuildConfig.SentryCocoaVersion
+    ) {
+        logger.warn(
+            "autoInstall.spm.sentryCocoaVersion is set to $cocoaVersion, but this Sentry KMP " +
+                "Gradle plugin expects ${BuildConfig.SentryCocoaVersion}. Sentry KMP uses private Cocoa APIs; " +
+                "overriding the version may cause linking or runtime failures. Continuing with $cocoaVersion.",
         )
     }
 }

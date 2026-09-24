@@ -2,9 +2,15 @@ package io.sentry.kotlin.multiplatform.gradle
 
 import io.github.frankois944.spmForKmp.definition.PackageRootDefinitionExtension
 import io.github.frankois944.spmForKmp.swiftPackageConfig
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import io.sentry.BuildConfig
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.logging.Logger
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.konan.target.HostManager
@@ -121,6 +127,41 @@ class Spm4KmpIntegrationTest {
         assertEquals("17.0", entry.minTvos)
         assertEquals("13.0", entry.minMacos)
         assertEquals("8.0", entry.minWatchos)
+    }
+
+    @ParameterizedTest
+    @CsvSource("true,true,false,false", "false,true,false,false", "true,false,false,false", "true,true,true,false", "true,true,false,true")
+    fun `version warning only applies to overridden auto installed packages`(
+        overrideVersion: Boolean,
+        enabled: Boolean,
+        userOwned: Boolean,
+        stubOnly: Boolean,
+    ) {
+        val project = spyk(createProject())
+        val logger = mockk<Logger>(relaxed = true)
+        every { project.logger } returns logger
+        val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        val version = if (overrideVersion) "9.27.0" else BuildConfig.SentryCocoaVersion
+        autoInstall.spm.sentryCocoaVersion.set(version)
+        autoInstall.spm.enabled.set(enabled)
+        val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        if (stubOnly) {
+            kotlin.watchosArm32()
+        } else {
+            kotlin.iosArm64()
+            kotlin.iosSimulatorArm64()
+        }
+        if (userOwned) packages(project).create(SENTRY_COCOA_CINTEROP_NAME)
+
+        project.installSentryForSpm4Kmp(autoInstall)
+
+        verify(exactly = if (overrideVersion && enabled && !userOwned && !stubOnly) 1 else 0) {
+            logger.warn(match<String> { it.contains("autoInstall.spm.sentryCocoaVersion") })
+        }
+        if (enabled && !userOwned && !stubOnly) {
+            (project as ProjectInternal).evaluate()
+            assertTrue(generateContainer(project).contains(version))
+        }
     }
 
     private fun createProject(): Project {

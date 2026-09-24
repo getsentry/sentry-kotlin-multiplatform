@@ -14,7 +14,6 @@ import cocoapods.Sentry.crashedLastRun
 import cocoapods.Sentry.isEnabled
 import cocoapods.Sentry.logger
 import cocoapods.Sentry.setUser
-import cocoapods.Sentry.startOption
 import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
@@ -70,9 +69,7 @@ internal actual class SentryBridge actual constructor(
 ) {
     private val logger =
         CocoaSentryLoggerAdapter({
-            // Cocoa may invoke beforeSendLog before dropping disabled logs. Keep KMP's disabled
-            // logger a no-op, including callbacks, and read the current options after SDK restart.
-            if (SentrySDK.isEnabled() && SentrySDK.startOption()?.enableLogs() == true) SentrySDK.logger() else null
+            if (SentrySDK.isEnabled()) SentrySDK.logger() else null
         })
 
     actual fun init(

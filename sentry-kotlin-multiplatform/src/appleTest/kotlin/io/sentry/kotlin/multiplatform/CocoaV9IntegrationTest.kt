@@ -48,6 +48,26 @@ class CocoaV9IntegrationTest {
     }
 
     @Test
+    fun `manual logger forwards to Cocoa when enableLogs is false`() {
+        var callbacks = 0
+        Sentry.initWithPlatformOptions {
+            it.setDsn("http://public@127.0.0.1:9/1")
+            it.setEnableAutoSessionTracking(false)
+            it.setEnableLogs(false)
+            it.setBeforeSendLog { _ ->
+                callbacks++
+                null
+            }
+        }
+        val logger = Sentry.logger
+        logger.info("manual log")
+        assertEquals(1, callbacks)
+        Sentry.close()
+        logger.info("after close")
+        assertEquals(1, callbacks)
+    }
+
+    @Test
     fun `exception without stack frames has no native stacktrace`() {
         start()
         val builder =
