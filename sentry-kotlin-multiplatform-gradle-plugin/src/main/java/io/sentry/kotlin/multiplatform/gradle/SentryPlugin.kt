@@ -19,6 +19,7 @@ internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
 internal const val SPM4KMP_AUTO_INSTALL_EXTENSION_NAME = "spm"
 internal const val COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME = "commonMain"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
+internal const val KOTLIN_MULTIPLATFORM_PLUGIN_ID = "org.jetbrains.kotlin.multiplatform"
 internal const val SPM4KMP_PLUGIN_ID = "io.github.frankois944.spmForKmp"
 internal const val SPM4KMP_SWIFT_PACKAGE_CONFIG_EXTENSION_NAME = "swiftPackageConfig"
 
@@ -60,8 +61,6 @@ class SentryPlugin : Plugin<Project> {
         spmAppliedFirst: Boolean = false,
     ) {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
-        val hasCocoapodsPlugin =
-            project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
 
         if (sentryExtension.autoInstall.enabled.get()) {
             val autoInstall = sentryExtension.autoInstall
@@ -70,19 +69,25 @@ class SentryPlugin : Plugin<Project> {
                 project.installSentryForKmp(autoInstall.commonMain)
             }
 
-            val useSpmAutoInstall = project.plugins.hasPlugin(SPM4KMP_PLUGIN_ID) && autoInstall.spm.enabled.get()
-            if (useSpmAutoInstall) {
-                if (spmAppliedFirst) {
-                    throw GradleException(
-                        "Sentry Cocoa auto-install requires the Sentry plugin to be applied before spm4Kmp. " +
-                            "Move the Sentry plugin before spm4Kmp in your plugins block.",
-                    )
+            when (project.resolveAppleDependencyProvider(autoInstall)) {
+                AppleDependencyProvider.SWIFT_PM ->
+                    if (hostIsMac) OfficialSwiftPmIntegration.install(project, project.officialSwiftPmExtension()!!)
+                AppleDependencyProvider.SPM4KMP -> {
+                    if (spmAppliedFirst) {
+                        throw GradleException(
+                            "Sentry Cocoa auto-install requires the Sentry plugin to be applied before spm4Kmp. " +
+                                "Move the Sentry plugin before spm4Kmp in your plugins block.",
+                        )
+                    }
+                    project.installSentryForSpm4Kmp(autoInstall, hostIsMac)
                 }
-                project.installSentryForSpm4Kmp(autoInstall, hostIsMac)
-            } else if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
-                project.installSentryForCocoapods(autoInstall.cocoapods)
+                AppleDependencyProvider.COCOAPODS ->
+                    if (hostIsMac) project.installSentryForCocoapods(autoInstall.cocoapods)
+                else -> Unit
             }
         }
+
+        project.warnOnConflictingAppleDependencies()
 
         maybeLinkCocoaFramework(
             project,
@@ -138,14 +143,16 @@ private fun maybeLinkCocoaFramework(
     project.gradle.taskGraph.whenReady { graph ->
         val requestedTargets = getActiveTargets(project, appleTargets, graph)
         val (spmCoveredTargets, activeTargets) =
-            requestedTargets.partition { project.isSentryConfiguredViaSpm4Kmp(it.name) }
+            requestedTargets.partition {
+                project.isSentryConfiguredViaSpm4Kmp(it.name) || project.isSentryConfiguredViaOfficialSwiftPm(it)
+            }
 
         if (activeTargets.isEmpty()) {
             val message =
                 if (requestedTargets.isEmpty()) {
                     "No Apple compile task scheduled for this build"
                 } else {
-                    "Sentry Cocoa is provided by spm4Kmp for all requested Apple targets"
+                    "Sentry Cocoa is provided by SwiftPM for all requested Apple targets"
                 }
             project.logger.lifecycle("$message - skipping Sentry Cocoa framework linking")
             return@whenReady
@@ -153,7 +160,7 @@ private fun maybeLinkCocoaFramework(
 
         if (spmCoveredTargets.isNotEmpty()) {
             project.logger.lifecycle(
-                "Sentry Cocoa is provided by spm4Kmp for targets: ${spmCoveredTargets.map { it.name }}",
+                "Sentry Cocoa is provided by SwiftPM for targets: ${spmCoveredTargets.map { it.name }}",
             )
         }
 
