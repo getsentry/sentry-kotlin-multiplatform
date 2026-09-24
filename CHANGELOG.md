@@ -6,15 +6,25 @@
 
 - Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
 - Convert `watchosArm32` to a no-op stub: builds remain supported, but Sentry no longer captures events, crashes, or logs on this target. Cocoa 9.28.0 no longer ships an armv7k slice.
-- CocoaPods is unsupported. Use SwiftPM through spm4Kmp; the retired CocoaPods sample is excluded from active builds and validation.
+- CocoaPods is unsupported. Use SwiftPM through spm4Kmp; the retired CocoaPods sample and its run configurations have been removed.
 - Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
+- On Apple, `captureUserFeedback` now sends a separate native `SentryFeedback` event with its own event ID, linked to the original error through `associatedEventId`. The common API is unchanged. Feedback uses source `custom`, preserves name/email, and maps comments to the message (null becomes an empty string).
 
 ### Fixes
 
-- Preserve the common `captureUserFeedback` API on Apple by mapping to native `SentryFeedback` with source `custom`, comments as the message (null becomes an empty string), the original event ID as `associatedEventId`, and the existing name/email.
 - Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
 - Keep unhandled-exception hooks from being wrapped repeatedly across SDK restarts, and retain debug images referenced by exception frames.
 - Recognize Cocoa 9 watchOS framework slice names in the Gradle plugin.
+
+### Internal
+
+- Use Cocoa’s hybrid `SentrySDK.internal` API for SDK metadata, envelope storage, and debug images through a Swift adapter.
+
+### Dependencies
+
+- Bump Cocoa SDK from `8.58.2` to `9.28.0` ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567)).
+
+## 0.28.0-beta.1
 
 ### Features
 
@@ -25,14 +35,11 @@
 
 ### Internal
 
-- Use Cocoa’s hybrid `SentrySDK.internal` API for SDK metadata, envelope storage, and debug images through a Swift adapter.
-
 - Build the Apple SDK against Sentry Cocoa via SwiftPM (spm4Kmp) instead of the Kotlin CocoaPods plugin ([#557](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/557))
-  - The published klibs keep the `cocoapods.Sentry` import prefix, preserving the existing Kotlin import namespace
+  - The published klibs keep the `cocoapods.Sentry` import prefix, so no changes are required for consumers
 
 ### Dependencies
 
-- Bump Cocoa SDK from `8.58.2` to `9.28.0` ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567)).
 - Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.9.1` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
   - Set Android `compileSdk` and sample app `targetSdk` to `36`, matching Sentry Android `8.41.0`.
 - Bump Java SDK from v8.41.0 to v8.57.0 ([#568](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/568))

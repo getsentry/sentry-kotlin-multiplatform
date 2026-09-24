@@ -81,8 +81,11 @@ internal fun Throwable.asSentryEnvelope(): CocoapodsSentryEnvelope? {
     val client = hub.getClient() ?: return null
     // A null result means Cocoa sampled or filtered the event. Do not persist the original.
     val preparedEvent =
-        // This exception is from the running process, so apply its live scope. Cocoa uses
-        // isFatalEvent=true here for recovered crashes whose scope must not be overwritten.
+        // This fallback runs when Cocoa's native exception handler is unavailable, e.g. under a debugger.
+        // Use false to attach the crashing process's live scope; true is for recovered crashes.
+        // The event remains fatal and unhandled, and its fatal flag is restored below.
+        // This skips onCrashedLastRun; replaying the cached envelope on the next launch also bypasses
+        // that callback. The normal native crash-reporting path is unaffected.
         client.prepareEvent(event, hub.scope, alwaysAttachStacktrace = false, isFatalEvent = false)
             ?: return null
     preparedEvent.isFatalEvent = true
@@ -148,7 +151,7 @@ private fun NSException.asSentryException(
             threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
                 val stacktrace =
                     NSExceptionKt_SentryStacktraceFromNSException(stacktraceBuilder, this@asSentryException)
-                stacktrace as CocoapodsSentryStacktrace
+                stacktrace as CocoapodsSentryStacktrace?
             }
     }
 

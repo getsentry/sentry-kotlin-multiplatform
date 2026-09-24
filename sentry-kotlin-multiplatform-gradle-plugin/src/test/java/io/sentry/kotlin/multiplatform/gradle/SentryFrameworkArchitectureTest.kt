@@ -22,7 +22,7 @@ class SentryFrameworkArchitectureTest {
         @JvmStatic
         fun cocoaVersions(): List<Arguments> =
             listOf("8.37.0", "8.38.0", "8.58.2", "9.28.0").flatMap { version ->
-                listOf(true, false).map { isStatic -> Arguments.of(version, isStatic) }
+                listOf(Arguments.of(version, true), Arguments.of(version, false))
             }
     }
 

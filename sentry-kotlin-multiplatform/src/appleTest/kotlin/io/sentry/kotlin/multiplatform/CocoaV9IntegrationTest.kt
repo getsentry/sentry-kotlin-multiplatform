@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform
 
+import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
 import Internal.Sentry.SentryCrashMonitorTypeCPPException
 import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentryDebugMeta
@@ -10,8 +11,10 @@ import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.SentryThread
 import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.nsexception.KOTLIN_CRASH_TAG
+import io.sentry.kotlin.multiplatform.nsexception.ThrowableNSException
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
+import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 import kotlin.native.OsFamily
 import kotlin.native.Platform
@@ -42,6 +45,23 @@ class CocoaV9IntegrationTest {
             it.setSampleRate(NSNumber(sampleRate))
             it.setBeforeSend(beforeSend)
         }
+    }
+
+    @Test
+    fun `exception without stack frames has no native stacktrace`() {
+        start()
+        val builder =
+            assertNotNull(
+                Internal.Sentry.SentrySDKInternal
+                    .currentHub()
+                    .getClient()
+                    ?.threadInspector
+                    ?.stacktraceBuilder,
+            )
+        val exception = NSException(name = "EmptyStack", reason = "No captured frames", userInfo = null)
+        assertNull(NSExceptionKt_SentryStacktraceFromNSException(builder, exception))
+        val emptyStack = ThrowableNSException("EmptyStack", "No captured frames", emptyList())
+        assertNull(NSExceptionKt_SentryStacktraceFromNSException(builder, emptyStack))
     }
 
     @Test

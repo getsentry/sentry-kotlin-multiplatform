@@ -17,10 +17,11 @@ class CocoaFrameworkLinker(
     private val binaryLinker: FrameworkLinker,
 ) {
     fun configure(appleTargets: List<KotlinNativeTarget>) {
-        appleTargets.forEach { target ->
+        for (target in appleTargets) {
+            // Cocoa 9 no longer ships armv7k; KMP retains this target as a no-op SDK.
             if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
                 logger.info("Skipping Sentry Cocoa linking for no-op target ${target.name}.")
-                return@forEach
+                continue
             }
             try {
                 logger.info(

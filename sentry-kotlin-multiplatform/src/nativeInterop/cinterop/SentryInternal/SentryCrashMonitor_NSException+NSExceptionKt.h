@@ -17,15 +17,19 @@
 #import <SentryCrashStackCursor.h>
 #import <SentryStacktraceBuilder.h>
 #include <stdlib.h>
-#include <assert.h>
 
 // Similar to how Sentry converts stacktraces from NSExceptions
 // https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/SentryCrash/Recording/Monitors/SentryCrashMonitor_NSException.m#L60
-SentryStacktrace *NSExceptionKt_SentryStacktraceFromNSException(SentryStacktraceBuilder *builder, NSException *exception) {
+SentryStacktrace *_Nullable NSExceptionKt_SentryStacktraceFromNSException(SentryStacktraceBuilder *builder, NSException *exception) {
     NSArray *addresses = [exception callStackReturnAddresses];
     NSUInteger numFrames = addresses.count;
-    uintptr_t *callstack = malloc(MAX(numFrames, 1) * sizeof(*callstack));
-    assert(callstack != NULL);
+    if (numFrames == 0) {
+        return NULL;
+    }
+    uintptr_t *callstack = malloc(numFrames * sizeof(*callstack));
+    if (callstack == NULL) {
+        return NULL;
+    }
     for (NSUInteger i = 0; i < numFrames; i++) {
         callstack[i] = (uintptr_t)[addresses[i] unsignedLongLongValue];
     }

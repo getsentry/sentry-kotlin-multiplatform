@@ -34,7 +34,7 @@ Before committing, ensure these pass:
 │       ├── iosMain/                          # iOS-specific
 │       └── commonTvWatchMacOsMain/           # tvOS/watchOS/macOS-specific
 ├── sentry-kotlin-multiplatform-gradle-plugin/ # Optional Gradle Plugin
-├── sentry-samples/                           # Sample apps (CocoaPods & SPM)
+├── sentry-samples/                           # Sample app (SPM)
 └── buildSrc/                                 # Build configuration (Config.kt)
 ```
 
