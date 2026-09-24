@@ -3,13 +3,10 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.SentryLogEventAttributeValue
 
 /** Converts shared attributes for native logging and metrics calls. */
-internal fun SentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes {
-    val map = mutableMapOf<String, Any>()
-    forEach { (key, attrValue) ->
-        map[key] = attrValue.value
-    }
-    return JvmSentryAttributes.fromMap(map)
-}
+internal fun SentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes =
+    JvmSentryAttributes.fromMap(
+        mapValues { it.value.value },
+    )
 
 /**
  * Converts native scalar attributes to KMP SentryAttributes.

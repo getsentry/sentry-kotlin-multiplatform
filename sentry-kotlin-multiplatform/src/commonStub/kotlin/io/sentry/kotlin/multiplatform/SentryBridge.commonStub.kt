@@ -56,9 +56,7 @@ internal actual class SentryBridge actual constructor(
         // No-op
     }
 
-    private val metrics: SentryMetrics = NoOpSentryMetrics
-
-    actual fun metrics(): SentryMetrics = metrics
+    actual fun metrics(): SentryMetrics = NoOpSentryMetrics
 
     actual fun logger(): SentryLogger = NoOpSentryLogger()
 

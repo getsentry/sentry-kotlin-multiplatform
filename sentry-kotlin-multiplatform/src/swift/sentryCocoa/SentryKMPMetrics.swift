@@ -102,7 +102,12 @@ import Sentry
         }
         set {
             // Only scalar attributes are visible to Kotlin. Preserve native arrays and future types.
-            for key in attributes.keys { metric.attributes.removeValue(forKey: key) }
+            metric.attributes = metric.attributes.filter { _, value in
+                switch value {
+                case .string, .boolean, .integer, .double: return false
+                default: return true
+                }
+            }
             for (key, attribute) in newValue {
                 switch attribute.type {
                 case "string":

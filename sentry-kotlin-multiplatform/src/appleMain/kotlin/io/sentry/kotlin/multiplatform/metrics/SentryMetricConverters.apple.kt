@@ -1,11 +1,9 @@
 package io.sentry.kotlin.multiplatform.metrics
 
-import cocoapods.Sentry.SentryAttribute
 import cocoapods.sentryCocoa.SentryKMPMetric
 import cocoapods.sentryCocoa.SentryKMPMetrics
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
-import io.sentry.kotlin.multiplatform.SentryAttributes
-import platform.Foundation.NSNumber
+import io.sentry.kotlin.multiplatform.toKmpSentryAttributes
 
 internal fun SentryKMPMetric.toKmpMetric(): SentryMetric? {
     val metricValue =
@@ -15,17 +13,7 @@ internal fun SentryKMPMetric.toKmpMetric(): SentryMetric? {
             "distribution" -> SentryMetricValue.Distribution(doubleValue())
             else -> return null
         }
-    val converted = SentryAttributes.empty()
-    attributes().forEach { (key, raw) ->
-        val attribute = raw as? SentryAttribute ?: return@forEach
-        val name = key as? String ?: return@forEach
-        when (attribute.type()) {
-            "string" -> converted[name] = attribute.value() as String
-            "boolean" -> converted[name] = (attribute.value() as NSNumber).boolValue
-            "integer" -> converted[name] = (attribute.value() as NSNumber).longLongValue
-            "double" -> converted[name] = (attribute.value() as NSNumber).doubleValue
-        }
-    }
+    val converted = attributes().toKmpSentryAttributes()
     return SentryMetric(timestamp(), name(), metricValue, unit(), converted, traceId(), spanId())
 }
 
