@@ -59,7 +59,7 @@ class CocoaSentryMetricsTest {
         metrics.distribution("distribution", 12.5, "millisecond")
         assertEquals(
             listOf(
-                SentryMetricValue.Counter(3),
+                SentryMetricValue.Counter(3.0),
                 SentryMetricValue.Gauge(-2.0),
                 SentryMetricValue.Distribution(12.5),
             ),
@@ -122,6 +122,30 @@ class CocoaSentryMetricsTest {
     }
 
     @Test
+    fun `callback round trip preserves exact native unsigned counters`() {
+        val is32Bit = Long.MAX_VALUE.convert<NSInteger>().toLong() != Long.MAX_VALUE
+        val values = if (is32Bit) listOf(UInt.MAX_VALUE.toULong()) else listOf(MAX_EXACT_COUNTER.toULong() + 1u, ULong.MAX_VALUE)
+        val observed = mutableListOf<ULong>()
+        Sentry.initWithPlatformOptions {
+            it.setDsn("http://public@127.0.0.1:9/1")
+            it.setEnableAutoSessionTracking(false)
+            SentryKMPMetrics.configure(it as objcnames.classes.SentryOptions) { metric ->
+                val native = assertNotNull(metric)
+                val original = native.counterValue()
+                val shared = assertNotNull(native.toKmpMetric())
+                val result = assertNotNull(applyMetricCallback({ it }, shared))
+                assertTrue(native.updateFrom(result))
+                assertEquals(original, native.counterValue())
+                assertFalse(native.updateFrom(SentryMetric(0.0, "fractional", SentryMetricValue.Counter(0.5), traceId = "ignored")))
+                observed += native.counterValue()
+                null
+            }
+        }
+        values.forEach { SentryKMPMetrics.count("native", it, emptyMap<Any?, cocoapods.Sentry.SentryAttribute>()) }
+        assertEquals(values, observed)
+    }
+
+    @Test
     fun `native options clear stale callbacks`() {
         var calls = 0
         Sentry.initWithPlatformOptions {
@@ -166,7 +190,7 @@ class CocoaSentryMetricsTest {
             this["small"] = 42L
         }
         assertEquals(if (is32Bit) 1 else 2, captured.size)
-        assertEquals(SentryMetricValue.Counter(UInt.MAX_VALUE.toLong()), captured.last().value)
+        assertEquals(SentryMetricValue.Counter(UInt.MAX_VALUE.toDouble()), captured.last().value)
         assertEquals(42L, captured.last().attributes["small"]?.longOrNull)
         assertEquals(if (is32Bit) null else Long.MAX_VALUE, captured.last().attributes["large"]?.longOrNull)
     }

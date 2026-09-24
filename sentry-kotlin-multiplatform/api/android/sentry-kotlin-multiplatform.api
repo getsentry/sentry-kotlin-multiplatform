@@ -461,12 +461,12 @@ public abstract class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
 }
 
 public final class io/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter : io/sentry/kotlin/multiplatform/metrics/SentryMetricValue {
-	public fun <init> (J)V
-	public final fun component1 ()J
-	public final fun copy (J)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;
-	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;JILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;
+	public static synthetic fun copy$default (Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;DILjava/lang/Object;)Lio/sentry/kotlin/multiplatform/metrics/SentryMetricValue$Counter;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getValue ()J
+	public final fun getValue ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

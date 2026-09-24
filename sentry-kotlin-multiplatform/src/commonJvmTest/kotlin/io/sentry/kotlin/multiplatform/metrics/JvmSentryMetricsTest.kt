@@ -83,6 +83,31 @@ class JvmSentryMetricsTest {
     }
 
     @Test
+    fun `callback preserves fractional and large native counters`() {
+        val values = listOf(0.5, MAX_EXACT_COUNTER.toDouble() + 2.0, Double.MAX_VALUE)
+        val observed = mutableListOf<Double>()
+        val options =
+            NativeOptions().apply {
+                applyJvmBaseOptions(
+                    SentryOptions().apply {
+                        metrics.beforeSend = {
+                            observed += (it.value as SentryMetricValue.Counter).value
+                            it.attributes["processed"] = true
+                            it
+                        }
+                    },
+                )
+            }
+        values.forEach { value ->
+            val native = SentryMetricsEvent(SentryId(), 123.0, "native", "counter", value)
+            assertSame(native, assertNotNull(options.metrics.beforeSend).execute(native, Hint()))
+            assertEquals(value, native.value)
+            assertEquals(true, native.attributes?.get("processed")?.value)
+        }
+        assertEquals(values, observed)
+    }
+
+    @Test
     fun `native callback drops null exceptions and invalid replacements`() {
         val native = SentryMetricsEvent(SentryId(), 0.0, "metric", "counter", 1.0)
         val callbacks: List<(SentryMetric) -> SentryMetric?> =
@@ -131,7 +156,7 @@ class JvmSentryMetricsTest {
         metrics.distribution("distribution", 12.5, "millisecond")
         assertEquals(
             listOf(
-                SentryMetricValue.Counter(3),
+                SentryMetricValue.Counter(3.0),
                 SentryMetricValue.Gauge(-2.0),
                 SentryMetricValue.Distribution(12.5),
             ),
@@ -200,6 +225,8 @@ class JvmSentryMetricsTest {
         Sentry.metrics.count("count", 2) { this["secret"] = "remove" }
         Sentry.metrics.gauge("gauge", 4.5, "custom")
         Sentry.metrics.distribution("distribution", 3.0, "millisecond")
+        NativeSentry.metrics().count("native fractional", 0.5)
+        NativeSentry.metrics().count("native large", MAX_EXACT_COUNTER.toDouble() + 2.0)
         Sentry.metrics.count("drop")
         NativeSentry.flush(5_000)
         val events =
@@ -212,15 +239,15 @@ class JvmSentryMetricsTest {
                     }
                 }
             }
-        assertEquals(listOf("count", "gauge", "distribution"), events.map { it.name })
+        assertEquals(listOf("count", "gauge", "distribution", "native fractional", "native large"), events.map { it.name })
         events.forEach {
             assertEquals(transaction.spanContext.traceId, it.traceId)
             assertEquals(transaction.spanContext.spanId, it.spanId)
             assertEquals(true, it.attributes?.get("processed")?.value)
             assertFalse(it.attributes.orEmpty().containsKey("secret"))
         }
-        assertEquals(listOf(2.0, 4.5, 3.0), events.map { it.value })
-        assertEquals(listOf(null, "custom", "millisecond"), events.map { it.unit })
+        assertEquals(listOf(2.0, 4.5, 3.0, 0.5, MAX_EXACT_COUNTER.toDouble() + 2.0), events.map { it.value })
+        assertEquals(listOf(null, "custom", "millisecond", null, null), events.map { it.unit })
         transaction.finish()
     }
 }

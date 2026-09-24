@@ -8,7 +8,8 @@ internal abstract class BaseSentryMetrics : SentryMetrics {
         value: Long,
         configure: SentryAttributes.() -> Unit,
     ) {
-        record(name, SentryMetricValue.Counter(value), null, configure)
+        if (value !in 0..MAX_EXACT_COUNTER) return
+        record(name, SentryMetricValue.Counter(value.toDouble()), null, configure)
     }
 
     override fun gauge(

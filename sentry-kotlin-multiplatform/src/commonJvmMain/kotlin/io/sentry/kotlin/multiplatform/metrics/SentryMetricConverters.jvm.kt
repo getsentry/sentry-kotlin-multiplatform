@@ -8,11 +8,7 @@ import io.sentry.kotlin.multiplatform.updateJvmAttributes
 internal fun SentryMetricsEvent.toKmpMetric(): SentryMetric? {
     val metricValue =
         when (type) {
-            "counter" -> {
-                if (!value.isFinite() || value % 1.0 != 0.0) return null
-                if (value < 0 || value > MAX_EXACT_COUNTER.toDouble()) return null
-                SentryMetricValue.Counter(value.toLong())
-            }
+            "counter" -> SentryMetricValue.Counter(value)
             "gauge" -> SentryMetricValue.Gauge(value)
             "distribution" -> SentryMetricValue.Distribution(value)
             else -> return null
@@ -30,7 +26,7 @@ internal fun SentryMetricsEvent.updateFrom(
     when (val number = metric.value) {
         is SentryMetricValue.Counter -> {
             type = "counter"
-            value = number.value.toDouble()
+            value = number.value
         }
         is SentryMetricValue.Gauge -> {
             type = "gauge"

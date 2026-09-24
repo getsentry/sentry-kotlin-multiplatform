@@ -28,7 +28,7 @@ class SentryMetricsTest {
         metrics.distribution("distribution", 0.5, "millisecond")
         assertEquals(
             listOf(
-                SentryMetricValue.Counter(1),
+                SentryMetricValue.Counter(1.0),
                 SentryMetricValue.Gauge(-2.5),
                 SentryMetricValue.Distribution(0.5),
             ),
@@ -57,20 +57,33 @@ class SentryMetricsTest {
         assertTrue(metrics.records.isEmpty())
         metrics.count("zero", 0)
         metrics.count("max", MAX_EXACT_COUNTER)
-        assertEquals(listOf(SentryMetricValue.Counter(0), SentryMetricValue.Counter(MAX_EXACT_COUNTER)), metrics.records.map { it.value })
+        assertEquals(
+            listOf(SentryMetricValue.Counter(0.0), SentryMetricValue.Counter(MAX_EXACT_COUNTER.toDouble())),
+            metrics.records.map {
+                it.value
+            },
+        )
     }
 
     @Test
     fun `callback failure and invalid replacement drop the metric`() {
-        val metric = SentryMetric(0.0, "metric", SentryMetricValue.Counter(1), traceId = "trace")
+        val metric = SentryMetric(0.0, "metric", SentryMetricValue.Counter(1.0), traceId = "trace")
         assertNull(applyMetricCallback({ throw IllegalStateException("callback") }, metric))
         assertNull(applyMetricCallback({ null }, metric))
         assertNull(
             applyMetricCallback({
-                it.value = SentryMetricValue.Counter(-1)
+                it.value = SentryMetricValue.Counter(-1.0)
                 it
             }, metric),
         )
+        listOf(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY).forEach { invalid ->
+            assertNull(
+                applyMetricCallback({
+                    it.value = SentryMetricValue.Counter(invalid)
+                    it
+                }, metric),
+            )
+        }
         assertNull(SentryMetricOptions().beforeSend)
     }
 }

@@ -10,10 +10,7 @@ import platform.Foundation.NSNumber
 internal fun SentryKMPMetric.toKmpMetric(): SentryMetric? {
     val metricValue =
         when (type()) {
-            "counter" -> {
-                if (counterValue() > MAX_EXACT_COUNTER.toULong()) return null
-                SentryMetricValue.Counter(counterValue().toLong())
-            }
+            "counter" -> SentryMetricValue.Counter(doubleValue())
             "gauge" -> SentryMetricValue.Gauge(doubleValue())
             "distribution" -> SentryMetricValue.Distribution(doubleValue())
             else -> return null
@@ -36,7 +33,7 @@ internal fun SentryKMPMetric.updateFrom(metric: SentryMetric): Boolean {
     setName(metric.name)
     setUnit(metric.unit)
     when (val number = metric.value) {
-        is SentryMetricValue.Counter -> if (!setCounter(number.value.toULong())) return false
+        is SentryMetricValue.Counter -> if (!setCounter(number.value)) return false
         is SentryMetricValue.Gauge -> setGauge(number.value)
         is SentryMetricValue.Distribution -> setDistribution(number.value)
     }

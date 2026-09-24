@@ -78,7 +78,9 @@ import Sentry
         @unknown default: return .nan
         }
     }
-    public func setCounter(_ value: UInt64) -> Bool {
+    public func setCounter(_ value: Double) -> Bool {
+        // The Kotlin callback uses Double. Preserve the exact native integer when unchanged.
+        if case .counter(let current) = metric.value, Double(current) == value { return true }
         guard let nativeValue = UInt(exactly: value) else { return false }
         metric.value = .counter(nativeValue)
         return true
