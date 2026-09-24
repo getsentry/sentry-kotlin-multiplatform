@@ -13,8 +13,12 @@ abstract class AutoInstallExtension
     ) {
         private val objects = project.objects
 
+        /** Apple dependency provider selection. */
+        val apple: AppleAutoInstallExtension = objects.newInstance(AppleAutoInstallExtension::class.java, project)
+
         /**
-         * Enable auto-installation of the Sentry dependencies through [Spm4KmpAutoInstallExtension]
+         * Enable auto-installation of Sentry dependencies. [AppleAutoInstallExtension] selects the Apple provider.
+         * Provider settings are available through [Spm4KmpAutoInstallExtension]
          * and [SourceSetAutoInstallExtension].
          *
          * Disabling this also removes the plugin ordering requirement for spm4Kmp auto-install.

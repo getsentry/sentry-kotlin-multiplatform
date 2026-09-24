@@ -1,0 +1,4 @@
+.swiftpm-locks/**
+!.swiftpm-locks/**/
+!.swiftpm-locks/**/Package.resolved
+.swiftpm-locks/**/.build/

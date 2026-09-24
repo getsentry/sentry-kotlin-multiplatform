@@ -16,7 +16,8 @@ abstract class Spm4KmpAutoInstallExtension
         /**
          * Enable auto-installation of the Sentry Cocoa SDK Swift package via spm4Kmp.
          *
-         * Adds Sentry Cocoa to every Apple target when spm4Kmp is applied and no user-defined Sentry
+         * Adds Sentry Cocoa to Apple targets when spm4Kmp is selected by [AppleAutoInstallExtension.provider]
+         * and no user-defined Sentry
          * package config exists.
          *
          * CocoaPods is unsupported with Sentry Cocoa 9. Remove any manually declared Sentry pod
