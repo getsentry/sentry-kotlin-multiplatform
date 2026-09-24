@@ -19,8 +19,8 @@ abstract class Spm4KmpAutoInstallExtension
          * Adds Sentry Cocoa to every Apple target when spm4Kmp is applied and no user-defined Sentry
          * package config exists.
          *
-         * Takes precedence over CocoaPods auto-install. Remove any manually declared Sentry pod
-         * when adopting SPM, or disable this option to keep using CocoaPods.
+         * CocoaPods is unsupported with Sentry Cocoa 9. Remove any manually declared Sentry pod
+         * when adopting spm4Kmp. Other CocoaPods dependencies can remain.
          *
          * Requires the Sentry plugin to be applied before spm4Kmp unless disabled.
          * Can be set anywhere in the build script.

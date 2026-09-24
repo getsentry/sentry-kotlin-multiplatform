@@ -4,10 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.execution.TaskExecutionGraph
-import org.gradle.api.plugins.ExtensionAware
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
-import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.slf4j.LoggerFactory
@@ -15,7 +12,6 @@ import org.slf4j.LoggerFactory
 internal const val SENTRY_EXTENSION_NAME = "sentryKmp"
 internal const val LINKER_EXTENSION_NAME = "linker"
 internal const val AUTO_INSTALL_EXTENSION_NAME = "autoInstall"
-internal const val COCOAPODS_AUTO_INSTALL_EXTENSION_NAME = "cocoapods"
 internal const val SPM4KMP_AUTO_INSTALL_EXTENSION_NAME = "spm"
 internal const val COMMON_MAIN_AUTO_INSTALL_EXTENSION_NAME = "commonMain"
 internal const val KOTLIN_EXTENSION_NAME = "kotlin"
@@ -34,10 +30,6 @@ class SentryPlugin : Plugin<Project> {
                 )
             project.extensions.add(LINKER_EXTENSION_NAME, sentryExtension.linker)
             project.extensions.add(AUTO_INSTALL_EXTENSION_NAME, sentryExtension.autoInstall)
-            project.extensions.add(
-                COCOAPODS_AUTO_INSTALL_EXTENSION_NAME,
-                sentryExtension.autoInstall.cocoapods,
-            )
             project.extensions.add(
                 SPM4KMP_AUTO_INSTALL_EXTENSION_NAME,
                 sentryExtension.autoInstall.spm,
@@ -60,8 +52,6 @@ class SentryPlugin : Plugin<Project> {
         spmAppliedFirst: Boolean = false,
     ) {
         val sentryExtension = project.extensions.getByType(SentryExtension::class.java)
-        val hasCocoapodsPlugin =
-            project.plugins.findPlugin(KotlinCocoapodsPlugin::class.java) != null
 
         if (sentryExtension.autoInstall.enabled.get()) {
             val autoInstall = sentryExtension.autoInstall
@@ -79,14 +69,11 @@ class SentryPlugin : Plugin<Project> {
                     )
                 }
                 project.installSentryForSpm4Kmp(autoInstall, hostIsMac)
-            } else if (hasCocoapodsPlugin && autoInstall.cocoapods.enabled.get() && hostIsMac) {
-                project.installSentryForCocoapods(autoInstall.cocoapods)
             }
         }
 
         maybeLinkCocoaFramework(
             project,
-            externalProvider = project.externalCocoaFrameworkProvider(),
             hostIsMac,
         )
     }
@@ -98,29 +85,12 @@ class SentryPlugin : Plugin<Project> {
     }
 }
 
-/**
- * Treat the CocoaPods plugin as the framework provider: Sentry may be declared in a Podfile
- * rather than [CocoapodsExtension.pods]. Check spm4Kmp coverage separately for each target.
- */
-internal fun Project.externalCocoaFrameworkProvider(): String? {
-    val hasCocoapodsPlugin = plugins.hasPlugin(KotlinCocoapodsPlugin::class.java)
-    return if (hasCocoapodsPlugin) "CocoaPods" else null
-}
-
 private fun maybeLinkCocoaFramework(
     project: Project,
-    externalProvider: String?,
     hostIsMac: Boolean,
 ) {
     if (!hostIsMac) {
         project.logger.info("Host is not macOS - skipping Sentry Cocoa framework linking setup.")
-        return
-    }
-
-    if (externalProvider != null) {
-        project.logger.lifecycle(
-            "Sentry Cocoa is provided by $externalProvider - skipping Sentry Cocoa framework linking",
-        )
         return
     }
 
@@ -214,28 +184,3 @@ internal fun Project.installSentryForKmp(commonMainAutoInstallExtension: SourceS
     val sentryVersion = commonMainAutoInstallExtension.sentryKmpVersion.get()
     commonMain?.dependencies { api("io.sentry:sentry-kotlin-multiplatform:$sentryVersion") }
 }
-
-internal fun Project.installSentryForCocoapods(cocoapodsAutoInstallExtension: CocoapodsAutoInstallExtension) {
-    val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
-    if (kmpExtension !is KotlinMultiplatformExtension || kmpExtension.targets.isEmpty() || !HostManager.hostIsMac) {
-        logger.info("Skipping Cocoapods installation.")
-        return
-    }
-
-    (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
-        val sentryPod = cocoapods.pods.findByName(SENTRY_POD_NAME)
-        if (sentryPod == null) {
-            val cocoaVersion = cocoapodsAutoInstallExtension.sentryCocoaVersion.get()
-            cocoapods.pod(SENTRY_POD_NAME) {
-                version = cocoaVersion
-                linkOnly = true
-                extraOpts += listOf("-compiler-option", "-fmodules")
-            }
-            logger.info("Added the Sentry Cocoa $cocoaVersion pod via CocoaPods auto installation.")
-        } else {
-            logger.info("Sentry pod already configured. Skipping CocoaPods auto installation.")
-        }
-    }
-}
-
-private const val SENTRY_POD_NAME = "Sentry"

@@ -6,7 +6,7 @@
 
 - Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
 - Convert `watchosArm32` to a no-op stub: builds remain supported, but Sentry no longer captures events, crashes, or logs on this target. Cocoa 9.28.0 no longer ships an armv7k slice.
-- CocoaPods is unsupported. Use SwiftPM through spm4Kmp; the retired CocoaPods sample and its run configurations have been removed.
+- CocoaPods installation of Sentry is unsupported. Use SwiftPM through spm4Kmp; remove any Sentry pod declaration and `sentryKmp.autoInstall.cocoapods` configuration. The Gradle plugin no longer installs Sentry pods or treats CocoaPods as a Sentry framework provider. Other CocoaPods dependencies can remain. The retired CocoaPods sample and its run configurations have been removed.
 - Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
 - On Apple, `captureUserFeedback` now sends a separate native `SentryFeedback` event with its own event ID, linked to the original error through `associatedEventId`. The common API is unchanged. Feedback uses source `custom`, preserves name/email, and maps comments to the message (null becomes an empty string).
 

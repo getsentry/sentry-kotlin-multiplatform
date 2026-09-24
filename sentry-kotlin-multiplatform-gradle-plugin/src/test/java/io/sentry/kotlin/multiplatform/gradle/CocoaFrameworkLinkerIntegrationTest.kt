@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStreamWriter
@@ -37,11 +39,13 @@ class CocoaFrameworkLinkerIntegrationTest {
      * Verifies that the Cocoa linker **is** configured when at least one Apple
      * task is present in the task graph.
      */
-    @Test
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
     fun `linker is configured when an Apple task is requested`(
+        withCocoapods: Boolean,
         @TempDir projectDir: File,
     ) {
-        writeBuildFiles(projectDir)
+        writeBuildFiles(projectDir, withCocoapods)
 
         val output = ByteArrayOutputStream()
         defaultRunner(projectDir, output)
@@ -54,11 +58,30 @@ class CocoaFrameworkLinkerIntegrationTest {
             .contains("Start resolving Sentry Cocoa framework paths for target: iosSimulatorArm64")
     }
 
+    @Test
+    fun `obsolete CocoaPods DSL fails with migration guidance`(
+        @TempDir projectDir: File,
+    ) {
+        writeBuildFiles(projectDir)
+        File(projectDir, "build.gradle").appendText(
+            "\nsentryKmp.autoInstall.cocoapods.enabled.set(false)\n",
+        )
+
+        val output = ByteArrayOutputStream()
+        defaultRunner(projectDir, output).withArguments("help").buildAndFail()
+
+        assertThat(output.toString()).contains("Remove sentryKmp.autoInstall.cocoapods")
+        assertThat(output.toString()).contains("use spm4Kmp with autoInstall.spm instead")
+    }
+
     // ---------------------------------------------------------------------
     // test-fixture helpers
     // ---------------------------------------------------------------------
 
-    private fun writeBuildFiles(dir: File) {
+    private fun writeBuildFiles(
+        dir: File,
+        withCocoapods: Boolean = false,
+    ) {
         // -----------------------------------------------------------------
         // Create a fake XCFramework on disk so that the CustomPathStrategy
         // can resolve a valid framework path even on CI machines where SPM
@@ -95,6 +118,7 @@ class CocoaFrameworkLinkerIntegrationTest {
 
             apply plugin: 'org.jetbrains.kotlin.multiplatform'
             apply plugin: 'io.sentry.kotlin.multiplatform.gradle'
+            ${if (withCocoapods) "apply plugin: 'org.jetbrains.kotlin.native.cocoapods'" else ""}
 
             repositories {
               google()
