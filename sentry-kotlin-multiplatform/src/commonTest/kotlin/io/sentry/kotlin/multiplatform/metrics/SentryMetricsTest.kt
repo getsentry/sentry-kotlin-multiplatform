@@ -1,0 +1,89 @@
+package io.sentry.kotlin.multiplatform.metrics
+
+import io.sentry.kotlin.multiplatform.SentryAttributes
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+
+class SentryMetricsTest {
+    private class Recorder : BaseSentryMetrics() {
+        val records = mutableListOf<SentryMetric>()
+
+        override fun capture(
+            name: String,
+            value: SentryMetricValue,
+            unit: String?,
+            attributes: SentryAttributes,
+        ) {
+            records += SentryMetric(0.0, name, value, unit, attributes, "trace")
+        }
+    }
+
+    @Test
+    fun `records all operations with independent attributes and custom units`() {
+        val metrics = Recorder()
+        metrics.count("count") { this["count"] = 42L }
+        metrics.gauge("gauge", -2.5, "connection") { this["enabled"] = true }
+        metrics.distribution("distribution", 0.5, "millisecond")
+        assertEquals(
+            listOf(
+                SentryMetricValue.Counter(1.0),
+                SentryMetricValue.Gauge(-2.5),
+                SentryMetricValue.Distribution(0.5),
+            ),
+            metrics.records.map {
+                it.value
+            },
+        )
+        assertEquals(42L, metrics.records[0].attributes["count"]?.longOrNull)
+        assertEquals(true, metrics.records[1].attributes["enabled"]?.booleanOrNull)
+        assertEquals("connection", metrics.records[1].unit)
+        assertEquals("millisecond", metrics.records[2].unit)
+        assertTrue(metrics.records[2].attributes.isEmpty())
+    }
+
+    @Test
+    fun `invalid numbers are ignored before evaluating the builder`() {
+        val metrics = Recorder()
+        val unexpected: SentryAttributes.() -> Unit = { error("must not build invalid metric") }
+        metrics.count("negative", -1, unexpected)
+        metrics.count("imprecise", MAX_EXACT_COUNTER + 1, unexpected)
+        metrics.count("overflow", Long.MAX_VALUE, unexpected)
+        listOf(Double.NaN, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY).forEach {
+            metrics.gauge("invalid", it, configure = unexpected)
+            metrics.distribution("invalid", it, configure = unexpected)
+        }
+        assertTrue(metrics.records.isEmpty())
+        metrics.count("zero", 0)
+        metrics.count("max", MAX_EXACT_COUNTER)
+        assertEquals(
+            listOf(SentryMetricValue.Counter(0.0), SentryMetricValue.Counter(MAX_EXACT_COUNTER.toDouble())),
+            metrics.records.map {
+                it.value
+            },
+        )
+    }
+
+    @Test
+    fun `callback failure and invalid replacement drop the metric`() {
+        val metric = SentryMetric(0.0, "metric", SentryMetricValue.Counter(1.0), traceId = "trace")
+        assertNull(applyMetricCallback({ throw IllegalStateException("callback") }, metric))
+        assertNull(applyMetricCallback({ null }, metric))
+        assertNull(
+            applyMetricCallback({
+                it.value = SentryMetricValue.Counter(-1.0)
+                it
+            }, metric),
+        )
+        listOf(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY).forEach { invalid ->
+            assertNull(
+                applyMetricCallback({
+                    it.value = SentryMetricValue.Counter(invalid)
+                    it
+                }, metric),
+            )
+        }
+        assertNull(SentryMetricOptions().beforeSend)
+    }
+}

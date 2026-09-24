@@ -18,6 +18,7 @@
 
 ### Features
 
+- Add `Sentry.metrics.count`, `gauge`, and `distribution` with typed attributes, units, and `options.metrics.beforeSend` on Apple, Android, and JVM. Unsupported targets remain no-ops ([#572](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/572)).
 - Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
 
 - Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))

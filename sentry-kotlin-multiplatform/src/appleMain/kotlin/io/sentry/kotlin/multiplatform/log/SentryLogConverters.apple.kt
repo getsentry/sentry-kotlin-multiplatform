@@ -2,6 +2,7 @@ package io.sentry.kotlin.multiplatform.log
 
 import cocoapods.Sentry.SentryAttribute
 import io.sentry.kotlin.multiplatform.SentryAttributeValue
+import io.sentry.kotlin.multiplatform.toKmpSentryAttributes
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 import platform.Foundation.timeIntervalSince1970
@@ -48,7 +49,7 @@ internal fun CocoaSentryLog.toKmpSentryLog(): SentryLog =
         level = level().toKmpSentryLogLevel(),
         body = body(),
         severityNumber = severityNumber()?.intValue,
-        attributes = toKmpSentryAttributes(),
+        attributes = attributes().toKmpSentryAttributes(),
     )
 
 /**
@@ -64,26 +65,6 @@ internal fun CocoaSentryLog.updateFrom(
     setLevel(kmpLog.level.toCocoaSentryLogLevel())
     setSeverityNumber(kmpLog.severityNumber?.let { NSNumber(int = it) })
     updateAttributesFrom(kmpLog.attributes, originalKmpAttributes)
-}
-
-/**
- * Converts Cocoa log attributes to KMP SentryAttributes.
- */
-private fun CocoaSentryLog.toKmpSentryAttributes(): KmpSentryAttributes {
-    val kmpAttributes = KmpSentryAttributes.empty()
-    attributes()
-        .mapNotNull { (key, value) ->
-            (key as? String)?.let { it to (value as? SentryAttribute) }
-        }.forEach { (key, attribute) ->
-            attribute ?: return@forEach
-            when (attribute.type()) {
-                "string" -> kmpAttributes[key] = attribute.value() as String
-                "boolean" -> kmpAttributes[key] = (attribute.value() as NSNumber).boolValue
-                "integer" -> kmpAttributes[key] = (attribute.value() as NSNumber).longValue
-                "double" -> kmpAttributes[key] = (attribute.value() as NSNumber).doubleValue
-            }
-        }
-    return kmpAttributes
 }
 
 /**
