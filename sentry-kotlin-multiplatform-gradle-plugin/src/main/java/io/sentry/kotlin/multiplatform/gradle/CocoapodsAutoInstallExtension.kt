@@ -16,9 +16,8 @@ abstract class CocoapodsAutoInstallExtension
         /**
          * Enable auto-installation of the Sentry Cocoa SDK pod.
          *
-         * If the cocoapods plugin is applied and no existing Sentry pod configuration exists, the
-         * Sentry-Cocoa SDK pod will be installed unless spm4Kmp auto-install is enabled.
-         * Manually declared pods are left unchanged.
+         * If CocoaPods is selected by [AppleAutoInstallExtension.provider] and no Sentry pod exists, the
+         * Sentry-Cocoa SDK pod will be installed. Manually declared pods are left unchanged.
          *
          * Defaults to true.
          */

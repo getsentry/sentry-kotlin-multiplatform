@@ -74,7 +74,7 @@ internal fun Project.installSentryForSpm4Kmp(
         return
     }
 
-    if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
+    if (resolveAppleDependencyProvider(autoInstall, validate = false) != AppleDependencyProvider.SPM4KMP) {
         return
     }
 
@@ -135,7 +135,7 @@ internal fun Project.installSentryForSpm4Kmp(
 }
 
 /** Preserve higher consumer minimums, comparing numeric components rather than strings. */
-private fun minimumDeploymentVersion(
+internal fun minimumDeploymentVersion(
     configured: String?,
     required: String,
 ): String {

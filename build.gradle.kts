@@ -217,13 +217,21 @@ spotless {
     lineEndings = LineEnding.UNIX
 
     kotlin {
-        target("**/*.kt")
-        targetExclude("**/generated/**/*.kt")
+        target(
+            fileTree(rootDir) {
+                include("**/*.kt")
+                exclude("**/generated/**", "**/build/**", "**/.gradle/**", "**/.kotlin/**", "**/.swiftpm-locks/**")
+            },
+        )
         ktlint()
     }
     kotlinGradle {
-        target("**/*.kts")
-        targetExclude("**/generated/**/*.kts")
+        target(
+            fileTree(rootDir) {
+                include("**/*.kts")
+                exclude("**/generated/**", "**/build/**", "**/.gradle/**", "**/.kotlin/**", "**/.swiftpm-locks/**")
+            },
+        )
         ktlint()
     }
 }

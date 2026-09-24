@@ -18,6 +18,8 @@
 
 ### Features
 
+- Add Apple dependency provider selection (`AUTO`, `SWIFT_PM`, `SPM4KMP`, `COCOAPODS`, `NONE`) and official Kotlin 2.4 SwiftPM auto-install. AUTO prefers integrations in use in that order; NONE leaves native installation manual without disabling commonMain installation or linking.
+
 - Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
 
 - Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))

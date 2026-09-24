@@ -54,7 +54,14 @@ listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEa
     }
 }
 
-tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+        // Keep the public DSL readable by consumers on older Gradle/Kotlin versions.
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+    }
+}
 
 gradlePlugin {
     plugins {
@@ -63,6 +70,10 @@ gradlePlugin {
             implementationClass = property("implementationClass").toString()
         }
     }
+}
+
+tasks.named("distTar") {
+    dependsOn("publishToMavenLocal")
 }
 
 tasks.named("distZip") {
