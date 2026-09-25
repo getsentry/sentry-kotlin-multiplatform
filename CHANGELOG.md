@@ -27,6 +27,9 @@
 ### Dependencies
 
 - Bump Cocoa SDK from `8.58.2` to `9.28.0` ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567)).
+- Bump Cocoa SDK from v9.28.0 to v9.29.1 ([#578](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/578))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#9291)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/9.28.0...9.29.1)
 
 ## 0.28.0-beta.1
 
