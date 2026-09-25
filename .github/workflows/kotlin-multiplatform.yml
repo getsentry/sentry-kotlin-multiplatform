@@ -7,6 +7,9 @@ on:
   pull_request:
     paths:
       - '.github/workflows/kotlin-multiplatform.yml'
+      - 'settings.gradle.kts'
+      - 'Makefile'
+      - 'scripts/build-apple.sh'
       - 'sentry-kotlin-multiplatform/**'
       - 'sentry-samples/**'
       - 'buildSrc/src/**'
@@ -118,4 +121,4 @@ jobs:
 
       - name: Test samples
         run: |
-          ./gradlew allTests -p sentry-samples
+          ./gradlew :sentry-samples:kmp-app-spm:shared:allTests

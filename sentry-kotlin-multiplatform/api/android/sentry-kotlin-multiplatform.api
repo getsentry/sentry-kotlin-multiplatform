@@ -251,6 +251,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getEnableAppHangTracking ()Z
 	public final fun getEnableAutoSessionTracking ()Z
 	public final fun getEnableCaptureFailedRequests ()Z
+	public final fun getEnablePropagateTraceparent ()Z
 	public final fun getEnableUnhandledCppExceptionMonitoring ()Z
 	public final fun getEnableWatchdogTerminationTracking ()Z
 	public final fun getEnvironment ()Ljava/lang/String;
@@ -260,6 +261,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getLogs ()Lio/sentry/kotlin/multiplatform/log/SentryLogOptions;
 	public final fun getMaxAttachmentSize ()J
 	public final fun getMaxBreadcrumbs ()I
+	public final fun getOrgId ()Ljava/lang/String;
 	public final fun getProguardUuid ()Ljava/lang/String;
 	public final fun getRelease ()Ljava/lang/String;
 	public final fun getSampleRate ()Ljava/lang/Double;
@@ -267,6 +269,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun getSendDefaultPii ()Z
 	public final fun getSessionReplay ()Lio/sentry/kotlin/multiplatform/SentryReplayOptions;
 	public final fun getSessionTrackingIntervalMillis ()J
+	public final fun getStrictTraceContinuation ()Z
 	public final fun getTracesSampleRate ()Ljava/lang/Double;
 	public final fun isAnrEnabled ()Z
 	public final fun setAnrEnabled (Z)V
@@ -285,6 +288,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setEnableAppHangTracking (Z)V
 	public final fun setEnableAutoSessionTracking (Z)V
 	public final fun setEnableCaptureFailedRequests (Z)V
+	public final fun setEnablePropagateTraceparent (Z)V
 	public final fun setEnableUnhandledCppExceptionMonitoring (Z)V
 	public final fun setEnableWatchdogTerminationTracking (Z)V
 	public final fun setEnvironment (Ljava/lang/String;)V
@@ -293,6 +297,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setLogs (Lio/sentry/kotlin/multiplatform/log/SentryLogOptions;)V
 	public final fun setMaxAttachmentSize (J)V
 	public final fun setMaxBreadcrumbs (I)V
+	public final fun setOrgId (Ljava/lang/String;)V
 	public final fun setProguardUuid (Ljava/lang/String;)V
 	public final fun setRelease (Ljava/lang/String;)V
 	public final fun setSampleRate (Ljava/lang/Double;)V
@@ -300,6 +305,7 @@ public class io/sentry/kotlin/multiplatform/SentryOptions {
 	public final fun setSendDefaultPii (Z)V
 	public final fun setSessionReplay (Lio/sentry/kotlin/multiplatform/SentryReplayOptions;)V
 	public final fun setSessionTrackingIntervalMillis (J)V
+	public final fun setStrictTraceContinuation (Z)V
 	public final fun setTracesSampleRate (Ljava/lang/Double;)V
 }
 

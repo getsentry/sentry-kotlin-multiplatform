@@ -19,11 +19,12 @@
 #import <Foundation/Foundation.h>
 #import "SentryThreadInspector.h"
 
-@class SentryEvent, SentryScope, SentryClient;
+@class SentryEvent, SentryScope, SentryClientInternal, SentryOptions;
 
-@interface SentryClient : NSObject
+@interface SentryClientInternal : NSObject
 
-@property (nonatomic, strong, nonnull) SentryThreadInspector *threadInspector;
+@property (nonatomic, strong, nonnull) SentryDefaultThreadInspector *threadInspector;
+@property (nonatomic, strong, nonnull) SentryOptions *options;
 
 - (SentryEvent *_Nullable)prepareEvent:(SentryEvent *_Nonnull)event
                              withScope:(SentryScope *_Nonnull)scope

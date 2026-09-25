@@ -1,15 +1,16 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin(Config.multiplatform)
-    kotlin(Config.cocoapods)
+    id(Config.spmForKmp)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
@@ -18,15 +19,13 @@ plugins {
     `maven-publish`
 }
 
-koverReport {
-    defaults {
-        // adds the contents of the reports of `release` Android build variant to default reports
-        mergeWith("release")
-    }
-}
-
 android {
+    namespace = "io.sentry.kotlin.multiplatform"
     compileSdk = Config.Android.compileSdkVersion
+    // Preserve the public BuildConfig class, which AGP 8 no longer generates by default.
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         minSdk = Config.Android.minSdkVersion
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -43,30 +42,47 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
+    }
 }
 
 kotlin {
     explicitApi()
-    applyDefaultHierarchyTemplate()
+    applyDefaultHierarchyTemplate {
+        // Stub targets do not run shared tests.
+        excludeCompilations {
+            it.name == "test" &&
+                it.target.name in setOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+        }
+        common {
+            group("native") {
+                // The legacy watch target uses commonStub, never the Cocoa-backed Apple sources.
+                excludeCompilations { it.target.name == "watchosArm32" }
+            }
+        }
+    }
 
     androidTarget {
         publishLibraryVariants("release")
     }
     jvm()
-    iosArm64()
-    iosSimulatorArm64()
-    iosX64()
-    watchosSimulatorArm64()
-    watchosArm32()
-    watchosArm64()
-    watchosX64()
-    tvosSimulatorArm64()
-    tvosArm64()
-    tvosX64()
-    macosX64()
-    macosArm64()
+
+    val appleTargets =
+        listOf(
+            iosArm64(),
+            iosSimulatorArm64(),
+            iosX64(),
+            watchosArm64(),
+            watchosX64(),
+            watchosSimulatorArm64(),
+            tvosArm64(),
+            tvosX64(),
+            tvosSimulatorArm64(),
+            macosX64(),
+            macosArm64(),
+        )
     addNoOpTargets()
 
     sourceSets {
@@ -151,67 +167,92 @@ kotlin {
         macosTest.get().dependsOn(commonTvWatchMacOsTest)
         watchosTest.get().dependsOn(commonTvWatchMacOsTest)
 
-        cocoapods {
-            summary = "Official Sentry SDK Kotlin Multiplatform"
-            homepage = "https://github.com/getsentry/sentry-kotlin-multiplatform"
-            version = "0.0.1"
-
-            pod(Config.Libs.sentryCocoa) {
-                version = Config.Libs.sentryCocoaVersion
-                extraOpts += listOf("-compiler-option", "-fmodules")
+        appleTargets.forEach { target ->
+            target.swiftPackageConfig(cinteropName = "sentryCocoa") {
+                // Preserve the cocoapods.Sentry package used by consumers.
+                packageDependencyPrefix = "cocoapods"
+                // SwiftPM skips Cocoa's watchOS simulator binary for spm4Kmp's aarch64
+                // triple. Other targets find their framework via SwiftPM's earlier search path.
+                bridgeSettings {
+                    swiftSettings {
+                        unsafeFlags =
+                            listOf(
+                                "-F",
+                                layout.buildDirectory
+                                    .dir(
+                                        "spmKmpPlugin/sentryCocoa/scratch/artifacts/sentry-cocoa/Sentry/" +
+                                            "Sentry.xcframework/watchos-arm64_x86_64-simulator",
+                                    ).get()
+                                    .asFile.absolutePath,
+                            )
+                    }
+                }
+                minIos = Config.Cocoa.iosDeploymentTarget
+                minMacos = Config.Cocoa.osxDeploymentTarget
+                minTvos = Config.Cocoa.tvosDeploymentTarget
+                minWatchos = Config.Cocoa.watchosDeploymentTarget
+                dependency {
+                    remotePackageVersion(
+                        url = uri("https://github.com/getsentry/sentry-cocoa.git"),
+                        version = Config.Libs.sentryCocoaVersion,
+                        products = {
+                            add("Sentry", exportToKotlin = true)
+                        },
+                    )
+                }
             }
 
-            ios.deploymentTarget = Config.Cocoa.iosDeploymentTarget
-            osx.deploymentTarget = Config.Cocoa.osxDeploymentTarget
-            tvos.deploymentTarget = Config.Cocoa.tvosDeploymentTarget
-            watchos.deploymentTarget = Config.Cocoa.watchosDeploymentTarget
-        }
-
-        listOf(
-            iosArm64(),
-            iosX64(),
-            iosSimulatorArm64(),
-            watchosArm32(),
-            watchosArm64(),
-            watchosX64(),
-            watchosSimulatorArm64(),
-            tvosArm64(),
-            tvosX64(),
-            tvosSimulatorArm64(),
-            macosX64(),
-            macosArm64()
-        ).forEach {
-            it.compilations.getByName("main") {
+            target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
                 }
             }
         }
 
-        // workaround for https://youtrack.jetbrains.com/issue/KT-41709 due to having "Meta" in the class name
-        // if we need to use this class, we'd need to find a better way to work it out
-        targets.withType<KotlinNativeTarget>().matching {
-            it.konanTarget.family.isAppleFamily
-        }.forEach { target ->
-            target.compilations["main"].cinterops["Sentry"].extraOpts(
-                "-compiler-option",
-                "-DSentryMechanismMeta=SentryMechanismMetaUnavailable",
-                "-compiler-option",
-                "-DSentryIntegrationProtocol=SentryIntegrationProtocolUnavailable",
-                "-compiler-option",
-                "-DSentryMetricsAPIDelegate=SentryMetricsAPIDelegateUnavailable"
-            )
-        }
-
         val commonStub by creating {
             dependsOn(commonMain.get())
         }
+        getByName("watchosArm32Main").dependsOn(commonStub)
         jsMain.get().dependsOn(commonStub)
         wasmJsMain.get().dependsOn(commonStub)
         linuxMain.get().dependsOn(commonStub)
         mingwMain.get().dependsOn(commonStub)
     }
 }
+
+// spm4Kmp 1.9.5 uses `aarch64` where SwiftPM expects `arm64`, so it skips the watchOS
+// simulator framework. Copy it manually until the target naming is fixed upstream.
+val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
+val copyWatchosSimulatorSentryFramework =
+    tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
+        dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
+        from(
+            sentryCocoaScratchDir.map {
+                it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_x86_64-simulator/Sentry.framework")
+            },
+        )
+        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
+    }
+tasks
+    .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
+    .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
+
+// Ktor lacks variants for some no-op targets, so exclude their tests and test dependencies.
+val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
+configurations
+    .matching { configuration ->
+        noOpStubTargets.any { configuration.name.startsWith(it) } &&
+            configuration.name.contains("Test")
+    }.configureEach {
+        exclude(group = "io.ktor")
+    }
+tasks
+    .matching { task ->
+        noOpStubTargets.any { task.name.contains(it, ignoreCase = true) } &&
+            (task.name.startsWith("compileTestKotlin") || task.name.endsWith("Test"))
+    }.configureEach {
+        enabled = false
+    }
 
 buildkonfig {
     packageName = "io.sentry.kotlin.multiplatform"
@@ -233,23 +274,16 @@ buildkonfig {
 }
 
 private fun KotlinMultiplatformExtension.addNoOpTargets() {
+    watchosArm32()
     js(IR) {
         browser()
         binaries.library()
-        compilations.remove(compilations.getByName("test"))
     }
     wasmJs {
         browser()
         binaries.library()
-        compilations.remove(compilations.getByName("test"))
     }
-    mingwX64 {
-        compilations.remove(compilations.getByName("test"))
-    }
-    linuxArm64 {
-        compilations.remove(compilations.getByName("test"))
-    }
-    linuxX64 {
-        compilations.remove(compilations.getByName("test"))
-    }
+    mingwX64()
+    linuxArm64()
+    linuxX64()
 }

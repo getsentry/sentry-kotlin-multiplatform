@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("io.sentry.kotlin.multiplatform.gradle")
+    id(Config.spmForKmp)
 }
 
 java {
@@ -24,7 +25,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
@@ -45,6 +46,7 @@ kotlin {
 }
 
 android {
+    namespace = "sample.kmp.app"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -56,8 +58,6 @@ android {
     }
 }
 
-// disabling autoInstall because we are using project(":sentry-kotlin-multiplatform") directly
-// for our sample apps
 sentryKmp {
     autoInstall.commonMain.enabled = false
 }

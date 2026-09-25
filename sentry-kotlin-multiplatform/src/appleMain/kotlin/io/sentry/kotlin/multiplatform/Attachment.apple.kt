@@ -4,7 +4,6 @@ import io.sentry.kotlin.multiplatform.extensions.toByteArray
 import io.sentry.kotlin.multiplatform.extensions.toNSData
 
 public actual class Attachment {
-
     internal lateinit var cocoaAttachment: CocoaAttachment
 
     public actual val filename: String
@@ -20,9 +19,8 @@ public actual class Attachment {
         get() = cocoaAttachment.contentType
 
     public actual companion object {
-        public actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment {
-            return Attachment(screenshotBytes, "screenshot.png", "image/png")
-        }
+        public actual fun fromScreenshot(screenshotBytes: ByteArray): Attachment =
+            Attachment(screenshotBytes, "screenshot.png", "image/png")
     }
 
     public actual constructor(pathname: String) {

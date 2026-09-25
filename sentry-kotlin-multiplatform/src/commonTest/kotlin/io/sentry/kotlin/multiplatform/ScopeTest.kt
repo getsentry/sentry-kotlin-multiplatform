@@ -8,7 +8,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class ScopeTest : BaseSentryScopeTest() {
-
     private val testUsername = "MyUsername"
     private val testEmail = "Email"
     private val testId = "TestId"
@@ -29,14 +28,13 @@ class ScopeTest : BaseSentryScopeTest() {
         user = null
     }
 
-    private fun createTestUser(): User {
-        return User().apply {
+    private fun createTestUser(): User =
+        User().apply {
             username = testUsername
             email = testEmail
             id = testId
             ipAddress = testIpAddress
         }
-    }
 
     @Test
     fun `adding user to scope should properly persist user in scope`() {

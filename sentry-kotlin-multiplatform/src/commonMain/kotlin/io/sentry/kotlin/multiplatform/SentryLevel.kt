@@ -9,26 +9,35 @@ internal object SentryLevelNumConstants {
 }
 
 /** The level of the event similar to logging levels. */
-public enum class SentryLevel(private val value: Int) {
+public enum class SentryLevel(
+    private val value: Int,
+) {
+    /** Diagnostic information for debugging. */
     DEBUG(SentryLevelNumConstants.DEBUG_LEVEL),
-    INFO(SentryLevelNumConstants.INFO_LEVEL),
-    WARNING(SentryLevelNumConstants.WARNING_LEVEL),
-    ERROR(SentryLevelNumConstants.ERROR_LEVEL),
-    FATAL(SentryLevelNumConstants.FATAL_LEVEL);
 
-    internal fun toInt(): Int {
-        return this.value
-    }
+    /** Information about normal application activity. */
+    INFO(SentryLevelNumConstants.INFO_LEVEL),
+
+    /** Potential problems that do not prevent continued operation. */
+    WARNING(SentryLevelNumConstants.WARNING_LEVEL),
+
+    /** Failures that prevent an operation from completing. */
+    ERROR(SentryLevelNumConstants.ERROR_LEVEL),
+
+    /** Critical failures that prevent normal application operation. */
+    FATAL(SentryLevelNumConstants.FATAL_LEVEL),
+    ;
+
+    internal fun toInt(): Int = this.value
 
     internal companion object {
-        fun fromInt(value: Int): SentryLevel? {
-            return try {
+        fun fromInt(value: Int): SentryLevel? =
+            try {
                 values().first {
                     it.value == value
                 }
             } catch (throwable: Throwable) {
                 null
             }
-        }
     }
 }

@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 /**
  * Configures Sentry Cocoa framework linking for Apple targets in Kotlin Multiplatform projects.
@@ -13,13 +14,18 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 class CocoaFrameworkLinker(
     private val logger: Logger,
     private val pathResolver: FrameworkPathResolver,
-    private val binaryLinker: FrameworkLinker
+    private val binaryLinker: FrameworkLinker,
 ) {
     fun configure(appleTargets: List<KotlinNativeTarget>) {
-        appleTargets.forEach { target ->
+        for (target in appleTargets) {
+            // Cocoa 9 no longer ships armv7k; KMP retains this target as a no-op SDK.
+            if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
+                logger.info("Skipping Sentry Cocoa linking for no-op target ${target.name}.")
+                continue
+            }
             try {
                 logger.info(
-                    "Start resolving Sentry Cocoa framework paths for target: ${target.name}"
+                    "Start resolving Sentry Cocoa framework paths for target: ${target.name}",
                 )
                 processTarget(target)
                 logger.lifecycle("Successfully configured Sentry Cocoa framework linking for target: ${target.name}")
@@ -42,7 +48,7 @@ class CocoaFrameworkLinker(
 
 internal class FrameworkLinkingException(
     message: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : GradleException(message, cause)
 
 /**
@@ -56,17 +62,18 @@ internal class FrameworkLinkingException(
  * @return Set of possible architecture folder names for the given target.
  * Returns empty set if target is not supported.
  */
-internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> = buildSet {
-    when (name) {
-        "iosSimulatorArm64", "iosX64" -> addAll(SentryCocoaFrameworkArchitectures.IOS_SIMULATOR_AND_X64)
-        "iosArm64" -> addAll(SentryCocoaFrameworkArchitectures.IOS_ARM64)
-        "macosArm64", "macosX64" -> addAll(SentryCocoaFrameworkArchitectures.MACOS_ARM64_AND_X64)
-        "tvosSimulatorArm64", "tvosX64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_SIMULATOR_AND_X64)
-        "tvosArm64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_ARM64)
-        "watchosArm32", "watchosArm64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_ARM)
-        "watchosSimulatorArm64", "watchosX64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_SIMULATOR_AND_X64)
+internal fun KotlinNativeTarget.toSentryFrameworkArchitecture(): Set<String> =
+    buildSet {
+        when (name) {
+            "iosSimulatorArm64", "iosX64" -> addAll(SentryCocoaFrameworkArchitectures.IOS_SIMULATOR_AND_X64)
+            "iosArm64" -> addAll(SentryCocoaFrameworkArchitectures.IOS_ARM64)
+            "macosArm64", "macosX64" -> addAll(SentryCocoaFrameworkArchitectures.MACOS_ARM64_AND_X64)
+            "tvosSimulatorArm64", "tvosX64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_SIMULATOR_AND_X64)
+            "tvosArm64" -> addAll(SentryCocoaFrameworkArchitectures.TVOS_ARM64)
+            "watchosArm64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_ARM)
+            "watchosSimulatorArm64", "watchosX64" -> addAll(SentryCocoaFrameworkArchitectures.WATCHOS_SIMULATOR_AND_X64)
+        }
     }
-}
 
 internal object SentryCocoaFrameworkArchitectures {
     val IOS_SIMULATOR_AND_X64 = setOf("ios-arm64_x86_64-simulator")
@@ -74,19 +81,30 @@ internal object SentryCocoaFrameworkArchitectures {
     val MACOS_ARM64_AND_X64 = setOf("macos-arm64_x86_64", "macos-arm64_arm64e_x86_64")
     val TVOS_SIMULATOR_AND_X64 = setOf("tvos-arm64_x86_64-simulator")
     val TVOS_ARM64 = setOf("tvos-arm64", "tvos-arm64_arm64e")
-    val WATCHOS_ARM = setOf("watchos-arm64_arm64_32_armv7k", "watchos-arm64_arm64_32_arm64e_armv7k")
-    val WATCHOS_SIMULATOR_AND_X64 = setOf("watchos-arm64_i386_x86_64-simulator")
+
+    // arm64_32 is the supported watchosArm64 device architecture, distinct from armv7k.
+    // Historical combined slices also contain arm64_32, so watchosArm64 can use them.
+    val WATCHOS_ARM =
+        setOf(
+            "watchos-arm64_arm64_32_armv7k",
+            "watchos-arm64_arm64_32_arm64e_armv7k",
+            "watchos-arm64_arm64_32",
+            "watchos-arm64_arm64_32_arm64e",
+        )
+    val WATCHOS_SIMULATOR_AND_X64 =
+        setOf("watchos-arm64_i386_x86_64-simulator", "watchos-arm64_x86_64-simulator")
 
     // Used for tests
-    val all = setOf(
-        IOS_SIMULATOR_AND_X64,
-        IOS_ARM64,
-        MACOS_ARM64_AND_X64,
-        TVOS_SIMULATOR_AND_X64,
-        TVOS_ARM64,
-        WATCHOS_ARM,
-        WATCHOS_SIMULATOR_AND_X64
-    )
+    val all =
+        setOf(
+            IOS_SIMULATOR_AND_X64,
+            IOS_ARM64,
+            MACOS_ARM64_AND_X64,
+            TVOS_SIMULATOR_AND_X64,
+            TVOS_ARM64,
+            WATCHOS_ARM,
+            WATCHOS_SIMULATOR_AND_X64,
+        )
 }
 
 internal fun KotlinMultiplatformExtension.appleTargets() =

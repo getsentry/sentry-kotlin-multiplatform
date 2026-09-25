@@ -1,6 +1,8 @@
-import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.api.attributes.java.TargetJvmVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.zip.ZipFile
 
 plugins {
     alias(libs.plugins.kotlin)
@@ -20,8 +22,11 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(gradleApi())
     compileOnly(kotlin("gradle-plugin"))
+    // Consumers supply spm4Kmp when they apply it; keep it optional at runtime.
+    compileOnly(libs.spmForKmp)
 
     testImplementation(kotlin("gradle-plugin"))
+    testImplementation(libs.spmForKmp)
     testImplementation(libs.junit)
     testImplementation(libs.junit.params)
     testImplementation(libs.mockk)
@@ -37,7 +42,20 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.withType<KotlinCompile> { kotlinOptions { jvmTarget = JavaVersion.VERSION_11.toString() } }
+// Resolve spm4Kmp's Java 17 artifact for compilation and tests, but emit Java 11 bytecode
+// for consumers that do not use spm4Kmp.
+listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEach { configurationName ->
+    configurations.named(configurationName).configure {
+        attributes {
+            attribute(
+                TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE,
+                JavaVersion.VERSION_17.majorVersion.toInt(),
+            )
+        }
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
 
 gradlePlugin {
     plugins {
@@ -47,11 +65,6 @@ gradlePlugin {
         }
     }
 }
-
-val publish = extensions.getByType(MavenPublishPluginExtension::class.java)
-// signing is done when uploading files to MC
-// via gpg:sign-and-deploy-file (release.kts)
-publish.releaseSigningEnabled = false
 
 tasks.named("distZip") {
     dependsOn("publishToMavenLocal")
@@ -67,13 +80,44 @@ val sep: String = File.separator
 distributions {
     main {
         contents {
-            from("build${sep}libs")
+            from("build${sep}libs") {
+                // Craft expects Maven filenames, while newer Vanniktech versions include the publication name.
+                rename { fileName -> fileName.replace("-pluginMaven-javadoc-", "-") }
+            }
             from("build${sep}publications${sep}pluginMaven")
         }
     }
     create("sentryPluginMarker") {
         contents {
             from("build${sep}publications${sep}sentryPluginPluginMarkerMaven")
+        }
+    }
+}
+
+tasks.register("validateDistributions") {
+    dependsOn("distZip", "sentryPluginMarkerDistZip")
+    doLast {
+        val artifactName = "${project.name}-${project.version}"
+        val archive =
+            layout.buildDirectory
+                .file("distributions/$artifactName.zip")
+                .get()
+                .asFile
+        val requiredFiles =
+            listOf(
+                "$artifactName.jar",
+                "$artifactName-sources.jar",
+                "$artifactName-javadoc.jar",
+                "pom-default.xml",
+                "module.json",
+            )
+        ZipFile(archive).use { zip ->
+            requiredFiles.forEach { fileName ->
+                val entry = zip.getEntry("$artifactName/$fileName")
+                require(entry != null && entry.size > 0) {
+                    "Missing or empty $fileName in ${archive.name}"
+                }
+            }
         }
     }
 }
@@ -94,12 +138,12 @@ buildConfig {
     buildConfigField(
         "String",
         "SentryCocoaVersion",
-        provider { "\"${project.property("sentryCocoaVersion")}\"" }
+        provider { "\"${project.property("sentryCocoaVersion")}\"" },
     )
     buildConfigField(
         "String",
         "SentryKmpVersion",
-        provider { "\"${project.property("versionName")}\"" }
+        provider { "\"${project.property("versionName")}\"" },
     )
 }
 

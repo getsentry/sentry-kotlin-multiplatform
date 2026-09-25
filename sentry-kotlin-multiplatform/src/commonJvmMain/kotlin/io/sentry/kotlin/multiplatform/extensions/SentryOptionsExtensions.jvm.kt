@@ -6,13 +6,14 @@ import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 import io.sentry.kotlin.multiplatform.log.updateFrom
 
-internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit = {
-    it.applyJvmBaseOptions(this)
+internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit =
+    {
+        it.applyJvmBaseOptions(this)
 
-    sdk?.packages?.forEach { sdkPackage ->
-        it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
+        sdk?.packages?.forEach { sdkPackage ->
+            it.sdkVersion?.addPackage(sdkPackage.name, sdkPackage.version)
+        }
     }
-}
 
 /**
  * Applies the given base SentryOptions to this JvmSentryOption
@@ -21,6 +22,9 @@ internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> U
 internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
     val jvmOptions = this
     jvmOptions.dsn = kmpOptions.dsn
+    jvmOptions.isStrictTraceContinuation = kmpOptions.strictTraceContinuation
+    jvmOptions.orgId = kmpOptions.orgId
+    jvmOptions.isPropagateTraceparent = kmpOptions.enablePropagateTraceparent
     jvmOptions.isAttachThreads = kmpOptions.attachThreads
     jvmOptions.isAttachStacktrace = kmpOptions.attachStackTrace
     jvmOptions.dist = kmpOptions.dist

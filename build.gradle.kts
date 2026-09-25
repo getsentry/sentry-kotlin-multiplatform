@@ -1,7 +1,7 @@
 import com.diffplug.spotless.LineEnding
 import com.vanniktech.maven.publish.MavenPublishPlugin
-import com.vanniktech.maven.publish.MavenPublishPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.zip.ZipFile
 
@@ -11,14 +11,15 @@ plugins {
     id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
     id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
-    kotlin(Config.cocoapods).version(Config.kotlinVersion).apply(false)
+    id(Config.spmForKmp).version(Config.spmForKmpVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composePluginVersion).apply(false)
     id(Config.kotlinCompose).version(Config.kotlinVersion).apply(false)
     id(Config.androidGradle).version(Config.agpVersion).apply(false)
     id(Config.BuildPlugins.buildConfig).version(Config.BuildPlugins.buildConfigVersion).apply(false)
     kotlin(Config.kotlinSerializationPlugin).version(Config.kotlinVersion).apply(false)
     id(Config.QualityPlugins.kover).version(Config.QualityPlugins.koverVersion).apply(false)
-    id(Config.QualityPlugins.binaryCompatibility).version(Config.QualityPlugins.binaryCompatibilityVersion)
+    id(Config.QualityPlugins.binaryCompatibility)
+        .version(Config.QualityPlugins.binaryCompatibilityVersion)
         .apply(false)
 }
 
@@ -52,18 +53,14 @@ subprojects {
         }
 
         afterEvaluate {
-            val platformDists = project.tasks.filter { task ->
-                task.name.matches(Regex("(.*)DistZip"))
-            }.toTypedArray()
+            val platformDists =
+                project.tasks
+                    .filter { task ->
+                        task.name.matches(Regex("(.*)DistZip"))
+                    }.toTypedArray()
             project.tasks.getByName("distZip").finalizedBy(*platformDists)
 
             apply<MavenPublishPlugin>()
-
-            configure<MavenPublishPluginExtension> {
-                // signing is done when uploading files to MC
-                // via gpg:sign-and-deploy-file (release.kts)
-                releaseSigningEnabled = false
-            }
         }
     }
 }
@@ -78,7 +75,11 @@ tasks.register("validateDistributions") {
 }
 
 private fun Project.validateKotlinMultiplatformCoreArtifacts() {
-    val distributionDir = project.layout.buildDirectory.dir("distributions").get().asFile
+    val distributionDir =
+        project.layout.buildDirectory
+            .dir("distributions")
+            .get()
+            .asFile
     val expectedNumOfFiles = 20
     val filesList = distributionDir.listFiles()
     val actualNumOfFiles = filesList?.size ?: 0
@@ -90,34 +91,46 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
     }
 
     val baseFileName = "sentry-kotlin-multiplatform"
-    val platforms = listOf(
-        "watchosx64", "watchossimulatorarm64", "watchosarm64", "watchosarm32",
-        "tvosx64", "tvossimulatorarm64", "tvosarm64",
-        "macosx64", "macosarm64",
-        "jvm",
-        "iosx64", "iossimulatorarm64", "iosarm64",
-        "android",
-        "js",
-        "wasm-js",
-        "linuxx64", "linuxarm64",
-        "mingwx64"
-    )
-
-    val artifactPaths = buildList {
-        add(distributionDir.resolve("$baseFileName-$version.zip"))
-        addAll(
-            platforms.map { platform ->
-                distributionDir.resolve("$baseFileName-$platform-$version.zip")
-            }
+    val platforms =
+        listOf(
+            "watchosx64",
+            "watchossimulatorarm64",
+            "watchosarm64",
+            "watchosarm32",
+            "tvosx64",
+            "tvossimulatorarm64",
+            "tvosarm64",
+            "macosx64",
+            "macosarm64",
+            "jvm",
+            "iosx64",
+            "iossimulatorarm64",
+            "iosarm64",
+            "android",
+            "js",
+            "wasm-js",
+            "linuxx64",
+            "linuxarm64",
+            "mingwx64",
         )
-    }
 
-    val commonRequiredEntries = listOf(
-        "javadoc",
-        "sources",
-        "module",
-        "pom-default.xml"
-    )
+    val artifactPaths =
+        buildList {
+            add(distributionDir.resolve("$baseFileName-$version.zip"))
+            addAll(
+                platforms.map { platform ->
+                    distributionDir.resolve("$baseFileName-$platform-$version.zip")
+                },
+            )
+        }
+
+    val commonRequiredEntries =
+        listOf(
+            "javadoc",
+            "sources",
+            "module",
+            "pom-default.xml",
+        )
 
     artifactPaths.forEach { artifactFile ->
         if (!artifactFile.exists()) {
@@ -128,7 +141,12 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
         }
 
         ZipFile(artifactFile).use { zip ->
-            val entries = zip.entries().asSequence().map { it.name }.toList()
+            val entries =
+                zip
+                    .entries()
+                    .asSequence()
+                    .map { it.name }
+                    .toList()
 
             commonRequiredEntries.forEach { requiredEntry ->
                 if (entries.none { it.contains(requiredEntry) }) {
@@ -143,10 +161,28 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
                     artifactFile.name.contains("tvos", ignoreCase = true) -> {
-                    val expectedNumOfKlibFiles = 3
-                    val actualKlibFiles = entries.count { it.contains("klib") }
-                    if (actualKlibFiles != expectedNumOfKlibFiles) {
-                        throw GradleException("❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found $actualKlibFiles")
+                    // Apple artifacts include the SDK klib and three cinterops, including spm4Kmp's bridge.
+                    val expectedCinteropKlibs =
+                        listOf(
+                            "cinterop-Sentry.klib",
+                            "cinterop-Sentry.Internal.klib",
+                            "cinterop-SentryCocoa.klib",
+                        )
+                    val klibFiles = entries.filter { it.endsWith(".klib") }
+                    val missingKlibs =
+                        expectedCinteropKlibs.filterNot { expected ->
+                            klibFiles.any { it.endsWith(expected) }
+                        }
+                    if (missingKlibs.isNotEmpty()) {
+                        throw GradleException(
+                            "❌ Missing klib files $missingKlibs in ${artifactFile.name}",
+                        )
+                    }
+                    val expectedNumOfKlibFiles = expectedCinteropKlibs.size + 1
+                    if (klibFiles.size != expectedNumOfKlibFiles) {
+                        throw GradleException(
+                            "❌ Expected $expectedNumOfKlibFiles klib files in ${artifactFile.name}, but found ${klibFiles.size}",
+                        )
                     } else {
                         println("✅ Found $expectedNumOfKlibFiles klib files in ${artifactFile.name}")
                     }
@@ -197,12 +233,14 @@ val detektBaselineFilePath = "$rootDir/config/detekt/baseline.xml"
 
 detekt {
     buildUponDefaultConfig = true
-    config = files(detektConfigFilePath)
+    config.setFrom(files(detektConfigFilePath))
     baseline = file(detektBaselineFilePath)
 }
 
 fun SourceTask.detektExcludes() {
     exclude("**/build/**")
+    exclude("**/.kotlin/**")
+    exclude("**/.gradle/**")
     exclude("**/*.kts")
     exclude("**/buildSrc/**")
     exclude("**/*Test*/**")
@@ -214,6 +252,11 @@ tasks.withType<Detekt>().configureEach {
     reports {
         html.required.set(true)
     }
+    setSource(files(project.projectDir))
+    detektExcludes()
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
     setSource(files(project.projectDir))
     detektExcludes()
 }

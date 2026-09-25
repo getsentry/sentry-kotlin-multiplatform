@@ -1,29 +1,22 @@
 package io.sentry.kotlin.multiplatform.gradle
 
-import io.sentry.BuildConfig
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
+/** Compatibility type for the removed CocoaPods configuration. */
+@Deprecated("CocoaPods is unsupported with Sentry Cocoa 9. Use Spm4KmpAutoInstallExtension instead.")
 @Suppress("UnnecessaryAbstractClass")
-abstract class CocoapodsAutoInstallExtension @Inject constructor(project: Project) {
-    private val objects = project.objects
+abstract class CocoapodsAutoInstallExtension
+    @Inject
+    constructor(
+        project: Project,
+    ) {
+        private val objects = project.objects
 
-    /**
-     * Enable auto-installation of the Sentry Cocoa SDK pod.
-     *
-     * If the cocoapods plugin is applied and no existing Sentry pod configuration exists, the
-     * Sentry-Cocoa SDK pod will be installed.
-     *
-     * Defaults to true.
-     */
-    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+        /** Retained only so obsolete configuration can report a migration error. */
+        val enabled: Property<Boolean> = objects.property(Boolean::class.java)
 
-    /**
-     * Overrides default Sentry Cocoa version.
-     *
-     * Defaults to the version used in the latest KMP SDK.
-     */
-    val sentryCocoaVersion: Property<String> =
-        objects.property(String::class.java).convention("~> ${BuildConfig.SentryCocoaVersion}")
-}
+        /** Retained only so obsolete configuration can report a migration error. */
+        val sentryCocoaVersion: Property<String> = objects.property(String::class.java)
+    }

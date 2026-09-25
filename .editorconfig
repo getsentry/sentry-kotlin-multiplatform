@@ -1,0 +1,6 @@
+root = true
+
+[*.{kt,kts}]
+# Allow existing backtick test names and constant-style properties.
+ktlint_standard_function-naming = disabled
+ktlint_standard_property-naming = disabled

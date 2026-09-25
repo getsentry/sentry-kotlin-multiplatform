@@ -1,6 +1,6 @@
 // The following are snippets from the Sentry Cocoa SDK used to generate Kotlin stubs.
 //
-// https://github.com/getsentry/sentry-cocoa/blob/167de8bea5a0effef3aaa5c99c540088de30b361/Sources/SentryCrash/Recording/Tools/SentryCrashStackCursor.h
+// https://github.com/getsentry/sentry-cocoa/blob/9.28.0/Sources/Sentry/include/SentryCrashStackCursor.h
 //
 // Copyright (c) 2016 Karl Stenerud. All rights reserved.
 //
@@ -14,7 +14,8 @@
 // The above copyright notice and this permission notice shall remain in place
 // in this source code.
 
-#import <SentryHook.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #define SentryCrashSC_CONTEXT_SIZE 100
 
@@ -31,11 +32,8 @@ typedef struct SentryCrashStackCursor {
     struct {
         int currentDepth;
         bool hasGivenUp;
-        sentrycrash_async_backtrace_t *current_async_caller;
     } state;
     void (*resetCursor)(struct SentryCrashStackCursor *);
     bool (*advanceCursor)(struct SentryCrashStackCursor *);
-    bool (*symbolicate)(struct SentryCrashStackCursor *);
-    sentrycrash_async_backtrace_t *async_caller;
     void *context[SentryCrashSC_CONTEXT_SIZE];
 } SentryCrashStackCursor;

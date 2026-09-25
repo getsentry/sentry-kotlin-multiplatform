@@ -9,79 +9,135 @@ import io.sentry.kotlin.multiplatform.log.SentryLogger
  * No-op implementation of [SentryLogger] for stub/unsupported platforms.
  */
 internal class NoOpSentryLogger : SentryLogger {
-    override fun trace(message: String, vararg args: Any?) {
+    override fun trace(
+        message: String,
+        vararg args: Any?,
+    ) {
         // No-op
     }
 
-    override fun debug(message: String, vararg args: Any?) {
+    override fun debug(
+        message: String,
+        vararg args: Any?,
+    ) {
         // No-op
     }
 
-    override fun info(message: String, vararg args: Any?) {
+    override fun info(
+        message: String,
+        vararg args: Any?,
+    ) {
         // No-op
     }
 
-    override fun warn(message: String, vararg args: Any?) {
+    override fun warn(
+        message: String,
+        vararg args: Any?,
+    ) {
         // No-op
     }
 
-    override fun error(message: String, vararg args: Any?) {
+    override fun error(
+        message: String,
+        vararg args: Any?,
+    ) {
         // No-op
     }
 
-    override fun fatal(message: String, vararg args: Any?) {
+    override fun fatal(
+        message: String,
+        vararg args: Any?,
+    ) {
         // No-op
     }
 
-    override fun trace(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun trace(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun debug(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun debug(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun info(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun info(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun warn(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun warn(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun error(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun error(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun fatal(message: String, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun fatal(
+        message: String,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun trace(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun trace(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun debug(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun debug(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun info(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun info(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun warn(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun warn(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun error(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
+    override fun error(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
-    override fun fatal(message: String, vararg args: Any?, attributes: @SentryLogDsl SentryAttributes.() -> Unit) {
-        // No-op
-    }
-
-    override fun log(level: SentryLogLevel, message: String, vararg args: Any?) {
+    override fun fatal(
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
         // No-op
     }
 
@@ -89,12 +145,23 @@ internal class NoOpSentryLogger : SentryLogger {
         level: SentryLogLevel,
         message: String,
         vararg args: Any?,
-        attributes: @SentryLogDsl SentryAttributes.() -> Unit
     ) {
         // No-op
     }
 
-    override fun log(level: SentryLogLevel, block: SentryLogBuilder.() -> Unit) {
+    override fun log(
+        level: SentryLogLevel,
+        message: String,
+        vararg args: Any?,
+        attributes: @SentryLogDsl SentryAttributes.() -> Unit,
+    ) {
+        // No-op
+    }
+
+    override fun log(
+        level: SentryLogLevel,
+        block: SentryLogBuilder.() -> Unit,
+    ) {
         // No-op
     }
 

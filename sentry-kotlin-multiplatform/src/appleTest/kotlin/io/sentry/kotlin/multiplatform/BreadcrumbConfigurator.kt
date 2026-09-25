@@ -17,7 +17,7 @@ actual class BreadcrumbConfigurator {
     actual fun applyOptions(options: SentryOptions): Breadcrumb? {
         val cocoaOptions = CocoaSentryOptions()
         cocoaOptions.applyCocoaBaseOptions(options)
-        val cocoaModifiedBreadcrumb = cocoaOptions.beforeBreadcrumb?.invoke(cocoaBreadcrumb)
+        val cocoaModifiedBreadcrumb = cocoaOptions.beforeBreadcrumb()?.invoke(cocoaBreadcrumb)
         return cocoaModifiedBreadcrumb?.toKmpBreadcrumb()
     }
 }

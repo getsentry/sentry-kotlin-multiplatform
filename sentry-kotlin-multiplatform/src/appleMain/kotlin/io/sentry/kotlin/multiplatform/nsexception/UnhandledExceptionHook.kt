@@ -14,7 +14,11 @@
 
 package io.sentry.kotlin.multiplatform.nsexception
 
+import platform.Foundation.NSLock
 import kotlin.concurrent.AtomicReference
+
+private val installedSentryHookLock = NSLock()
+private val installedSentryHook = AtomicReference<ReportUnhandledExceptionHook?>(null)
 
 /**
  * Wraps the unhandled exception hook such that the provided [hook] is invoked
@@ -24,11 +28,22 @@ import kotlin.concurrent.AtomicReference
  * @see terminateWithUnhandledException
  */
 internal fun wrapUnhandledExceptionHook(hook: (Throwable) -> Unit) {
-    val prevHook = AtomicReference<ReportUnhandledExceptionHook?>(null)
-    val wrappedHook: ReportUnhandledExceptionHook = {
-        hook(it)
-        prevHook.value?.invoke(it)
-        terminateWithUnhandledException(it)
+    installedSentryHookLock.lock()
+    try {
+        // Closing and restarting the SDK must not report the same exception once per initialization.
+        val installed = installedSentryHook.value
+        if (installed != null && getUnhandledExceptionHook() === installed) {
+            return
+        }
+        val prevHook = AtomicReference<ReportUnhandledExceptionHook?>(null)
+        val wrappedHook: ReportUnhandledExceptionHook = {
+            hook(it)
+            prevHook.value?.invoke(it)
+            terminateWithUnhandledException(it)
+        }
+        prevHook.value = setUnhandledExceptionHook(wrappedHook)
+        installedSentryHook.value = wrappedHook
+    } finally {
+        installedSentryHookLock.unlock()
     }
-    prevHook.value = setUnhandledExceptionHook(wrappedHook)
 }
