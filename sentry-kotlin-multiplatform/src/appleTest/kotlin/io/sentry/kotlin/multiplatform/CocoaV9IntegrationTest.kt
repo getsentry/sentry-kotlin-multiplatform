@@ -1,6 +1,5 @@
 package io.sentry.kotlin.multiplatform
 
-import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
 import Internal.Sentry.SentryCrashMonitorTypeCPPException
 import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentryDebugMeta
@@ -12,8 +11,10 @@ import cocoapods.Sentry.SentryThread
 import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.nsexception.KOTLIN_CRASH_TAG
 import io.sentry.kotlin.multiplatform.nsexception.ThrowableNSException
+import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
+import io.sentry.kotlin.multiplatform.nsexception.asSentryStacktrace
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 import kotlin.native.OsFamily
@@ -70,18 +71,28 @@ class CocoaV9IntegrationTest {
     @Test
     fun `exception without stack frames has no native stacktrace`() {
         start()
-        val builder =
-            assertNotNull(
-                Internal.Sentry.SentrySDKInternal
-                    .currentHub()
-                    .getClient()
-                    ?.threadInspector
-                    ?.stacktraceBuilder,
-            )
         val exception = NSException(name = "EmptyStack", reason = "No captured frames", userInfo = null)
-        assertNull(NSExceptionKt_SentryStacktraceFromNSException(builder, exception))
+        assertNull(exception.asSentryStacktrace())
         val emptyStack = ThrowableNSException("EmptyStack", "No captured frames", emptyList())
-        assertNull(NSExceptionKt_SentryStacktraceFromNSException(builder, emptyStack))
+        assertNull(emptyStack.asSentryStacktrace())
+    }
+
+    @Test
+    fun `exception stacktrace uses native in app includes`() {
+        start()
+        val exception = IllegalStateException("in-app frame").asNSException()
+        val originalFrames = assertNotNull(exception.asSentryStacktrace()).frames.map { it as SentryFrame }
+        val image = assertNotNull(originalFrames.firstOrNull { it.`package` != null }?.`package`)
+        Sentry.close()
+        Sentry.initWithPlatformOptions {
+            it.setDsn("http://public@127.0.0.1:9/1")
+            it.setEnableAutoSessionTracking(false)
+            it.addInAppInclude(image.substringAfterLast('/'))
+        }
+        val frames = assertNotNull(exception.asSentryStacktrace()).frames.map { it as SentryFrame }
+        val includedFrames = frames.filter { it.`package` == image }
+        assertTrue(includedFrames.isNotEmpty())
+        assertTrue(includedFrames.all { it.inApp?.boolValue == true })
     }
 
     @Test

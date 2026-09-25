@@ -53,7 +53,7 @@ class Spm4KmpIntegrationTest {
         }
         val manifest = generateContainer(project)
         assertPlatforms(manifest, "15.0", "15.0", "12.0", "9.0")
-        assertTrue(manifest.contains("9.28.0"), manifest)
+        assertTrue(manifest.contains(BuildConfig.SentryCocoaVersion), manifest)
         assertTrue(manifest.contains("https://github.com/getsentry/sentry-cocoa.git"), manifest)
     }
 
