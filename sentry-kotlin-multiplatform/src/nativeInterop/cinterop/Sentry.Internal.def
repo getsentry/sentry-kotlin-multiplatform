@@ -3,3 +3,6 @@ headers = SentryClient.h SentryEvent.h SentryHub.h SentryScope.h \
           SentryCrashMonitor_NSException.h SentryCrashMonitor_NSException+NSExceptionKt.h \
           SentryCrashStackCursor.h SentrySDKInternal.h \
           SentryStacktraceBuilder.h SentryThreadInspector.h SentryCrashMonitor.h \
+
+# Cocoa uses Objective-C categories, including Swift extensions called through selectors.
+linkerOpts = -ObjC

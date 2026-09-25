@@ -53,8 +53,7 @@ class Spm4KmpIntegrationTest {
         }
         val manifest = generateContainer(project)
         assertPlatforms(manifest, "15.0", "15.0", "12.0", "9.0")
-        assertTrue(manifest.contains("9.28.0"), manifest)
-        assertTrue(manifest.contains("https://github.com/getsentry/sentry-cocoa.git"), manifest)
+        assertSentryDependency(manifest, BuildConfig.SentryCocoaVersion)
     }
 
     @ParameterizedTest
@@ -160,7 +159,7 @@ class Spm4KmpIntegrationTest {
         }
         if (enabled && !userOwned && !stubOnly) {
             (project as ProjectInternal).evaluate()
-            assertTrue(generateContainer(project).contains(version))
+            assertSentryDependency(generateContainer(project), version)
         }
     }
 
@@ -183,6 +182,14 @@ class Spm4KmpIntegrationTest {
         task.actions.forEach { it.execute(task) }
         return task.outputs.files.singleFile
             .readText()
+    }
+
+    private fun assertSentryDependency(
+        manifest: String,
+        version: String,
+    ) {
+        val dependency = """.package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "$version")"""
+        assertTrue(manifest.contains(dependency), manifest)
     }
 
     private fun assertPlatforms(

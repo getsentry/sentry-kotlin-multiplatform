@@ -16,9 +16,11 @@ package io.sentry.kotlin.multiplatform.nsexception
 
 import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
 import Internal.Sentry.kSentryLevelFatal
+import Internal.Sentry.sentryDefaultThreadInspectorCreateStacktraceBuilder
 import cocoapods.Sentry.configureScope
 import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.CocoaSentryLevel
+import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import kotlinx.cinterop.invoke
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
@@ -147,13 +149,16 @@ private fun NSException.asSentryException(
             CocoapodsSentryMechanism("generic").apply {
                 setHandled(NSNumber(isHandled))
             }
-        stacktrace =
-            threadInspector?.stacktraceBuilder?.let { stacktraceBuilder ->
-                val stacktrace =
-                    NSExceptionKt_SentryStacktraceFromNSException(stacktraceBuilder, this@asSentryException)
-                stacktrace as CocoapodsSentryStacktrace?
-            }
+        stacktrace = this@asSentryException.asSentryStacktrace()
     }
+
+internal fun NSException.asSentryStacktrace(): CocoapodsSentryStacktrace? {
+    val client = InternalSentrySDK.currentHub().getClient() ?: return null
+    val options = client.options as CocoaSentryOptions
+    // Cocoa 9.29 keeps the inspector's builder private; use its factory with the active in-app rules.
+    val builder = sentryDefaultThreadInspectorCreateStacktraceBuilder(options.inAppIncludes())
+    return NSExceptionKt_SentryStacktraceFromNSException(builder, this) as CocoapodsSentryStacktrace?
+}
 
 private val threadInspector: InternalSentryThreadInspector?
     get() = InternalSentrySDK.currentHub().getClient()?.threadInspector
