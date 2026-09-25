@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Features
+
+- Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
+
 ### Breaking changes
 
 - Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
@@ -27,8 +31,6 @@
 ## 0.28.0-beta.1
 
 ### Features
-
-- Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
 
 - Auto-install Sentry Cocoa for Apple targets when the spm4Kmp plugin (`io.github.frankois944.spmForKmp`) is applied ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559))
 
