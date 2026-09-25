@@ -157,6 +157,18 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
             }
 
             when {
+                artifactFile.name == "$baseFileName-watchosarm32-$version.zip" -> {
+                    // watchosArm32 is a no-op stub and must not ship Cocoa cinterops.
+                    val expectedKlib = "$baseFileName-watchosarm32-$version.klib"
+                    val klibFiles = entries.filter { it.endsWith(".klib") }
+                    if (klibFiles.size != 1 || klibFiles.single().substringAfterLast('/') != expectedKlib) {
+                        throw GradleException(
+                            "❌ Expected only the SDK stub klib $expectedKlib in ${artifactFile.name}, but found $klibFiles",
+                        )
+                    }
+                    println("✅ Found SDK stub klib in ${artifactFile.name}")
+                }
+
                 artifactFile.name.contains("ios", ignoreCase = true) ||
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
