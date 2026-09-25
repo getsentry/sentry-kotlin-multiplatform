@@ -39,7 +39,7 @@ object Config {
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
-        val sentryCocoaVersion = "8.58.2"
+        val sentryCocoaVersion = "9.28.0"
         val sentryCocoa = "Sentry"
 
         object Samples {
@@ -76,10 +76,10 @@ object Config {
     }
 
     object Cocoa {
-        val iosDeploymentTarget = "11.0"
-        val osxDeploymentTarget = "10.13"
-        val tvosDeploymentTarget = "11.0"
-        val watchosDeploymentTarget = "4.0"
+        val iosDeploymentTarget = "15.0"
+        val osxDeploymentTarget = "12.0"
+        val tvosDeploymentTarget = "15.0"
+        val watchosDeploymentTarget = "9.0"
     }
 
     object Sentry {

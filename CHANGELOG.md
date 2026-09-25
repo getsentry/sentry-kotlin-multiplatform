@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+### Breaking changes
+
+- Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
+- Convert `watchosArm32` to a no-op stub: builds remain supported, but Sentry no longer captures events, crashes, or logs on this target. Cocoa 9.28.0 no longer ships an armv7k slice.
+- CocoaPods installation of Sentry is unsupported. Use SwiftPM through spm4Kmp; remove any Sentry pod declaration and `sentryKmp.autoInstall.cocoapods` configuration. The Gradle plugin no longer installs Sentry pods or treats CocoaPods as a Sentry framework provider. Other CocoaPods dependencies can remain. The retired CocoaPods sample and its run configurations have been removed.
+- Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
+- On Apple, `captureUserFeedback` now sends a separate native `SentryFeedback` event with its own event ID, linked to the original error through `associatedEventId`. The common API is unchanged. Feedback uses source `custom`, preserves name/email, and maps comments to the message (null becomes an empty string).
+
+### Fixes
+
+- Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
+- Keep unhandled-exception hooks from being wrapped repeatedly across SDK restarts, and retain debug images referenced by exception frames.
+- Recognize Cocoa 9 watchOS framework slice names in the Gradle plugin.
+
+### Internal
+
+- Use Cocoa’s hybrid `SentrySDK.internal` API for SDK metadata, envelope storage, and debug images through a Swift adapter.
+
+### Dependencies
+
+- Bump Cocoa SDK from `8.58.2` to `9.28.0` ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567)).
+
 ## 0.28.0-beta.1
 
 ### Features

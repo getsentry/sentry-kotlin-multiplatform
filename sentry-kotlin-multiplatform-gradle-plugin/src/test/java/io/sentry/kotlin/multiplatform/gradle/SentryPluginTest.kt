@@ -57,11 +57,24 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `extension cocoapods is created correctly`() {
+    fun `Sentry does not register a project level cocoapods extension`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
-        assertNotNull(project.extensions.getByName("cocoapods"))
+        assertNull(project.extensions.findByName("cocoapods"))
+    }
+
+    @Test
+    @Suppress("DEPRECATION")
+    fun `obsolete CocoaPods configuration reports how to migrate`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+        val autoInstall = project.extensions.getByType(AutoInstallExtension::class.java)
+
+        val error = assertThrows<GradleException> { autoInstall.cocoapods.enabled.set(false) }
+
+        assertTrue(error.message!!.contains("Remove sentryKmp.autoInstall.cocoapods"))
+        assertTrue(error.message!!.contains("use spm4Kmp with autoInstall.spm instead"))
     }
 
     @Test
@@ -88,7 +101,7 @@ class SentryPluginTest {
         assertNotNull(project.extensions.getByName("sentryKmp"))
         assertNotNull(project.extensions.getByName("linker"))
         assertNotNull(project.extensions.getByName("autoInstall"))
-        assertNotNull(project.extensions.getByName("cocoapods"))
+        assertNull(project.extensions.findByName("cocoapods"))
         assertNotNull(project.extensions.getByName("spm"))
         assertNotNull(project.extensions.getByName("commonMain"))
     }
@@ -138,10 +151,6 @@ class SentryPluginTest {
             val commonMainConfiguration =
                 project.configurations.find { it.name.contains("commonMain", ignoreCase = true) }
             assertNull(commonMainConfiguration)
-
-            val cocoapodsExtension = project.extensions.getByName("cocoapods") as CocoapodsExtension
-            val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
-            assertNull(sentryPod)
         }
     }
 
@@ -190,87 +199,17 @@ class SentryPluginTest {
         }
     }
 
-    @Test
-    fun `install Sentry pod if not already exists`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
-
-        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java) as ExtensionAware
-        val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
-        val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
-
-        // Check that it does not exist
-        assertNull(sentryPod)
-
-        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
-        plugin.executeConfiguration(project)
-
-        // Check that it now exists
-        val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
-        assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, cocoapodsAutoInstallExtension.sentryCocoaVersion.get())
-        assertTrue(cocoapodsExtension.pods.getByName("Sentry").linkOnly)
-        assertEquals(cocoapodsExtension.pods.getByName("Sentry").extraOpts, listOf("-compiler-option", "-fmodules"))
-    }
-
-    @Test
-    fun `install Sentry pod and prioritize user set version for cocoapods installation`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
-
-        val cocoapodsAutoInstallExtension = project.extensions.getByType(CocoapodsAutoInstallExtension::class.java)
-        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java) as ExtensionAware
-        val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
-        val sentryPod = cocoapodsExtension.pods.findByName("Sentry")
-
-        cocoapodsAutoInstallExtension.sentryCocoaVersion.set("10000.0.0")
-
-        // Check that it does not exist
-        assertNull(sentryPod)
-
-        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
-        plugin.executeConfiguration(project)
-
-        // Check that it now exists
-        assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "10000.0.0")
-    }
-
-    @Test
-    fun `do not install Sentry pod when cocoapods plugin when Sentry cocoapods configuration exists`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
-
-        val kmpExtension = project.extensions.findByName("kotlin")
-        (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
-            cocoapods.pod("Sentry") { version = "custom version" }
-        }
-
-        val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
-        plugin.executeConfiguration(project)
-
-        val cocoapodsExtension = kmpExtension.extensions.getByType(CocoapodsExtension::class.java)
-        assertEquals(cocoapodsExtension.pods.getByName("Sentry").version, "custom version")
-        assertEquals("CocoaPods", project.externalCocoaFrameworkProvider())
-    }
-
     @ParameterizedTest
     @CsvSource(
-        "true,true,true,true,false",
-        "true,true,false,true,false",
-        "true,false,true,false,true",
-        "false,true,true,false,false",
+        "true,true,true",
+        "true,false,false",
+        "false,true,false",
+        "false,false,false",
     )
-    fun `SPM takes precedence over CocoaPods auto install`(
+    fun `Sentry never installs a pod alongside spm4Kmp`(
         globalEnabled: Boolean,
         spmEnabled: Boolean,
-        podsEnabled: Boolean,
         expectSpm: Boolean,
-        expectPod: Boolean,
     ) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
@@ -283,19 +222,18 @@ class SentryPluginTest {
         val autoInstall = project.extensions.getByType(AutoInstallExtension::class.java)
         autoInstall.enabled.set(globalEnabled)
         autoInstall.spm.enabled.set(spmEnabled)
-        autoInstall.cocoapods.enabled.set(podsEnabled)
 
         project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
         val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         val pods = (kotlin as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java).pods
         assertEquals(expectSpm, packages.findByName("sentryCocoa_IosArm64") != null)
-        assertEquals(expectPod, pods.findByName("Sentry") != null)
+        assertNull(pods.findByName("Sentry"))
     }
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
-    fun `provider selection preserves manually configured pod and Swift package`(spmEnabled: Boolean) {
+    fun `Sentry preserves unrelated pods and a manually configured Swift package`(spmEnabled: Boolean) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
@@ -305,10 +243,10 @@ class SentryPluginTest {
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kotlin.iosArm64().swiftPackageConfig(cinteropName = "SentryCocoa") { }
         val cocoaPods = (kotlin as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java)
-        cocoaPods.pod("Sentry") { version = "8.57.0" }
+        cocoaPods.pod("OtherDependency") { version = "1.0.0" }
         val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         val manualPackage = packages.getByName("SentryCocoa_IosArm64")
-        val manualPod = cocoaPods.pods.getByName("Sentry")
+        val manualPod = cocoaPods.pods.getByName("OtherDependency")
         project.extensions
             .getByType(AutoInstallExtension::class.java)
             .spm.enabled
@@ -318,8 +256,8 @@ class SentryPluginTest {
 
         assertEquals(setOf("SentryCocoa_IosArm64"), packages.names)
         assertEquals(manualPackage, packages.getByName("SentryCocoa_IosArm64"))
-        assertEquals(manualPod, cocoaPods.pods.getByName("Sentry"))
-        assertEquals("8.57.0", manualPod.version)
+        assertEquals(manualPod, cocoaPods.pods.getByName("OtherDependency"))
+        assertEquals("1.0.0", manualPod.version)
     }
 
     @Test
@@ -508,7 +446,6 @@ class SentryPluginTest {
 
         assertEquals(setOf(configName), swiftPackages.names)
         // A global config without a matching cinterop does not provide the framework.
-        assertNull(project.externalCocoaFrameworkProvider())
         assertFalse(project.isSentryConfiguredViaSpm4Kmp("iosArm64"))
     }
 
@@ -532,42 +469,14 @@ class SentryPluginTest {
         assertNull(swiftPackages.findByName("${SENTRY_COCOA_CINTEROP_NAME}_IosArm64"))
     }
 
-    @Test
-    fun `spm4Kmp plugin without Sentry does not provide the framework`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.github.frankois944.spmForKmp")
-
-        assertNull(project.externalCocoaFrameworkProvider())
-    }
-
-    @Test
-    fun `CocoaPods plugin provides the framework even without a pod in the Kotlin DSL`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
-
-        // Podfile dependencies are not visible in the CocoaPods extension.
-        assertEquals("CocoaPods", project.externalCocoaFrameworkProvider())
-    }
-
-    @Test
-    fun `target-specific spm4Kmp configuration does not provide the framework globally`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        project.pluginManager.apply("io.github.frankois944.spmForKmp")
-
-        val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
-        kmpExtension.iosArm64().swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) { }
-
-        assertNull(project.externalCocoaFrameworkProvider())
-    }
-
     @ParameterizedTest
     @ValueSource(strings = ["sentryCocoa", "SentryCocoa"])
     fun `spm4Kmp configuration only covers its matching Apple target`(configName: String) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
+
+        project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         val configuredTarget =
@@ -580,14 +489,16 @@ class SentryPluginTest {
         assertFalse(project.isSentryConfiguredViaSpm4Kmp(fallbackTarget.name))
     }
 
-    @Test
-    fun `do not install Sentry pod if host is not mac`() {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `CocoaPods without spm4Kmp never installs a Sentry pod`(hostIsMac: Boolean) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("org.jetbrains.kotlin.native.cocoapods")
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
+        kmpExtension.iosArm64()
         (kmpExtension as ExtensionAware).extensions.configure(CocoapodsExtension::class.java) { cocoapods ->
             cocoapods.ios.deploymentTarget = "14.1"
             cocoapods.summary = "Test"
@@ -595,7 +506,7 @@ class SentryPluginTest {
         }
 
         val plugin = project.plugins.getPlugin(SentryPlugin::class.java)
-        plugin.executeConfiguration(project, hostIsMac = false)
+        plugin.executeConfiguration(project, hostIsMac = hostIsMac)
 
         val cocoapodsExtension = (kmpExtension as ExtensionAware).extensions.getByType(CocoapodsExtension::class.java)
         assertNull(cocoapodsExtension.pods.findByName("Sentry"))
@@ -632,7 +543,6 @@ class SentryPluginTest {
 
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
-        assertNull(project.externalCocoaFrameworkProvider())
         assertTrue(project.isSentryConfiguredViaSpm4Kmp(device.name))
         assertFalse(project.isSentryConfiguredViaSpm4Kmp(simulator.name))
     }

@@ -13,8 +13,8 @@ internal fun SentryOptions.toIosOptionsConfiguration(): (CocoaSentryOptions?) ->
             cocoaOptions.applyCocoaBaseOptions(kmpOptions)
 
             // Apply iOS specific options
-            cocoaOptions.attachScreenshot = this.attachScreenshot
-            cocoaOptions.attachViewHierarchy = this.attachViewHierarchy
+            cocoaOptions.setAttachScreenshot(this.attachScreenshot)
+            cocoaOptions.setAttachViewHierarchy(this.attachViewHierarchy)
 
             // Replay options
             val replayOptions =

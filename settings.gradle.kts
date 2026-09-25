@@ -31,13 +31,3 @@ Simple KMP App with targets:
 include("sentry-samples:kmp-app-spm:shared")
 include("sentry-samples:kmp-app-spm:androidApp")
 include("sentry-samples:kmp-app-spm:desktopApp")
-
-/*
-Simple KMP App with targets:
-   - Android
-   - iOS with SwiftUI and Cocoapods
-   - JVM Desktop with Jetpack Compose
-*/
-include("sentry-samples:kmp-app-cocoapods:shared")
-include("sentry-samples:kmp-app-cocoapods:androidApp")
-include("sentry-samples:kmp-app-cocoapods:desktopApp")

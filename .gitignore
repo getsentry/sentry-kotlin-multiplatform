@@ -20,6 +20,11 @@ Pods/
 # spm4Kmp generated sources/packages (regenerated on every build)
 **/exportedSentryCocoa/
 **/src/swift/
+!sentry-kotlin-multiplatform/src/swift/
+sentry-kotlin-multiplatform/src/swift/*
+!sentry-kotlin-multiplatform/src/swift/sentryCocoa/
+sentry-kotlin-multiplatform/src/swift/sentryCocoa/*
+!sentry-kotlin-multiplatform/src/swift/sentryCocoa/SentryKMPInternal.swift
 
 .project
 .settings

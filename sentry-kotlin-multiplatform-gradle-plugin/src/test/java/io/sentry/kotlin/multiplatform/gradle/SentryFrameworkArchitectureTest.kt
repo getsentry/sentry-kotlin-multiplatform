@@ -5,10 +5,12 @@ import io.mockk.mockk
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
 import java.net.URL
 import java.nio.file.Files
@@ -19,18 +21,17 @@ class SentryFrameworkArchitectureTest {
     companion object {
         @JvmStatic
         fun cocoaVersions(): List<Arguments> =
-            listOf(
-                Arguments.of("8.37.0"),
-                Arguments.of("8.38.0"),
-                Arguments.of("8.58.2"),
-//            Arguments.of("latest"),
-                // TODO: Latest is already v9 which is currently failing - let's fix this when we bump to v9
-            )
+            listOf("8.37.0", "8.38.0", "8.58.2", "9.28.0").flatMap { version ->
+                listOf(Arguments.of(version, true), Arguments.of(version, false))
+            }
     }
 
-    @ParameterizedTest(name = "Test architecture name compatibility with Cocoa Version {0} in static framework")
+    @ParameterizedTest(name = "Cocoa {0}, static={1}")
     @MethodSource("cocoaVersions")
-    fun `finds arch folders in static framework`(cocoaVersion: String) {
+    fun `finds arch folders in released frameworks`(
+        cocoaVersion: String,
+        isStatic: Boolean,
+    ) {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply {
             apply("org.jetbrains.kotlin.multiplatform")
@@ -39,97 +40,47 @@ class SentryFrameworkArchitectureTest {
 
         val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
         kmpExtension.apply {
-            listOf(
-                iosX64(),
-                iosArm64(),
-                iosSimulatorArm64(),
-                macosArm64(),
-                macosX64(),
-                watchosX64(),
-                watchosArm32(),
-                watchosSimulatorArm64(),
-                tvosX64(),
-                tvosArm64(),
-                tvosSimulatorArm64(),
-            ).forEach {
-                it.binaries.framework {
-                    baseName = "shared"
-                    isStatic = false
-                }
-            }
+            iosX64()
+            iosArm64()
+            iosSimulatorArm64()
+            macosArm64()
+            macosX64()
+            watchosX64()
+            watchosArm64()
+            watchosSimulatorArm64()
+            tvosX64()
+            tvosArm64()
+            tvosSimulatorArm64()
         }
-        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic = true)
-        val xcFramework = File(frameworkDir, "Sentry.xcframework")
+        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic)
+        val xcFramework = File(frameworkDir, if (isStatic) "Sentry.xcframework" else "Sentry-Dynamic.xcframework")
 
         val downloadedArchNames =
             xcFramework.listFiles()?.map { it.name } ?: throw IllegalStateException("No archs found")
 
         kmpExtension.appleTargets().forEach {
             val mappedArchNames = it.toSentryFrameworkArchitecture()
-            val foundMatch =
-                mappedArchNames.any { mappedArchName ->
-                    downloadedArchNames.contains(mappedArchName)
-                }
-
-            assert(foundMatch) {
-                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
-                    xcFramework.listFiles()
-                        ?.map { file -> file.name }
-                }"
+            assertTrue(mappedArchNames.any { name -> name in downloadedArchNames }) {
+                "Expected one of $mappedArchNames in $xcFramework for ${it.name}, found $downloadedArchNames"
             }
         }
     }
 
-    @ParameterizedTest(name = "Test architecture name compatibility with Cocoa Version {0} in dynamic framework")
-    @MethodSource("cocoaVersions")
-    fun `finds arch folders in dynamic framework`(cocoaVersion: String) {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply {
-            apply("org.jetbrains.kotlin.multiplatform")
-            apply("io.sentry.kotlin.multiplatform.gradle")
-        }
+    @ParameterizedTest
+    @ValueSource(strings = ["watchos-arm64_arm64_32", "watchos-arm64_arm64_32_arm64e"])
+    fun `watchOS arm64 matches both Cocoa 9 device distributions`(slice: String) {
+        val target = mockk<KotlinNativeTarget>()
+        every { target.name } returns "watchosArm64"
 
-        val kmpExtension = project.extensions.getByName("kotlin") as KotlinMultiplatformExtension
-        kmpExtension.apply {
-            listOf(
-                iosX64(),
-                iosArm64(),
-                iosSimulatorArm64(),
-                macosArm64(),
-                macosX64(),
-                watchosX64(),
-                watchosArm32(),
-                watchosSimulatorArm64(),
-                tvosX64(),
-                tvosArm64(),
-                tvosSimulatorArm64(),
-            ).forEach {
-                it.binaries.framework {
-                    baseName = "shared"
-                    isStatic = false
-                }
-            }
-        }
-        val frameworkDir = downloadAndUnzip(cocoaVersion, isStatic = false)
-        val xcFramework = File(frameworkDir, "Sentry-Dynamic.xcframework")
+        assertTrue(slice in target.toSentryFrameworkArchitecture())
+    }
 
-        val downloadedArchNames =
-            xcFramework.listFiles()?.map { it.name } ?: throw IllegalStateException("No archs found")
+    @Test
+    fun `stub watch target has no Cocoa architecture mapping`() {
+        val target = mockk<KotlinNativeTarget>()
+        every { target.name } returns "watchosArm32"
 
-        kmpExtension.appleTargets().forEach {
-            val mappedArchNames = it.toSentryFrameworkArchitecture()
-            val foundMatch =
-                mappedArchNames.any { mappedArchName ->
-                    downloadedArchNames.contains(mappedArchName)
-                }
-
-            assert(foundMatch) {
-                "Expected to find one of $mappedArchNames in $xcFramework for target ${it.name}.\nFound instead: ${
-                    xcFramework.listFiles()
-                        ?.map { file -> file.name }
-                }"
-            }
-        }
+        assertTrue(target.toSentryFrameworkArchitecture().isEmpty())
     }
 
     @Test
@@ -153,6 +104,14 @@ class SentryFrameworkArchitectureTest {
         cocoaVersion: String,
         isStatic: Boolean,
     ): File {
+        // An optional local fixture directory permits offline checks against previously
+        // downloaded release archives: <root>/<version>/Sentry[-Dynamic].xcframework.
+        System.getenv("SENTRY_COCOA_TEST_FRAMEWORKS")?.let { root ->
+            val directory = File(root, cocoaVersion)
+            val framework = if (isStatic) "Sentry.xcframework" else "Sentry-Dynamic.xcframework"
+            check(directory.resolve(framework).isDirectory) { "Missing framework fixture: $directory/$framework" }
+            return directory
+        }
         val tempDir = Files.createTempDirectory("sentry-cocoa-test").toFile()
         tempDir.deleteOnExit()
 
@@ -169,7 +128,12 @@ class SentryFrameworkArchitectureTest {
                 "https://github.com/getsentry/sentry-cocoa/releases/download/$cocoaVersion/$xcFrameworkZip"
             }
         val url = URL(downloadLink)
-        url.openStream().use { input ->
+        val connection =
+            url.openConnection().apply {
+                connectTimeout = 30_000
+                readTimeout = 60_000
+            }
+        connection.getInputStream().use { input ->
             Files.copy(
                 input,
                 targetFile.toPath(),

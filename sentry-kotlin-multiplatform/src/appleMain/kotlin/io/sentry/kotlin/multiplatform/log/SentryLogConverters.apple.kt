@@ -1,6 +1,6 @@
 package io.sentry.kotlin.multiplatform.log
 
-import cocoapods.Sentry.SentryStructuredLogAttribute
+import cocoapods.Sentry.SentryAttribute
 import io.sentry.kotlin.multiplatform.SentryAttributeValue
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
@@ -73,7 +73,7 @@ private fun CocoaSentryLog.toKmpSentryAttributes(): KmpSentryAttributes {
     val kmpAttributes = KmpSentryAttributes.empty()
     attributes()
         .mapNotNull { (key, value) ->
-            (key as? String)?.let { it to (value as? SentryStructuredLogAttribute) }
+            (key as? String)?.let { it to (value as? SentryAttribute) }
         }.forEach { (key, attribute) ->
             attribute ?: return@forEach
             when (attribute.type()) {
@@ -102,10 +102,10 @@ private fun CocoaSentryLog.updateAttributesFrom(
         mergedAttributes[key] =
             when (attrValue) {
                 is SentryAttributeValue.LongValue ->
-                    SentryStructuredLogAttribute(integer = (attrValue.value as Long).convert())
-                is SentryAttributeValue.DoubleValue -> SentryStructuredLogAttribute(double = attrValue.value as Double)
-                is SentryAttributeValue.StringValue -> SentryStructuredLogAttribute(string = attrValue.value as String)
-                is SentryAttributeValue.BooleanValue -> SentryStructuredLogAttribute(boolean = attrValue.value as Boolean)
+                    SentryAttribute(integer = (attrValue.value as Long).convert())
+                is SentryAttributeValue.DoubleValue -> SentryAttribute(double = attrValue.value as Double)
+                is SentryAttributeValue.StringValue -> SentryAttribute(string = attrValue.value as String)
+                is SentryAttributeValue.BooleanValue -> SentryAttribute(boolean = attrValue.value as Boolean)
             }
     }
 
