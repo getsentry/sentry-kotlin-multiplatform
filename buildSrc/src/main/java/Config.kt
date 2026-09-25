@@ -89,7 +89,7 @@ object Config {
         val kmpNativeAndroidSdkName = "sentry.native.android.kmp"
         val javaPackageName = "maven:io.sentry:sentry"
         val androidPackageName = "maven:io.sentry:sentry-android"
-        val cocoaPackageName = "cocoapods:sentry-cocoa"
+        val cocoaPackageName = "spm:sentry-cocoa"
         val group = "io.sentry"
         val description = "SDK for sentry.io"
         val versionNameProp = "versionName"

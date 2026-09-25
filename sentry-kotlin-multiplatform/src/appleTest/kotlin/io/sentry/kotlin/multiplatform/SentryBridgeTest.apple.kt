@@ -123,10 +123,10 @@ actual class SentryBridgeTest {
         val packages = event?.sdk()?.get("packages") as? List<Map<String, String>>
 
         // THEN
-        assert(option.beforeSend() != null)
-        assert(packages != null)
-        assert(packages!!.isNotEmpty())
-        assert(packages.find { it["name"]!!.contains("cocoa") } != null)
+        assertEquals(
+            BuildKonfig.SENTRY_COCOA_VERSION,
+            packages?.single { it["name"] == "spm:sentry-cocoa" }?.get("version"),
+        )
     }
 
     internal class Fixture {
