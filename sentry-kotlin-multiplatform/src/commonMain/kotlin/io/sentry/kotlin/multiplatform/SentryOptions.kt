@@ -19,6 +19,27 @@ public open class SentryOptions {
     public var dsn: String? = null
 
     /**
+     * Requires matching organization IDs from the SDK and incoming baggage to continue a trace.
+     * When enabled, a missing organization ID on either side starts a new trace. When disabled,
+     * missing IDs are tolerated, but two present, different IDs still start a new trace.
+     * Defaults to false. Applies to trace continuation performed by the underlying platform SDK.
+     */
+    public var strictTraceContinuation: Boolean = false
+
+    /**
+     * The organization ID used for trace continuation. Overrides the ID derived from the DSN.
+     * Set this for self-hosted or Relay setups where the DSN does not contain an organization ID.
+     * Defaults to null, allowing the underlying platform SDK to derive the ID from the DSN.
+     */
+    public var orgId: String? = null
+
+    /**
+     * Enables W3C `traceparent` headers on outgoing requests instrumented by the platform SDK.
+     * Defaults to false. Native trace propagation target restrictions still apply.
+     */
+    public var enablePropagateTraceparent: Boolean = false
+
+    /**
      * When enabled, stack traces are automatically attached to all threads logged. Stack traces are
      * always attached to exceptions but when this is set stack traces are also sent with threads. If
      * no threads are logged, we log the current thread automatically.

@@ -10,6 +10,10 @@
 - Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
 - On Apple, `captureUserFeedback` now sends a separate native `SentryFeedback` event with its own event ID, linked to the original error through `associatedEventId`. The common API is unchanged. Feedback uses source `custom`, preserves name/email, and maps comments to the message (null becomes an empty string).
 
+### Features
+
+- Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
+
 ### Fixes
 
 - Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
