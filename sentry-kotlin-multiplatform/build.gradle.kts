@@ -274,7 +274,12 @@ buildkonfig {
 }
 
 private fun KotlinMultiplatformExtension.addNoOpTargets() {
-    watchosArm32()
+    // Craft requires a cinterop artifact for Apple publications, even for this no-op target.
+    watchosArm32 {
+        compilations.getByName("main") {
+            cinterops.create("SentryStub")
+        }
+    }
     js(IR) {
         browser()
         binaries.library()

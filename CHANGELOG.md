@@ -16,6 +16,7 @@
 
 ### Fixes
 
+- Fix Maven publishing for the `watchosArm32` no-op target by including an empty cinterop artifact ([#581](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/581)).
 - Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
 - Keep unhandled-exception hooks from being wrapped repeatedly across SDK restarts, and retain debug images referenced by exception frames.
 - Recognize Cocoa 9 watchOS framework slice names in the Gradle plugin.

@@ -158,15 +158,19 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
 
             when {
                 artifactFile.name == "$baseFileName-watchosarm32-$version.zip" -> {
-                    // watchosArm32 is a no-op stub and must not ship Cocoa cinterops.
-                    val expectedKlib = "$baseFileName-watchosarm32-$version.klib"
-                    val klibFiles = entries.filter { it.endsWith(".klib") }
-                    if (klibFiles.size != 1 || klibFiles.single().substringAfterLast('/') != expectedKlib) {
+                    // The no-op cinterop keeps Craft's Apple artifact list nonempty without linking Cocoa.
+                    val expectedKlibs =
+                        setOf(
+                            "$baseFileName-watchosarm32-$version.klib",
+                            "$baseFileName-watchosarm32-$version-cinterop-SentryStub.klib",
+                        )
+                    val klibFiles = entries.filter { it.endsWith(".klib") }.map { it.substringAfterLast('/') }
+                    if (klibFiles.size != expectedKlibs.size || klibFiles.toSet() != expectedKlibs) {
                         throw GradleException(
-                            "❌ Expected only the SDK stub klib $expectedKlib in ${artifactFile.name}, but found $klibFiles",
+                            "❌ Expected SDK and cinterop stub klibs $expectedKlibs in ${artifactFile.name}, but found $klibFiles",
                         )
                     }
-                    println("✅ Found SDK stub klib in ${artifactFile.name}")
+                    println("✅ Found SDK and cinterop stub klibs in ${artifactFile.name}")
                 }
 
                 artifactFile.name.contains("ios", ignoreCase = true) ||
