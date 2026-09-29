@@ -1,11 +1,9 @@
 package io.sentry.kotlin.multiplatform.log
 
-import io.sentry.SentryLogEventAttributeValue
-import io.sentry.kotlin.multiplatform.JvmSentryAttributeType
-import io.sentry.kotlin.multiplatform.JvmSentryAttributes
 import io.sentry.kotlin.multiplatform.JvmSentryLog
 import io.sentry.kotlin.multiplatform.JvmSentryLogLevel
-import io.sentry.kotlin.multiplatform.SentryAttributeValue as KmpSentryAttributeValue
+import io.sentry.kotlin.multiplatform.toJvmAttributeValue
+import io.sentry.kotlin.multiplatform.toKmpSentryAttributes
 import io.sentry.kotlin.multiplatform.SentryAttributes as KmpSentryAttributes
 
 /**
@@ -35,18 +33,6 @@ internal fun JvmSentryLogLevel.toKmpSentryLogLevel(): SentryLogLevel =
     }
 
 /**
- * Converts KMP [KmpSentryAttributes] to Java SDK's [JvmSentryAttributes].
- * * This is needed for the Java SDK's SentryLogParameters.create method.
- */
-internal fun KmpSentryAttributes.toJvmSentryAttributes(): JvmSentryAttributes {
-    val map = mutableMapOf<String, Any>()
-    forEach { (key, attrValue) ->
-        map[key] = attrValue.value
-    }
-    return JvmSentryAttributes.fromMap(map)
-}
-
-/**
  * Converts a JVM SentryLog to a KMP SentryLog for use in beforeSendLog callback.
  * After the callback, changes are applied back via [updateFrom].
  */
@@ -56,7 +42,7 @@ internal fun JvmSentryLog.toKmpSentryLog(): SentryLog =
         level = level.toKmpSentryLogLevel(),
         body = body,
         severityNumber = severityNumber,
-        attributes = toKmpSentryAttributes(),
+        attributes = attributes.toKmpSentryAttributes(),
     )
 
 /**
@@ -72,23 +58,6 @@ internal fun JvmSentryLog.updateFrom(
     level = kmpLog.level.toJvmSentryLogLevel()
     severityNumber = kmpLog.severityNumber
     updateAttributesFrom(kmpLog.attributes, originalKmpAttributes)
-}
-
-/**
- * Converts JVM log attributes to KMP SentryAttributes.
- */
-private fun JvmSentryLog.toKmpSentryAttributes(): KmpSentryAttributes {
-    val kmpAttributes = KmpSentryAttributes.empty()
-    attributes?.forEach { (key, value) ->
-        val attrValue = value ?: return@forEach
-        when (attrValue.type) {
-            JvmSentryAttributeType.STRING.apiName() -> kmpAttributes[key] = attrValue.value as String
-            JvmSentryAttributeType.INTEGER.apiName() -> kmpAttributes[key] = (attrValue.value as Number).toLong()
-            JvmSentryAttributeType.DOUBLE.apiName() -> kmpAttributes[key] = (attrValue.value as Number).toDouble()
-            JvmSentryAttributeType.BOOLEAN.apiName() -> kmpAttributes[key] = attrValue.value as Boolean
-        }
-    }
-    return kmpAttributes
 }
 
 /**
@@ -110,13 +79,6 @@ private fun JvmSentryLog.updateAttributesFrom(
 
     // Add or update attributes from the modified KMP attributes
     modifiedKmpAttributes.forEach { (key, attrValue) ->
-        val jvmType =
-            when (attrValue) {
-                is KmpSentryAttributeValue.StringValue -> JvmSentryAttributeType.STRING
-                is KmpSentryAttributeValue.LongValue -> JvmSentryAttributeType.INTEGER
-                is KmpSentryAttributeValue.DoubleValue -> JvmSentryAttributeType.DOUBLE
-                is KmpSentryAttributeValue.BooleanValue -> JvmSentryAttributeType.BOOLEAN
-            }
-        setAttribute(key, SentryLogEventAttributeValue(jvmType, attrValue.value))
+        setAttribute(key, attrValue.toJvmAttributeValue())
     }
 }

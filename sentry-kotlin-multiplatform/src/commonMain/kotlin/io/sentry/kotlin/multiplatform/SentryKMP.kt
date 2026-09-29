@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import io.sentry.kotlin.multiplatform.log.SentryLogger
+import io.sentry.kotlin.multiplatform.metrics.SentryMetrics
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -139,6 +140,21 @@ public object Sentry {
     public fun setUser(user: User?) {
         bridge.setUser(user)
     }
+
+    /**
+     * The Sentry metrics API for recording counters, gauges and distributions.
+     *
+     * Usage:
+     * ```
+     * Sentry.metrics.count("button.click")
+     * Sentry.metrics.gauge("queue.size", 42.0)
+     * Sentry.metrics.distribution("request.duration", 187.5, unit = "millisecond") {
+     *     this["endpoint"] = "/checkout"
+     * }
+     * ```
+     */
+    public val metrics: SentryMetrics
+        get() = bridge.metrics()
 
     /**
      * The Sentry logger API for sending structured logs.
