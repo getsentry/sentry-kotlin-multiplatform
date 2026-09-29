@@ -1,5 +1,6 @@
 package io.sentry.kotlin.multiplatform.log
 
+import io.sentry.kotlin.multiplatform.toJvmSentryAttributes
 import io.sentry.logger.ILoggerApi
 import io.sentry.logger.SentryLogParameters
 

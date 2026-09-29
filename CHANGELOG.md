@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+- Add `Sentry.metrics` with `count`, `gauge` and `distribution`, plus `options.metrics.beforeSend` for modifying or dropping metrics on Apple, Android and JVM. Unsupported targets are no-ops ([#572](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/572)).
+
 ## 0.28.0-beta.2
 
 ### Breaking changes
