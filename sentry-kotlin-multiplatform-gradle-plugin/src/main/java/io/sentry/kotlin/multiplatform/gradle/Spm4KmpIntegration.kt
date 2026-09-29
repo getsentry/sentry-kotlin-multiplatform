@@ -111,32 +111,39 @@ internal fun Project.installSentryForSpm4Kmp(
             return@forEach
         }
 
-        target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
-            // spm4Kmp selects one entry for the shared container, so every entry needs all four
-            // minimums, including platforms other than this target's own family.
-            minIos = minimumDeploymentVersion(minIos, SENTRY_COCOA_MIN_IOS)
-            minTvos = minimumDeploymentVersion(minTvos, SENTRY_COCOA_MIN_TVOS)
-            minMacos = minimumDeploymentVersion(minMacos, SENTRY_COCOA_MIN_MACOS)
-            minWatchos = minimumDeploymentVersion(minWatchos, SENTRY_COCOA_MIN_WATCHOS)
-            dependency {
-                remotePackageVersion(
-                    url = URI(SENTRY_COCOA_GIT_URL),
-                    version = cocoaVersion,
-                    products = {
-                        // Link only (exportToKotlin defaults to false): the published klib already
-                        // carries the Sentry cinterop bindings.
-                        add("Sentry")
-                    },
-                )
-            }
-        }
-        if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
-            registerWatchosSimulatorFrameworkCopy()
-        }
+        registerSentryPackage(target, cocoaVersion)
         registeredTargets += target.name
     }
     if (registeredTargets.isNotEmpty()) {
         logger.lifecycle("Registered Sentry Cocoa $cocoaVersion via spm4Kmp for targets: $registeredTargets")
+    }
+}
+
+private fun Project.registerSentryPackage(
+    target: KotlinNativeTarget,
+    cocoaVersion: String,
+) {
+    target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
+        // spm4Kmp selects one entry for the shared container, so every entry needs all four
+        // minimums, including platforms other than this target's own family.
+        minIos = minimumDeploymentVersion(minIos, SENTRY_COCOA_MIN_IOS)
+        minTvos = minimumDeploymentVersion(minTvos, SENTRY_COCOA_MIN_TVOS)
+        minMacos = minimumDeploymentVersion(minMacos, SENTRY_COCOA_MIN_MACOS)
+        minWatchos = minimumDeploymentVersion(minWatchos, SENTRY_COCOA_MIN_WATCHOS)
+        dependency {
+            remotePackageVersion(
+                url = URI(SENTRY_COCOA_GIT_URL),
+                version = cocoaVersion,
+                products = {
+                    // Link only (exportToKotlin defaults to false): the published klib already
+                    // carries the Sentry cinterop bindings.
+                    add("Sentry")
+                },
+            )
+        }
+    }
+    if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
+        registerWatchosSimulatorFrameworkCopy()
     }
 }
 
