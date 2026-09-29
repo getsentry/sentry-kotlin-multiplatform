@@ -3,10 +3,15 @@
 
 package io.sentry.kotlin.multiplatform.gradle
 
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import io.sentry.BuildConfig
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.testfixtures.ProjectBuilder
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -76,6 +81,23 @@ class AppleDependencySelectionTest {
         assertTrue(project.noAppleDependencyReason(AppleDependencyProvider.NONE).contains("provider is NONE"))
         project.pluginManager.apply(COCOAPODS_PLUGIN_ID)
         assertTrue(project.noAppleDependencyReason(AppleDependencyProvider.AUTO).contains("CocoaPods plugin is applied"))
+    }
+
+    @ParameterizedTest
+    @CsvSource("AUTO,true", "NONE,false")
+    fun `no install reason is visible only when AUTO decided`(
+        provider: AppleDependencyProvider,
+        visible: Boolean,
+    ) {
+        val project = spyk(project())
+        val logger = mockk<Logger>(relaxed = true)
+        every { project.logger } returns logger
+        project.pluginManager.apply(COCOAPODS_PLUGIN_ID)
+        options(project).apple.provider.set(provider)
+        configure(project)
+        val isReason: (String) -> Boolean = { it.startsWith("Sentry Cocoa is not installed automatically") }
+        verify(exactly = if (visible) 1 else 0) { logger.lifecycle(match<String>(isReason)) }
+        verify(exactly = if (visible) 0 else 1) { logger.info(match<String>(isReason)) }
     }
 
     @Test

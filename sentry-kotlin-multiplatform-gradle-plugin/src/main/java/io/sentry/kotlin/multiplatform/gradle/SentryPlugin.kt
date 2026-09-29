@@ -103,12 +103,15 @@ private fun Project.installAppleDependency(
             }
             installSentryForSpm4Kmp(cocoaVersion, hostIsMac)
         }
-        AppleDependencyProvider.AUTO, AppleDependencyProvider.NONE ->
-            logger.info(
-                "Sentry Cocoa is not installed automatically because " +
-                    "${noAppleDependencyReason(autoInstall.apple.provider.get())} Add Sentry Cocoa to your app " +
-                    "yourself (for example with Swift Package Manager in Xcode); sentryKmp.linker links it.",
-            )
+        AppleDependencyProvider.AUTO, AppleDependencyProvider.NONE -> {
+            val requested = autoInstall.apple.provider.get()
+            val message =
+                "Sentry Cocoa is not installed automatically because ${noAppleDependencyReason(requested)} " +
+                    "Add Sentry Cocoa to your app yourself (for example with Swift Package Manager in Xcode); " +
+                    "sentryKmp.linker links it."
+            // An explicit NONE only restates the user's own configuration.
+            if (requested == AppleDependencyProvider.NONE) logger.info(message) else logger.lifecycle(message)
+        }
     }
     return emptySet()
 }
