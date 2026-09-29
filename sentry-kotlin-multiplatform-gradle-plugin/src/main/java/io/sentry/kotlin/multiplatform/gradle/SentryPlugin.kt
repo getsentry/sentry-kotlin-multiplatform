@@ -107,7 +107,7 @@ private fun Project.installAppleDependency(
             logger.info(
                 "Sentry Cocoa is not installed automatically because " +
                     "${noAppleDependencyReason(autoInstall.apple.provider.get())} Add Sentry Cocoa to your app " +
-                    "yourself (for example with Swift Package Manager in Xcode); the plugin still links it.",
+                    "yourself (for example with Swift Package Manager in Xcode); sentryKmp.linker links it.",
             )
     }
     return emptySet()
@@ -142,7 +142,7 @@ private fun maybeLinkCocoaFramework(
 
     project.gradle.taskGraph.whenReady { graph ->
         val requestedTargets = getActiveTargets(project, appleTargets, graph)
-        val (spmCoveredTargets, activeTargets) =
+        val (coveredTargets, activeTargets) =
             requestedTargets.partition {
                 it.name in swiftPmCoveredTargets || project.isSentryConfiguredViaSpm4Kmp(it.name)
             }
@@ -158,9 +158,9 @@ private fun maybeLinkCocoaFramework(
             return@whenReady
         }
 
-        if (spmCoveredTargets.isNotEmpty()) {
+        if (coveredTargets.isNotEmpty()) {
             project.logger.lifecycle(
-                "Sentry Cocoa is provided by SwiftPM for targets: ${spmCoveredTargets.map { it.name }}",
+                "Sentry Cocoa is provided by SwiftPM for targets: ${coveredTargets.map { it.name }}",
             )
         }
 

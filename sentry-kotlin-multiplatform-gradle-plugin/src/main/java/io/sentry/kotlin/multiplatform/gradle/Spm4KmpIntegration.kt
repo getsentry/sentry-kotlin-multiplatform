@@ -7,7 +7,6 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import java.net.URI
 
@@ -70,8 +69,8 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
  * name, so adding defaults could replace the user's package settings.
  */
 internal fun Project.installSentryForSpm4Kmp(
-    cocoaVersion: String = BuildConfig.SentryCocoaVersion,
-    hostIsMac: Boolean = HostManager.hostIsMac,
+    cocoaVersion: String,
+    hostIsMac: Boolean,
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension || !hostIsMac) {
