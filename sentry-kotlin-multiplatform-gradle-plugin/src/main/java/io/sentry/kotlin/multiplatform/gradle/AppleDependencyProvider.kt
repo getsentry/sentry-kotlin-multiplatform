@@ -2,7 +2,10 @@ package io.sentry.kotlin.multiplatform.gradle
 
 /** Integration used to install the native Sentry Cocoa dependency. */
 enum class AppleDependencyProvider {
-    /** Prefer integrations in use: official SwiftPM, then spm4Kmp. */
+    /**
+     * Use spm4Kmp when applied, nothing when the Kotlin CocoaPods plugin is applied, and otherwise
+     * official SwiftPM on Kotlin 2.4 or newer.
+     */
     AUTO,
 
     /** Use Kotlin 2.4 or newer's official SwiftPM import. */
@@ -11,6 +14,6 @@ enum class AppleDependencyProvider {
     /** Use the applied spm4Kmp plugin. */
     SPM4KMP,
 
-    /** Leave Apple dependency installation to the application. Linking remains enabled. */
+    /** Leave Apple dependency installation to the application. Manual linking remains enabled. */
     NONE,
 }

@@ -229,25 +229,19 @@ subprojects {
     }
 }
 
+val spotlessExcludes =
+    arrayOf("**/generated/**", "**/build/**", "**/.gradle/**", "**/.kotlin/**", "**/.swiftpm-locks/**")
+
 spotless {
     lineEndings = LineEnding.UNIX
 
+    // A file tree prunes excluded directories, so Spotless never follows symlinks inside build outputs.
     kotlin {
-        target(
-            fileTree(rootDir) {
-                include("**/*.kt")
-                exclude("**/generated/**", "**/build/**", "**/.gradle/**", "**/.kotlin/**", "**/.swiftpm-locks/**")
-            },
-        )
+        target(fileTree(rootDir) { include("**/*.kt").exclude(*spotlessExcludes) })
         ktlint()
     }
     kotlinGradle {
-        target(
-            fileTree(rootDir) {
-                include("**/*.kts")
-                exclude("**/generated/**", "**/build/**", "**/.gradle/**", "**/.kotlin/**", "**/.swiftpm-locks/**")
-            },
-        )
+        target(fileTree(rootDir) { include("**/*.kts").exclude(*spotlessExcludes) })
         ktlint()
     }
 }

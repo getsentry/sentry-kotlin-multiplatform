@@ -17,8 +17,7 @@ abstract class AutoInstallExtension
         val apple: AppleAutoInstallExtension = objects.newInstance(AppleAutoInstallExtension::class.java, project)
 
         /**
-         * Enable auto-installation of Sentry dependencies. [AppleAutoInstallExtension] selects the Apple provider.
-         * Provider settings are available through [Spm4KmpAutoInstallExtension]
+         * Enable auto-installation of Sentry dependencies through [AppleAutoInstallExtension]
          * and [SourceSetAutoInstallExtension].
          *
          * Disabling this also removes the plugin ordering requirement for spm4Kmp auto-install.
@@ -28,16 +27,13 @@ abstract class AutoInstallExtension
         val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
         /** Migration entry point for the removed CocoaPods integration. */
-        @Deprecated("CocoaPods is unsupported with Sentry Cocoa 9. Use autoInstall.spm instead.")
+        @Deprecated("CocoaPods is unsupported with Sentry Cocoa 9. Use autoInstall.apple.provider instead.")
         @Suppress("DEPRECATION")
         val cocoapods: CocoapodsAutoInstallExtension
             get() = throw GradleException(
                 "Sentry Cocoa 9 does not support CocoaPods. Remove sentryKmp.autoInstall.cocoapods " +
-                    "configuration and any Sentry pod declaration, and use spm4Kmp with autoInstall.spm instead.",
+                    "configuration and any Sentry pod declaration, and use autoInstall.apple.provider instead.",
             )
-
-        val spm: Spm4KmpAutoInstallExtension =
-            objects.newInstance(Spm4KmpAutoInstallExtension::class.java, project)
 
         val commonMain: SourceSetAutoInstallExtension =
             objects.newInstance(SourceSetAutoInstallExtension::class.java, project)

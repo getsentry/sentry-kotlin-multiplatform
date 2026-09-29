@@ -13,6 +13,17 @@ abstract class LinkerExtension
         private val objects = project.objects
 
         /**
+         * Enables manual Sentry Cocoa framework linking for Apple targets that no auto-install
+         * integration covers.
+         *
+         * Disable this when your own official SwiftPM declaration supplies Sentry Cocoa. Keep it enabled
+         * when Sentry Cocoa is added to the Xcode project, since manual linking locates that framework.
+         *
+         * Defaults to true.
+         */
+        val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+
+        /**
          * Path to the Xcode project that will be used to link the framework.
          * This is used to find the derived data path in which the framework is stored for SPM.
          */

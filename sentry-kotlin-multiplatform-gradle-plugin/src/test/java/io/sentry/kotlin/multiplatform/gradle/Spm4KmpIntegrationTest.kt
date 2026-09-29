@@ -141,8 +141,8 @@ class Spm4KmpIntegrationTest {
         every { project.logger } returns logger
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
         val version = if (overrideVersion) "9.27.0" else BuildConfig.SentryCocoaVersion
-        autoInstall.spm.sentryCocoaVersion.set(version)
-        autoInstall.spm.enabled.set(enabled)
+        autoInstall.apple.sentryCocoaVersion.set(version)
+        if (!enabled) autoInstall.apple.provider.set(AppleDependencyProvider.NONE)
         val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         if (stubOnly) {
             kotlin.watchosArm32()
@@ -152,10 +152,10 @@ class Spm4KmpIntegrationTest {
         }
         if (userOwned) packages(project).create(SENTRY_COCOA_CINTEROP_NAME)
 
-        project.installSentryForSpm4Kmp(autoInstall)
+        project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
         verify(exactly = if (overrideVersion && enabled && !userOwned && !stubOnly) 1 else 0) {
-            logger.warn(match<String> { it.contains("autoInstall.spm.sentryCocoaVersion") })
+            logger.warn(match<String> { it.contains("autoInstall.apple.sentryCocoaVersion") })
         }
         if (enabled && !userOwned && !stubOnly) {
             (project as ProjectInternal).evaluate()

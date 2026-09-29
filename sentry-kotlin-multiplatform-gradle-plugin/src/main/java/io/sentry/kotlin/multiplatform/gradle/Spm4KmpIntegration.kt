@@ -12,7 +12,11 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 import java.net.URI
 
 internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
-private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
+internal const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
+internal const val SENTRY_COCOA_MIN_IOS = "15.0"
+internal const val SENTRY_COCOA_MIN_MACOS = "12.0"
+internal const val SENTRY_COCOA_MIN_TVOS = "15.0"
+internal const val SENTRY_COCOA_MIN_WATCHOS = "9.0"
 
 private fun Project.swiftPackageConfigNames(): Set<String>? {
     if (!plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
@@ -66,7 +70,7 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
  * name, so adding defaults could replace the user's package settings.
  */
 internal fun Project.installSentryForSpm4Kmp(
-    autoInstall: AutoInstallExtension,
+    cocoaVersion: String = BuildConfig.SentryCocoaVersion,
     hostIsMac: Boolean = HostManager.hostIsMac,
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
@@ -75,13 +79,13 @@ internal fun Project.installSentryForSpm4Kmp(
         return
     }
 
-    if (resolveAppleDependencyProvider(autoInstall, validate = false) != AppleDependencyProvider.SPM4KMP) {
-        return
-    }
-
     val userDefinedConfigNames = sentrySwiftPackageConfigNames()
-    val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
-    warnIfCocoaVersionMismatch(cocoaVersion, kmpExtension.appleTargets(), userDefinedConfigNames)
+    if (userDefinedConfigNames.isEmpty() &&
+        kmpExtension.appleTargets().any { it.konanTarget != KonanTarget.WATCHOS_ARM32 }
+    ) {
+        warnIfCocoaVersionMismatch(cocoaVersion)
+    }
+    val registeredTargets = mutableListOf<String>()
     kmpExtension.appleTargets().forEach { target ->
         if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
             logger.warn(
@@ -111,10 +115,10 @@ internal fun Project.installSentryForSpm4Kmp(
         target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
             // spm4Kmp selects one entry for the shared container, so every entry needs all four
             // minimums, including platforms other than this target's own family.
-            minIos = minimumDeploymentVersion(minIos, "15.0")
-            minTvos = minimumDeploymentVersion(minTvos, "15.0")
-            minMacos = minimumDeploymentVersion(minMacos, "12.0")
-            minWatchos = minimumDeploymentVersion(minWatchos, "9.0")
+            minIos = minimumDeploymentVersion(minIos, SENTRY_COCOA_MIN_IOS)
+            minTvos = minimumDeploymentVersion(minTvos, SENTRY_COCOA_MIN_TVOS)
+            minMacos = minimumDeploymentVersion(minMacos, SENTRY_COCOA_MIN_MACOS)
+            minWatchos = minimumDeploymentVersion(minWatchos, SENTRY_COCOA_MIN_WATCHOS)
             dependency {
                 remotePackageVersion(
                     url = URI(SENTRY_COCOA_GIT_URL),
@@ -130,23 +134,17 @@ internal fun Project.installSentryForSpm4Kmp(
         if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
             registerWatchosSimulatorFrameworkCopy()
         }
-        logger.lifecycle(
-            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
-        )
+        registeredTargets += target.name
+    }
+    if (registeredTargets.isNotEmpty()) {
+        logger.lifecycle("Registered Sentry Cocoa $cocoaVersion via spm4Kmp for targets: $registeredTargets")
     }
 }
 
-private fun Project.warnIfCocoaVersionMismatch(
-    cocoaVersion: String,
-    appleTargets: Collection<KotlinNativeTarget>,
-    userDefinedConfigNames: Set<String>,
-) {
-    if (userDefinedConfigNames.isEmpty() &&
-        appleTargets.any { it.konanTarget != KonanTarget.WATCHOS_ARM32 } &&
-        cocoaVersion != BuildConfig.SentryCocoaVersion
-    ) {
+internal fun Project.warnIfCocoaVersionMismatch(cocoaVersion: String) {
+    if (cocoaVersion != BuildConfig.SentryCocoaVersion) {
         logger.warn(
-            "autoInstall.spm.sentryCocoaVersion is set to $cocoaVersion, but this Sentry KMP " +
+            "autoInstall.apple.sentryCocoaVersion is set to $cocoaVersion, but this Sentry KMP " +
                 "Gradle plugin expects ${BuildConfig.SentryCocoaVersion}. Sentry KMP uses private Cocoa APIs; " +
                 "overriding the version may cause linking or runtime failures. Continuing with $cocoaVersion.",
         )

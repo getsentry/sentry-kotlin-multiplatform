@@ -83,32 +83,38 @@ Use official Kotlin SwiftPM import (Kotlin 2.4+) or spm4Kmp for Cocoa 9. CocoaPo
 
 ### Apple dependency auto-install
 
-Auto-install is enabled by default. Select the Apple integration independently of commonMain installation:
+Applying the Sentry Gradle plugin adds the KMP SDK to `commonMain` and, with the default `AUTO` provider, installs Sentry Cocoa for your Apple targets:
+
+| Your project | `AUTO` does |
+| --- | --- |
+| spm4Kmp applied | Adds Sentry Cocoa through spm4Kmp. Apply the Sentry plugin before spm4Kmp. |
+| Kotlin CocoaPods plugin applied | Installs nothing. Add Sentry Cocoa yourself (for example in Xcode); the plugin still links it. |
+| Kotlin 2.4+ | Adds Sentry Cocoa through [official SwiftPM import](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html). |
+| Older Kotlin | Installs nothing. Add Sentry Cocoa yourself; the plugin still links it. |
+
+Pick a provider explicitly to override the rule. An explicit provider that is unavailable fails the build instead of falling back:
 
 ```kotlin
 import io.sentry.kotlin.multiplatform.gradle.AppleDependencyProvider
 
 sentryKmp {
-    autoInstall.apple.provider.set(AppleDependencyProvider.AUTO)
+    autoInstall.apple.provider.set(AppleDependencyProvider.NONE) // AUTO, SWIFT_PM, SPM4KMP, NONE
+    autoInstall.apple.sentryCocoaVersion.set("9.29.2")           // defaults to the version this plugin was built with
+    linker.enabled.set(false)                                    // skip Sentry Cocoa linker configuration
 }
 ```
 
-| Provider | Behavior |
-| --- | --- |
-| `AUTO` (default) | Prefer official SwiftPM with declared dependencies, then applied spm4Kmp. Disabling `autoInstall.spm.enabled` excludes spm4Kmp. |
-| `SWIFT_PM` | Register Cocoa through official SwiftPM, even when no other Swift packages are declared. Requires Kotlin 2.4+ with SwiftPM import enabled. |
-| `SPM4KMP` | Use the applied spm4Kmp plugin. |
-| `NONE` | Register no Apple dependencies. CommonMain auto-install and linker configuration remain enabled. |
+- The plugin pins Sentry Cocoa to the version it was built against. Keep the SDK and plugin versions matched.
+- If you already added `sentry-cocoa` to your Xcode project or your own `swiftPMDependencies`, remove it or set `provider` to `NONE`. The plugin does not inspect either; a second `sentry-cocoa` declaration fails package resolution with `Conflicting identity for sentry-cocoa`.
+- Official SwiftPM needs Kotlin's one-time [Xcode linkage-package setup](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html). See the [official SwiftPM sample](sentry-samples/kmp-app-swiftpm).
+- `autoInstall.enabled.set(false)` disables everything, including the `commonMain` dependency.
+- `SWIFT_PM` cannot be combined with the Kotlin CocoaPods plugin. See [Kotlin's migration guide](https://kotl.in/cocoapods-to-swiftpm-migration).
 
-Upgrading Kotlin alone does not switch a spm4Kmp application to official SwiftPM. An unavailable explicit provider is a configuration error, not a request to fall back. Existing `autoInstall.spm.enabled` settings and its version override remain supported; disabling an explicitly selected provider prevents registration without fallback. `autoInstall.enabled.set(false)` disables all dependency registration, including commonMain.
+**Breaking change after 0.28.0-beta.2:** `sentryKmp.autoInstall.spm` was removed. Use `autoInstall.apple.provider` instead of `spm.enabled`, and `autoInstall.apple.sentryCocoaVersion` instead of `spm.sentryCocoaVersion`.
 
-The official provider pins Cocoa to the version embedded in this Gradle plugin. Use the matching SDK/plugin release. Existing Sentry declarations are preserved, including their version and target constraints; a differing exact SwiftPM version is reported. Provider priority only controls Sentry-owned registration: remove duplicate manual Sentry declarations yourself. Mixed CocoaPods and official SwiftPM integration remains subject to Kotlin's compatibility restrictions.
+#### Modules that publish their own CocoaPod
 
-Apply the Sentry plugin before spm4Kmp when using spm4Kmp auto-install. Selection observes the complete build script before registration; the plugin reports an actionable ordering error if spm4Kmp was applied first and selected for installation. Opt-outs can be configured after the `kotlin {}` block. This ordering requirement does not apply when a different provider is selected.
-
-`NONE` leaves native dependency setup to the application. The plugin still recognizes supplied frameworks and honors manual linker configuration; an installed integration only covers the targets for which it supplies Sentry.
-
-Official SwiftPM also requires Kotlin's one-time [Xcode linkage-package integration](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html). Auto-install does not modify your Xcode project. See the [official SwiftPM sample](sentry-samples/kmp-app-swiftpm) for local build and integration instructions.
+When `AUTO` installs nothing (for example with the Kotlin CocoaPods plugin), the plugin still configures linking against a Sentry Cocoa framework you supply. Point it at the framework with `linker.frameworkPath`. Dynamic Kotlin frameworks need `Sentry-Dynamic.xcframework`, static ones need `Sentry.xcframework`. Embed Sentry Cocoa in the consuming app as well so it is available at runtime.
 
 ## Samples
 

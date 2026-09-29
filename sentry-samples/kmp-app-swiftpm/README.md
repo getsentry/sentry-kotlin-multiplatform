@@ -19,4 +19,4 @@ XCODEPROJ_PATH=/path/to/iosApp.xcodeproj ./gradlew -p sentry-samples/kmp-app-swi
 
 Add the normal Kotlin framework build/embedding integration to that app as described by Kotlin. Commit the generated linkage package, Xcode project changes, and SwiftPM lock files. Sentry auto-install registers the native dependency; it does not edit your Xcode project. Initialize Sentry with your DSN in the hosting application before calling `captureExample()`.
 
-For an application that already declares other official SwiftPM dependencies, the default `AUTO` provider is sufficient. This minimal sample selects `SWIFT_PM` explicitly because it starts with no packages.
+The sample needs no `sentryKmp` configuration: on Kotlin 2.4 without spm4Kmp or the CocoaPods plugin, the default `AUTO` provider registers Sentry Cocoa through official SwiftPM. If the hosting Xcode app already adds `sentry-cocoa` itself, remove it there or set `sentryKmp.autoInstall.apple.provider` to `NONE`.

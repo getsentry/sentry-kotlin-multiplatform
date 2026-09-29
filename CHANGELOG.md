@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+### Breaking changes
+
+- Remove the beta `sentryKmp.autoInstall.spm` extension. Use `autoInstall.apple.provider` instead of `spm.enabled`, and `autoInstall.apple.sentryCocoaVersion` instead of `spm.sentryCocoaVersion` ([#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577)).
+
+### Features
+
+- Auto-install Sentry Cocoa through official Kotlin SwiftPM import on Kotlin 2.4+ ([#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577))
+  - Select the Apple provider with `sentryKmp.autoInstall.apple.provider` (`AUTO`, `SWIFT_PM`, `SPM4KMP`, `NONE`). The default `AUTO` uses spm4Kmp when applied, installs nothing when the Kotlin CocoaPods plugin is applied, and otherwise uses official SwiftPM on Kotlin 2.4+.
+  - The plugin pins Sentry Cocoa to the version it was built against (9.29.2); override with `autoInstall.apple.sentryCocoaVersion`.
+  - If you added `sentry-cocoa` in Xcode yourself, remove it or set the provider to `NONE`.
+  - Official SwiftPM requires Kotlin's one-time [Xcode linkage-package setup](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html).
+- Add `sentryKmp.linker.enabled` to turn off Sentry Cocoa linker configuration ([#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577)).
+
 ## 0.28.0-beta.2
 
 ### Breaking changes
@@ -11,8 +26,6 @@
 - On Apple, `captureUserFeedback` now sends a separate native `SentryFeedback` event with its own event ID, linked to the original error through `associatedEventId`. The common API is unchanged. Feedback uses source `custom`, preserves name/email, and maps comments to the message (null becomes an empty string).
 
 ### Features
-
-- Add Apple dependency provider selection (`AUTO`, `SWIFT_PM`, `SPM4KMP`, `NONE`) and official Kotlin 2.4 SwiftPM auto-install. AUTO prefers integrations in use in that order; NONE leaves native installation manual without disabling commonMain installation or linking.
 
 - Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
 
