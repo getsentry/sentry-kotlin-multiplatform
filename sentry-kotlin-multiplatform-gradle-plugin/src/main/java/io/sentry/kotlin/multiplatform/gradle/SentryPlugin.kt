@@ -87,6 +87,7 @@ private fun Project.installAppleDependency(
     when (provider) {
         AppleDependencyProvider.SWIFT_PM -> {
             if (hostIsMac) return installOfficialSwiftPm(cocoaVersion)
+            logger.info("Host is not macOS - skipping official SwiftPM installation of Sentry Cocoa.")
         }
         AppleDependencyProvider.SPM4KMP -> {
             if (spmAppliedFirst) {
