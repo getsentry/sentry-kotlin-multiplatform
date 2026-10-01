@@ -86,17 +86,7 @@ private fun Project.installAppleDependency(
     val cocoaVersion = autoInstall.apple.sentryCocoaVersion.get()
     when (provider) {
         AppleDependencyProvider.SWIFT_PM -> {
-            if (hostIsMac) {
-                val extension = officialSwiftPmExtension() ?: return emptySet()
-                // Kotlin's SwiftPM import API is experimental and may change after this plugin was compiled.
-                return try {
-                    OfficialSwiftPmIntegration.install(this, extension, cocoaVersion)
-                } catch (e: LinkageError) {
-                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion), e)
-                } catch (e: ClassCastException) {
-                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion), e)
-                }
-            }
+            if (hostIsMac) return installOfficialSwiftPm(cocoaVersion)
         }
         AppleDependencyProvider.SPM4KMP -> {
             if (spmAppliedFirst) {
@@ -120,6 +110,18 @@ private fun Project.installAppleDependency(
         }
     }
     return emptySet()
+}
+
+private fun Project.installOfficialSwiftPm(cocoaVersion: String): Set<String> {
+    val extension = officialSwiftPmExtension() ?: return emptySet()
+    // Kotlin's SwiftPM import API is experimental and may change after this plugin was compiled.
+    return try {
+        OfficialSwiftPmIntegration.install(this, extension, cocoaVersion)
+    } catch (e: LinkageError) {
+        throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion), e)
+    } catch (e: ClassCastException) {
+        throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion), e)
+    }
 }
 
 private fun maybeLinkCocoaFramework(
