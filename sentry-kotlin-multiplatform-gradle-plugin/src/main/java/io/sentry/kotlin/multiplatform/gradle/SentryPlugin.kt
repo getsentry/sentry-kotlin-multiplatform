@@ -92,9 +92,9 @@ private fun Project.installAppleDependency(
                 return try {
                     OfficialSwiftPmIntegration.install(this, extension, cocoaVersion)
                 } catch (e: LinkageError) {
-                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion, e), e)
+                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion), e)
                 } catch (e: ClassCastException) {
-                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion, e), e)
+                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion), e)
                 }
             }
         }

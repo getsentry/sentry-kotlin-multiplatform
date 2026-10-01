@@ -239,7 +239,7 @@ class AppleDependencySelectionTest {
             every { OfficialSwiftPmIntegration.install(any(), any(), any()) } throws cause
             val error = assertThrows(GradleException::class.java) { configure(project) }
             assertSame(cause, error.cause)
-            assertTrue(error.message!!.contains("could not install Sentry Cocoa through the SwiftPM import"))
+            assertTrue(error.message!!.contains("could not install Sentry Cocoa with Kotlin"))
         } finally {
             unmockkObject(OfficialSwiftPmIntegration)
         }
@@ -255,9 +255,11 @@ class AppleDependencySelectionTest {
             watchosArm32()
         }
 
-        val message = project.swiftPmIncompatibilityMessage("9.27.0", NoSuchMethodError("swiftPackage"))
+        val message = project.swiftPmIncompatibilityMessage("9.27.0")
+
         assertTrue(message.contains("Sentry KMP Gradle plugin ${BuildConfig.SentryKmpVersion}"))
-        assertTrue(message.contains("built against Kotlin ${BuildConfig.KotlinGradlePluginVersion}"))
+        assertTrue(message.contains("same Kotlin Gradle plugin version in all modules"))
+        assertTrue(message.contains("use Kotlin ${BuildConfig.KotlinGradlePluginVersion} until"))
         assertTrue(message.contains("autoInstall.apple.provider.set(AppleDependencyProvider.NONE)"))
         assertTrue(message.contains("linker.enabled.set(false)"))
         assertTrue(message.contains("url = url(\"$SENTRY_COCOA_GIT_URL\")"))
@@ -269,7 +271,6 @@ class AppleDependencySelectionTest {
         assertFalse(message.contains("watchosMinimumDeploymentTarget"))
         assertTrue(message.contains("set sentryKmp.autoInstall.apple.provider to SPM4KMP"))
         assertTrue(message.contains(SWIFTPM_IMPORT_DOCS))
-        assertTrue(message.contains("Underlying error: java.lang.NoSuchMethodError: swiftPackage"))
         assertFalse(message.lines().any { it.trimStart().startsWith("|") })
     }
 

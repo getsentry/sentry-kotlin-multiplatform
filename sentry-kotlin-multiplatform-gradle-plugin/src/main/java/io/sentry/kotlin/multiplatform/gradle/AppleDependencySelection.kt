@@ -71,13 +71,10 @@ internal fun Project.noAppleDependencyReason(requested: AppleDependencyProvider)
     }
 
 /**
- * Explains how to recover when Kotlin's experimental SwiftPM import API no longer matches the one
- * this plugin was compiled against.
+ * Lists recovery steps for when this plugin cannot call Kotlin's experimental SwiftPM import API,
+ * e.g. because a newer Kotlin changed it or the build loads several Kotlin Gradle plugin versions.
  */
-internal fun Project.swiftPmIncompatibilityMessage(
-    cocoaVersion: String,
-    cause: Throwable,
-): String {
+internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String {
     val kotlinVersion = kotlinPluginVersion()
     val families =
         (extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension)
@@ -96,24 +93,25 @@ internal fun Project.swiftPmIncompatibilityMessage(
             .joinToString("") { (_, line) -> "\n                |                $line" }
     val spm4KmpOption =
         if (hasSpm4Kmp()) {
-            "\n                |\n                |  - spm4Kmp is applied: set sentryKmp.autoInstall.apple.provider " +
-                "to SPM4KMP to install Sentry Cocoa through it instead."
+            "\n                |\n                |     Or, since spm4Kmp is applied, set sentryKmp.autoInstall.apple.provider to SPM4KMP."
         } else {
             ""
         }
 
     return """
-        |Sentry KMP Gradle plugin ${BuildConfig.SentryKmpVersion} could not install Sentry Cocoa through the SwiftPM import of Kotlin $kotlinVersion.
-        |This plugin was built against Kotlin ${BuildConfig.KotlinGradlePluginVersion}, and Kotlin has since changed this experimental API.
+        |Sentry KMP Gradle plugin ${BuildConfig.SentryKmpVersion} could not install Sentry Cocoa with Kotlin $kotlinVersion.
         |
-        |Fix it with one of the following:
+        |Try these steps in order:
         |
-        |  - Update the Sentry KMP Gradle plugin (io.sentry.kotlin.multiplatform.gradle) to a version that supports Kotlin $kotlinVersion.
-        |    If you already use the latest version, please report this at https://github.com/getsentry/sentry-kotlin-multiplatform/issues.
+        |  1. Use the same Kotlin Gradle plugin version in all modules, including buildSrc and included builds.
         |
-        |  - Use Kotlin ${BuildConfig.KotlinGradlePluginVersion} until a compatible plugin version is available.
+        |  2. Update the Sentry KMP Gradle plugin (io.sentry.kotlin.multiplatform.gradle) to the latest version.
+        |     If you already use it, please report this at https://github.com/getsentry/sentry-kotlin-multiplatform/issues.
         |
-        |  - Install Sentry Cocoa yourself by adding this to the module's build.gradle.kts:
+        |  3. If you recently upgraded Kotlin, use Kotlin ${BuildConfig.KotlinGradlePluginVersion} until a newer Sentry KMP Gradle plugin
+        |     supports your Kotlin version.
+        |
+        |  4. Install Sentry Cocoa yourself. Add this to the module's build.gradle.kts:
         |
         |        import io.sentry.kotlin.multiplatform.gradle.AppleDependencyProvider
         |
@@ -135,13 +133,11 @@ internal fun Project.swiftPmIncompatibilityMessage(
         |            }
         |        }
         |
-        |    Keep the exact Sentry Cocoa version: Sentry KMP uses private Cocoa APIs. If this snippet does not compile
-        |    with Kotlin $kotlinVersion, see $SWIFTPM_IMPORT_DOCS for the current syntax.
+        |     Keep Sentry Cocoa at exactly $cocoaVersion. If the snippet does not compile, see
+        |     $SWIFTPM_IMPORT_DOCS for the current syntax.
         |
-        |  - Or add sentry-cocoa $cocoaVersion to your Xcode project with Swift Package Manager, and set only
-        |    sentryKmp.autoInstall.apple.provider to NONE.$spm4KmpOption
-        |
-        |Underlying error: $cause
+        |     Or add sentry-cocoa $cocoaVersion to your Xcode project with Swift Package Manager, and set only
+        |     sentryKmp.autoInstall.apple.provider to NONE.$spm4KmpOption
         """.trimMargin()
 }
 
