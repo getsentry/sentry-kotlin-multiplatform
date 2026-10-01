@@ -269,7 +269,7 @@ class AppleDependencySelectionTest {
         assertTrue(message.contains("macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")"))
         assertFalse(message.contains("tvosMinimumDeploymentTarget"))
         assertFalse(message.contains("watchosMinimumDeploymentTarget"))
-        assertTrue(message.contains("set sentryKmp.autoInstall.apple.provider to SPM4KMP"))
+        assertFalse(message.contains("SPM4KMP"))
         assertTrue(message.contains(SWIFTPM_IMPORT_DOCS))
         assertFalse(message.lines().any { it.trimStart().startsWith("|") })
     }

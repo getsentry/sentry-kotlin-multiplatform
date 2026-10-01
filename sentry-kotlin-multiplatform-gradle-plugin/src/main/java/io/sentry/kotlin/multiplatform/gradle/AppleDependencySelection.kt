@@ -91,13 +91,6 @@ internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String
             Family.WATCHOS to "watchosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_WATCHOS\")",
         ).filter { (family, _) -> family in families }
             .joinToString("") { (_, line) -> "\n                |                $line" }
-    val spm4KmpOption =
-        if (hasSpm4Kmp()) {
-            "\n                |\n                |     Or, since spm4Kmp is applied, set sentryKmp.autoInstall.apple.provider to SPM4KMP."
-        } else {
-            ""
-        }
-
     return """
         |Sentry KMP Gradle plugin ${BuildConfig.SentryKmpVersion} could not install Sentry Cocoa with Kotlin $kotlinVersion.
         |
@@ -137,7 +130,7 @@ internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String
         |     $SWIFTPM_IMPORT_DOCS for the current syntax.
         |
         |     Or add sentry-cocoa $cocoaVersion to your Xcode project with Swift Package Manager, and set only
-        |     sentryKmp.autoInstall.apple.provider to NONE.$spm4KmpOption
+        |     sentryKmp.autoInstall.apple.provider to NONE.
         """.trimMargin()
 }
 
