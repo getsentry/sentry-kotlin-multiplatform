@@ -87,9 +87,15 @@ private fun Project.installAppleDependency(
     when (provider) {
         AppleDependencyProvider.SWIFT_PM -> {
             if (hostIsMac) {
-                return officialSwiftPmExtension()
-                    ?.let { OfficialSwiftPmIntegration.install(this, it, cocoaVersion) }
-                    .orEmpty()
+                val extension = officialSwiftPmExtension() ?: return emptySet()
+                // Kotlin's SwiftPM import API is experimental and may change after this plugin was compiled.
+                return try {
+                    OfficialSwiftPmIntegration.install(this, extension, cocoaVersion)
+                } catch (e: LinkageError) {
+                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion, e), e)
+                } catch (e: ClassCastException) {
+                    throw GradleException(swiftPmIncompatibilityMessage(cocoaVersion, e), e)
+                }
             }
         }
         AppleDependencyProvider.SPM4KMP -> {

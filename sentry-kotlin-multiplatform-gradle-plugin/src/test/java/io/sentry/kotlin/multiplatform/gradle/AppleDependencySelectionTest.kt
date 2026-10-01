@@ -5,7 +5,9 @@ package io.sentry.kotlin.multiplatform.gradle
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.spyk
+import io.mockk.unmockkObject
 import io.mockk.verify
 import io.sentry.BuildConfig
 import org.gradle.api.GradleException
@@ -21,6 +23,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport.SwiftPMImportExt
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -29,6 +32,7 @@ import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.ValueSource
 
 @EnabledOnOs(OS.MAC)
 class AppleDependencySelectionTest {
@@ -222,6 +226,51 @@ class AppleDependencySelectionTest {
         declarePackage(project, "Sentry", SENTRY_COCOA_GIT_URL)
         configure(project)
         assertEquals(2, swift(project).swiftPMDependencies.size)
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = [NoSuchMethodError::class, NoClassDefFoundError::class, ClassCastException::class])
+    fun `incompatible SwiftPM API fails with recovery steps`(errorType: Class<out Throwable>) {
+        val project = project()
+        kotlin(project).iosArm64()
+        val cause = errorType.getConstructor(String::class.java).newInstance("swiftPackage")
+        mockkObject(OfficialSwiftPmIntegration)
+        try {
+            every { OfficialSwiftPmIntegration.install(any(), any(), any()) } throws cause
+            val error = assertThrows(GradleException::class.java) { configure(project) }
+            assertSame(cause, error.cause)
+            assertTrue(error.message!!.contains("could not install Sentry Cocoa through the SwiftPM import"))
+        } finally {
+            unmockkObject(OfficialSwiftPmIntegration)
+        }
+    }
+
+    @Test
+    fun `SwiftPM incompatibility message gives copyable recovery steps`() {
+        val project = project()
+        project.pluginManager.apply(SPM4KMP_PLUGIN_ID)
+        kotlin(project).apply {
+            iosArm64()
+            macosArm64()
+            watchosArm32()
+        }
+
+        val message = project.swiftPmIncompatibilityMessage("9.27.0", NoSuchMethodError("swiftPackage"))
+        assertTrue(message.contains("Sentry KMP Gradle plugin ${BuildConfig.SentryKmpVersion}"))
+        assertTrue(message.contains("built against Kotlin ${BuildConfig.KotlinGradlePluginVersion}"))
+        assertTrue(message.contains("autoInstall.apple.provider.set(AppleDependencyProvider.NONE)"))
+        assertTrue(message.contains("linker.enabled.set(false)"))
+        assertTrue(message.contains("url = url(\"$SENTRY_COCOA_GIT_URL\")"))
+        assertTrue(message.contains("version = exact(\"9.27.0\")"))
+        assertTrue(message.contains("products = listOf(product(\"Sentry\", importedClangModules = emptySet()))"))
+        assertTrue(message.contains("                iosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_IOS\")"))
+        assertTrue(message.contains("macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")"))
+        assertFalse(message.contains("tvosMinimumDeploymentTarget"))
+        assertFalse(message.contains("watchosMinimumDeploymentTarget"))
+        assertTrue(message.contains("set sentryKmp.autoInstall.apple.provider to SPM4KMP"))
+        assertTrue(message.contains(SWIFTPM_IMPORT_DOCS))
+        assertTrue(message.contains("Underlying error: java.lang.NoSuchMethodError: swiftPackage"))
+        assertFalse(message.lines().any { it.trimStart().startsWith("|") })
     }
 
     private fun project(): Project =

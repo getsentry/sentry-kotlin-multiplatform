@@ -9,8 +9,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport.SwiftPMImportExt
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
-private const val SWIFTPM_IMPORT_DOCS = "https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html"
-
 /**
  * Registers Sentry Cocoa through Kotlin 2.4's official SwiftPM import using only its public API.
  * Declarations are never read back: their accessors are internal to the Kotlin Gradle plugin.

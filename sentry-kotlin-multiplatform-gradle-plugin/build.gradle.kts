@@ -157,6 +157,11 @@ buildConfig {
         "SentryKmpVersion",
         provider { "\"${project.property("versionName")}\"" },
     )
+    buildConfigField(
+        "String",
+        "KotlinGradlePluginVersion",
+        provider { "\"${libs.versions.kotlin.get()}\"" },
+    )
 }
 
 detekt { config.setFrom(rootProject.files("../config/detekt/detekt.yml")) }
