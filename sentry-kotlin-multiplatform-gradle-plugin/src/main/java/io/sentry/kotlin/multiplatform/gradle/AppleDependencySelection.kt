@@ -13,8 +13,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.CocoapodsExtension
 import org.jetbrains.kotlin.gradle.plugin.cocoapods.KotlinCocoapodsPlugin
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.konan.target.Family
-import org.jetbrains.kotlin.konan.target.KonanTarget
 
 internal const val SWIFTPM_IMPORT_DOCS = "https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html"
 
@@ -51,11 +49,12 @@ internal fun Project.resolveAppleDependencyProvider(autoInstall: AutoInstallExte
                         "sentryKmp.linker, or migrate to SwiftPM (https://kotl.in/cocoapods-to-swiftpm-migration).",
                 )
             }
-            requested.requireAvailable(officialSwiftPmExtension() != null) {
-                "it requires Kotlin 2.4+ with SwiftPM import (found Kotlin ${kotlinPluginVersion()}). Upgrade Kotlin"
-            }
+            requested.requireAvailable(
+                officialSwiftPmExtension() != null,
+                "it requires Kotlin 2.4+ with SwiftPM import (found Kotlin ${kotlinPluginVersion()}). Upgrade Kotlin",
+            )
         }
-        SPM4KMP -> requested.requireAvailable(hasSpm4Kmp()) { "apply the spm4Kmp plugin ($SPM4KMP_PLUGIN_ID)" }
+        SPM4KMP -> requested.requireAvailable(hasSpm4Kmp(), "apply the spm4Kmp plugin ($SPM4KMP_PLUGIN_ID)")
         NONE -> NONE
     }
 }
@@ -76,21 +75,6 @@ internal fun Project.noAppleDependencyReason(requested: AppleDependencyProvider)
  */
 internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String {
     val kotlinVersion = kotlinPluginVersion()
-    val families =
-        (extensions.findByName(KOTLIN_EXTENSION_NAME) as? KotlinMultiplatformExtension)
-            ?.appleTargets()
-            ?.filter { it.konanTarget != KonanTarget.WATCHOS_ARM32 }
-            ?.map { it.konanTarget.family }
-            ?.toSet()
-            .orEmpty()
-    val minimums =
-        listOf(
-            Family.IOS to "iosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_IOS\")",
-            Family.OSX to "macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")",
-            Family.TVOS to "tvosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_TVOS\")",
-            Family.WATCHOS to "watchosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_WATCHOS\")",
-        ).filter { (family, _) -> family in families }
-            .joinToString("") { (_, line) -> "\n                |                $line" }
     return """
         |Sentry KMP Gradle plugin ${BuildConfig.SentryKmpVersion} could not install Sentry Cocoa with Kotlin $kotlinVersion.
         |
@@ -120,7 +104,11 @@ internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String
         |                    url = url("$SENTRY_COCOA_GIT_URL"),
         |                    version = exact("$cocoaVersion"),
         |                    products = listOf(product("Sentry")),
-        |                )$minimums
+        |                )
+        |                iosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_IOS")
+        |                macosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_MACOS")
+        |                tvosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_TVOS")
+        |                watchosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_WATCHOS")
         |            }
         |        }
         |
@@ -140,11 +128,11 @@ private fun Project.kotlinPluginVersion(): String = runCatching { getKotlinPlugi
 
 private fun AppleDependencyProvider.requireAvailable(
     available: Boolean,
-    fix: () -> String,
+    fix: String,
 ): AppleDependencyProvider {
     if (!available) {
         throw GradleException(
-            "Sentry Apple provider $this is unavailable: ${fix()}, " +
+            "Sentry Apple provider $this is unavailable: $fix, " +
                 "or select AUTO or NONE in sentryKmp.autoInstall.apple.provider.",
         )
     }

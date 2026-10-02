@@ -249,11 +249,6 @@ class AppleDependencySelectionTest {
     fun `SwiftPM incompatibility message gives copyable recovery steps`() {
         val project = project()
         project.pluginManager.apply(SPM4KMP_PLUGIN_ID)
-        kotlin(project).apply {
-            iosArm64()
-            macosArm64()
-            watchosArm32()
-        }
 
         val message = project.swiftPmIncompatibilityMessage("9.27.0")
 
@@ -267,8 +262,8 @@ class AppleDependencySelectionTest {
         assertTrue(message.contains("products = listOf(product(\"Sentry\")),"))
         assertTrue(message.contains("                iosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_IOS\")"))
         assertTrue(message.contains("macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")"))
-        assertFalse(message.contains("tvosMinimumDeploymentTarget"))
-        assertFalse(message.contains("watchosMinimumDeploymentTarget"))
+        assertTrue(message.contains("tvosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_TVOS\")"))
+        assertTrue(message.contains("watchosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_WATCHOS\")"))
         assertFalse(message.contains("SPM4KMP"))
         assertTrue(message.contains(SWIFTPM_IMPORT_DOCS))
         assertFalse(message.lines().any { it.trimStart().startsWith("|") })
