@@ -14,8 +14,8 @@ abstract class SentryExtension
         /**
          * Linker configuration.
          *
-         * If you use SPM this configuration is necessary for setting up linking the framework and test
-         * executable.
+         * Configures manual Cocoa framework discovery and linking. Targets for which official
+         * SwiftPM or spm4Kmp supply Sentry Cocoa use that integration's linking instead.
          */
         val linker: LinkerExtension = objects.newInstance(LinkerExtension::class.java, project)
 

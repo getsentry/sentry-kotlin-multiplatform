@@ -55,7 +55,9 @@ class FrameworkLinker(
                 !binary.isStatic && dynamicPath != null -> dynamicPath to "dynamic"
                 else -> throw FrameworkLinkingException(
                     "Framework mismatch for ${binary.name}. " +
-                        "Required ${if (binary.isStatic) "static" else "dynamic"} Sentry Cocoa framework not found.",
+                        "Required ${if (binary.isStatic) "static" else "dynamic"} Sentry Cocoa framework " +
+                        "(${if (binary.isStatic) "Sentry.xcframework" else "Sentry-Dynamic.xcframework"}) not found. " +
+                        "Set sentryKmp.linker.frameworkPath to its location.",
                 )
             }
 

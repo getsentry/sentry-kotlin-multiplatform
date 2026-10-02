@@ -7,12 +7,15 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import java.net.URI
 
 internal const val SENTRY_COCOA_CINTEROP_NAME = "sentryCocoa"
-private const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
+internal const val SENTRY_COCOA_GIT_URL = "https://github.com/getsentry/sentry-cocoa.git"
+internal const val SENTRY_COCOA_MIN_IOS = "15.0"
+internal const val SENTRY_COCOA_MIN_MACOS = "12.0"
+internal const val SENTRY_COCOA_MIN_TVOS = "15.0"
+internal const val SENTRY_COCOA_MIN_WATCHOS = "9.0"
 
 private fun Project.swiftPackageConfigNames(): Set<String>? {
     if (!plugins.hasPlugin(SPM4KMP_PLUGIN_ID)) {
@@ -66,8 +69,8 @@ private fun Project.declaresSentryCinterop(targetName: String): Boolean {
  * name, so adding defaults could replace the user's package settings.
  */
 internal fun Project.installSentryForSpm4Kmp(
-    autoInstall: AutoInstallExtension,
-    hostIsMac: Boolean = HostManager.hostIsMac,
+    cocoaVersion: String,
+    hostIsMac: Boolean,
 ) {
     val kmpExtension = extensions.findByName(KOTLIN_EXTENSION_NAME)
     if (kmpExtension !is KotlinMultiplatformExtension || !hostIsMac) {
@@ -75,13 +78,13 @@ internal fun Project.installSentryForSpm4Kmp(
         return
     }
 
-    if (!autoInstall.enabled.get() || !autoInstall.spm.enabled.get()) {
-        return
-    }
-
     val userDefinedConfigNames = sentrySwiftPackageConfigNames()
-    val cocoaVersion = autoInstall.spm.sentryCocoaVersion.get()
-    warnIfCocoaVersionMismatch(cocoaVersion, kmpExtension.appleTargets(), userDefinedConfigNames)
+    if (userDefinedConfigNames.isEmpty() &&
+        kmpExtension.appleTargets().any { it.konanTarget != KonanTarget.WATCHOS_ARM32 }
+    ) {
+        warnIfCocoaVersionMismatch(cocoaVersion)
+    }
+    val registeredTargets = mutableListOf<String>()
     kmpExtension.appleTargets().forEach { target ->
         if (target.konanTarget == KonanTarget.WATCHOS_ARM32) {
             logger.warn(
@@ -108,45 +111,46 @@ internal fun Project.installSentryForSpm4Kmp(
             return@forEach
         }
 
-        target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
-            // spm4Kmp selects one entry for the shared container, so every entry needs all four
-            // minimums, including platforms other than this target's own family.
-            minIos = minimumDeploymentVersion(minIos, "15.0")
-            minTvos = minimumDeploymentVersion(minTvos, "15.0")
-            minMacos = minimumDeploymentVersion(minMacos, "12.0")
-            minWatchos = minimumDeploymentVersion(minWatchos, "9.0")
-            dependency {
-                remotePackageVersion(
-                    url = URI(SENTRY_COCOA_GIT_URL),
-                    version = cocoaVersion,
-                    products = {
-                        // Link only (exportToKotlin defaults to false): the published klib already
-                        // carries the Sentry cinterop bindings.
-                        add("Sentry")
-                    },
-                )
-            }
-        }
-        if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
-            registerWatchosSimulatorFrameworkCopy()
-        }
-        logger.lifecycle(
-            "Registered the Sentry Cocoa $cocoaVersion Swift package with spm4Kmp for ${target.name}.",
-        )
+        registerSentryPackage(target, cocoaVersion)
+        registeredTargets += target.name
+    }
+    if (registeredTargets.isNotEmpty()) {
+        logger.lifecycle("Registered Sentry Cocoa $cocoaVersion via spm4Kmp for targets: $registeredTargets")
     }
 }
 
-private fun Project.warnIfCocoaVersionMismatch(
+private fun Project.registerSentryPackage(
+    target: KotlinNativeTarget,
     cocoaVersion: String,
-    appleTargets: Collection<KotlinNativeTarget>,
-    userDefinedConfigNames: Set<String>,
 ) {
-    if (userDefinedConfigNames.isEmpty() &&
-        appleTargets.any { it.konanTarget != KonanTarget.WATCHOS_ARM32 } &&
-        cocoaVersion != BuildConfig.SentryCocoaVersion
-    ) {
+    target.swiftPackageConfig(cinteropName = SENTRY_COCOA_CINTEROP_NAME) {
+        // spm4Kmp selects one entry for the shared container, so every entry needs all four
+        // minimums, including platforms other than this target's own family.
+        minIos = minimumDeploymentVersion(minIos, SENTRY_COCOA_MIN_IOS)
+        minTvos = minimumDeploymentVersion(minTvos, SENTRY_COCOA_MIN_TVOS)
+        minMacos = minimumDeploymentVersion(minMacos, SENTRY_COCOA_MIN_MACOS)
+        minWatchos = minimumDeploymentVersion(minWatchos, SENTRY_COCOA_MIN_WATCHOS)
+        dependency {
+            remotePackageVersion(
+                url = URI(SENTRY_COCOA_GIT_URL),
+                version = cocoaVersion,
+                products = {
+                    // Link only (exportToKotlin defaults to false): the published klib already
+                    // carries the Sentry cinterop bindings.
+                    add("Sentry")
+                },
+            )
+        }
+    }
+    if (target.konanTarget == KonanTarget.WATCHOS_SIMULATOR_ARM64) {
+        registerWatchosSimulatorFrameworkCopy()
+    }
+}
+
+internal fun Project.warnIfCocoaVersionMismatch(cocoaVersion: String) {
+    if (cocoaVersion != BuildConfig.SentryCocoaVersion) {
         logger.warn(
-            "autoInstall.spm.sentryCocoaVersion is set to $cocoaVersion, but this Sentry KMP " +
+            "autoInstall.apple.sentryCocoaVersion is set to $cocoaVersion, but this Sentry KMP " +
                 "Gradle plugin expects ${BuildConfig.SentryCocoaVersion}. Sentry KMP uses private Cocoa APIs; " +
                 "overriding the version may cause linking or runtime failures. Continuing with $cocoaVersion.",
         )
@@ -154,7 +158,7 @@ private fun Project.warnIfCocoaVersionMismatch(
 }
 
 /** Preserve higher consumer minimums, comparing numeric components rather than strings. */
-private fun minimumDeploymentVersion(
+internal fun minimumDeploymentVersion(
     configured: String?,
     required: String,
 ): String {

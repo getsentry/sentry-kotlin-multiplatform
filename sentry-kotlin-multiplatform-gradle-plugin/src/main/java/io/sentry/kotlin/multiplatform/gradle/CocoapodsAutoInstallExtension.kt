@@ -5,7 +5,7 @@ import org.gradle.api.provider.Property
 import javax.inject.Inject
 
 /** Compatibility type for the removed CocoaPods configuration. */
-@Deprecated("CocoaPods is unsupported with Sentry Cocoa 9. Use Spm4KmpAutoInstallExtension instead.")
+@Deprecated("CocoaPods is unsupported with Sentry Cocoa 9. Use AppleAutoInstallExtension instead.")
 @Suppress("UnnecessaryAbstractClass")
 abstract class CocoapodsAutoInstallExtension
     @Inject

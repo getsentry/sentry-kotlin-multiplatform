@@ -1,0 +1,2 @@
+# The plugin pins sentry-cocoa exactly, so a committed SwiftPM lock would only go stale on Cocoa bumps.
+.swiftpm-locks/
