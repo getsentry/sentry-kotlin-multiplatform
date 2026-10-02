@@ -119,9 +119,7 @@ internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String
         |                swiftPackage(
         |                    url = url("$SENTRY_COCOA_GIT_URL"),
         |                    version = exact("$cocoaVersion"),
-        |                    // The Sentry KMP library already contains the Sentry Cocoa bindings.
-        |                    products = listOf(product("Sentry", importedClangModules = emptySet())),
-        |                    importedClangModules = emptyList(),
+        |                    products = listOf(product("Sentry")),
         |                )$minimums
         |            }
         |        }

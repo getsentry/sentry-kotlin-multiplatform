@@ -264,7 +264,7 @@ class AppleDependencySelectionTest {
         assertTrue(message.contains("linker.enabled.set(false)"))
         assertTrue(message.contains("url = url(\"$SENTRY_COCOA_GIT_URL\")"))
         assertTrue(message.contains("version = exact(\"9.27.0\")"))
-        assertTrue(message.contains("products = listOf(product(\"Sentry\", importedClangModules = emptySet()))"))
+        assertTrue(message.contains("products = listOf(product(\"Sentry\")),"))
         assertTrue(message.contains("                iosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_IOS\")"))
         assertTrue(message.contains("macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")"))
         assertFalse(message.contains("tvosMinimumDeploymentTarget"))
