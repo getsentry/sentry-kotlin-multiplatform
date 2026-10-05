@@ -64,9 +64,6 @@ internal object OfficialSwiftPmIntegration {
             "Registered Sentry Cocoa $cocoaVersion via official SwiftPM. If you also added sentry-cocoa in Xcode, " +
                 "remove it or set sentryKmp.autoInstall.apple.provider = NONE.",
         )
-        project.logger.info(
-            "Official SwiftPM requires Kotlin's one-time Xcode linkage-package integration: $SWIFTPM_IMPORT_DOCS",
-        )
         return targetPlatforms.keys
     }
 
