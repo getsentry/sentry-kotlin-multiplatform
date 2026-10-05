@@ -2,9 +2,10 @@
 
 Standalone Kotlin 2.4 build where the Sentry plugin installs Sentry Cocoa through Kotlin's official SwiftPM import. It needs no `sentryKmp` configuration.
 
-It resolves Sentry KMP only from this checkout, so publish the SDK first (macOS, from the repository root):
+It resolves Sentry KMP only from this checkout. Build it from the repository root (macOS):
 
 ```sh
-./gradlew :sentry-kotlin-multiplatform:publishToMavenLocal -Dmaven.repo.local="$PWD/sentry-kotlin-multiplatform/build/sentry-local-publish"
-./gradlew --max-workers=1 -p sentry-samples/kmp-app-swiftpm linkDebugFrameworkIosSimulatorArm64 linkDebugTestIosSimulatorArm64
+make buildSwiftPmSample
 ```
+
+This sample has no Xcode app. An Xcode app also needs Kotlin's one-time linkage setup (`integrateLinkagePackage`); see the [Kotlin docs](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html).

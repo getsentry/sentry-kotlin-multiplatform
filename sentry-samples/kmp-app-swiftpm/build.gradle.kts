@@ -19,6 +19,10 @@ kotlin {
             baseName = "SentrySwiftPmSample"
             isStatic = true
         }
+        binaries.framework("Dynamic") {
+            baseName = "SentrySwiftPmSampleDynamic"
+            isStatic = false
+        }
     }
     macosArm64()
     tvosSimulatorArm64()
