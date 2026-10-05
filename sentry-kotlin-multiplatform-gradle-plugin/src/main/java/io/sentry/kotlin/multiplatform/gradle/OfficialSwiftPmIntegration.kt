@@ -9,6 +9,12 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport.SwiftPMImportExt
 import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
+// Kotlin 2.4's minimums for unset deployment targets (GenerateSyntheticLinkageImportProject).
+private const val KOTLIN_DEFAULT_MIN_IOS = "15.0"
+private const val KOTLIN_DEFAULT_MIN_MACOS = "10.15"
+private const val KOTLIN_DEFAULT_MIN_TVOS = "9.0"
+private const val KOTLIN_DEFAULT_MIN_WATCHOS = "15.0"
+
 /**
  * Registers Sentry Cocoa through Kotlin 2.4's official SwiftPM import using only its public API.
  * Declarations are never read back: their accessors are internal to the Kotlin Gradle plugin.
@@ -41,10 +47,18 @@ internal object OfficialSwiftPmIntegration {
             products = listOf(swift.product("Sentry", platforms = platforms, importedClangModules = emptySet())),
             importedClangModules = emptyList(),
         )
-        if (Platform.iOS in platforms) swift.iosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_IOS)
-        if (Platform.macOS in platforms) swift.macosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_MACOS)
-        if (Platform.tvOS in platforms) swift.tvosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_TVOS)
-        if (Platform.watchOS in platforms) swift.watchosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_WATCHOS)
+        if (Platform.iOS in platforms) {
+            swift.iosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_IOS, KOTLIN_DEFAULT_MIN_IOS)
+        }
+        if (Platform.macOS in platforms) {
+            swift.macosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_MACOS, KOTLIN_DEFAULT_MIN_MACOS)
+        }
+        if (Platform.tvOS in platforms) {
+            swift.tvosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_TVOS, KOTLIN_DEFAULT_MIN_TVOS)
+        }
+        if (Platform.watchOS in platforms) {
+            swift.watchosMinimumDeploymentTarget.raiseMinimum(SENTRY_COCOA_MIN_WATCHOS, KOTLIN_DEFAULT_MIN_WATCHOS)
+        }
 
         project.logger.lifecycle(
             "Registered Sentry Cocoa $cocoaVersion via official SwiftPM. If you also added sentry-cocoa in Xcode, " +
@@ -66,7 +80,16 @@ internal object OfficialSwiftPmIntegration {
             else -> null
         }
 
-    private fun Property<String>.raiseMinimum(minimum: String) {
-        set(minimumDeploymentVersion(orNull, minimum))
+    /**
+     * An unset minimum lets Kotlin use the highest of [kotlinDefault] and the minimums of transitive
+     * SwiftPM dependencies; setting it replaces that maximum. Only set it when Kotlin's default is too low.
+     */
+    private fun Property<String>.raiseMinimum(
+        minimum: String,
+        kotlinDefault: String,
+    ) {
+        val configured = orNull
+        if (configured == null && minimumDeploymentVersion(kotlinDefault, minimum) == kotlinDefault) return
+        set(minimumDeploymentVersion(configured, minimum))
     }
 }

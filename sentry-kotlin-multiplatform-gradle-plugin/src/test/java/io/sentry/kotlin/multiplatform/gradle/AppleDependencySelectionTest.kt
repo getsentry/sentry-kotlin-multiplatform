@@ -169,7 +169,19 @@ class AppleDependencySelectionTest {
         assertEquals("16.1", swift(project).iosMinimumDeploymentTarget.get())
         assertEquals("12.0", swift(project).macosMinimumDeploymentTarget.get())
         assertEquals("15.0", swift(project).tvosMinimumDeploymentTarget.get())
-        assertEquals("9.0", swift(project).watchosMinimumDeploymentTarget.get())
+        assertNull(swift(project).watchosMinimumDeploymentTarget.orNull)
+    }
+
+    @Test
+    fun `AUTO SwiftPM leaves unset minimums to Kotlin when its default suffices`() {
+        val project = project()
+        kotlin(project).apply {
+            iosArm64()
+            watchosArm64()
+        }
+        configure(project)
+        assertNull(swift(project).iosMinimumDeploymentTarget.orNull)
+        assertNull(swift(project).watchosMinimumDeploymentTarget.orNull)
     }
 
     @Test
@@ -260,10 +272,10 @@ class AppleDependencySelectionTest {
         assertTrue(message.contains("url = url(\"$SENTRY_COCOA_GIT_URL\")"))
         assertTrue(message.contains("version = exact(\"9.27.0\")"))
         assertTrue(message.contains("products = listOf(product(\"Sentry\")),"))
-        assertTrue(message.contains("                iosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_IOS\")"))
-        assertTrue(message.contains("macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")"))
+        assertTrue(message.contains("                macosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_MACOS\")"))
         assertTrue(message.contains("tvosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_TVOS\")"))
-        assertTrue(message.contains("watchosMinimumDeploymentTarget.set(\"$SENTRY_COCOA_MIN_WATCHOS\")"))
+        assertFalse(message.contains("iosMinimumDeploymentTarget"))
+        assertFalse(message.contains("watchosMinimumDeploymentTarget"))
         assertFalse(message.contains("SPM4KMP"))
         assertTrue(message.contains(SWIFTPM_IMPORT_DOCS))
         assertFalse(message.lines().any { it.trimStart().startsWith("|") })

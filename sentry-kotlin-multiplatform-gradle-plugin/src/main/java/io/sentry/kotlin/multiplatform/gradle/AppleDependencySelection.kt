@@ -105,10 +105,9 @@ internal fun Project.swiftPmIncompatibilityMessage(cocoaVersion: String): String
         |                    version = exact("$cocoaVersion"),
         |                    products = listOf(product("Sentry")),
         |                )
-        |                iosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_IOS")
+        |                // Only if you target macOS or tvOS, and use a higher version if your app needs it.
         |                macosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_MACOS")
         |                tvosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_TVOS")
-        |                watchosMinimumDeploymentTarget.set("$SENTRY_COCOA_MIN_WATCHOS")
         |            }
         |        }
         |
