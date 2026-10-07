@@ -74,6 +74,10 @@ jobs:
         run: |
           make buildAppleSamples
 
+      - name: Official SwiftPM sample build
+        run: |
+          make buildSwiftPmSample
+
   build-jvm:
     runs-on: ubuntu-latest
 

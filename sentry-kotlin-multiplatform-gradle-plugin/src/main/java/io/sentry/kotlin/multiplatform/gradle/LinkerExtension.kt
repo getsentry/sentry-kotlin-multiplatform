@@ -13,6 +13,22 @@ abstract class LinkerExtension
         private val objects = project.objects
 
         /**
+         * Configures linking of the Sentry Cocoa framework for Apple targets.
+         *
+         * Targets that already receive Sentry Cocoa through SwiftPM are skipped: official SwiftPM
+         * dependencies registered by this plugin, and spm4Kmp cinterops named `sentryCocoa`, including
+         * user-defined ones. For all other targets, the plugin resolves the framework location and fails
+         * the build if the framework cannot be found.
+         *
+         * Keep this enabled when Sentry Cocoa is added through Xcode. Disable it when Sentry Cocoa is
+         * declared manually in Kotlin's `swiftPMDependencies` or in an spm4Kmp cinterop with a different
+         * name, since the plugin cannot detect those declarations.
+         *
+         * Defaults to `true`.
+         */
+        val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+
+        /**
          * Path to the Xcode project that will be used to link the framework.
          * This is used to find the derived data path in which the framework is stored for SPM.
          */

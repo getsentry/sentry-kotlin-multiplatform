@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi buildProject buildAppleSamples generateDokka detekt format stop createCoverageReports
+.PHONY: all clean compile dryRelease checkFormat checkApi buildProject buildAppleSamples buildSwiftPmSample generateDokka detekt format stop createCoverageReports
 
 # Keep Gradle invocations sequential, including when make is invoked with -j.
 .NOTPARALLEL:
@@ -47,8 +47,14 @@ buildAppleSamples:
 	touch ./sentry-samples/kmp-app-spm/iosApp/iosApp.xcconfig
 	SENTRY_SKIP_UPLOAD="$(SENTRY_SKIP_UPLOAD)" xcodebuild -project ./sentry-samples/kmp-app-spm/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64 CODE_SIGNING_ALLOWED=NO
 
+# Kotlin 2.4 sample that installs Sentry Cocoa through Kotlin's official SwiftPM import
+buildSwiftPmSample:
+	./gradlew :sentry-kotlin-multiplatform:publishKotlinMultiplatformPublicationToMavenLocal :sentry-kotlin-multiplatform:publishIosSimulatorArm64PublicationToMavenLocal -Dmaven.repo.local="$(CURDIR)/sentry-kotlin-multiplatform/build/sentry-local-publish"
+	./gradlew --max-workers=1 -p sentry-samples/kmp-app-swiftpm linkDebugFrameworkIosSimulatorArm64 linkDynamicDebugFrameworkIosSimulatorArm64 linkDebugTestIosSimulatorArm64
+	xcodebuild -project ./sentry-samples/kmp-app-swiftpm/iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64 CODE_SIGNING_ALLOWED=NO
+
 # Build all targets, run tests and checks api
-compile: checkApi detekt buildProject buildAppleSamples
+compile: checkApi detekt buildProject buildAppleSamples buildSwiftPmSample
 
 # We stop gradle at the end to make sure the cache folders
 # don't contain any lock files and are free to be cached.
