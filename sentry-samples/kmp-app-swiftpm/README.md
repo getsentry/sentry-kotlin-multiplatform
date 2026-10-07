@@ -1,6 +1,6 @@
 # Official Kotlin SwiftPM sample
 
-Standalone Kotlin 2.4 build where the Sentry plugin installs Sentry Cocoa through Kotlin's official SwiftPM import. It needs no `sentryKmp` configuration.
+Standalone Kotlin 2.4 build where the Sentry plugin installs Sentry Cocoa through Kotlin's official SwiftPM import. It needs no `sentryKmp` configuration. `iosApp/` is a SwiftUI app that uses the Kotlin framework.
 
 It resolves Sentry KMP only from this checkout. Build it from the repository root (macOS):
 
@@ -8,9 +8,11 @@ It resolves Sentry KMP only from this checkout. Build it from the repository roo
 make buildSwiftPmSample
 ```
 
-## Using it in an Xcode app
+Then open `iosApp/iosApp.xcodeproj` in Xcode to run the app.
 
-This sample has no Xcode app. In your app, link the Xcode project to the Swift package Kotlin generates for its SwiftPM dependencies, including Sentry Cocoa. Run this once:
+## Linking the Xcode project
+
+Xcode links Sentry Cocoa through a Swift package that Kotlin generates for its SwiftPM dependencies. This sample already contains it in `iosApp/KotlinMultiplatformLinkedPackage`, together with the updated Xcode project. In your own app, run this once:
 
 ```sh
 XCODEPROJ_PATH='/path/to/iosApp/iosApp.xcodeproj' ./gradlew :shared:integrateLinkagePackage

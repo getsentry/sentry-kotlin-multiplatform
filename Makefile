@@ -51,6 +51,7 @@ buildAppleSamples:
 buildSwiftPmSample:
 	./gradlew :sentry-kotlin-multiplatform:publishKotlinMultiplatformPublicationToMavenLocal :sentry-kotlin-multiplatform:publishIosSimulatorArm64PublicationToMavenLocal -Dmaven.repo.local="$(CURDIR)/sentry-kotlin-multiplatform/build/sentry-local-publish"
 	./gradlew --max-workers=1 -p sentry-samples/kmp-app-swiftpm linkDebugFrameworkIosSimulatorArm64 linkDynamicDebugFrameworkIosSimulatorArm64 linkDebugTestIosSimulatorArm64
+	xcodebuild -project ./sentry-samples/kmp-app-swiftpm/iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64 CODE_SIGNING_ALLOWED=NO
 
 # Build all targets, run tests and checks api
 compile: checkApi detekt buildProject buildAppleSamples buildSwiftPmSample
