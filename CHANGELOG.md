@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.28.0-beta.3
 
 ### Features
 
