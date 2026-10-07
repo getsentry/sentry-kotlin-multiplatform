@@ -28,7 +28,7 @@ class AppleProviderCompatibilityTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["2.4.0", "2.4.10"])
+    @ValueSource(strings = ["2.4.0", "2.4.10", "2.4.20"])
     fun `AUTO registers Sentry Cocoa through official SwiftPM on Kotlin 2_4`(kotlinVersion: String) {
         writeFixture(kotlinVersion, AppleDependencyProvider.AUTO)
         val result = runner().build()
