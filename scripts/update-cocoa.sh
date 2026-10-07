@@ -58,6 +58,18 @@ set-version)
     new_value="${plugin_properties_var_name}$2"
     printf '%s\n' "${plugin_properties_content/"$plugin_properties_whole_match"/$new_value}" >"$plugin_properties_file"
 
-    # The SPM sample uses the Gradle plugin's auto-install and needs no separate update.
+    # Kotlin fails the Xcode build when these committed linkage packages pin a different version.
+    linked_package_dir='sentry-samples/kmp-app-swiftpm/iosApp/KotlinMultiplatformLinkedPackage'
+    linked_package_regex='(url: "https://github.com/getsentry/sentry-cocoa.git",[[:space:]]*exact: )"[^"]+"'
+    for package_file in "$linked_package_dir/Package.swift" \
+        "$linked_package_dir/subpackages/KotlinMultiplatformLinkedPackageDylib/Package.swift"; do
+        package_content=$(cat "$package_file")
+        if ! [[ $package_content =~ $linked_package_regex ]]; then
+            echo "Failed to find the Cocoa version in $package_file" >&2
+            exit 1
+        fi
+        new_value="${BASH_REMATCH[1]}\"$2\""
+        printf '%s\n' "${package_content/"${BASH_REMATCH[0]}"/$new_value}" >"$package_file"
+    done
     ;;
 esac
