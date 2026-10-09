@@ -37,9 +37,9 @@
 
 - Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.9.1` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
   - Set Android `compileSdk` and sample app `targetSdk` to `36`.
-- Bump Cocoa SDK from v8.58.2 to v9.29.2 ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567), [#578](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/578), [#579](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/579))
-  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/9.29.2/CHANGELOG.md#9292)
-  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.58.2...9.29.2)
+- Bump Cocoa SDK from v8.58.2 to v9.30.1 ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567), [#578](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/578), [#579](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/579), [#582](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/582))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/9.29.2/CHANGELOG.md#9301)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.58.2...9.30.1)
 - Bump Java SDK from v8.41.0 to v8.58.0 ([#568](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/568), [#574](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/574))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8580)
   - [diff](https://github.com/getsentry/sentry-java/compare/8.41.0...8.58.0)
