@@ -6,7 +6,10 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
     kotlin(Config.multiplatform)
@@ -172,16 +175,6 @@ kotlin {
                 // Preserve the cocoapods.Sentry package used by consumers.
                 packageDependencyPrefix = "cocoapods"
                 publishSafe = true
-                bridgeSettings {
-                    swiftSettings {
-                        // The synchronous bridge does not need Swift runtime compatibility shims.
-                        unsafeFlags =
-                            listOf(
-                                "-runtime-compatibility-version",
-                                "none",
-                            )
-                    }
-                }
                 minIos = Config.Cocoa.iosDeploymentTarget
                 minMacos = Config.Cocoa.osxDeploymentTarget
                 minTvos = Config.Cocoa.tvosDeploymentTarget
@@ -196,6 +189,7 @@ kotlin {
                     )
                 }
             }
+            bundleSwiftCompatibility(target)
 
             target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
@@ -212,6 +206,75 @@ kotlin {
         wasmJsMain.get().dependsOn(commonStub)
         linuxMain.get().dependsOn(commonStub)
         mingwMain.get().dependsOn(commonStub)
+    }
+}
+
+private fun Project.bundleSwiftCompatibility(target: KotlinNativeTarget) {
+    if (!HostManager.hostIsMac) return
+    val targetName = target.name.replaceFirstChar { it.uppercase() }
+    val sdk =
+        when (target.name) {
+            "iosArm64" -> "iphoneos"
+            "iosX64", "iosSimulatorArm64" -> "iphonesimulator"
+            "tvosArm64" -> "appletvos"
+            "tvosX64", "tvosSimulatorArm64" -> "appletvsimulator"
+            "watchosArm64" -> "watchos"
+            "watchosX64", "watchosSimulatorArm64" -> "watchsimulator"
+            "macosArm64", "macosX64" -> "macosx"
+            else -> error("Unsupported Swift bridge target: ${target.name}")
+        }
+
+    fun tool(name: String) =
+        layout.file(
+            providers
+                .exec { commandLine("xcrun", "--find", name) }
+                .standardOutput.asText
+                .map { file(it.trim()) },
+        )
+    val runtimeDirectory =
+        tool("swiftc").map {
+            it.asFile.parentFile.parentFile
+                .resolve("lib/swift/$sdk")
+        }
+    val originalDefinition =
+        layout.buildDirectory.file("spmKmpPlugin/sentryCocoa/defFiles/${target.name}/sentryCocoa_bridge.def")
+    val bundleTask =
+        tasks.register<BundleSwiftCompatibility>("bundleSwiftCompatibility$targetName") {
+            dependsOn("SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinition$targetName")
+            bridgeDefinition.set(originalDefinition)
+            bridgeArchive.set(
+                layout.file(
+                    originalDefinition.map { definition ->
+                        val path =
+                            definition.asFile
+                                .readLines()
+                                .single { it.startsWith("libraryPaths = ") }
+                                .substringAfter("= ")
+                                .trim('"')
+                        file(path).resolve("libsentryCocoa.a")
+                    },
+                ),
+            )
+            compatibilityLibraries.from(runtimeDirectory.map { fileTree(it).matching { include("libswiftCompatibility*.a") } })
+            libtool.set(tool("libtool"))
+            otool.set(tool("otool"))
+            architecture.set(
+                when {
+                    target.name == "watchosArm64" -> "arm64_32"
+                    target.name.endsWith("X64") -> "x86_64"
+                    else -> "arm64"
+                },
+            )
+            bundledArchive.set(layout.buildDirectory.file("swiftCompatibility/${target.name}/libsentryCocoaWithCompatibility.a"))
+            bundledDefinition.set(layout.buildDirectory.file("swiftCompatibility/${target.name}/sentryCocoa_bridge.def"))
+        }
+    // spm4Kmp assigns the original definition in afterEvaluate; replace it afterwards.
+    afterEvaluate {
+        tasks.withType<CInteropProcess>().matching { it.name == "cinteropSentryCocoa$targetName" }.configureEach {
+            settings.definitionFile.set(bundleTask.flatMap { it.bundledDefinition })
+            definitionFile.set(bundleTask.flatMap { it.bundledDefinition })
+            inputs.file(bundleTask.flatMap { it.bundledArchive })
+        }
     }
 }
 
