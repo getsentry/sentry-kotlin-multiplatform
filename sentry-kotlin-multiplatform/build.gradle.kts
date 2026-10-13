@@ -171,19 +171,14 @@ kotlin {
             target.swiftPackageConfig(cinteropName = "sentryCocoa") {
                 // Preserve the cocoapods.Sentry package used by consumers.
                 packageDependencyPrefix = "cocoapods"
-                // SwiftPM skips Cocoa's watchOS simulator binary for spm4Kmp's aarch64
-                // triple. Other targets find their framework via SwiftPM's earlier search path.
+                publishSafe = true
                 bridgeSettings {
                     swiftSettings {
+                        // The synchronous bridge does not need Swift runtime compatibility shims.
                         unsafeFlags =
                             listOf(
-                                "-F",
-                                layout.buildDirectory
-                                    .dir(
-                                        "spmKmpPlugin/sentryCocoa/scratch/artifacts/sentry-cocoa/Sentry/" +
-                                            "Sentry.xcframework/watchos-arm64_x86_64-simulator",
-                                    ).get()
-                                    .asFile.absolutePath,
+                                "-runtime-compatibility-version",
+                                "none",
                             )
                     }
                 }
@@ -219,23 +214,6 @@ kotlin {
         mingwMain.get().dependsOn(commonStub)
     }
 }
-
-// spm4Kmp 1.9.5 uses `aarch64` where SwiftPM expects `arm64`, so it skips the watchOS
-// simulator framework. Copy it manually until the target naming is fixed upstream.
-val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
-val copyWatchosSimulatorSentryFramework =
-    tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
-        dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
-        from(
-            sentryCocoaScratchDir.map {
-                it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_x86_64-simulator/Sentry.framework")
-            },
-        )
-        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
-    }
-tasks
-    .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
-    .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
 // Ktor lacks variants for some no-op targets, so exclude their tests and test dependencies.
 val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")

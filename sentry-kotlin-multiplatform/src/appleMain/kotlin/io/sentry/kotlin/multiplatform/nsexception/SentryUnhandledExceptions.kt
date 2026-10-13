@@ -28,7 +28,7 @@ import platform.Foundation.NSNumber
 private typealias InternalSentryEvent = Internal.Sentry.SentryEvent
 private typealias InternalSentrySDK = Internal.Sentry.SentrySDKInternal
 private typealias InternalSentryDependencyContainer = cocoapods.Sentry.SentryDependencyContainer
-private typealias InternalSentryThreadInspector = Internal.Sentry.SentryDefaultThreadInspector
+private typealias InternalSentryThreadInspector = cocoapods.Sentry.SentryDefaultThreadInspector
 
 private typealias CocoapodsSentryEvent = cocoapods.Sentry.SentryEvent
 private typealias CocoapodsSentrySDK = cocoapods.Sentry.SentrySDK
@@ -161,4 +161,4 @@ internal fun NSException.asSentryStacktrace(): CocoapodsSentryStacktrace? {
 }
 
 private val threadInspector: InternalSentryThreadInspector?
-    get() = InternalSentrySDK.currentHub().getClient()?.threadInspector
+    get() = InternalSentrySDK.currentHub().getClient()?.threadInspector as InternalSentryThreadInspector?
