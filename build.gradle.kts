@@ -177,12 +177,11 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
                     artifactFile.name.contains("tvos", ignoreCase = true) -> {
-                    // Apple artifacts include the SDK klib and three cinterops, including spm4Kmp's bridge.
+                    // Apple artifacts include the SDK klib and Cocoa's public and private bindings.
                     val expectedCinteropKlibs =
                         listOf(
                             "cinterop-Sentry.klib",
                             "cinterop-Sentry.Internal.klib",
-                            "cinterop-SentryCocoa.klib",
                         )
                     val klibFiles = entries.filter { it.endsWith(".klib") }
                     val missingKlibs =

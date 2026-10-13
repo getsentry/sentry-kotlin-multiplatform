@@ -1,19 +1,15 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
     kotlin(Config.multiplatform)
-    id(Config.spmForKmp)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
@@ -50,6 +46,30 @@ tasks.withType<KotlinCompile>().configureEach {
         jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
+
+// Bind directly to the released Cocoa framework; the SDK does not compile or embed Swift code.
+val sentryCocoaFramework =
+    configurations.create("sentryCocoaFramework") {
+        isCanBeConsumed = false
+        isTransitive = false
+    }
+dependencies {
+    add(sentryCocoaFramework.name, "io.sentry.native:Sentry-Dynamic:${Config.Libs.sentryCocoaVersion}@xcframework.zip")
+}
+val sentryCocoaDirectory = layout.buildDirectory.dir("sentryCocoa/${Config.Libs.sentryCocoaVersion}")
+val unpackSentryCocoa =
+    tasks.register<Exec>("unpackSentryCocoa") {
+        onlyIf { System.getProperty("os.name") == "Mac OS X" }
+        inputs.files(sentryCocoaFramework)
+        outputs.dir(sentryCocoaDirectory)
+        // ditto preserves the symbolic links in versioned macOS frameworks.
+        executable = "/usr/bin/ditto"
+        argumentProviders.add(
+            CommandLineArgumentProvider {
+                listOf("-x", "-k", sentryCocoaFramework.singleFile.absolutePath, sentryCocoaDirectory.get().asFile.absolutePath)
+            },
+        )
+    }
 
 kotlin {
     explicitApi()
@@ -171,25 +191,32 @@ kotlin {
         watchosTest.get().dependsOn(commonTvWatchMacOsTest)
 
         appleTargets.forEach { target ->
-            target.swiftPackageConfig(cinteropName = "sentryCocoa") {
-                // Preserve the cocoapods.Sentry package used by consumers.
-                packageDependencyPrefix = "cocoapods"
-                publishSafe = true
-                minIos = Config.Cocoa.iosDeploymentTarget
-                minMacos = Config.Cocoa.osxDeploymentTarget
-                minTvos = Config.Cocoa.tvosDeploymentTarget
-                minWatchos = Config.Cocoa.watchosDeploymentTarget
-                dependency {
-                    remotePackageVersion(
-                        url = uri("https://github.com/getsentry/sentry-cocoa.git"),
-                        version = Config.Libs.sentryCocoaVersion,
-                        products = {
-                            add("Sentry", exportToKotlin = true)
-                        },
-                    )
+            val slice =
+                when (target.name) {
+                    "iosArm64" -> "ios-arm64"
+                    "iosX64", "iosSimulatorArm64" -> "ios-arm64_x86_64-simulator"
+                    "macosArm64", "macosX64" -> "macos-arm64_x86_64"
+                    "tvosArm64" -> "tvos-arm64"
+                    "tvosX64", "tvosSimulatorArm64" -> "tvos-arm64_x86_64-simulator"
+                    "watchosArm64" -> "watchos-arm64_arm64_32"
+                    "watchosX64", "watchosSimulatorArm64" -> "watchos-arm64_x86_64-simulator"
+                    else -> error("Unsupported Cocoa target: ${target.name}")
                 }
+            val frameworkDirectory = sentryCocoaDirectory.map { it.dir("Sentry-Dynamic.xcframework/$slice") }
+            val frameworkPath = frameworkDirectory.get().asFile.absolutePath
+            val cocoaInterop =
+                target.compilations.getByName("main").cinterops.create("Sentry") {
+                    compilerOpts("-fmodules", "-F$frameworkPath")
+                }
+            tasks.named<CInteropProcess>(cocoaInterop.interopProcessingTaskName) {
+                dependsOn(unpackSentryCocoa)
+                inputs.dir(frameworkDirectory.map { it.dir("Sentry.framework/Headers") })
+                inputs.dir(frameworkDirectory.map { it.dir("Sentry.framework/Modules") })
             }
-            bundleSwiftCompatibility(target)
+            // These local paths apply only to this project's binaries, never to published klibs.
+            target.binaries.configureEach {
+                linkerOpts("-F$frameworkPath", "-rpath", frameworkPath)
+            }
 
             target.compilations.getByName("main") {
                 cinterops.create("Sentry.Internal") {
@@ -206,75 +233,6 @@ kotlin {
         wasmJsMain.get().dependsOn(commonStub)
         linuxMain.get().dependsOn(commonStub)
         mingwMain.get().dependsOn(commonStub)
-    }
-}
-
-private fun Project.bundleSwiftCompatibility(target: KotlinNativeTarget) {
-    if (!HostManager.hostIsMac) return
-    val targetName = target.name.replaceFirstChar { it.uppercase() }
-    val sdk =
-        when (target.name) {
-            "iosArm64" -> "iphoneos"
-            "iosX64", "iosSimulatorArm64" -> "iphonesimulator"
-            "tvosArm64" -> "appletvos"
-            "tvosX64", "tvosSimulatorArm64" -> "appletvsimulator"
-            "watchosArm64" -> "watchos"
-            "watchosX64", "watchosSimulatorArm64" -> "watchsimulator"
-            "macosArm64", "macosX64" -> "macosx"
-            else -> error("Unsupported Swift bridge target: ${target.name}")
-        }
-
-    fun tool(name: String) =
-        layout.file(
-            providers
-                .exec { commandLine("xcrun", "--find", name) }
-                .standardOutput.asText
-                .map { file(it.trim()) },
-        )
-    val runtimeDirectory =
-        tool("swiftc").map {
-            it.asFile.parentFile.parentFile
-                .resolve("lib/swift/$sdk")
-        }
-    val originalDefinition =
-        layout.buildDirectory.file("spmKmpPlugin/sentryCocoa/defFiles/${target.name}/sentryCocoa_bridge.def")
-    val bundleTask =
-        tasks.register<BundleSwiftCompatibility>("bundleSwiftCompatibility$targetName") {
-            dependsOn("SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinition$targetName")
-            bridgeDefinition.set(originalDefinition)
-            bridgeArchive.set(
-                layout.file(
-                    originalDefinition.map { definition ->
-                        val path =
-                            definition.asFile
-                                .readLines()
-                                .single { it.startsWith("libraryPaths = ") }
-                                .substringAfter("= ")
-                                .trim('"')
-                        file(path).resolve("libsentryCocoa.a")
-                    },
-                ),
-            )
-            compatibilityLibraries.from(runtimeDirectory.map { fileTree(it).matching { include("libswiftCompatibility*.a") } })
-            libtool.set(tool("libtool"))
-            otool.set(tool("otool"))
-            architecture.set(
-                when {
-                    target.name == "watchosArm64" -> "arm64_32"
-                    target.name.endsWith("X64") -> "x86_64"
-                    else -> "arm64"
-                },
-            )
-            bundledArchive.set(layout.buildDirectory.file("swiftCompatibility/${target.name}/libsentryCocoaWithCompatibility.a"))
-            bundledDefinition.set(layout.buildDirectory.file("swiftCompatibility/${target.name}/sentryCocoa_bridge.def"))
-        }
-    // spm4Kmp assigns the original definition in afterEvaluate; replace it afterwards.
-    afterEvaluate {
-        tasks.withType<CInteropProcess>().matching { it.name == "cinteropSentryCocoa$targetName" }.configureEach {
-            settings.definitionFile.set(bundleTask.flatMap { it.bundledDefinition })
-            definitionFile.set(bundleTask.flatMap { it.bundledDefinition })
-            inputs.file(bundleTask.flatMap { it.bundledArchive })
-        }
     }
 }
 

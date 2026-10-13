@@ -17,8 +17,9 @@ package io.sentry.kotlin.multiplatform.nsexception
 import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
 import Internal.Sentry.kSentryLevelFatal
 import Internal.Sentry.sentryDefaultThreadInspectorCreateStacktraceBuilder
+import cocoapods.Sentry.SentryDebugMeta
+import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.configureScope
-import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.CocoaSentryLevel
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import kotlinx.cinterop.invoke
@@ -39,6 +40,9 @@ private typealias CocoapodsSentryThread = cocoapods.Sentry.SentryThread
 private typealias CocoapodsSentryEnvelope = cocoapods.Sentry.SentryEnvelope
 private typealias CocoapodsSentryEnvelopeHeader = cocoapods.Sentry.SentryEnvelopeHeader
 private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeItem
+
+private const val HEX_RADIX = 16
+private const val ASCII_HEX_DIGITS = "0123456789abcdefABCDEF"
 
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
@@ -64,7 +68,7 @@ public fun setSentryUnhandledExceptionHook(): Unit =
             handler.invoke(throwable.asNSException(appendCausedBy = true))
         } else {
             throwable.asSentryEnvelope()?.let { envelope ->
-                SentryKMPInternal.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
+                InternalSentrySDK.storeEnvelope(envelope)
             }
             CocoapodsSentrySDK.configureScope { scope ->
                 scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
@@ -133,8 +137,30 @@ internal fun Throwable.asSentryEvent(
         val frames =
             threads.orEmpty().flatMap { it.stacktrace?.frames.orEmpty() } +
                 convertedExceptions.flatMap { it.stacktrace?.frames.orEmpty() }
-        debugMeta = SentryKMPInternal.debugImagesForFrames(frames)
+        debugMeta = debugImagesForFrames(frames.map { it as SentryFrame })
     }
+
+internal fun debugImagesForFrames(frames: List<SentryFrame>): List<SentryDebugMeta> {
+    val addresses =
+        frames
+            .mapNotNull { frame ->
+                val hex = frame.imageAddress?.removePrefix("0x") ?: return@mapNotNull null
+                val digits = hex.removePrefix("+")
+                // Swift's UInt64 parser accepts only ASCII hex digits; Kotlin also accepts Unicode digits.
+                if (digits.isEmpty() || digits.any { it !in ASCII_HEX_DIGITS }) {
+                    null
+                } else {
+                    hex.toULongOrNull(HEX_RADIX)
+                }
+            }.toSet()
+            .map { "0x${it.toString(HEX_RADIX)}" }
+            .toSet()
+    @Suppress("UNCHECKED_CAST")
+    return InternalSentryDependencyContainer
+        .sharedInstance()
+        .debugImageProvider()
+        .getDebugImagesForImageAddressesFromCache(addresses) as List<SentryDebugMeta>
+}
 
 /**
  * Converts `this` [NSException] to a [io.sentry.kotlin.multiplatform.protocol.SentryException].

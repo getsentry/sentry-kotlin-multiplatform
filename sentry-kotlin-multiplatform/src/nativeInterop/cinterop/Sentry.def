@@ -1,0 +1,4 @@
+language = Objective-C
+modules = Sentry
+package = cocoapods.Sentry
+linkerOpts = -framework Sentry
