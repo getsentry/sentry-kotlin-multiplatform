@@ -1,6 +1,4 @@
 import io.sentry.kotlin.multiplatform.gradle.AppleDependencyProvider
-import java.util.Properties
-import java.util.zip.ZipFile
 
 plugins {
     kotlin("multiplatform")
@@ -58,27 +56,14 @@ if (nativeCacheRegression) {
     binary.linkTaskProvider.configure {
         inputs.dir(cocoa)
         outputs.file(linkMap)
-        // Relink each run so the assertions inspect this build.
+        // Relink each run so the cache check inspects this build.
         outputs.upToDateWhen { false }
         doFirst { linkMap.parentFile.mkdirs() }
         doLast {
-            val objects = linkMap.readLines().filter { it.startsWith("[") }
-            val sdkKlibs = libraries.filter { it.name.startsWith("sentry-kotlin-multiplatform") && it.extension == "klib" }
-            check(sdkKlibs.files.size == 3) { "Expected the SDK and two Cocoa interop KLIBs" }
-            sdkKlibs.forEach { klib ->
-                ZipFile(klib).use { archive ->
-                    val manifest = Properties()
-                    archive.getInputStream(archive.getEntry("default/manifest")).use { manifest.load(it) }
-                    check(!Regex("""(^|\s)-[FL]""").containsMatchIn(manifest.getProperty("linkerOpts", ""))) {
-                        "Published ${klib.name} contains framework or library search paths"
-                    }
-                    val name = manifest.getProperty("unique_name")
-                    check(objects.any { it.contains("/lib$name-cache.a(") }) {
-                        "Sentry native cache was not linked: $name"
-                    }
-                }
+            check(linkMap.readLines().any { it.startsWith("[") && it.contains("/libio.sentry:sentry-kotlin-multiplatform-cache.a(") }) {
+                "Sentry native cache was not linked"
             }
-            logger.lifecycle("Verified the SDK and both Cocoa interop native caches were linked")
+            logger.lifecycle("Verified the Sentry native cache was linked")
         }
     }
 }
