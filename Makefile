@@ -1,4 +1,4 @@
-.PHONY: all clean compile dryRelease checkFormat checkApi buildProject buildAppleSamples buildSwiftPmSample generateDokka detekt format stop createCoverageReports
+.PHONY: all clean compile dryRelease checkFormat checkApi buildProject buildAppleSamples buildSwiftPmSample testAppleNativeCaches generateDokka detekt format stop createCoverageReports
 
 # Keep Gradle invocations sequential, including when make is invoked with -j.
 .NOTPARALLEL:
@@ -53,8 +53,16 @@ buildSwiftPmSample:
 	./gradlew --max-workers=1 -p sentry-samples/kmp-app-swiftpm linkDebugFrameworkIosSimulatorArm64 linkDynamicDebugFrameworkIosSimulatorArm64 linkDebugTestIosSimulatorArm64
 	xcodebuild -project ./sentry-samples/kmp-app-swiftpm/iosApp/iosApp.xcodeproj -scheme iosApp -configuration Debug -sdk iphonesimulator -arch arm64 CODE_SIGNING_ALLOWED=NO
 
+# Place published dependencies under Gradle user home so Kotlin automatically caches them.
+NATIVE_CACHE_REPO := $(if $(GRADLE_USER_HOME),$(GRADLE_USER_HOME),$(HOME)/.gradle)/sentry-native-cache-regression
+testAppleNativeCaches:
+	./gradlew :sentry-kotlin-multiplatform:publishKotlinMultiplatformPublicationToMavenLocal :sentry-kotlin-multiplatform:publishIosSimulatorArm64PublicationToMavenLocal
+	mkdir -p "$(NATIVE_CACHE_REPO)/io"
+	cp -R sentry-kotlin-multiplatform/build/sentry-local-publish/io/sentry "$(NATIVE_CACHE_REPO)/io/"
+	./gradlew --max-workers=1 -p sentry-samples/kmp-app-swiftpm -PnativeCacheRegression iosSimulatorArm64Test
+
 # Build all targets, run tests and checks api
-compile: checkApi detekt buildProject buildAppleSamples buildSwiftPmSample
+compile: checkApi detekt buildProject buildAppleSamples buildSwiftPmSample testAppleNativeCaches
 
 # We stop gradle at the end to make sure the cache folders
 # don't contain any lock files and are free to be cached.
