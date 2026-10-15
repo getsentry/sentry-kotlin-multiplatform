@@ -7,6 +7,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.OutputStream
+import java.security.DigestInputStream
+import java.security.MessageDigest
 
 plugins {
     kotlin(Config.multiplatform)
@@ -61,7 +64,18 @@ val unpackSentryCocoa =
     tasks.register<Exec>("unpackSentryCocoa") {
         onlyIf { System.getProperty("os.name") == "Mac OS X" }
         inputs.files(sentryCocoaFramework)
+        inputs.property("sha256", Config.Libs.sentryCocoaSha256)
         outputs.dir(sentryCocoaDirectory)
+        doFirst {
+            val digest = MessageDigest.getInstance("SHA-256")
+            DigestInputStream(sentryCocoaFramework.singleFile.inputStream(), digest).use {
+                it.copyTo(OutputStream.nullOutputStream())
+            }
+            val actual = digest.digest().joinToString("") { "%02x".format(it) }
+            check(actual == Config.Libs.sentryCocoaSha256) {
+                "Sentry Cocoa SHA-256 mismatch: expected ${Config.Libs.sentryCocoaSha256}, got $actual"
+            }
+        }
         // ditto preserves the symbolic links in versioned macOS frameworks.
         executable = "/usr/bin/ditto"
         argumentProviders.add(
