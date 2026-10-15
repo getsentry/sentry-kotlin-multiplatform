@@ -9,6 +9,8 @@ import io.sentry.kotlin.multiplatform.log.updateFrom
 import io.sentry.kotlin.multiplatform.setEnableUnhandledCppExceptionMonitoring
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
 internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit =
     {
@@ -39,7 +41,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.setMaxBreadcrumbs(kmpOptions.maxBreadcrumbs.convert())
     cocoaOptions.setEnableAppHangTracking(kmpOptions.enableAppHangTracking)
     cocoaOptions.setEnableWatchdogTerminationTracking(kmpOptions.enableWatchdogTerminationTracking)
-    cocoaOptions.setAppHangTimeoutInterval(kmpOptions.appHangTimeoutIntervalMillis.toDouble())
+    cocoaOptions.setAppHangTimeoutInterval(
+        kmpOptions.appHangTimeoutIntervalMillis.milliseconds
+            .toDouble(DurationUnit.SECONDS),
+    )
     cocoaOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toCocoaSentryLevel())
     setEnableUnhandledCppExceptionMonitoring(kmpOptions.enableUnhandledCppExceptionMonitoring)
     cocoaOptions.setEnableLogs(kmpOptions.logs.enabled)

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- Pass `appHangTimeoutIntervalMillis` to Sentry Cocoa in seconds. It was passed unconverted, so Cocoa read the default of 2000 ms as 2000 s (about 33 minutes) and app hangs were effectively never reported. Apps using the default timeout will now report app hangs on Apple.
+
 ## 0.28.0
 
 ### Breaking changes
