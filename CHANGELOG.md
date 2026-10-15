@@ -6,6 +6,12 @@
 
 - Pass `appHangTimeoutIntervalMillis` to Sentry Cocoa in seconds. It was passed unconverted, so Cocoa read the default of 2000 ms as 2000 s (about 33 minutes) and app hangs were effectively never reported. Apps using the default timeout will now report app hangs on Apple.
 
+### Dependencies
+
+- Bump Java SDK from v8.58.0 to v8.61.0 ([#583](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/583))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8610)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.58.0...8.61.0)
+
 ## 0.28.0
 
 ### Breaking changes
