@@ -1,7 +1,5 @@
 pluginManagement {
-    // Newer compilers can eliminate the invalid thread-inspector reference from #587.
-    val kotlinVersion = if (providers.gradleProperty("nativeCacheRegression").isPresent) "2.3.20" else "2.4.0"
-    plugins { kotlin("multiplatform") version kotlinVersion }
+    plugins { kotlin("multiplatform") version "2.4.0" }
     includeBuild("../../sentry-kotlin-multiplatform-gradle-plugin")
     repositories {
         gradlePluginPortal()

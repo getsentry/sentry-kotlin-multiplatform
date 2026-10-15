@@ -59,7 +59,7 @@ testAppleNativeCaches:
 	./gradlew :sentry-kotlin-multiplatform:publishKotlinMultiplatformPublicationToMavenLocal :sentry-kotlin-multiplatform:publishIosSimulatorArm64PublicationToMavenLocal
 	mkdir -p "$(NATIVE_CACHE_REPO)/io"
 	cp -R sentry-kotlin-multiplatform/build/sentry-local-publish/io/sentry "$(NATIVE_CACHE_REPO)/io/"
-	./gradlew --max-workers=1 -p sentry-samples/kmp-app-swiftpm -PnativeCacheRegression iosSimulatorArm64Test
+	./gradlew --max-workers=1 -p sentry-samples/native-cache-regression iosSimulatorArm64Test
 
 # Build all targets, run tests and checks api
 compile: checkApi detekt buildProject buildAppleSamples buildSwiftPmSample testAppleNativeCaches
