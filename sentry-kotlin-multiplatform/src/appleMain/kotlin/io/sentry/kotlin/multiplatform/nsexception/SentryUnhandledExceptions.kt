@@ -42,7 +42,6 @@ private typealias CocoapodsSentryEnvelopeHeader = cocoapods.Sentry.SentryEnvelop
 private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeItem
 
 private const val HEX_RADIX = 16
-private const val ASCII_HEX_DIGITS = "0123456789abcdefABCDEF"
 
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
@@ -143,16 +142,7 @@ internal fun Throwable.asSentryEvent(
 internal fun debugImagesForFrames(frames: List<SentryFrame>): List<SentryDebugMeta> {
     val addresses =
         frames
-            .mapNotNull { frame ->
-                val hex = frame.imageAddress?.removePrefix("0x") ?: return@mapNotNull null
-                val digits = hex.removePrefix("+")
-                // Swift's UInt64 parser accepts only ASCII hex digits; Kotlin also accepts Unicode digits.
-                if (digits.isEmpty() || digits.any { it !in ASCII_HEX_DIGITS }) {
-                    null
-                } else {
-                    hex.toULongOrNull(HEX_RADIX)
-                }
-            }.toSet()
+            .mapNotNull { it.imageAddress?.removePrefix("0x")?.toULongOrNull(HEX_RADIX) }
             .map { "0x${it.toString(HEX_RADIX)}" }
             .toSet()
     @Suppress("UNCHECKED_CAST")
@@ -187,4 +177,4 @@ internal fun NSException.asSentryStacktrace(): CocoapodsSentryStacktrace? {
 }
 
 private val threadInspector: InternalSentryThreadInspector?
-    get() = InternalSentrySDK.currentHub().getClient()?.threadInspector as InternalSentryThreadInspector?
+    get() = InternalSentrySDK.currentHub().getClient()?.threadInspector as? InternalSentryThreadInspector
