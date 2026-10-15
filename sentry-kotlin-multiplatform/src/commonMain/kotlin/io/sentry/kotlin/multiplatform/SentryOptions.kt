@@ -126,7 +126,8 @@ public open class SentryOptions {
 
     /**
      * A list of HTTP request targets indicating which client errors should be captured as errors with
-     * either regex or a plain string.
+     * either regex or a plain string. A target matches when the request URL contains it, or when it
+     * matches anywhere in the URL as a regular expression.
      *
      * By default, HTTP client errors from every target (.* regular expression) are automatically captured.
      *
