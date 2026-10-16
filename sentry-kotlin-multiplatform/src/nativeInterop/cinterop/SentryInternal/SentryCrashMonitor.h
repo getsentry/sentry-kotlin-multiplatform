@@ -4,6 +4,7 @@
 
 typedef uint32_t SentryCrashMonitorType;
 static const SentryCrashMonitorType SentryCrashMonitorTypeCPPException = 0x04;
+static const SentryCrashMonitorType SentryCrashMonitorTypeNSException = 0x08;
 
 SentryCrashMonitorType sentrycrash_setMonitoring(SentryCrashMonitorType monitors);
 SentryCrashMonitorType sentrycrashcm_getActiveMonitors(void);
