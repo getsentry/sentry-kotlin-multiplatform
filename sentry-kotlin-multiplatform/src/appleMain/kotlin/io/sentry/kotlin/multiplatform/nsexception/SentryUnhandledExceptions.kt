@@ -15,14 +15,15 @@
 package io.sentry.kotlin.multiplatform.nsexception
 
 import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
+import Internal.Sentry.SentryCrashMonitorTypeNSException
 import Internal.Sentry.kSentryLevelFatal
 import Internal.Sentry.sentryDefaultThreadInspectorCreateStacktraceBuilder
+import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentryDebugMeta
 import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.configureScope
 import io.sentry.kotlin.multiplatform.CocoaSentryLevel
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
-import kotlinx.cinterop.invoke
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
@@ -59,21 +60,27 @@ internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentry
  */
 public fun setSentryUnhandledExceptionHook(): Unit =
     wrapUnhandledExceptionHook { throwable ->
-        val crashReporter = InternalSentryDependencyContainer.sharedInstance().crashReporter()
-        val handler = crashReporter.uncaughtExceptionHandler()
+        throwable.captureUnhandledException()
+    }
 
-        if (handler != null) {
-            // Persist the crash with native scope data for the next launch.
-            handler.invoke(throwable.asNSException(appendCausedBy = true))
-        } else {
-            throwable.asSentryEnvelope()?.let { envelope ->
-                InternalSentrySDK.storeEnvelope(envelope)
-            }
-            CocoapodsSentrySDK.configureScope { scope ->
-                scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
-            }
+internal fun Throwable.captureUnhandledException(
+    captureNativeException: (NSException) -> Unit = { exception ->
+        InternalSentryDependencyContainer.sharedInstance().captureUnhandledException(exception)
+    },
+) {
+    // Cocoa 9.30's capture method does nothing without a native exception handler.
+    // Keep persisting an envelope when the NSException monitor is unavailable, e.g. under a debugger.
+    if (sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeNSException != 0u) {
+        captureNativeException(asNSException(appendCausedBy = true))
+    } else {
+        asSentryEnvelope()?.let { envelope ->
+            InternalSentrySDK.storeEnvelope(envelope)
+        }
+        CocoapodsSentrySDK.configureScope { scope ->
+            scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
         }
     }
+}
 
 /**
  * Tag used to mark the Kotlin termination crash.
