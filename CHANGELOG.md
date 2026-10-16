@@ -11,6 +11,9 @@
 - Bump Java SDK from v8.58.0 to v8.61.0 ([#583](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/583))
   - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8610)
   - [diff](https://github.com/getsentry/sentry-java/compare/8.58.0...8.61.0)
+- Bump Cocoa SDK from v9.29.2 to v9.30.2 ([#582](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/582))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#9302)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/9.29.2...9.30.2)
 
 ## 0.28.0
 
