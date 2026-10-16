@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixes
+
+- Fix Apple linker errors introduced in 0.28.0 for `SentryDefaultThreadInspector` and Swift compatibility libraries ([#589](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/589)).
+
 ### Dependencies
 
 - Bump Java SDK from v8.58.0 to v8.61.0 ([#583](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/583))
