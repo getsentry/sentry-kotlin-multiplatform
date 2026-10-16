@@ -1,6 +1,7 @@
 package io.sentry.kotlin.multiplatform
 
 import Internal.Sentry.kSentryLevelError
+import cocoapods.Sentry.SentryMeta
 import cocoapods.Sentry.SentrySDK
 import cocoapods.Sentry.addBreadcrumb
 import cocoapods.Sentry.captureError
@@ -14,7 +15,6 @@ import cocoapods.Sentry.crashedLastRun
 import cocoapods.Sentry.isEnabled
 import cocoapods.Sentry.logger
 import cocoapods.Sentry.setUser
-import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.extensions.toCocoaBreadcrumb
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUser
 import io.sentry.kotlin.multiplatform.extensions.toCocoaUserFeedback
@@ -61,7 +61,8 @@ internal actual fun SentryPlatformOptions.prepareForInit() {
 
     cocoa?.setBeforeSend(modifiedBeforeSend)
 
-    SentryKMPInternal.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME, BuildKonfig.VERSION_NAME)
+    SentryMeta.setSdkName(BuildKonfig.SENTRY_KMP_COCOA_SDK_NAME)
+    SentryMeta.setVersionString(BuildKonfig.VERSION_NAME)
 }
 
 internal actual class SentryBridge actual constructor(

@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "2.4.0"
+    kotlin("multiplatform")
     id("io.sentry.kotlin.multiplatform.gradle")
 }
 
