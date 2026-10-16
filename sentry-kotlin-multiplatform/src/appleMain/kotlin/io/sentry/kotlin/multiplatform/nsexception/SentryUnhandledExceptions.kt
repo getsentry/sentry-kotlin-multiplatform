@@ -63,15 +63,12 @@ public fun setSentryUnhandledExceptionHook(): Unit =
         throwable.captureUnhandledException()
     }
 
-internal fun Throwable.captureUnhandledException(
-    captureNativeException: (NSException) -> Unit = { exception ->
-        InternalSentryDependencyContainer.sharedInstance().captureUnhandledException(exception)
-    },
-) {
+internal fun Throwable.captureUnhandledException() {
     // Cocoa 9.30's capture method does nothing without a native exception handler.
     // Keep persisting an envelope when the NSException monitor is unavailable, e.g. under a debugger.
     if (sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeNSException != 0u) {
-        captureNativeException(asNSException(appendCausedBy = true))
+        val exception = asNSException(appendCausedBy = true)
+        InternalSentryDependencyContainer.sharedInstance().captureUnhandledException(exception)
     } else {
         asSentryEnvelope()?.let { envelope ->
             InternalSentrySDK.storeEnvelope(envelope)
