@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Fix Apple compilation with Cocoa 9.30.2 and preserve fallback crash persistence when the native exception monitor is unavailable ([#580](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/580)).
+- Fix Apple compilation with Cocoa 9.30.2 and preserve fallback crash persistence when the native exception monitor is unavailable ([#594](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/594)).
 - Fix Apple linker errors introduced in 0.28.0 for `SentryDefaultThreadInspector` and Swift compatibility libraries ([#589](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/589)).
 
 ### Dependencies
