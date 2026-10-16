@@ -2,6 +2,77 @@
 
 ## Unreleased
 
+### Fixes
+
+- Fix Apple linker errors introduced in 0.28.0 for `SentryDefaultThreadInspector` and Swift compatibility libraries ([#589](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/589)).
+
+### Dependencies
+
+- Bump Java SDK from v8.58.0 to v8.61.0 ([#583](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/583))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8610)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.58.0...8.61.0)
+- Bump Cocoa SDK from v9.29.2 to v9.30.2 ([#582](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/582))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#9302)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/9.29.2...9.30.2)
+
+## 0.28.0
+
+### Breaking changes
+
+- Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
+- Convert `watchosArm32` to a no-op stub: builds remain supported, but Sentry no longer captures events, crashes, or logs on this target. Cocoa 9.28.0 no longer ships an armv7k slice ([#581](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/581)).
+- CocoaPods installation of Sentry is unsupported. Use SwiftPM instead; remove any Sentry pod declaration and `sentryKmp.autoInstall.cocoapods` configuration. The Gradle plugin no longer installs Sentry pods or treats CocoaPods as a Sentry framework provider. Other CocoaPods dependencies can remain. The retired CocoaPods sample and its run configurations have been removed.
+- Apple-native customizations must use Cocoa 9 APIs, including generated Kotlin option accessors, top-level native log enablement, and `SentryAttribute` for native log attributes.
+- On Apple, `captureUserFeedback` now sends a separate native `SentryFeedback` event with its own event ID, linked to the original error through `associatedEventId`. The common API is unchanged. Feedback uses source `custom`, preserves name/email, and maps comments to the message (null becomes an empty string).
+
+### Features
+
+- Auto-install Sentry Cocoa for Apple targets through SwiftPM ([#559](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/559), [#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577))
+  - Select the Apple provider with `sentryKmp.autoInstall.apple.provider` (`AUTO`, `SWIFT_PM`, `SPM4KMP`, `NONE`). The default `AUTO` uses spm4Kmp when applied, installs nothing when the Kotlin CocoaPods plugin is applied, and otherwise uses official SwiftPM on Kotlin 2.4+.
+  - When using spm4Kmp (`io.github.frankois944.spmForKmp`), apply the Sentry Gradle plugin before spm4Kmp.
+  - The plugin pins Sentry Cocoa to the version it was built against (9.29.2); override with `autoInstall.apple.sentryCocoaVersion`.
+  - If you added `sentry-cocoa` in Xcode yourself, remove it or set the provider to `NONE`.
+  - Official SwiftPM requires Kotlin's one-time [Xcode linkage-package setup](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html).
+- Add `sentryKmp.linker.enabled` to turn off Sentry Cocoa linker configuration ([#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577)).
+- Add shared `strictTraceContinuation`, `orgId`, and `enablePropagateTraceparent` options for configuring native trace continuation and W3C traceparent propagation on Apple, Android, and JVM ([#571](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/571)).
+
+### Fixes
+
+- Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
+- Keep unhandled-exception hooks from being wrapped repeatedly across SDK restarts, and retain debug images referenced by exception frames.
+- Recognize Cocoa 9 watchOS framework slice names in the Gradle plugin.
+
+### Internal
+
+- Build the Apple SDK against Sentry Cocoa via SwiftPM (spm4Kmp) instead of the Kotlin CocoaPods plugin ([#557](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/557))
+  - The published klibs keep the `cocoapods.Sentry` import prefix, so no changes are required for consumers
+- Use Cocoa’s hybrid `SentrySDK.internal` API for SDK metadata, envelope storage, and debug images through a Swift adapter.
+
+### Dependencies
+
+- Update the build toolchain to Kotlin `2.2.21`, Gradle `8.13`, and Android Gradle Plugin `8.9.1` ([#556](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/556))
+  - Set Android `compileSdk` and sample app `targetSdk` to `36`.
+- Bump Cocoa SDK from v8.58.2 to v9.29.2 ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567), [#578](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/578), [#579](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/579))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/9.29.2/CHANGELOG.md#9292)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.58.2...9.29.2)
+- Bump Java SDK from v8.41.0 to v8.58.0 ([#568](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/568), [#574](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/574))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8580)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.41.0...8.58.0)
+
+## 0.28.0-beta.3
+
+### Features
+
+- Auto-install Sentry Cocoa through official Kotlin SwiftPM import on Kotlin 2.4+ ([#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577))
+  - Select the Apple provider with `sentryKmp.autoInstall.apple.provider` (`AUTO`, `SWIFT_PM`, `SPM4KMP`, `NONE`). The default `AUTO` uses spm4Kmp when applied, installs nothing when the Kotlin CocoaPods plugin is applied, and otherwise uses official SwiftPM on Kotlin 2.4+.
+  - This replaces the `autoInstall.spm` extension from 0.28.0-beta.1: use `autoInstall.apple.provider` instead of `spm.enabled`, and `autoInstall.apple.sentryCocoaVersion` instead of `spm.sentryCocoaVersion`.
+  - The plugin pins Sentry Cocoa to the version it was built against (9.29.2); override with `autoInstall.apple.sentryCocoaVersion`.
+  - If you added `sentry-cocoa` in Xcode yourself, remove it or set the provider to `NONE`.
+  - Official SwiftPM requires Kotlin's one-time [Xcode linkage-package setup](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html).
+- Add `sentryKmp.linker.enabled` to turn off Sentry Cocoa linker configuration ([#577](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/577)).
+
+## 0.28.0-beta.2
+
 ### Breaking changes
 
 - Raise Apple deployment minimums to iOS/tvOS 15, macOS 12, and watchOS 9 for Cocoa 9.28.0.
@@ -16,6 +87,7 @@
 
 ### Fixes
 
+- Fix Maven publishing for the `watchosArm32` no-op target by including an empty cinterop artifact ([#581](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/581)).
 - Preserve replacement events returned by native `beforeSend`, and honor event filtering when persisting an unhandled Kotlin exception.
 - Keep unhandled-exception hooks from being wrapped repeatedly across SDK restarts, and retain debug images referenced by exception frames.
 - Recognize Cocoa 9 watchOS framework slice names in the Gradle plugin.
@@ -26,9 +98,12 @@
 
 ### Dependencies
 
-- Bump Cocoa SDK from `8.58.2` to `9.29.1` ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567), [#578](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/578)).
-  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/9.29.1/CHANGELOG.md#9291)
-  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.58.2...9.29.1)
+- Bump Cocoa SDK from `8.58.2` to v9.29.2 ([#567](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/567), [#578](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/578)).
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/9.29.1/CHANGELOG.md#9292)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/8.58.2...9.29.2)
+- Bump Java SDK from v8.57.0 to v8.58.0 ([#574](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/574))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8580)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.57.0...8.58.0)
 
 ## 0.28.0-beta.1
 

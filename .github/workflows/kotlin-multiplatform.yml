@@ -74,6 +74,13 @@ jobs:
         run: |
           make buildAppleSamples
 
+      - name: Official SwiftPM sample build
+        run: |
+          make buildSwiftPmSample
+
+      - name: Published SDK native cache regression
+        run: make testAppleNativeCaches
+
   build-jvm:
     runs-on: ubuntu-latest
 

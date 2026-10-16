@@ -1,16 +1,18 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import io.github.frankois944.spmForKmp.swiftPackageConfig
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.OutputStream
+import java.security.DigestInputStream
+import java.security.MessageDigest
 
 plugins {
     kotlin(Config.multiplatform)
-    id(Config.spmForKmp)
     id(Config.androidGradle)
     id(Config.BuildPlugins.buildConfig)
     kotlin(Config.kotlinSerializationPlugin)
@@ -47,6 +49,41 @@ tasks.withType<KotlinCompile>().configureEach {
         jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
+
+// Bind directly to the released Cocoa framework; the SDK does not compile or embed Swift code.
+val sentryCocoaFramework =
+    configurations.create("sentryCocoaFramework") {
+        isCanBeConsumed = false
+        isTransitive = false
+    }
+dependencies {
+    add(sentryCocoaFramework.name, "io.sentry.native:Sentry-Dynamic:${Config.Libs.sentryCocoaVersion}@xcframework.zip")
+}
+val sentryCocoaDirectory = layout.buildDirectory.dir("sentryCocoa/${Config.Libs.sentryCocoaVersion}")
+val unpackSentryCocoa =
+    tasks.register<Exec>("unpackSentryCocoa") {
+        onlyIf { System.getProperty("os.name") == "Mac OS X" }
+        inputs.files(sentryCocoaFramework)
+        inputs.property("sha256", Config.Libs.sentryCocoaSha256)
+        outputs.dir(sentryCocoaDirectory)
+        doFirst {
+            val digest = MessageDigest.getInstance("SHA-256")
+            DigestInputStream(sentryCocoaFramework.singleFile.inputStream(), digest).use {
+                it.copyTo(OutputStream.nullOutputStream())
+            }
+            val actual = digest.digest().joinToString("") { "%02x".format(it) }
+            check(actual == Config.Libs.sentryCocoaSha256) {
+                "Sentry Cocoa SHA-256 mismatch: expected ${Config.Libs.sentryCocoaSha256}, got $actual"
+            }
+        }
+        // ditto preserves the symbolic links in versioned macOS frameworks.
+        executable = "/usr/bin/ditto"
+        argumentProviders.add(
+            CommandLineArgumentProvider {
+                listOf("-x", "-k", sentryCocoaFramework.singleFile.absolutePath, sentryCocoaDirectory.get().asFile.absolutePath)
+            },
+        )
+    }
 
 kotlin {
     explicitApi()
@@ -168,38 +205,31 @@ kotlin {
         watchosTest.get().dependsOn(commonTvWatchMacOsTest)
 
         appleTargets.forEach { target ->
-            target.swiftPackageConfig(cinteropName = "sentryCocoa") {
-                // Preserve the cocoapods.Sentry package used by consumers.
-                packageDependencyPrefix = "cocoapods"
-                // SwiftPM skips Cocoa's watchOS simulator binary for spm4Kmp's aarch64
-                // triple. Other targets find their framework via SwiftPM's earlier search path.
-                bridgeSettings {
-                    swiftSettings {
-                        unsafeFlags =
-                            listOf(
-                                "-F",
-                                layout.buildDirectory
-                                    .dir(
-                                        "spmKmpPlugin/sentryCocoa/scratch/artifacts/sentry-cocoa/Sentry/" +
-                                            "Sentry.xcframework/watchos-arm64_x86_64-simulator",
-                                    ).get()
-                                    .asFile.absolutePath,
-                            )
-                    }
+            val slice =
+                when (target.name) {
+                    "iosArm64" -> "ios-arm64"
+                    "iosX64", "iosSimulatorArm64" -> "ios-arm64_x86_64-simulator"
+                    "macosArm64", "macosX64" -> "macos-arm64_x86_64"
+                    "tvosArm64" -> "tvos-arm64"
+                    "tvosX64", "tvosSimulatorArm64" -> "tvos-arm64_x86_64-simulator"
+                    "watchosArm64" -> "watchos-arm64_arm64_32"
+                    "watchosX64", "watchosSimulatorArm64" -> "watchos-arm64_x86_64-simulator"
+                    else -> error("Unsupported Cocoa target: ${target.name}")
                 }
-                minIos = Config.Cocoa.iosDeploymentTarget
-                minMacos = Config.Cocoa.osxDeploymentTarget
-                minTvos = Config.Cocoa.tvosDeploymentTarget
-                minWatchos = Config.Cocoa.watchosDeploymentTarget
-                dependency {
-                    remotePackageVersion(
-                        url = uri("https://github.com/getsentry/sentry-cocoa.git"),
-                        version = Config.Libs.sentryCocoaVersion,
-                        products = {
-                            add("Sentry", exportToKotlin = true)
-                        },
-                    )
+            val frameworkDirectory = sentryCocoaDirectory.map { it.dir("Sentry-Dynamic.xcframework/$slice") }
+            val frameworkPath = frameworkDirectory.get().asFile.absolutePath
+            val cocoaInterop =
+                target.compilations.getByName("main").cinterops.create("Sentry") {
+                    compilerOpts("-fmodules", "-F$frameworkPath")
                 }
+            tasks.named<CInteropProcess>(cocoaInterop.interopProcessingTaskName) {
+                dependsOn(unpackSentryCocoa)
+                inputs.dir(frameworkDirectory.map { it.dir("Sentry.framework/Headers") })
+                inputs.dir(frameworkDirectory.map { it.dir("Sentry.framework/Modules") })
+            }
+            // These local paths apply only to this project's binaries, never to published klibs.
+            target.binaries.configureEach {
+                linkerOpts("-F$frameworkPath", "-rpath", frameworkPath)
             }
 
             target.compilations.getByName("main") {
@@ -219,23 +249,6 @@ kotlin {
         mingwMain.get().dependsOn(commonStub)
     }
 }
-
-// spm4Kmp 1.9.5 uses `aarch64` where SwiftPM expects `arm64`, so it skips the watchOS
-// simulator framework. Copy it manually until the target naming is fixed upstream.
-val sentryCocoaScratchDir = layout.buildDirectory.dir("spmKmpPlugin/sentryCocoa/scratch")
-val copyWatchosSimulatorSentryFramework =
-    tasks.register<Copy>("copyWatchosSimulatorSentryFramework") {
-        dependsOn("SwiftPackageConfigAppleSentryCocoaCompileSwiftPackageWatchosSimulatorArm64")
-        from(
-            sentryCocoaScratchDir.map {
-                it.dir("artifacts/sentry-cocoa/Sentry/Sentry.xcframework/watchos-arm64_x86_64-simulator/Sentry.framework")
-            },
-        )
-        into(sentryCocoaScratchDir.map { it.dir("aarch64-apple-watchos-simulator/release/Sentry.framework") })
-    }
-tasks
-    .matching { it.name == "SwiftPackageConfigAppleSentryCocoaGenerateCInteropDefinitionWatchosSimulatorArm64" }
-    .configureEach { dependsOn(copyWatchosSimulatorSentryFramework) }
 
 // Ktor lacks variants for some no-op targets, so exclude their tests and test dependencies.
 val noOpStubTargets = listOf("watchosArm32", "js", "wasmJs", "mingwX64", "linuxArm64", "linuxX64")
@@ -274,7 +287,12 @@ buildkonfig {
 }
 
 private fun KotlinMultiplatformExtension.addNoOpTargets() {
-    watchosArm32()
+    // Craft requires a cinterop artifact for Apple publications, even for this no-op target.
+    watchosArm32 {
+        compilations.getByName("main") {
+            cinterops.create("SentryStub")
+        }
+    }
     js(IR) {
         browser()
         binaries.library()
