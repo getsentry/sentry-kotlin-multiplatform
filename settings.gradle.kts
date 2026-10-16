@@ -12,6 +12,17 @@ dependencyResolutionManagement {
         mavenCentral()
         mavenLocal()
         google()
+        exclusiveContent {
+            forRepository {
+                ivy {
+                    name = "sentryCocoaReleases"
+                    url = uri("https://github.com/getsentry/sentry-cocoa/releases/download")
+                    patternLayout { artifact("[revision]/[artifact].[ext]") }
+                    metadataSources { artifact() }
+                }
+            }
+            filter { includeModule("io.sentry.native", "Sentry-Dynamic") }
+        }
         maven("https://androidx.dev/storage/compose-compiler/repository/")
         maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
     }
