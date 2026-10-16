@@ -1,7 +1,9 @@
 package io.sentry.kotlin.multiplatform
 
 import Internal.Sentry.SentryCrashMonitorTypeCPPException
+import Internal.Sentry.SentryCrashMonitorTypeNSException
 import Internal.Sentry.SentrySDKInternal
+import Internal.Sentry.sentrycrash_setMonitoring
 import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentryDebugMeta
 import cocoapods.Sentry.SentryDependencyContainer
@@ -16,6 +18,7 @@ import io.sentry.kotlin.multiplatform.nsexception.asNSException
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
 import io.sentry.kotlin.multiplatform.nsexception.asSentryStacktrace
+import io.sentry.kotlin.multiplatform.nsexception.captureUnhandledException
 import io.sentry.kotlin.multiplatform.nsexception.debugImagesForFrames
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
@@ -206,20 +209,47 @@ class CocoaV9IntegrationTest {
     }
 
     @Test
-    fun `direct envelope storage persists the prepared fatal event`() {
+    fun `inactive native exception monitor persists the enriched fatal event`() {
+        var prepared: SentryEvent? = null
         Sentry.initWithPlatformOptions {
             it.setDsn("http://public@127.0.0.1:9/1")
             it.setCacheDirectoryPath(NSTemporaryDirectory() + NSUUID().UUIDString)
             it.setEnableAutoSessionTracking(false)
             it.setEnableAppHangTracking(false)
+            it.setBeforeSend { event ->
+                prepared = event
+                event
+            }
         }
+        disableNativeExceptionMonitor()
+        Sentry.configureScope { it.setTag("fallback", "scope") }
         val files = assertNotNull(SentryDependencyContainer.sharedInstance().fileManager())
         val before = files.getAllEnvelopes().map { (it as SentryFileContents).path() }.toSet()
-        val envelope = assertNotNull(IllegalStateException("persisted through direct Cocoa call").asSentryEnvelope())
-        SentrySDKInternal.storeEnvelope(envelope)
+        IllegalStateException("fallback crash").captureUnhandledException()
         val stored = files.getAllEnvelopes().map { it as SentryFileContents }.filter { it.path() !in before }
         assertEquals(1, stored.size)
         assertTrue(stored.single().contents().length > 0u)
+        val event = assertNotNull(prepared)
+        assertEquals("scope", event.tags?.get("fallback"))
+        assertEquals(false, (event.exceptions?.single() as SentryException).mechanism?.handled?.boolValue)
+        assertTrue((event as Internal.Sentry.SentryEvent).isFatalEvent)
+        assertTerminationCrashTagged()
+    }
+
+    private fun disableNativeExceptionMonitor() {
+        sentrycrash_setMonitoring(sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeNSException.inv())
+        assertEquals(0u, sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeNSException)
+    }
+
+    private fun envelopePaths(): Set<String> =
+        assertNotNull(SentryDependencyContainer.sharedInstance().fileManager())
+            .getAllEnvelopes()
+            .map { (it as SentryFileContents).path() }
+            .toSet()
+
+    private fun assertTerminationCrashTagged() {
+        val tags = SentrySDKInternal.currentHub().scope.tagDictionary
+        assertEquals(KOTLIN_CRASH_TAG, tags?.objectForKey(KOTLIN_CRASH_TAG))
     }
 
     private fun assertCurrentThread(
@@ -239,25 +269,33 @@ class CocoaV9IntegrationTest {
     }
 
     @Test
-    fun `fatal envelope preparation honors dropped events`() {
+    fun `fallback capture honors dropped events`() {
         var called = false
         start {
             called = true
             null
         }
-        assertNull(IllegalStateException("dropped").asSentryEnvelope())
+        disableNativeExceptionMonitor()
+        val before = envelopePaths()
+        IllegalStateException("dropped").captureUnhandledException()
         assertTrue(called)
+        assertEquals(before, envelopePaths())
+        assertTerminationCrashTagged()
     }
 
     @Test
-    fun `fatal envelope preparation honors sampling before beforeSend`() {
+    fun `fallback capture honors sampling before beforeSend`() {
         var called = false
         start(sampleRate = 0.0) {
             called = true
             it
         }
-        assertNull(IllegalStateException("sampled out").asSentryEnvelope())
+        disableNativeExceptionMonitor()
+        val before = envelopePaths()
+        IllegalStateException("sampled out").captureUnhandledException()
         assertFalse(called)
+        assertEquals(before, envelopePaths())
+        assertTerminationCrashTagged()
     }
 
     @Test
