@@ -21,6 +21,7 @@ import io.sentry.kotlin.multiplatform.nsexception.captureUnhandledException
 import io.sentry.kotlin.multiplatform.nsexception.debugImagesForFrames
 import io.sentry.kotlin.multiplatform.nsexception.isNativeExceptionMonitorActive
 import platform.Foundation.NSException
+import platform.Foundation.NSGetUncaughtExceptionHandler
 import platform.Foundation.NSNumber
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSUUID
@@ -31,6 +32,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -328,6 +330,17 @@ class CocoaV9IntegrationTest {
         Sentry.close()
         start()
         assertEquals(enabledMask, sentrycrashcm_getActiveMonitors())
+    }
+
+    @Test
+    fun `NSException monitor bit controls Cocoa's uncaught exception handler`() {
+        start()
+        assertTrue(isNativeExceptionMonitorActive())
+        val cocoaHandler = assertNotNull(NSGetUncaughtExceptionHandler())
+
+        disableNativeExceptionMonitor()
+
+        assertNotEquals(cocoaHandler, NSGetUncaughtExceptionHandler())
     }
 
     private fun disableNativeExceptionMonitor() {
