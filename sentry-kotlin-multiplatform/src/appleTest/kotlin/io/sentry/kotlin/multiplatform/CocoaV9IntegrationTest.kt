@@ -1,7 +1,9 @@
 package io.sentry.kotlin.multiplatform
 
 import Internal.Sentry.SentryCrashMonitorTypeCPPException
+import Internal.Sentry.SentryCrashMonitorTypeNSException
 import Internal.Sentry.SentrySDKInternal
+import Internal.Sentry.sentrycrash_setMonitoring
 import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentryDebugMeta
 import cocoapods.Sentry.SentryDependencyContainer
@@ -13,11 +15,13 @@ import cocoapods.Sentry.SentryThread
 import io.sentry.kotlin.multiplatform.nsexception.KOTLIN_CRASH_TAG
 import io.sentry.kotlin.multiplatform.nsexception.ThrowableNSException
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
-import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
 import io.sentry.kotlin.multiplatform.nsexception.asSentryStacktrace
+import io.sentry.kotlin.multiplatform.nsexception.captureUnhandledException
 import io.sentry.kotlin.multiplatform.nsexception.debugImagesForFrames
+import io.sentry.kotlin.multiplatform.nsexception.isNativeExceptionMonitorActive
 import platform.Foundation.NSException
+import platform.Foundation.NSGetUncaughtExceptionHandler
 import platform.Foundation.NSNumber
 import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSUUID
@@ -28,6 +32,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -206,20 +211,62 @@ class CocoaV9IntegrationTest {
     }
 
     @Test
-    fun `direct envelope storage persists the prepared fatal event`() {
+    fun `fallback capture persists fatal event with scope data`() {
+        var prepared: SentryEvent? = null
         Sentry.initWithPlatformOptions {
             it.setDsn("http://public@127.0.0.1:9/1")
             it.setCacheDirectoryPath(NSTemporaryDirectory() + NSUUID().UUIDString)
             it.setEnableAutoSessionTracking(false)
             it.setEnableAppHangTracking(false)
+            it.setBeforeSend { event ->
+                prepared = event
+                event
+            }
         }
-        val files = assertNotNull(SentryDependencyContainer.sharedInstance().fileManager())
-        val before = files.getAllEnvelopes().map { (it as SentryFileContents).path() }.toSet()
-        val envelope = assertNotNull(IllegalStateException("persisted through direct Cocoa call").asSentryEnvelope())
-        SentrySDKInternal.storeEnvelope(envelope)
-        val stored = files.getAllEnvelopes().map { it as SentryFileContents }.filter { it.path() !in before }
+        disableNativeExceptionMonitor()
+        Sentry.configureScope { it.setTag("fallback", "scope") }
+
+        val stored = envelopesStoredBy { IllegalStateException("fallback crash").captureUnhandledException() }
+
         assertEquals(1, stored.size)
         assertTrue(stored.single().contents().length > 0u)
+        val event = assertNotNull(prepared)
+        assertEquals("scope", event.tags?.get("fallback"))
+        assertEquals(false, (event.exceptions?.single() as SentryException).mechanism?.handled?.boolValue)
+        assertTrue((event as Internal.Sentry.SentryEvent).isFatalEvent)
+        assertTerminationCrashTagged()
+    }
+
+    @Test
+    fun `fallback capture honors dropped events`() {
+        var called = false
+        start {
+            called = true
+            null
+        }
+        disableNativeExceptionMonitor()
+
+        val stored = envelopesStoredBy { IllegalStateException("dropped").captureUnhandledException() }
+
+        assertTrue(called)
+        assertTrue(stored.isEmpty())
+        assertTerminationCrashTagged()
+    }
+
+    @Test
+    fun `fallback capture honors sampling before beforeSend`() {
+        var called = false
+        start(sampleRate = 0.0) {
+            called = true
+            it
+        }
+        disableNativeExceptionMonitor()
+
+        val stored = envelopesStoredBy { IllegalStateException("sampled out").captureUnhandledException() }
+
+        assertFalse(called)
+        assertTrue(stored.isEmpty())
+        assertTerminationCrashTagged()
     }
 
     private fun assertCurrentThread(
@@ -236,42 +283,6 @@ class CocoaV9IntegrationTest {
             assertEquals(crashed, currentThread.crashed?.boolValue == true)
             if (crashed) assertNull(currentThread.stacktrace)
         }
-    }
-
-    @Test
-    fun `fatal envelope preparation honors dropped events`() {
-        var called = false
-        start {
-            called = true
-            null
-        }
-        assertNull(IllegalStateException("dropped").asSentryEnvelope())
-        assertTrue(called)
-    }
-
-    @Test
-    fun `fatal envelope preparation honors sampling before beforeSend`() {
-        var called = false
-        start(sampleRate = 0.0) {
-            called = true
-            it
-        }
-        assertNull(IllegalStateException("sampled out").asSentryEnvelope())
-        assertFalse(called)
-    }
-
-    @Test
-    fun `fatal envelope preparation retains scope enrichment`() {
-        var prepared: SentryEvent? = null
-        start {
-            prepared = it
-            it
-        }
-        Sentry.configureScope { it.setTag("migration", "cocoa-v9") }
-        val envelope = IllegalStateException("fatal").asSentryEnvelope()
-        assertNotNull(envelope)
-        assertEquals("cocoa-v9", assertNotNull(prepared).tags?.get("migration"))
-        assertEquals(false, (prepared?.exceptions?.first() as SentryException).mechanism?.handled?.boolValue)
     }
 
     @Test
@@ -319,5 +330,33 @@ class CocoaV9IntegrationTest {
         Sentry.close()
         start()
         assertEquals(enabledMask, sentrycrashcm_getActiveMonitors())
+    }
+
+    @Test
+    fun `NSException monitor bit controls Cocoa's uncaught exception handler`() {
+        start()
+        assertTrue(isNativeExceptionMonitorActive())
+        val cocoaHandler = assertNotNull(NSGetUncaughtExceptionHandler())
+
+        disableNativeExceptionMonitor()
+
+        assertNotEquals(cocoaHandler, NSGetUncaughtExceptionHandler())
+    }
+
+    private fun disableNativeExceptionMonitor() {
+        sentrycrash_setMonitoring(sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeNSException.inv())
+        assertFalse(isNativeExceptionMonitorActive())
+    }
+
+    private fun envelopesStoredBy(block: () -> Unit): List<SentryFileContents> {
+        val files = assertNotNull(SentryDependencyContainer.sharedInstance().fileManager())
+        val before = files.getAllEnvelopes().map { (it as SentryFileContents).path() }.toSet()
+        block()
+        return files.getAllEnvelopes().map { it as SentryFileContents }.filter { it.path() !in before }
+    }
+
+    private fun assertTerminationCrashTagged() {
+        val tags = SentrySDKInternal.currentHub().scope.tagDictionary
+        assertEquals(KOTLIN_CRASH_TAG, tags?.objectForKey(KOTLIN_CRASH_TAG))
     }
 }
