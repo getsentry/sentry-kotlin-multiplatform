@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Match `failedRequestTargets` as regular expressions on Apple, not only as substrings. Cocoa treats plain strings as substrings, so the default `.*` matched no URL and HTTP client errors were never captured on Apple. A target now matches when the URL contains it or when its regex matches anywhere in the URL, matching the JavaScript, Python, Cocoa and Dart SDKs. Apps using the default targets will now capture HTTP client errors (500–599 by default) on Apple.
+- Match `failedRequestTargets` as regular expressions on Apple, not only as substrings. Cocoa treats plain strings as substrings, so the default `.*` matched no URL and HTTP client errors were never captured on Apple. A target now matches when the URL contains it or when its regex matches anywhere in the URL, matching the JavaScript, Python, Cocoa and Dart SDKs. Apps using the default targets will now capture HTTP client errors (500–599 by default) on Apple ([#593](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/593)).
 - Fix Apple linker errors introduced in 0.28.0 for `SentryDefaultThreadInspector` and Swift compatibility libraries ([#589](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/589)).
 
 ### Dependencies
