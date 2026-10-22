@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Dependencies
+
+- Bump Cocoa SDK from v9.30.2 to v9.31.0 ([#596](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/596))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#9310)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/9.30.2...9.31.0)
+
 ## 0.29.0
 
 ### Fixes
