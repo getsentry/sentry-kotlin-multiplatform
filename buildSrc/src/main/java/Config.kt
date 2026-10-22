@@ -37,8 +37,8 @@ object Config {
         val sentryAndroid = "io.sentry:sentry-android:$sentryJavaVersion"
         val sentryJava = "io.sentry:sentry:$sentryJavaVersion"
 
-        val sentryCocoaVersion = "9.30.2"
-        val sentryCocoaSha256 = "95b6859ed838b78953d1351feb4dc0df3e7809aa497376487553bc36f1365ed5"
+        val sentryCocoaVersion = "9.31.0"
+        val sentryCocoaSha256 = "53b938aab7f1e3cb0728a7cacdf379ad232c051e39fb4e4ef7b18b31f04b46b6"
         val sentryCocoa = "Sentry"
 
         object Samples {
