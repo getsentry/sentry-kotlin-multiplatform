@@ -1,5 +1,9 @@
-minVersion: 1.2.1
-changelogPolicy: auto
+minVersion: 3.9.0
+preReleaseCommand: bash scripts/bump-version.sh
+versioning:
+  policy: manual
+changelog:
+  policy: auto
 targets:
   - name: maven
     id: kmp
