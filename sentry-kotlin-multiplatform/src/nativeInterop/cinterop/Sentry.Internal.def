@@ -2,7 +2,8 @@ language = Objective-C
 headers = SentryClient.h SentryEvent.h SentryHub.h SentryScope.h \
           SentryCrashMonitor_NSException.h SentryCrashMonitor_NSException+NSExceptionKt.h \
           SentryCrashStackCursor.h SentrySDKInternal.h \
-          SentryStacktraceBuilder.h SentryThreadInspector.h SentryCrashMonitor.h \
+          SentryStacktraceBuilder.h SentryThreadInspector.h SentryCrashMonitor.h SentryKMPMetrics.h
 
 # Cocoa uses Objective-C categories, including Swift extensions called through selectors.
-linkerOpts = -ObjC
+# Resolve the metrics bridge's Swift libraries from the consumer's SDK sysroot.
+linkerOpts = -ObjC -L/usr/lib/swift

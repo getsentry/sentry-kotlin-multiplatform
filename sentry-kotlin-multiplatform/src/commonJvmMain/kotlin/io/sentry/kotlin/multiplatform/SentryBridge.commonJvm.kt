@@ -6,6 +6,8 @@ import io.sentry.kotlin.multiplatform.extensions.toJvmUser
 import io.sentry.kotlin.multiplatform.extensions.toJvmUserFeedback
 import io.sentry.kotlin.multiplatform.log.JvmSentryLoggerAdapter
 import io.sentry.kotlin.multiplatform.log.SentryLogger
+import io.sentry.kotlin.multiplatform.metrics.JvmSentryMetricsAdapter
+import io.sentry.kotlin.multiplatform.metrics.SentryMetrics
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import io.sentry.kotlin.multiplatform.protocol.SentryId
 import io.sentry.kotlin.multiplatform.protocol.User
@@ -81,6 +83,10 @@ internal actual class SentryBridge actual constructor(
     actual fun setUser(user: User?) {
         Sentry.setUser(user?.toJvmUser())
     }
+
+    private val metrics: SentryMetrics = JvmSentryMetricsAdapter(Sentry::metrics)
+
+    actual fun metrics(): SentryMetrics = metrics
 
     actual fun logger(): SentryLogger = logger
 

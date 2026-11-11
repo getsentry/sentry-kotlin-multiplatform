@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.konan.target.HostManager
 import java.io.OutputStream
 import java.security.DigestInputStream
 import java.security.MessageDigest
@@ -50,7 +51,7 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
-// Bind directly to the released Cocoa framework; the SDK does not compile or embed Swift code.
+// Bind to the released Cocoa framework. Only the Swift-only metrics API needs a local bridge.
 val sentryCocoaFramework =
     configurations.create("sentryCocoaFramework") {
         isCanBeConsumed = false
@@ -84,6 +85,11 @@ val unpackSentryCocoa =
             },
         )
     }
+
+val metricsBridgeXcodeVersion =
+    providers
+        .exec { commandLine("xcodebuild", "-version") }
+        .standardOutput.asText
 
 kotlin {
     explicitApi()
@@ -232,10 +238,58 @@ kotlin {
                 linkerOpts("-F$frameworkPath", "-rpath", frameworkPath)
             }
 
-            target.compilations.getByName("main") {
-                cinterops.create("Sentry.Internal") {
+            val internalInterop =
+                target.compilations.getByName("main").cinterops.create("Sentry.Internal") {
                     includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
                 }
+            // Apple cinterop is disabled on other hosts, but Gradle can still schedule its dependencies.
+            if (!HostManager.hostIsMac) return@forEach
+
+            val platform = slice.substringBefore('-')
+            val simulator = slice.endsWith("-simulator")
+            val (sdk, deploymentTarget) =
+                when (platform) {
+                    "ios" -> (if (simulator) "iphonesimulator" else "iphoneos") to Config.Cocoa.iosDeploymentTarget
+                    "macos" -> "macosx" to Config.Cocoa.osxDeploymentTarget
+                    "tvos" -> (if (simulator) "appletvsimulator" else "appletvos") to Config.Cocoa.tvosDeploymentTarget
+                    "watchos" -> (if (simulator) "watchsimulator" else "watchos") to Config.Cocoa.watchosDeploymentTarget
+                    else -> error("Unsupported Cocoa platform: $platform")
+                }
+            val architecture =
+                when {
+                    target.name.endsWith("X64") -> "x86_64"
+                    target.name == "watchosArm64" -> "arm64_32"
+                    else -> "arm64"
+                }
+            val swiftPlatform = if (platform == "macos") "macosx" else platform
+            val swiftTarget = "$architecture-apple-$swiftPlatform$deploymentTarget" + if (simulator) "-simulator" else ""
+            val bridgeOutput = layout.buildDirectory.dir("sentryMetricsBridge/${target.name}")
+            val bridgeScript = rootProject.file("scripts/build-apple-metrics-bridge.sh")
+            val bridgeSource = file("src/swift/sentryCocoa/SentryKMPMetrics.swift")
+            val compileMetricsBridge =
+                tasks.register<Exec>("compileSentryMetricsBridge${target.name.replaceFirstChar { it.uppercase() }}") {
+                    dependsOn(unpackSentryCocoa)
+                    inputs.files(bridgeScript, bridgeSource)
+                    inputs.dir(frameworkDirectory)
+                    inputs.property("swiftTarget", swiftTarget)
+                    inputs.property("xcodeVersion", metricsBridgeXcodeVersion)
+                    outputs.dir(bridgeOutput)
+                    commandLine(
+                        "/bin/bash",
+                        bridgeScript,
+                        sdk,
+                        swiftTarget,
+                        frameworkPath,
+                        bridgeSource,
+                        bridgeOutput.get().asFile,
+                    )
+                }
+            val bridgeOutputPath = bridgeOutput.get().asFile.absolutePath
+            internalInterop.compilerOpts("-I$bridgeOutputPath")
+            internalInterop.extraOpts("-libraryPath", bridgeOutputPath, "-staticLibrary", "libSentryKMPMetrics.a")
+            tasks.named<CInteropProcess>(internalInterop.interopProcessingTaskName) {
+                dependsOn(compileMetricsBridge)
+                inputs.dir(bridgeOutput)
             }
         }
 

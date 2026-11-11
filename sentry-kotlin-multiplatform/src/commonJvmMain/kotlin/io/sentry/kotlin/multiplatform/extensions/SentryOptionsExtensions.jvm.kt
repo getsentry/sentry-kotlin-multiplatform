@@ -5,6 +5,7 @@ import io.sentry.kotlin.multiplatform.SentryEvent
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.log.toKmpSentryLog
 import io.sentry.kotlin.multiplatform.log.updateFrom
+import io.sentry.kotlin.multiplatform.metrics.applyMetricsOptions
 
 internal fun SentryOptions.toJvmSentryOptionsCallback(): (JvmSentryOptions) -> Unit =
     {
@@ -55,6 +56,7 @@ internal fun JvmSentryOptions.applyJvmBaseOptions(kmpOptions: SentryOptions) {
             }
         }
     }
+    jvmOptions.applyMetricsOptions(kmpOptions.metrics)
     jvmOptions.setBeforeBreadcrumb { jvmBreadcrumb, _ ->
         if (kmpOptions.beforeBreadcrumb == null) {
             jvmBreadcrumb

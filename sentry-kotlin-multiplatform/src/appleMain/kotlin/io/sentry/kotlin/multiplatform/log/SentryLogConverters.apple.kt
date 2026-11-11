@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform.log
 
-import cocoapods.Sentry.SentryAttribute
-import io.sentry.kotlin.multiplatform.SentryAttributeValue
+import io.sentry.kotlin.multiplatform.toCocoaAttributes
+import io.sentry.kotlin.multiplatform.toKmpSentryAttributes
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
 import platform.Foundation.timeIntervalSince1970
@@ -48,7 +48,7 @@ internal fun CocoaSentryLog.toKmpSentryLog(): SentryLog =
         level = level().toKmpSentryLogLevel(),
         body = body(),
         severityNumber = severityNumber()?.intValue,
-        attributes = toKmpSentryAttributes(),
+        attributes = attributes().toKmpSentryAttributes(),
     )
 
 /**
@@ -67,26 +67,6 @@ internal fun CocoaSentryLog.updateFrom(
 }
 
 /**
- * Converts Cocoa log attributes to KMP SentryAttributes.
- */
-private fun CocoaSentryLog.toKmpSentryAttributes(): KmpSentryAttributes {
-    val kmpAttributes = KmpSentryAttributes.empty()
-    attributes()
-        .mapNotNull { (key, value) ->
-            (key as? String)?.let { it to (value as? SentryAttribute) }
-        }.forEach { (key, attribute) ->
-            attribute ?: return@forEach
-            when (attribute.type()) {
-                "string" -> kmpAttributes[key] = attribute.value() as String
-                "boolean" -> kmpAttributes[key] = (attribute.value() as NSNumber).boolValue
-                "integer" -> kmpAttributes[key] = (attribute.value() as NSNumber).longValue
-                "double" -> kmpAttributes[key] = (attribute.value() as NSNumber).doubleValue
-            }
-        }
-    return kmpAttributes
-}
-
-/**
  * Applies attribute changes from the beforeSendLog callback back to this Cocoa log.
  */
 private fun CocoaSentryLog.updateAttributesFrom(
@@ -98,16 +78,7 @@ private fun CocoaSentryLog.updateAttributesFrom(
     // Remove attributes deleted by the user (present in original but not in modified)
     (originalKmpAttributes.keys - modifiedKmpAttributes.keys).forEach { mergedAttributes.remove(it) }
 
-    modifiedKmpAttributes.forEach { (key, attrValue) ->
-        mergedAttributes[key] =
-            when (attrValue) {
-                is SentryAttributeValue.LongValue ->
-                    SentryAttribute(integer = (attrValue.value as Long).convert())
-                is SentryAttributeValue.DoubleValue -> SentryAttribute(double = attrValue.value as Double)
-                is SentryAttributeValue.StringValue -> SentryAttribute(string = attrValue.value as String)
-                is SentryAttributeValue.BooleanValue -> SentryAttribute(boolean = attrValue.value as Boolean)
-            }
-    }
+    mergedAttributes.putAll(modifiedKmpAttributes.toCocoaAttributes())
 
     setAttributes(mergedAttributes)
 }
