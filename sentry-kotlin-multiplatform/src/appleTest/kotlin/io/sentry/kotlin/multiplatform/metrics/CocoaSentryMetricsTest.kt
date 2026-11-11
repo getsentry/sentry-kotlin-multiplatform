@@ -73,6 +73,15 @@ class CocoaSentryMetricsTest {
     }
 
     @Test
+    fun `beforeSend drops a counter when the callback returns a different counter`() {
+        val previous = assertNotNull(captureNativeMetric { Sentry.metrics.count("previous", 2) })
+        val replacement = assertNotNull(previous.toKmpSentryMetric())
+        val current = assertNotNull(captureNativeMetric { Sentry.metrics.count("current") })
+
+        assertNull(current.applyBeforeSend { replacement })
+    }
+
+    @Test
     fun `beforeSend keeps unchanged counters above the exact Double range`() {
         // arm64_32 watchOS can't record counters above UInt32.MAX, so there is nothing to check there.
         val native = captureNativeMetric { SentryKMPMetrics.count("large", ULong.MAX_VALUE, emptyMap<Any?, SentryAttribute>()) } ?: return

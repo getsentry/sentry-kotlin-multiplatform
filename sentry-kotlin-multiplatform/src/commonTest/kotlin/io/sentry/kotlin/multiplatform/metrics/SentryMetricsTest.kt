@@ -93,7 +93,7 @@ class SentryMetricsTest {
     private fun metric(
         type: SentryMetricType,
         value: Double,
-    ) = SentryMetric(0.0, type, "metric", value, null, SentryAttributes.empty(), "trace", null)
+    ) = SentryMetric.create(0.0, type, "metric", value, null, SentryAttributes.empty(), "trace", null)
 }
 
 private fun SentryAttributes.rawValues(): Map<String, Any> = mapValues { it.value.value }

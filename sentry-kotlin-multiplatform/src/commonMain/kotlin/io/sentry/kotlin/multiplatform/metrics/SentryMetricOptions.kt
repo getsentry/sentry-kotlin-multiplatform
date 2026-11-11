@@ -7,8 +7,8 @@ public class SentryMetricOptions {
     /**
      * A callback that is invoked before a metric is sent to Sentry.
      *
-     * Return the (potentially modified) metric to send it, or null to drop it.
-     * Metrics whose [SentryMetric.value] is invalid after the callback are dropped.
+     * Modify the supplied metric in place and return that same instance to send it.
+     * Returning null or a different instance drops the metric, as does an invalid [SentryMetric.value].
      */
     public var beforeSend: ((SentryMetric) -> SentryMetric?)? = null
 }

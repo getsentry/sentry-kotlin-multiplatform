@@ -86,6 +86,25 @@ class JvmSentryMetricsTest {
     }
 
     @Test
+    fun `beforeSend drops a counter when the callback returns a previous gauge`() {
+        var previousGauge: SentryMetric? = null
+        val options =
+            jvmOptions { metric ->
+                if (metric.type == SentryMetricType.GAUGE) {
+                    previousGauge = metric
+                    metric
+                } else {
+                    previousGauge
+                }
+            }
+        val callback = assertNotNull(options.metrics.beforeSend)
+        val gauge = nativeMetric(type = "gauge").apply { value = -3.0 }
+        assertSame(gauge, callback.execute(gauge, Hint()))
+
+        assertNull(callback.execute(nativeMetric(), Hint()))
+    }
+
+    @Test
     fun `beforeSend keeps metrics of unknown types unchanged`() {
         var calls = 0
         val options =

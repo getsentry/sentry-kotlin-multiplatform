@@ -19,7 +19,7 @@ internal fun SentryKMPMetric.toKmpSentryMetric(): SentryMetric? {
             "distribution" -> SentryMetricType.DISTRIBUTION
             else -> return null
         }
-    return SentryMetric(
+    return SentryMetric.create(
         timestamp = timestamp(),
         type = type,
         name = name(),
@@ -67,5 +67,5 @@ internal fun SentryKMPMetric.applyBeforeSend(beforeSend: (SentryMetric) -> Sentr
             // Kotlin exceptions must not propagate into Swift. Drop the metric, as the Java SDK does.
             null
         }
-    return if (result != null && result.isValid() && updateFrom(result)) this else null
+    return if (result === kmpMetric && kmpMetric.isValid() && updateFrom(kmpMetric)) this else null
 }

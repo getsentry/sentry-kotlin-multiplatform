@@ -18,7 +18,7 @@ internal fun SentryMetricsEvent.toKmpSentryMetric(): SentryMetric? {
             "distribution" -> SentryMetricType.DISTRIBUTION
             else -> return null
         }
-    return SentryMetric(
+    return SentryMetric.create(
         timestamp = timestamp,
         type = kmpType,
         name = name,
@@ -37,13 +37,9 @@ internal fun JvmSentryOptions.applyMetricsOptions(kmpOptions: SentryMetricOption
     kmpOptions.beforeSend?.let { kmpBeforeSend ->
         metrics.setBeforeSend { jvmMetric, _ ->
             val kmpMetric = jvmMetric.toKmpSentryMetric() ?: return@setBeforeSend jvmMetric
-            val result = kmpBeforeSend(kmpMetric)
-            if (result != null && result.isValid()) {
-                jvmMetric.updateFrom(result)
-                jvmMetric
-            } else {
-                null
-            }
+            if (kmpBeforeSend(kmpMetric) !== kmpMetric || !kmpMetric.isValid()) return@setBeforeSend null
+            jvmMetric.updateFrom(kmpMetric)
+            jvmMetric
         }
     }
 }
