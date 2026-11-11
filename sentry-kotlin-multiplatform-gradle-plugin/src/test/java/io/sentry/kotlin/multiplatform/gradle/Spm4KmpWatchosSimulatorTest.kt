@@ -88,7 +88,7 @@ class Spm4KmpWatchosSimulatorTest {
     ) {
         val project = createProject(spmFirst)
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        if (disableGlobally) autoInstall.enabled.set(false) else autoInstall.spm.enabled.set(false)
+        if (disableGlobally) autoInstall.enabled.set(false) else autoInstall.apple.provider.set(AppleDependencyProvider.NONE)
         project.extensions.getByType(KotlinMultiplatformExtension::class.java).watchosSimulatorArm64()
 
         (project as ProjectInternal).evaluate()

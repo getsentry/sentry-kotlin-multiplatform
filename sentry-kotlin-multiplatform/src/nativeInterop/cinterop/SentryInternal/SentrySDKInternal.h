@@ -22,4 +22,6 @@
 
 + (SentryHubInternal *_Nonnull)currentHub;
 
++ (void)storeEnvelope:(id _Nonnull)envelope;
+
 @end

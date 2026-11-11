@@ -4,7 +4,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("io.sentry.kotlin.multiplatform.gradle")
-    id(Config.spmForKmp)
+    id("io.github.frankois944.spmForKmp") version "1.9.7"
 }
 
 java {

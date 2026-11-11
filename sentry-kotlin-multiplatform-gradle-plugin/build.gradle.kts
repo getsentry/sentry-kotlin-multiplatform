@@ -1,6 +1,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import org.gradle.api.attributes.java.TargetJvmVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.zip.ZipFile
 
@@ -55,7 +56,14 @@ listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEa
     }
 }
 
-tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_11) } }
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+        // Keep the public DSL readable by consumers on older Gradle/Kotlin versions.
+        languageVersion.set(KotlinVersion.KOTLIN_2_2)
+        apiVersion.set(KotlinVersion.KOTLIN_2_2)
+    }
+}
 
 gradlePlugin {
     plugins {
@@ -64,6 +72,10 @@ gradlePlugin {
             implementationClass = property("implementationClass").toString()
         }
     }
+}
+
+tasks.named("distTar") {
+    dependsOn("publishToMavenLocal")
 }
 
 tasks.named("distZip") {
@@ -144,6 +156,11 @@ buildConfig {
         "String",
         "SentryKmpVersion",
         provider { "\"${project.property("versionName")}\"" },
+    )
+    buildConfigField(
+        "String",
+        "KotlinGradlePluginVersion",
+        provider { "\"${libs.versions.kotlin.get()}\"" },
     )
 }
 

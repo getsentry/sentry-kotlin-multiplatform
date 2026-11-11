@@ -11,7 +11,6 @@ plugins {
     id(Config.QualityPlugins.detekt).version(Config.QualityPlugins.detektVersion)
     id(Config.dokka).version(Config.dokkaVersion)
     kotlin(Config.multiplatform).version(Config.kotlinVersion).apply(false)
-    id(Config.spmForKmp).version(Config.spmForKmpVersion).apply(false)
     id(Config.jetpackCompose).version(Config.composePluginVersion).apply(false)
     id(Config.kotlinCompose).version(Config.kotlinVersion).apply(false)
     id(Config.androidGradle).version(Config.agpVersion).apply(false)
@@ -177,12 +176,11 @@ private fun Project.validateKotlinMultiplatformCoreArtifacts() {
                     artifactFile.name.contains("macos", ignoreCase = true) ||
                     artifactFile.name.contains("watchos", ignoreCase = true) ||
                     artifactFile.name.contains("tvos", ignoreCase = true) -> {
-                    // Apple artifacts include the SDK klib and three cinterops, including spm4Kmp's bridge.
+                    // Apple artifacts include the SDK klib and Cocoa's public and private bindings.
                     val expectedCinteropKlibs =
                         listOf(
                             "cinterop-Sentry.klib",
                             "cinterop-Sentry.Internal.klib",
-                            "cinterop-SentryCocoa.klib",
                         )
                     val klibFiles = entries.filter { it.endsWith(".klib") }
                     val missingKlibs =
@@ -229,17 +227,19 @@ subprojects {
     }
 }
 
+val spotlessExcludes =
+    arrayOf("**/generated/**", "**/build/**", "**/.gradle/**", "**/.kotlin/**", "**/.swiftpm-locks/**")
+
 spotless {
     lineEndings = LineEnding.UNIX
 
+    // A file tree prunes excluded directories, so Spotless never follows symlinks inside build outputs.
     kotlin {
-        target("**/*.kt")
-        targetExclude("**/generated/**/*.kt")
+        target(fileTree(rootDir) { include("**/*.kt").exclude(*spotlessExcludes) })
         ktlint()
     }
     kotlinGradle {
-        target("**/*.kts")
-        targetExclude("**/generated/**/*.kts")
+        target(fileTree(rootDir) { include("**/*.kts").exclude(*spotlessExcludes) })
         ktlint()
     }
 }

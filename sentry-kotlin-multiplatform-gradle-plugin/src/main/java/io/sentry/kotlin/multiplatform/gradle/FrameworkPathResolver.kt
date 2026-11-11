@@ -247,17 +247,19 @@ class FrameworkPathResolver(
         """
         Failed to find Sentry Cocoa framework. Steps to resolve:
         
-        1. Install Sentry Cocoa via SPM in Xcode
-        2. Verify framework exists in Xcode's DerivedData folder:
+        1. Let the plugin install Sentry Cocoa: use Kotlin 2.4+ (official SwiftPM import) or apply spm4Kmp.
+           Projects using the Kotlin CocoaPods plugin must add Sentry Cocoa themselves.
+        2. Otherwise install Sentry Cocoa via SPM in Xcode and verify the framework exists in
+           Xcode's DerivedData folder:
            - If static: Sentry.xcframework
            - If dynamic: Sentry-Dynamic.xcframework
-           
-        If problem persists consider setting explicit path in build.gradle.kts:
-        sentryKmp { 
-            linker {
-                frameworkPath.set("path/to/Sentry.xcframework") 
-            }
-        }
+        3. If it is installed elsewhere, set its path in build.gradle.kts:
+           sentryKmp {
+               linker {
+                   frameworkPath.set("path/to/Sentry.xcframework")
+               }
+           }
+        4. If you link Sentry Cocoa yourself, disable this step with sentryKmp.linker.enabled.set(false).
         """.trimIndent()
 
     companion object {

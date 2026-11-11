@@ -3,10 +3,11 @@ package io.sentry.kotlin.multiplatform
 import io.sentry.kotlin.multiplatform.utils.fakeDsn
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-class DisabledLoggerTest {
+class DisabledLoggerTest : BaseSentryTest() {
     @Test
-    fun `native logger skips callback when logs disabled`() {
+    fun `native logger invokes callback for manual logs when automatic logs disabled`() {
         var callbacks = 0
         try {
             Sentry.init {
@@ -17,8 +18,9 @@ class DisabledLoggerTest {
                     null
                 }
             }
-            Sentry.logger.info("disabled log")
-            assertEquals(0, callbacks)
+            assertTrue(Sentry.isEnabled())
+            Sentry.logger.info("manual log")
+            assertEquals(1, callbacks)
         } finally {
             Sentry.close()
         }

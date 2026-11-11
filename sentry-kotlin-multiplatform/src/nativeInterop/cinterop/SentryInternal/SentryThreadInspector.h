@@ -20,14 +20,6 @@
 #import <Foundation/Foundation.h>
 #import <SentryStacktraceBuilder.h>
 
-@class SentryThread;
-
-@interface SentryDefaultThreadInspector : NSObject
-
-- (NSArray<SentryThread *> *_Nonnull)getCurrentThreadsWithStackTrace;
-
-@end
-
 // https://github.com/getsentry/sentry-cocoa/blob/9.29.1/Sources/Sentry/include/SentryDefaultThreadInspector.h
 SentryStacktraceBuilder *_Nonnull sentryDefaultThreadInspectorCreateStacktraceBuilder(
     NSArray<NSString *> *_Nonnull inAppIncludes);

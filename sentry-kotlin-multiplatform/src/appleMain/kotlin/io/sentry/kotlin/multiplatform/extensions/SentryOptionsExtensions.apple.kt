@@ -10,6 +10,9 @@ import io.sentry.kotlin.multiplatform.metrics.applyMetricsOptions
 import io.sentry.kotlin.multiplatform.setEnableUnhandledCppExceptionMonitoring
 import kotlinx.cinterop.convert
 import platform.Foundation.NSNumber
+import platform.Foundation.NSRegularExpression
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
 internal fun SentryOptions.toCocoaOptionsConfiguration(): (CocoaSentryOptions?) -> Unit =
     {
@@ -40,7 +43,10 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     cocoaOptions.setMaxBreadcrumbs(kmpOptions.maxBreadcrumbs.convert())
     cocoaOptions.setEnableAppHangTracking(kmpOptions.enableAppHangTracking)
     cocoaOptions.setEnableWatchdogTerminationTracking(kmpOptions.enableWatchdogTerminationTracking)
-    cocoaOptions.setAppHangTimeoutInterval(kmpOptions.appHangTimeoutIntervalMillis.toDouble())
+    cocoaOptions.setAppHangTimeoutInterval(
+        kmpOptions.appHangTimeoutIntervalMillis.milliseconds
+            .toDouble(DurationUnit.SECONDS),
+    )
     cocoaOptions.setDiagnosticLevel(kmpOptions.diagnosticLevel.toCocoaSentryLevel())
     setEnableUnhandledCppExceptionMonitoring(kmpOptions.enableUnhandledCppExceptionMonitoring)
     cocoaOptions.setEnableLogs(kmpOptions.logs.enabled)
@@ -103,7 +109,7 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
     }
 
     cocoaOptions.setEnableCaptureFailedRequests(kmpOptions.enableCaptureFailedRequests)
-    cocoaOptions.setFailedRequestTargets(kmpOptions.failedRequestTargets)
+    cocoaOptions.setFailedRequestTargets(kmpOptions.failedRequestTargets.toCocoaRequestTargets())
     cocoaOptions.setFailedRequestStatusCodes(
         kmpOptions.failedRequestStatusCodes.map {
             SentryHttpStatusCodeRange(
@@ -113,3 +119,17 @@ internal fun CocoaSentryOptions.applyCocoaBaseOptions(kmpOptions: SentryOptions)
         },
     )
 }
+
+/**
+ * Cocoa matches a plain string target as a substring of the URL and only treats
+ * NSRegularExpression targets as regexes, so a KMP regex such as the default `.*` would never
+ * match. Pass each target both ways: the URL contains the target, or the target's regex matches
+ * anywhere in the URL. Targets that aren't valid regexes match as strings only.
+ */
+internal fun List<String>.toCocoaRequestTargets(): List<Any> =
+    flatMap { target ->
+        listOfNotNull(
+            target,
+            NSRegularExpression.regularExpressionWithPattern(target, 0u, null),
+        )
+    }

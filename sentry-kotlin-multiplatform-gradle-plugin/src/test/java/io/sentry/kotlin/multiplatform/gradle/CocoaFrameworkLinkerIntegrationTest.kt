@@ -71,7 +71,24 @@ class CocoaFrameworkLinkerIntegrationTest {
         defaultRunner(projectDir, output).withArguments("help").buildAndFail()
 
         assertThat(output.toString()).contains("Remove sentryKmp.autoInstall.cocoapods")
-        assertThat(output.toString()).contains("use spm4Kmp with autoInstall.spm instead")
+        assertThat(output.toString()).contains("use autoInstall.apple.provider instead")
+    }
+
+    @Test
+    fun `linker is not configured when linker is disabled`(
+        @TempDir projectDir: File,
+    ) {
+        writeBuildFiles(projectDir)
+        File(projectDir, "build.gradle").appendText("\nsentryKmp.linker.enabled.set(false)\n")
+
+        val output = ByteArrayOutputStream()
+        defaultRunner(projectDir, output)
+            .withArguments("compileKotlinIosSimulatorArm64", "--dry-run", "--info")
+            .build()
+
+        assertThat(output.toString())
+            .contains("sentryKmp.linker.enabled is false - skipping Sentry Cocoa framework linking")
+        assertThat(output.toString()).doesNotContain("Set up Sentry Cocoa linking")
     }
 
     // ---------------------------------------------------------------------

@@ -15,20 +15,22 @@
 package io.sentry.kotlin.multiplatform.nsexception
 
 import Internal.Sentry.NSExceptionKt_SentryStacktraceFromNSException
+import Internal.Sentry.SentryCrashMonitorTypeNSException
 import Internal.Sentry.kSentryLevelFatal
 import Internal.Sentry.sentryDefaultThreadInspectorCreateStacktraceBuilder
+import Internal.Sentry.sentrycrashcm_getActiveMonitors
+import cocoapods.Sentry.SentryDebugMeta
+import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.configureScope
-import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.CocoaSentryLevel
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
-import kotlinx.cinterop.invoke
 import platform.Foundation.NSException
 import platform.Foundation.NSNumber
 
 private typealias InternalSentryEvent = Internal.Sentry.SentryEvent
 private typealias InternalSentrySDK = Internal.Sentry.SentrySDKInternal
 private typealias InternalSentryDependencyContainer = cocoapods.Sentry.SentryDependencyContainer
-private typealias InternalSentryThreadInspector = Internal.Sentry.SentryDefaultThreadInspector
+private typealias InternalSentryThreadInspector = cocoapods.Sentry.SentryDefaultThreadInspector
 
 private typealias CocoapodsSentryEvent = cocoapods.Sentry.SentryEvent
 private typealias CocoapodsSentrySDK = cocoapods.Sentry.SentrySDK
@@ -39,6 +41,8 @@ private typealias CocoapodsSentryThread = cocoapods.Sentry.SentryThread
 private typealias CocoapodsSentryEnvelope = cocoapods.Sentry.SentryEnvelope
 private typealias CocoapodsSentryEnvelopeHeader = cocoapods.Sentry.SentryEnvelopeHeader
 private typealias CocoapodsSentryEnvelopeItem = cocoapods.Sentry.SentryEnvelopeItem
+
+private const val HEX_RADIX = 16
 
 /**
  * Drops the Kotlin crash that follows an unhandled Kotlin exception except our custom SentryEvent.
@@ -56,21 +60,30 @@ internal fun dropKotlinCrashEvent(event: CocoapodsSentryEvent?): CocoapodsSentry
  */
 public fun setSentryUnhandledExceptionHook(): Unit =
     wrapUnhandledExceptionHook { throwable ->
-        val crashReporter = InternalSentryDependencyContainer.sharedInstance().crashReporter()
-        val handler = crashReporter.uncaughtExceptionHandler()
+        throwable.captureUnhandledException()
+    }
 
-        if (handler != null) {
-            // Persist the crash with native scope data for the next launch.
-            handler.invoke(throwable.asNSException(appendCausedBy = true))
-        } else {
-            throwable.asSentryEnvelope()?.let { envelope ->
-                SentryKMPInternal.storeEnvelope(envelope as objcnames.classes.SentryEnvelope)
-            }
-            CocoapodsSentrySDK.configureScope { scope ->
-                scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
-            }
+internal fun Throwable.captureUnhandledException() {
+    // Cocoa 9.30's captureUnhandledException is a no-op when the NSException monitor isn't
+    // installed (e.g. under a debugger), so persist the envelope ourselves in that case.
+    if (isNativeExceptionMonitorActive()) {
+        InternalSentryDependencyContainer
+            .sharedInstance()
+            .captureUnhandledException(asNSException(appendCausedBy = true))
+    } else {
+        asSentryEnvelope()?.let { envelope ->
+            InternalSentrySDK.storeEnvelope(envelope)
+        }
+        CocoapodsSentrySDK.configureScope { scope ->
+            scope?.setTagValue(KOTLIN_CRASH_TAG, KOTLIN_CRASH_TAG)
         }
     }
+}
+
+internal fun isNativeExceptionMonitorActive(): Boolean {
+    val activeMonitors = sentrycrashcm_getActiveMonitors()
+    return activeMonitors and SentryCrashMonitorTypeNSException != 0u
+}
 
 /**
  * Tag used to mark the Kotlin termination crash.
@@ -133,8 +146,21 @@ internal fun Throwable.asSentryEvent(
         val frames =
             threads.orEmpty().flatMap { it.stacktrace?.frames.orEmpty() } +
                 convertedExceptions.flatMap { it.stacktrace?.frames.orEmpty() }
-        debugMeta = SentryKMPInternal.debugImagesForFrames(frames)
+        debugMeta = debugImagesForFrames(frames.map { it as SentryFrame })
     }
+
+internal fun debugImagesForFrames(frames: List<SentryFrame>): List<SentryDebugMeta> {
+    val addresses =
+        frames
+            .mapNotNull { it.imageAddress?.removePrefix("0x")?.toULongOrNull(HEX_RADIX) }
+            .map { "0x${it.toString(HEX_RADIX)}" }
+            .toSet()
+    @Suppress("UNCHECKED_CAST")
+    return InternalSentryDependencyContainer
+        .sharedInstance()
+        .debugImageProvider()
+        .getDebugImagesForImageAddressesFromCache(addresses) as List<SentryDebugMeta>
+}
 
 /**
  * Converts `this` [NSException] to a [io.sentry.kotlin.multiplatform.protocol.SentryException].
@@ -161,4 +187,4 @@ internal fun NSException.asSentryStacktrace(): CocoapodsSentryStacktrace? {
 }
 
 private val threadInspector: InternalSentryThreadInspector?
-    get() = InternalSentrySDK.currentHub().getClient()?.threadInspector
+    get() = InternalSentrySDK.currentHub().getClient()?.threadInspector as? InternalSentryThreadInspector

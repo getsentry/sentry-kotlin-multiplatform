@@ -23,7 +23,7 @@
 
 @interface SentryClientInternal : NSObject
 
-@property (nonatomic, strong, nonnull) SentryDefaultThreadInspector *threadInspector;
+@property (nonatomic, strong, nonnull) NSObject *threadInspector;
 @property (nonatomic, strong, nonnull) SentryOptions *options;
 
 - (SentryEvent *_Nullable)prepareEvent:(SentryEvent *_Nonnull)event

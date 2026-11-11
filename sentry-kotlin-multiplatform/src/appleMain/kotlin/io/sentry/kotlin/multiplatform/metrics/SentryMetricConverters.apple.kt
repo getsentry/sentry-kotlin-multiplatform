@@ -1,7 +1,7 @@
 package io.sentry.kotlin.multiplatform.metrics
 
-import cocoapods.sentryCocoa.SentryKMPMetric
-import cocoapods.sentryCocoa.SentryKMPMetrics
+import Internal.Sentry.SentryKMPMetric
+import Internal.Sentry.SentryKMPMetrics
 import io.sentry.kotlin.multiplatform.CocoaSentryOptions
 import io.sentry.kotlin.multiplatform.toCocoaAttributes
 import io.sentry.kotlin.multiplatform.toKmpSentryAttributes

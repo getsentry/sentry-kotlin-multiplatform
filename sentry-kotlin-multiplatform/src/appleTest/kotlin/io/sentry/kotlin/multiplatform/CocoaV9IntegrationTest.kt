@@ -1,22 +1,30 @@
 package io.sentry.kotlin.multiplatform
 
 import Internal.Sentry.SentryCrashMonitorTypeCPPException
+import Internal.Sentry.SentryCrashMonitorTypeNSException
+import Internal.Sentry.SentrySDKInternal
+import Internal.Sentry.sentrycrash_setMonitoring
 import Internal.Sentry.sentrycrashcm_getActiveMonitors
 import cocoapods.Sentry.SentryDebugMeta
 import cocoapods.Sentry.SentryDependencyContainer
 import cocoapods.Sentry.SentryEvent
 import cocoapods.Sentry.SentryException
+import cocoapods.Sentry.SentryFileContents
 import cocoapods.Sentry.SentryFrame
 import cocoapods.Sentry.SentryThread
-import cocoapods.sentryCocoa.SentryKMPInternal
 import io.sentry.kotlin.multiplatform.nsexception.KOTLIN_CRASH_TAG
 import io.sentry.kotlin.multiplatform.nsexception.ThrowableNSException
 import io.sentry.kotlin.multiplatform.nsexception.asNSException
-import io.sentry.kotlin.multiplatform.nsexception.asSentryEnvelope
 import io.sentry.kotlin.multiplatform.nsexception.asSentryEvent
 import io.sentry.kotlin.multiplatform.nsexception.asSentryStacktrace
+import io.sentry.kotlin.multiplatform.nsexception.captureUnhandledException
+import io.sentry.kotlin.multiplatform.nsexception.debugImagesForFrames
+import io.sentry.kotlin.multiplatform.nsexception.isNativeExceptionMonitorActive
 import platform.Foundation.NSException
+import platform.Foundation.NSGetUncaughtExceptionHandler
 import platform.Foundation.NSNumber
+import platform.Foundation.NSTemporaryDirectory
+import platform.Foundation.NSUUID
 import kotlin.native.OsFamily
 import kotlin.native.Platform
 import kotlin.test.AfterTest
@@ -24,6 +32,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -157,13 +166,107 @@ class CocoaV9IntegrationTest {
             ) as SentryDebugMeta
         val frame = SentryFrame().apply { imageAddress = image.imageAddress }
         val invalid = SentryFrame().apply { imageAddress = "not-an-address" }
-        val images = SentryKMPInternal.debugImagesForFrames(listOf(frame, frame, invalid, SentryFrame()))
+        val images = debugImagesForFrames(listOf(frame, frame, invalid, SentryFrame()))
         assertEquals(1, images.size)
         val actual = images.single() as SentryDebugMeta
         assertEquals(image.imageAddress, actual.imageAddress)
         assertEquals(image.debugID, actual.debugID)
         assertEquals(image.codeFile, actual.codeFile)
         assertEquals(image.imageSize, actual.imageSize)
+    }
+
+    @Test
+    fun `debug images normalize equivalent addresses and reject malformed hex`() {
+        start()
+        val image =
+            SentryDependencyContainer
+                .sharedInstance()
+                .debugImageProvider()
+                .getDebugImagesFromCache()
+                .first() as SentryDebugMeta
+        val address = assertNotNull(image.imageAddress).removePrefix("0x")
+        val equivalent = listOf("0x$address", address, address.uppercase(), "+$address", "0x+$address", "0x00$address")
+        val actual = debugImagesForFrames(equivalent.map { value -> SentryFrame().apply { imageAddress = value } })
+        assertEquals(1, actual.size)
+        assertEquals(image.imageAddress, actual.single().imageAddress)
+
+        val invalid = listOf(null, "", "0x", "0X$address", "$address!", " $address", "$address ", "10000000000000000")
+        assertTrue(debugImagesForFrames(invalid.map { value -> SentryFrame().apply { imageAddress = value } }).isEmpty())
+    }
+
+    @Test
+    fun `debug images retain descending image order`() {
+        start()
+        val images =
+            SentryDependencyContainer
+                .sharedInstance()
+                .debugImageProvider()
+                .getDebugImagesFromCache()
+                .map { it as SentryDebugMeta }
+                .take(3)
+        val frames = images.map { image -> SentryFrame().apply { imageAddress = image.imageAddress } }
+        val expected = images.sortedByDescending { assertNotNull(it.imageAddress).removePrefix("0x").toULong(16) }
+        assertEquals(expected.map { it.imageAddress }, debugImagesForFrames(frames).map { it.imageAddress })
+        assertTrue(debugImagesForFrames(emptyList()).isEmpty())
+    }
+
+    @Test
+    fun `fallback capture persists fatal event with scope data`() {
+        var prepared: SentryEvent? = null
+        Sentry.initWithPlatformOptions {
+            it.setDsn("http://public@127.0.0.1:9/1")
+            it.setCacheDirectoryPath(NSTemporaryDirectory() + NSUUID().UUIDString)
+            it.setEnableAutoSessionTracking(false)
+            it.setEnableAppHangTracking(false)
+            it.setBeforeSend { event ->
+                prepared = event
+                event
+            }
+        }
+        disableNativeExceptionMonitor()
+        Sentry.configureScope { it.setTag("fallback", "scope") }
+
+        val stored = envelopesStoredBy { IllegalStateException("fallback crash").captureUnhandledException() }
+
+        assertEquals(1, stored.size)
+        assertTrue(stored.single().contents().length > 0u)
+        val event = assertNotNull(prepared)
+        assertEquals("scope", event.tags?.get("fallback"))
+        assertEquals(false, (event.exceptions?.single() as SentryException).mechanism?.handled?.boolValue)
+        assertTrue((event as Internal.Sentry.SentryEvent).isFatalEvent)
+        assertTerminationCrashTagged()
+    }
+
+    @Test
+    fun `fallback capture honors dropped events`() {
+        var called = false
+        start {
+            called = true
+            null
+        }
+        disableNativeExceptionMonitor()
+
+        val stored = envelopesStoredBy { IllegalStateException("dropped").captureUnhandledException() }
+
+        assertTrue(called)
+        assertTrue(stored.isEmpty())
+        assertTerminationCrashTagged()
+    }
+
+    @Test
+    fun `fallback capture honors sampling before beforeSend`() {
+        var called = false
+        start(sampleRate = 0.0) {
+            called = true
+            it
+        }
+        disableNativeExceptionMonitor()
+
+        val stored = envelopesStoredBy { IllegalStateException("sampled out").captureUnhandledException() }
+
+        assertFalse(called)
+        assertTrue(stored.isEmpty())
+        assertTerminationCrashTagged()
     }
 
     private fun assertCurrentThread(
@@ -180,42 +283,6 @@ class CocoaV9IntegrationTest {
             assertEquals(crashed, currentThread.crashed?.boolValue == true)
             if (crashed) assertNull(currentThread.stacktrace)
         }
-    }
-
-    @Test
-    fun `fatal envelope preparation honors dropped events`() {
-        var called = false
-        start {
-            called = true
-            null
-        }
-        assertNull(IllegalStateException("dropped").asSentryEnvelope())
-        assertTrue(called)
-    }
-
-    @Test
-    fun `fatal envelope preparation honors sampling before beforeSend`() {
-        var called = false
-        start(sampleRate = 0.0) {
-            called = true
-            it
-        }
-        assertNull(IllegalStateException("sampled out").asSentryEnvelope())
-        assertFalse(called)
-    }
-
-    @Test
-    fun `fatal envelope preparation retains scope enrichment`() {
-        var prepared: SentryEvent? = null
-        start {
-            prepared = it
-            it
-        }
-        Sentry.configureScope { it.setTag("migration", "cocoa-v9") }
-        val envelope = IllegalStateException("fatal").asSentryEnvelope()
-        assertNotNull(envelope)
-        assertEquals("cocoa-v9", assertNotNull(prepared).tags?.get("migration"))
-        assertEquals(false, (prepared?.exceptions?.first() as SentryException).mechanism?.handled?.boolValue)
     }
 
     @Test
@@ -263,5 +330,33 @@ class CocoaV9IntegrationTest {
         Sentry.close()
         start()
         assertEquals(enabledMask, sentrycrashcm_getActiveMonitors())
+    }
+
+    @Test
+    fun `NSException monitor bit controls Cocoa's uncaught exception handler`() {
+        start()
+        assertTrue(isNativeExceptionMonitorActive())
+        val cocoaHandler = assertNotNull(NSGetUncaughtExceptionHandler())
+
+        disableNativeExceptionMonitor()
+
+        assertNotEquals(cocoaHandler, NSGetUncaughtExceptionHandler())
+    }
+
+    private fun disableNativeExceptionMonitor() {
+        sentrycrash_setMonitoring(sentrycrashcm_getActiveMonitors() and SentryCrashMonitorTypeNSException.inv())
+        assertFalse(isNativeExceptionMonitorActive())
+    }
+
+    private fun envelopesStoredBy(block: () -> Unit): List<SentryFileContents> {
+        val files = assertNotNull(SentryDependencyContainer.sharedInstance().fileManager())
+        val before = files.getAllEnvelopes().map { (it as SentryFileContents).path() }.toSet()
+        block()
+        return files.getAllEnvelopes().map { it as SentryFileContents }.filter { it.path() !in before }
+    }
+
+    private fun assertTerminationCrashTagged() {
+        val tags = SentrySDKInternal.currentHub().scope.tagDictionary
+        assertEquals(KOTLIN_CRASH_TAG, tags?.objectForKey(KOTLIN_CRASH_TAG))
     }
 }

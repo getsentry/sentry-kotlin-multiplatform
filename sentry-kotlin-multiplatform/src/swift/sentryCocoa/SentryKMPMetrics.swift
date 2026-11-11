@@ -2,6 +2,7 @@ import Foundation
 import Sentry
 
 /// Objective-C entry points for Cocoa's Swift-only metrics API.
+@objc(SentryKMPMetrics)
 @objcMembers public final class SentryKMPMetrics: NSObject {
     public static func count(_ name: String, value: UInt64, attributes: [String: SentryAttribute]) {
         guard let value = UInt(exactly: value) else { return }
@@ -36,6 +37,7 @@ import Sentry
 }
 
 /// Mutable view of a native metric for the Kotlin `beforeSend` callback.
+@objc(SentryKMPMetric)
 @objcMembers public final class SentryKMPMetric: NSObject {
     @nonobjc fileprivate var metric: SentryMetric
 
@@ -48,14 +50,16 @@ import Sentry
     public var traceId: String { metric.traceId.sentryIdString }
     public var spanId: String? { metric.spanId?.sentrySpanIdString }
 
-    public var name: String {
-        get { metric.name }
-        set { metric.name = newValue }
+    public var name: String { metric.name }
+    public var unit: String? { metric.unit?.rawValue }
+
+    // Explicit setters avoid emitting Swift coroutine accessors that older linkers cannot resolve.
+    public func setName(_ name: String) {
+        metric.name = name
     }
 
-    public var unit: String? {
-        get { metric.unit?.rawValue }
-        set { metric.unit = newValue.flatMap(SentryUnit.init(rawValue:)) }
+    public func setUnit(_ unit: String?) {
+        metric.unit = unit.flatMap(SentryUnit.init(rawValue:))
     }
 
     public var type: String {
@@ -95,36 +99,35 @@ import Sentry
 
     /// Scalar attributes only. Setting replaces them and keeps other native attribute types.
     public var attributes: [String: SentryAttribute] {
-        get {
-            metric.attributes.compactMapValues { content in
-                switch content {
-                case .string(let value): return SentryAttribute(string: value)
-                case .boolean(let value): return SentryAttribute(boolean: value)
-                case .integer(let value): return SentryAttribute(integer: value)
-                case .double(let value): return SentryAttribute(double: value)
-                default: return nil
-                }
+        metric.attributes.compactMapValues { content in
+            switch content {
+            case .string(let value): return SentryAttribute(string: value)
+            case .boolean(let value): return SentryAttribute(boolean: value)
+            case .integer(let value): return SentryAttribute(integer: value)
+            case .double(let value): return SentryAttribute(double: value)
+            default: return nil
             }
         }
-        set {
-            metric.attributes = metric.attributes.filter { _, value in
-                switch value {
-                case .string, .boolean, .integer, .double: return false
-                default: return true
-                }
+    }
+
+    public func setAttributes(_ attributes: [String: SentryAttribute]) {
+        metric.attributes = metric.attributes.filter { _, value in
+            switch value {
+            case .string, .boolean, .integer, .double: return false
+            default: return true
             }
-            for (key, attribute) in newValue {
-                switch attribute.type {
-                case "string":
-                    if let value = attribute.value as? String { metric.attributes[key] = .string(value) }
-                case "boolean":
-                    if let value = attribute.value as? NSNumber { metric.attributes[key] = .boolean(value.boolValue) }
-                case "integer":
-                    if let value = attribute.value as? NSNumber { metric.attributes[key] = .integer(value.intValue) }
-                case "double":
-                    if let value = attribute.value as? NSNumber { metric.attributes[key] = .double(value.doubleValue) }
-                default: break
-                }
+        }
+        for (key, attribute) in attributes {
+            switch attribute.type {
+            case "string":
+                if let value = attribute.value as? String { metric.attributes[key] = .string(value) }
+            case "boolean":
+                if let value = attribute.value as? NSNumber { metric.attributes[key] = .boolean(value.boolValue) }
+            case "integer":
+                if let value = attribute.value as? NSNumber { metric.attributes[key] = .integer(value.intValue) }
+            case "double":
+                if let value = attribute.value as? NSNumber { metric.attributes[key] = .double(value.doubleValue) }
+            default: break
             }
         }
     }

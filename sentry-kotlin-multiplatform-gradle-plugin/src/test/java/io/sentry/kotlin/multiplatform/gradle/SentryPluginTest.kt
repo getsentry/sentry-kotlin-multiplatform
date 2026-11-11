@@ -74,7 +74,7 @@ class SentryPluginTest {
         val error = assertThrows<GradleException> { autoInstall.cocoapods.enabled.set(false) }
 
         assertTrue(error.message!!.contains("Remove sentryKmp.autoInstall.cocoapods"))
-        assertTrue(error.message!!.contains("use spm4Kmp with autoInstall.spm instead"))
+        assertTrue(error.message!!.contains("use autoInstall.apple.provider instead"))
     }
 
     @Test
@@ -86,11 +86,11 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `extension spm is created correctly`() {
+    fun `extension spm is no longer registered`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
-        assertNotNull(project.extensions.getByName("spm"))
+        assertNull(project.extensions.findByName("spm"))
     }
 
     @Test
@@ -102,7 +102,7 @@ class SentryPluginTest {
         assertNotNull(project.extensions.getByName("linker"))
         assertNotNull(project.extensions.getByName("autoInstall"))
         assertNull(project.extensions.findByName("cocoapods"))
-        assertNotNull(project.extensions.getByName("spm"))
+        assertNull(project.extensions.findByName("spm"))
         assertNotNull(project.extensions.getByName("commonMain"))
     }
 
@@ -221,7 +221,7 @@ class SentryPluginTest {
         kotlin.iosArm64()
         val autoInstall = project.extensions.getByType(AutoInstallExtension::class.java)
         autoInstall.enabled.set(globalEnabled)
-        autoInstall.spm.enabled.set(spmEnabled)
+        if (!spmEnabled) autoInstall.apple.provider.set(AppleDependencyProvider.NONE)
 
         project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
@@ -247,10 +247,12 @@ class SentryPluginTest {
         val packages = project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
         val manualPackage = packages.getByName("SentryCocoa_IosArm64")
         val manualPod = cocoaPods.pods.getByName("OtherDependency")
-        project.extensions
-            .getByType(AutoInstallExtension::class.java)
-            .spm.enabled
-            .set(spmEnabled)
+        if (!spmEnabled) {
+            project.extensions
+                .getByType(AutoInstallExtension::class.java)
+                .apple.provider
+                .set(AppleDependencyProvider.NONE)
+        }
 
         project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
@@ -261,23 +263,23 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `default cocoa version is set in spm extension`() {
-        val project = ProjectBuilder.builder().build()
-        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
-
-        val spmExtension = project.extensions.getByName("spm") as Spm4KmpAutoInstallExtension
-        assertEquals(BuildConfig.SentryCocoaVersion, spmExtension.sentryCocoaVersion.get())
-    }
-
-    @Test
-    fun `custom cocoa version overrides default in spm extension`() {
+    fun `default cocoa version is set in apple extension`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         val autoInstallExtension = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        autoInstallExtension.spm.sentryCocoaVersion.set("9.9.9")
+        assertEquals(BuildConfig.SentryCocoaVersion, autoInstallExtension.apple.sentryCocoaVersion.get())
+    }
 
-        assertEquals("9.9.9", autoInstallExtension.spm.sentryCocoaVersion.get())
+    @Test
+    fun `custom cocoa version overrides default in apple extension`() {
+        val project = ProjectBuilder.builder().build()
+        project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
+
+        val autoInstallExtension = project.extensions.getByName("autoInstall") as AutoInstallExtension
+        autoInstallExtension.apple.sentryCocoaVersion.set("9.9.9")
+
+        assertEquals("9.9.9", autoInstallExtension.apple.sentryCocoaVersion.get())
     }
 
     @Test
@@ -301,19 +303,19 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `do not install Sentry Swift package when spm auto install is disabled`() {
+    fun `do not install Sentry Swift package when Apple provider is NONE`() {
         val project = ProjectBuilder.builder().build()
         project.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         project.pluginManager.apply("io.github.frankois944.spmForKmp")
         project.pluginManager.apply("io.sentry.kotlin.multiplatform.gradle")
 
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        autoInstall.spm.enabled.set(false)
+        autoInstall.apple.provider.set(AppleDependencyProvider.NONE)
 
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64()
 
-        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
+        project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
@@ -374,7 +376,7 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64()
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        if (disableGlobally) autoInstall.enabled.set(false) else autoInstall.spm.enabled.set(false)
+        if (disableGlobally) autoInstall.enabled.set(false) else autoInstall.apple.provider.set(AppleDependencyProvider.NONE)
 
         (project as ProjectInternal).evaluate()
 
@@ -384,7 +386,7 @@ class SentryPluginTest {
     }
 
     @Test
-    fun `spm opt-out after the kotlin block takes effect when applied before spm4Kmp`() {
+    fun `provider opt-out after the kotlin block takes effect when applied before spm4Kmp`() {
         Assumptions.assumeTrue(HostManager.hostIsMac)
 
         val project = ProjectBuilder.builder().build()
@@ -396,7 +398,7 @@ class SentryPluginTest {
         kmpExtension.iosArm64()
 
         val autoInstall = project.extensions.getByName("autoInstall") as AutoInstallExtension
-        autoInstall.spm.enabled.set(false)
+        autoInstall.apple.provider.set(AppleDependencyProvider.NONE)
 
         (project as ProjectInternal).evaluate()
 
@@ -462,7 +464,7 @@ class SentryPluginTest {
         val kmpExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
         kmpExtension.iosArm64()
 
-        project.installSentryForSpm4Kmp(autoInstall, hostIsMac = true)
+        project.plugins.getPlugin(SentryPlugin::class.java).executeConfiguration(project, hostIsMac = true)
 
         val swiftPackages =
             project.extensions.getByName("swiftPackageConfig") as NamedDomainObjectContainer<*>
