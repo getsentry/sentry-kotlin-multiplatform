@@ -6,6 +6,8 @@ import cocoapods.Sentry.SentryAttribute
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.SentryOptions
 import io.sentry.kotlin.multiplatform.extensions.applyCocoaBaseOptions
+import kotlinx.cinterop.sizeOf
+import platform.darwin.NSUIntegerVar
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,6 +18,8 @@ import kotlin.test.assertSame
 import objcnames.classes.SentryOptions as ObjCSentryOptions
 
 class CocoaSentryMetricsTest {
+    private val supports64BitIntegers = sizeOf<NSUIntegerVar>() == ULong.SIZE_BYTES.toLong()
+
     @AfterTest
     fun tearDown() {
         Sentry.close()
@@ -83,10 +87,34 @@ class CocoaSentryMetricsTest {
 
     @Test
     fun `beforeSend keeps unchanged counters above the exact Double range`() {
-        // arm64_32 watchOS can't record counters above UInt32.MAX, so there is nothing to check there.
-        val native = captureNativeMetric { SentryKMPMetrics.count("large", ULong.MAX_VALUE, emptyMap<Any?, SentryAttribute>()) } ?: return
+        // Cocoa uses UInt for counters, which is 32-bit on arm64_32 watchOS.
+        if (!supports64BitIntegers) return
 
+        val native =
+            assertNotNull(captureNativeMetric { SentryKMPMetrics.count("large", ULong.MAX_VALUE, emptyMap<Any?, SentryAttribute>()) })
         assertSame(native, native.applyBeforeSend { it })
+    }
+
+    @Test
+    fun `integer metric attributes keep their full width`() {
+        if (!supports64BitIntegers) return
+
+        val native =
+            assertNotNull(
+                captureNativeMetric { Sentry.metrics.count("clicks") { this["large"] = Long.MAX_VALUE } },
+            )
+        val captured = assertNotNull(native.toKmpSentryMetric())
+        assertEquals(Long.MAX_VALUE, captured.attributes["large"]?.longOrNull)
+
+        val updated =
+            assertNotNull(
+                native.applyBeforeSend { metric ->
+                    metric.attributes["large"] = Long.MIN_VALUE
+                    metric
+                },
+            )
+        val converted = assertNotNull(updated.toKmpSentryMetric())
+        assertEquals(Long.MIN_VALUE, converted.attributes["large"]?.longOrNull)
     }
 
     private fun start(beforeSend: (SentryMetric) -> SentryMetric?) {
