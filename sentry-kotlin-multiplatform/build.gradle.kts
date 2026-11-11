@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.konan.target.HostManager
 import java.io.OutputStream
 import java.security.DigestInputStream
 import java.security.MessageDigest
@@ -237,6 +238,13 @@ kotlin {
                 linkerOpts("-F$frameworkPath", "-rpath", frameworkPath)
             }
 
+            val internalInterop =
+                target.compilations.getByName("main").cinterops.create("Sentry.Internal") {
+                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
+                }
+            // Apple cinterop is disabled on other hosts, but Gradle can still schedule its dependencies.
+            if (!HostManager.hostIsMac) return@forEach
+
             val platform = slice.substringBefore('-')
             val simulator = slice.endsWith("-simulator")
             val (sdk, deploymentTarget) =
@@ -276,13 +284,9 @@ kotlin {
                         bridgeOutput.get().asFile,
                     )
                 }
-            val internalInterop =
-                target.compilations.getByName("main").cinterops.create("Sentry.Internal") {
-                    includeDirs("$projectDir/src/nativeInterop/cinterop/SentryInternal")
-                    val outputPath = bridgeOutput.get().asFile.absolutePath
-                    compilerOpts("-I$outputPath")
-                    extraOpts("-libraryPath", outputPath, "-staticLibrary", "libSentryKMPMetrics.a")
-                }
+            val bridgeOutputPath = bridgeOutput.get().asFile.absolutePath
+            internalInterop.compilerOpts("-I$bridgeOutputPath")
+            internalInterop.extraOpts("-libraryPath", bridgeOutputPath, "-staticLibrary", "libSentryKMPMetrics.a")
             tasks.named<CInteropProcess>(internalInterop.interopProcessingTaskName) {
                 dependsOn(compileMetricsBridge)
                 inputs.dir(bridgeOutput)
