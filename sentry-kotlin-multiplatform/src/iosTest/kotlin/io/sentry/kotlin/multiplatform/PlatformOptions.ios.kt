@@ -3,6 +3,7 @@ package io.sentry.kotlin.multiplatform
 import cocoapods.Sentry.SentryReplayOptions
 import io.sentry.kotlin.multiplatform.extensions.toIosOptionsConfiguration
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 actual interface ApplePlatformOptions : PlatformOptions {
     val attachScreenshot: Boolean
@@ -26,7 +27,7 @@ class SentryIosOptionsWrapper(
         get() = cocoaOptions.enableAppHangTracking()
 
     override val appHangTimeoutIntervalMillis: Long
-        get() = cocoaOptions.appHangTimeoutInterval().toLong()
+        get() = cocoaOptions.appHangTimeoutInterval().seconds.inWholeMilliseconds
 
     override val sessionReplay: SentryReplayOptions
         get() = cocoaOptions.sessionReplay()

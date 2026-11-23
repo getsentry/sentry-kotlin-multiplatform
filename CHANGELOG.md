@@ -1,9 +1,22 @@
 # Changelog
 
-## Unreleased
+## 0.30.0
+
+### Dependencies
+
+- Bump Cocoa SDK from v9.30.2 to v9.35.0 ([#596](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/596))
+  - [changelog](https://github.com/getsentry/sentry-cocoa/blob/main/CHANGELOG.md#9350)
+  - [diff](https://github.com/getsentry/sentry-cocoa/compare/9.30.2...9.35.0)
+- Bump Java SDK from v8.61.0 to v8.64.0 ([#597](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/597))
+  - [changelog](https://github.com/getsentry/sentry-java/blob/main/CHANGELOG.md#8640)
+  - [diff](https://github.com/getsentry/sentry-java/compare/8.61.0...8.64.0)
+
+## 0.29.0
 
 ### Fixes
 
+- Match `failedRequestTargets` as regular expressions on Apple, not only as substrings. Cocoa treats plain strings as substrings, so the default `.*` matched no URL and HTTP client errors were never captured on Apple. A target now matches when the URL contains it or when its regex matches anywhere in the URL, matching the JavaScript, Python, Cocoa and Dart SDKs. Apps using the default targets will now capture HTTP client errors (500–599 by default) on Apple ([#593](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/593)).
+- Pass `appHangTimeoutIntervalMillis` to Sentry Cocoa in seconds. It was passed unconverted, so Cocoa read the default of 2000 ms as 2000 s (about 33 minutes) and app hangs were effectively never reported. Apps using the default timeout will now report app hangs on Apple ([#592](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/592)).
 - Fix Apple linker errors introduced in 0.28.0 for `SentryDefaultThreadInspector` and Swift compatibility libraries ([#589](https://github.com/getsentry/sentry-kotlin-multiplatform/pull/589)).
 
 ### Dependencies
