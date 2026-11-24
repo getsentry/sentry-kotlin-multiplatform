@@ -1,0 +1,77 @@
+# getsentry/sentry-kotlin-multiplatform ec8e1a92b0be9f52e800efdae4bd3415de7d73ce
+
+rubric = "sdk"
+
+# Common Kotlin code every target builds on; it calls into sentry-java (Android/JVM) and
+# sentry-cocoa (Apple, via cinterop). buildSrc Config.kt pins both SDK versions for the library build.
+[[area]]
+paths = [
+  "sentry-kotlin-multiplatform/src/commonMain/**", "sentry-kotlin-multiplatform/build.gradle.kts",
+  "buildSrc/src/main/java/Config.kt",
+]
+families = ["hybrid", "mobile-native", "server"]
+shared_core = true
+
+# Android and Apple bridges to the bundled native SDKs.
+[[area]]
+paths = [
+  "sentry-kotlin-multiplatform/src/androidMain/**", "sentry-kotlin-multiplatform/src/appleMain/**",
+  "sentry-kotlin-multiplatform/src/iosMain/**", "sentry-kotlin-multiplatform/src/commonTvWatchMacOsMain/**",
+  "sentry-kotlin-multiplatform/src/nativeInterop/**",
+]
+families = ["hybrid", "mobile-native"]
+
+# Shared by the Android and plain JVM (server/desktop) targets.
+[[area]]
+paths = ["sentry-kotlin-multiplatform/src/commonJvmMain/**"]
+families = ["hybrid", "mobile-native", "server"]
+
+[[area]]
+paths = ["sentry-kotlin-multiplatform/src/jvmMain/**"]
+families = ["hybrid", "server"]
+
+# No-op implementations published for js, wasmJs, linux, mingw and watchosArm32 targets.
+[[area]]
+paths = ["sentry-kotlin-multiplatform/src/commonStub/**"]
+families = ["browser", "server", "mobile-native"]
+
+# Gradle plugin that runs in customers' builds: auto-installs sentry-cocoa through SPM or
+# CocoaPods and links the framework.
+[[area]]
+paths = ["sentry-kotlin-multiplatform-gradle-plugin/**"]
+families = ["tooling", "hybrid"]
+
+# Bundled SDK pins: sentry-java and sentry-cocoa (+ SHA-256) in buildSrc Config.kt; the
+# Cocoa version the Gradle plugin installs in customer builds; Cocoa headers vendored for
+# cinterop at a pinned sentry-cocoa commit.
+[[kind]]
+paths = [
+  "buildSrc/src/main/java/Config.kt", "sentry-kotlin-multiplatform-gradle-plugin/gradle.properties",
+  "sentry-kotlin-multiplatform/src/nativeInterop/cinterop/SentryInternal/**",
+]
+kind = "dependencies"
+
+[[kind]]
+paths = ["sentry-kotlin-multiplatform/api/**"]
+kind = "public-api-record"
+
+[[kind]]
+paths = [
+  "sentry-kotlin-multiplatform/src/*Test/**", "sentry-kotlin-multiplatform-gradle-plugin/src/test/**",
+]
+kind = "tests"
+
+[[kind]]
+paths = ["sentry-samples/**"]
+kind = "samples"
+
+[[kind]]
+paths = [
+  "buildSrc/**", "scripts/**", "**/*.gradle.kts", "**/gradle.properties", "**/gradle/wrapper/**",
+  "**/gradlew", "**/gradlew.bat", ".mvn/**", "sentry-kotlin-multiplatform/src/nativeInterop/cinterop/*.def",
+]
+kind = "build-release"
+
+[[kind]]
+paths = ["config/detekt/**"]
+kind = "dev-tooling"
