@@ -18,7 +18,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/getsentry/sentry-cocoa.git",
-      exact: "9.35.0"
+      exact: "9.36.0"
     ),
     .package(path: "subpackages/KotlinMultiplatformLinkedPackageDylib")
   ],
